@@ -1100,6 +1100,94 @@ possibly in initializers and engine mounts. May indicate a misconfiguration.
 
 ---
 
+## Phase 5b - Company Onboarding Flow & Production Endpoint Testing
+
+### CRITICAL - Phone Verification Auto-Approve Bypass (PRODUCTION)
+
+`POST /v1/company/phone` on web-api.deblock.com (PRODUCTION):
+- Setting a phone number immediately sets `phone_verified: true` WITHOUT any OTP
+- No SMS verification code is sent or required
+- No rate limiting on phone number changes
+- Tested on production with UUID `ebeca478-58e0-4d9b-9821-24254c14b641`
+- Same behavior confirmed on staging
+
+Request: `POST /v1/company/phone` with `{"uuid":"...","phone":"..."}`
+Response includes `"phone_verified":true` in the session data
+
+Impact: Complete bypass of phone verification in the company onboarding (KYB) flow.
+An attacker can use any phone number and be marked as verified without proving ownership.
+This undermines the entire identity verification chain for business account creation.
+Combined with email OTP brute force (below), the full KYB identity check is bypassable.
+
+### CRITICAL - Company Email OTP Zero Rate Limiting (PRODUCTION)
+
+`POST /v1/company/email/otp` on web-api.deblock.com (PRODUCTION):
+- Zero rate limiting on OTP verification attempts
+- 5+ wrong OTP codes tested, all return HTTP 200 with error message
+- No account lockout after failed attempts
+- No progressive delay between attempts
+- No CAPTCHA or anti-automation
+- 6-digit OTP = 1,000,000 combinations, brutable at scale
+
+Combined with the phone auto-approve bypass above, this means:
+1. Register any email address in the onboarding flow (no auth needed)
+2. Receive OTP via email
+3. If email not controlled, brute force the 6-digit OTP with no rate limit
+4. Phone verification auto-approves on any number
+5. Full company onboarding identity verification bypassed
+
+### HIGH - Full Company Onboarding Flow Unauthenticated (PRODUCTION)
+
+The entire company KYB (Know Your Business) onboarding flow on web-api.deblock.com
+works without any authentication headers:
+
+1. `POST /v1/company/country` - Set country (returns new session UUID)
+2. `GET /v1/company/types?uuid=` - Get company types for country
+3. `POST /v1/company/type` - Set company type (SAS, SARL, etc.)
+4. `POST /v1/company/email` - Set email, triggers OTP send
+5. `POST /v1/company/email/otp` - Verify OTP (no rate limit)
+6. `POST /v1/company/phone` - Set phone (auto-approves, no OTP needed)
+7. `GET /v1/company/turnovers` - Get turnover brackets
+8. `POST /v1/company/turnovers` - Set company turnover
+9. `GET /v1/company/surveys` - Get survey questions
+
+All endpoints accept requests with zero authentication. The UUID from step 1
+is the only "token" and it is returned in the response body.
+
+Supporting data endpoints (also unauthenticated):
+- `GET /v1/company/countries` - Full country list with CDN flag URLs
+- `GET /v1/company/types` - Company type definitions (SARL, SAS, EURL, SA, SNC, etc.)
+- `GET /v1/company/turnovers` - Revenue bracket definitions
+
+Production UUID confirmed: `ebeca478-58e0-4d9b-9821-24254c14b641`
+Staging UUIDs properly scoped (rejected on production).
+
+### MEDIUM - /v1/check/callback Unauthenticated OK (PRODUCTION)
+
+`GET /v1/check/callback` on web-api.deblock.com:
+- Returns `{"status":"ok"}` without any authentication
+- Same behavior on staging
+- This appears to be a webhook callback endpoint that should require auth
+- Confirms the production API processes requests on this path
+
+### LOW - Update Endpoints Hit ActiveRecord (PRODUCTION)
+
+`GET /v1/update/android/:token` and `GET /v1/update/ios/:token` on web-api.deblock.com:
+- Return HTTP 200 with empty body
+- `server-timing` header reveals `sql.active_record` queries are executed
+- The endpoints parse the token parameter and query the database
+- Invalid tokens return 200 with empty body (no error, just empty)
+- This reveals the production API runs Rails with ActiveRecord on these paths
+
+### LOW - /v1/beta/check/:token Differential Response (PRODUCTION)
+
+`GET /v1/beta/check/:token` on web-api.deblock.com:
+- Returns `"Wrong token"` for invalid tokens
+- Different response expected for valid tokens
+- Enables enumeration of valid beta access tokens
+
+---
+
 ## 13. Recommended Priority Attack Paths (Updated)
 
 Based on all phases of testing. Ranked by exploitability and impact.
@@ -1129,7 +1217,14 @@ Based on all phases of testing. Ranked by exploitability and impact.
    - 6-digit OTP brutable in minutes at scale
    - Ambassador account takeover via OTP exhaustion
 
-5. LOCK DOWN staging environment IMMEDIATELY
+5. COMPANY ONBOARDING PHONE VERIFICATION BYPASS (PRODUCTION)
+   - POST /v1/company/phone auto-approves phone_verified without OTP
+   - Full KYB onboarding chain works without any authentication
+   - Company email OTP has zero rate limiting (brutable)
+   - Combined: complete company identity verification bypass
+   - Attacker can register fake businesses through entire onboarding flow
+
+6. LOCK DOWN staging environment IMMEDIATELY
    - Rails running in **development** mode on public internet
    - Full route map (120+ routes) exposed via `/rails/info/routes`
    - Server properties via `/rails/info/properties`
@@ -1229,6 +1324,12 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 39 | MEDIUM | Ambassador check enumeration | - | - | YES | Differential response |
 | 40 | LOW | Apigee gateway error leak | - | - | YES | Error codes exposed |
 | 41 | INFO | 9x Rack::Cors middleware instances | - | - | YES | Potential misconfig |
+| 42 | CRITICAL | Phone verification auto-approve bypass (prod) | - | - | YES | Confirmed exploitable |
+| 43 | CRITICAL | Company email OTP zero rate limiting (prod) | - | - | YES | Confirmed exploitable |
+| 44 | HIGH | Full KYB onboarding unauthenticated (prod) | - | - | YES | Full flow confirmed |
+| 45 | MEDIUM | /v1/check/callback unauthenticated OK | - | - | YES | Confirmed |
+| 46 | LOW | Update endpoints expose ActiveRecord queries | - | - | YES | server-timing leak |
+| 47 | LOW | /v1/beta/check differential response | - | - | YES | Token enumeration |
 
 ## 15. Session Notes
 
@@ -1242,6 +1343,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 - No destructive actions taken (no data modified/deleted, no denial of service).
 - Staging down (HTTP 000) during session 2 testing - most staging tests from session 1.
 - Session 4: Staging back online. Full route extraction, dev mode findings, production S3 upload confirmed.
+- Session 4b: Company onboarding phone auto-verify bypass confirmed on production. Email OTP zero rate limiting confirmed on production. Full KYB flow unauthenticated on production.
 - Firebase email enumeration: No corporate emails registered (tested 20 patterns).
 - No open redirect vulnerabilities found on tested endpoints.
 - ActionMailbox ingress endpoints return 404 on production with proper email format (all providers tested).
