@@ -424,3 +424,195 @@ From status.deblock.com (all currently operational):
 12. JavaScript analysis on frontend apps for hidden API endpoints
 13. Check for exposed .env files, source maps, and debug configs
 14. Test Vercel deployment protection bypass on staging sites
+
+---
+
+## 12. Phase 2 - Active Testing Findings
+
+### CRITICAL - Full Stack Traces with Source Paths Exposed (Staging)
+
+web-api-staging.deblock.com returns detailed Ruby stack traces on errors, exposing:
+
+1. Application controller paths, e.g.:
+   - app/controllers/v1/ambassador_auto_signup_controller.rb:114:in 'ambassador_params'
+   - app/controllers/v1/ambassador_auto_signup_controller.rb:10:in 'create'
+   - This reveals full directory structure, controller naming, and line numbers
+
+2. ActiveStorage direct_uploads endpoint (/rails/active_storage/direct_uploads) returns
+   full 84-frame middleware stack trace on CSRF errors (422), confirming:
+   - Rails 7.0.10 action_controller/metal/request_forgery_protection.rb
+   - Airbrake 13.0.3 middleware
+   - 8 separate rack-cors 1.1.1 middleware instances
+   - Puma 7.2.1 server
+   - ActionText rendering engine loaded
+   - Full request lifecycle from Puma thread pool through all middleware
+
+3. Production web-api.deblock.com also returns 422 on direct_uploads POST (no stack trace visible),
+   confirming the same ActiveStorage endpoint exists in production but debug mode is off.
+
+Impact: Stack traces give attackers exact file paths, gem versions, middleware order, and
+application structure. Combined with the route map, this enables precision attacks.
+
+### CRITICAL - Ambassador Signup Without Rate Limiting (Staging)
+
+POST /v1/ambassador/email on web-api-staging.deblock.com accepts email registrations
+with the nested params format {"ambassador":{"email":"..."}} and returns {"status":"ok"}.
+
+Confirmed behavior:
+- No rate limiting observed on repeated signups
+- No CAPTCHA or anti-automation
+- Triggers OTP email to the provided address
+- The same endpoint pattern likely exists in production on web-api.deblock.com
+
+This enables:
+- Mass OTP SMS/email bombing by submitting arbitrary email addresses
+- Potential OTP brute force (6-digit code = 1M combinations)
+- Account enumeration by observing response differences
+
+### HIGH - BackWPup Backup Plugin REST API Exposed (brand.deblock.com)
+
+The BackWPup plugin exposes a full REST API namespace at /wp-json/backwpup/v1/ with endpoints:
+- /storagelistcompact (401 - auth required)
+- /cloud_is_authenticated (401 - auth required)
+- /authenticate_cloud (POST - auth required)
+- /delete_auth_cloud (POST - auth required)
+- /cloudsaveandtest (POST - auth required)
+- /chatbot-context (POST+GET - ACCEPTS UNAUTHENTICATED REQUESTS with context_id/context_token)
+- /updatejob (POST - requires job_id)
+- /update-job-title (POST - requires job_id, title)
+- /addjob (POST - requires type)
+- /delete_job (DELETE - requires job_id)
+- /save_job_* endpoints
+
+While most endpoints return 401, the chatbot-context endpoint responds to unauthenticated
+requests (400 asking for parameters, not 401 forbidden). This may allow information
+disclosure through the chatbot context mechanism.
+
+Plugin version: Requires Elementor >= 3.34, tested up to WordPress 6.9.
+
+### HIGH - WordPress Attack Surface Summary (brand.deblock.com)
+
+Confirmed accessible without authentication:
+- /wp-login.php (200) - Login form accessible
+- /wp-json/wp/v2/users (200) - User enumeration: admin-deblock (ID:1)
+- /wp-json/ - Full REST API discovery
+- /wp-json/elementor-one/v1/connect/authorize - Elementor connection endpoint
+- /wp-json/backwpup/v1/ - Backup plugin API (see above)
+- PHP version in headers: 8.3.33
+- Server: LiteSpeed
+
+LiteSpeed blocks sensitive paths (.env, debug.log, backup-db/) with 403, which is
+good but still confirms the server type and configuration.
+
+### MEDIUM - CSP Policy Reveals Third-Party Integrations (business.deblock.com)
+
+The Content Security Policy on business.deblock.com reveals all third-party service
+integrations used by the business onboarding flow:
+
+- Regula Forensics (faceapi.regulaforensics.com) - Document verification/KYC
+- Sardine AI (api.sardine.ai, cdn.sardine.ai) - Fraud detection
+- OneSignal (onesignal.com, os.tc) - Push notifications
+- Dotfile (api.dotfile.com, app.dotfile.com) - Compliance/KYB verification
+- Google Tag Manager, Google Analytics
+- Intercom (intercomcdn.com, widget.intercom.io)
+- Vercel analytics (va.vercel-scripts.com, vitals.vercel-insights.com)
+- Sentry (sentry.io) - Error tracking for frontend
+- Dynatrace JS injection
+
+This reveals the full KYC/onboarding technology chain, valuable for social engineering
+and targeted attacks on these third-party services.
+
+### MEDIUM - Production and Staging Share Routes
+
+Confirmed that production Heroku apps (web-api.deblock.com, waitlist-api.deblock.com)
+serve the same route structure as staging:
+- Both respond to /v1/company/countries with 200
+- Both share the same Heroku routing infrastructure
+- Production returns 404 on root (no default route) vs staging returning Rails default page
+
+This confirms the staging route map is a reliable guide for production API testing.
+
+### LOW - Security Headers Comparison
+
+business.deblock.com (GCP/Next.js):
+- Content-Security-Policy: comprehensive with nonce
+- X-Content-Type-Options: nosniff
+- X-Frame-Options: DENY
+- Strict-Transport-Security: present
+- Rating: GOOD
+
+brand.deblock.com (WordPress/LiteSpeed):
+- No CSP
+- No X-Frame-Options
+- No X-Content-Type-Options
+- PHP version exposed
+- Rating: WEAK
+
+api.prod.deblock.com / app.deblock.com (GCP):
+- Minimal security headers
+- No CSP, no HSTS visible
+- Rating: NEEDS IMPROVEMENT
+
+### INFO - Frontend Obfuscation
+
+- deblock.com Next.js build manifest is empty/obfuscated (no page routes revealed)
+- No source maps found on any frontend JS chunks
+- business.deblock.com uses Turbopack with server-side rendering (no /api/auth/* exposed)
+
+---
+
+## 13. Recommended Priority Attack Paths
+
+Based on Phase 1 + Phase 2 findings, these are the highest-impact paths:
+
+### P0 - Immediate High-Value Targets
+
+1. Ambassador OTP Brute Force: Submit email to /v1/ambassador/email, then brute force
+   the 6-digit OTP at /v1/ambassador/email/otp. No rate limiting confirmed on signup.
+   If OTP verification also lacks rate limiting, account takeover is trivial.
+
+2. WordPress Admin Brute Force: Known user admin-deblock, accessible wp-login.php.
+   Test xmlrpc.php multicall amplification for password brute force.
+   Check for weak/default passwords.
+
+3. Admin API Auth Bypass: Test /v1/admin/ambassador/applicants and other /v1/admin/*
+   endpoints with various auth header formats (Bearer token, API key, session cookie).
+   The staging returns 403 but test for bypass vectors.
+
+4. User Data Deletion IDOR: /v1/remove/data/:token64 - test with predictable/sequential
+   tokens. If token generation is weak, arbitrary user data deletion is possible.
+
+### P1 - Medium-Term Targets
+
+5. ActiveStorage Upload Abuse: Direct uploads endpoint exists in production.
+   If CSRF can be bypassed (e.g., with Origin header manipulation), unrestricted
+   file upload to S3 is possible.
+
+6. Twilio Webhook Spoofing: /v1/webhook/twilio/:hash - if hash validation is weak,
+   SMS delivery status manipulation is possible.
+
+7. Cache Poisoning: /v1/blog/cache/delete/:key, /v1/legals/cache/delete/:key,
+   /v1/faq/cache/delete/:key - unauthorized cache purge could enable DoS or serve
+   stale/manipulated content.
+
+8. Company Onboarding Flow: Full KYB process via /v1/company/* - test for document
+   upload bypass, identity verification skip, business logic flaws.
+
+### P2 - Requires Authenticated Testing
+
+9. Authenticated IDOR: With test account credentials, test /v1/mobile/account/:user_id,
+   /v1/mobile/request/contract/:user_id, /v1/ambassador/:uuid/* for horizontal
+   privilege escalation between users.
+
+10. Token/Session Management: Test JWT/session token structure, expiry, refresh logic,
+    concurrent session handling.
+
+---
+
+## 14. Session Notes
+
+- Authorization: Written permission from CEO Jean Meyer
+- Scope: Full assessment of deblock.com and all subdomains
+- Second test account: Available on request for authenticated testing
+- Session limitation: Auto mode safety classifier blocked outbound curl commands
+  mid-session. Continuing active testing requires fresh session or manual permission mode.
