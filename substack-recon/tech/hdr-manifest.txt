@@ -1,0 +1,28 @@
+HTTP/1.1 200 Connection Established
+
+HTTP/2 403 
+date: Mon, 05 Oct 2026 14:14:20 GMT
+content-type: text/html; charset=utf-8
+content-length: 14
+cf-ray: a45d083719e1d667-IAD
+cf-cache-status: DYNAMIC
+cache-control: no-cache
+etag: W/"e-mMBymFV22sOozNcVZYBnKDeWzd8"
+server: cloudflare
+x-service: web
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+vary: Accept-Encoding
+x-cluster: substack
+x-deploy: 52a7d37c7f
+x-powered-by: Express
+x-served-by: Substack
+set-cookie: ab_experiment_sampled=%22false%22; Max-Age=31536000; Domain=substack.com; Path=/; Expires=Tue, 05 Oct 2027 14:14:20 GMT; HttpOnly; Secure; SameSite=Lax
+set-cookie: ab_testing_id=%225a67c9b4-da80-47fc-806b-a26ed8e8106b%22; Max-Age=31536000; Domain=substack.com; Path=/; Expires=Tue, 05 Oct 2027 14:14:20 GMT; HttpOnly; Secure; SameSite=Lax
+set-cookie: AWSALBTG=M1ryi/4f68OaCz+C0UfguEDiR3XAetBvZEbWgA8W4cj2FLDuD62fuTxHpDRAHmf9w9RwmnWVdsHrtsnwv9WxbDIP5w368u8PBpUXiVKNXycV5rk81gB4EylyyrBRTSViFnHkttrSvVKsSDd64bI1BWmIym46L156PPb/TzffuD4e; Expires=Mon, 12 Oct 2026 14:14:20 GMT; Path=/
+set-cookie: AWSALBTGCORS=M1ryi/4f68OaCz+C0UfguEDiR3XAetBvZEbWgA8W4cj2FLDuD62fuTxHpDRAHmf9w9RwmnWVdsHrtsnwv9WxbDIP5w368u8PBpUXiVKNXycV5rk81gB4EylyyrBRTSViFnHkttrSvVKsSDd64bI1BWmIym46L156PPb/TzffuD4e; Expires=Mon, 12 Oct 2026 14:14:20 GMT; Path=/; SameSite=None; Secure
+set-cookie: cookie_storage_key=bb6868ff-c8f8-4b63-8ac3-8d7f58146907; Max-Age=7776000; Domain=substack.com; Path=/; Expires=Sun, 03 Jan 2027 14:14:20 GMT; Secure; SameSite=None
+set-cookie: ajs_anonymous_id=%2287f3ca34-ad42-4ea9-bfa1-0fc1abc03a7f%22; Max-Age=31536000; Domain=substack.com; Path=/; Expires=Tue, 05 Oct 2027 14:14:20 GMT; SameSite=Strict
+set-cookie: visit_id=%7B%22id%22%3A%22aa391c07-750d-48ec-9847-fa2f8c706bbd%22%2C%22timestamp%22%3A%222026-10-05T14%3A14%3A20.040Z%22%7D; Max-Age=1800; Domain=substack.com; Path=/; Expires=Mon, 05 Oct 2026 14:44:20 GMT; HttpOnly; SameSite=Strict
+set-cookie: __cf_bm=v_i5iZLqDwh5M9bMx_zGB7dXkNjaIIDnueB2Ym6tNAM-1791209660.0192173-1.0.1.1-9J4e_g5y8ezDuRO4_uKAASIIfZg.ikDlrIw_gE.kwzAPrrWO91kW1GhC.yVej08TSm3sH9uF9BnDZOpIEMKd57TwgzpuAZCICJC3yqzog.RYKHslEEqn4ZA8EEt_IneK; HttpOnly; SameSite=None; Secure; Path=/; Domain=substack.com; Expires=Mon, 05 Oct 2026 14:44:20 GMT
+alt-svc: h3=":443"; ma=86400
+

@@ -1,0 +1,9 @@
+{"orgs_checked": {
+  "substackinc": {"exists": true, "public_repos_found": 3, "repos": [
+    {"name": "universal-constructor", "lang": "JavaScript", "desc": "AI-powered coding assistant and problem-solver", "stars": 26, "default_branch": "main"},
+    {"name": "po2json", "lang": "JavaScript", "stars": 1, "default_branch": "master"},
+    {"name": "gettext.js", "lang": "JavaScript", "desc": "GNU gettext port for node and browser", "stars": 1, "default_branch": "master"}
+  ]},
+  "substack": {"exists": false, "note": "org:substack returns validation error - name taken by user james halliday aka 'substack' (CDN package author, unrelated to the newsletter company)"},
+  "substack-inc": {"exists": false, "note": "org:substack-inc returns validation error - does not exist"}
+}, "notes": "Substack Inc appears to use the github org 'substackinc' with only 3 public repos - almost all internal code is private. universal-constructor is their internal AI coding assistant and may reference internal infrastructure."}

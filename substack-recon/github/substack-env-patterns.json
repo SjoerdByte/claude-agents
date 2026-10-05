@@ -1,0 +1,12 @@
+{"query": "SUBSTACK_ in .env files", "total_count": 198, "notable_patterns": [
+  "SUBSTACK_API_KEY (connect.sid cookie value)",
+  "SUBSTACK_HOSTNAME",
+  "SUBSTACK_PUBLICATION_URL",
+  "SUBSTACK_SID / substack.sid cookie",
+  "SUBSTACK_SESSION_TOKEN",
+  "SUBSTACK_SMTP_HOST / SUBSTACK_SMTP_USER (email-draft publishing)",
+  "SUBSTACK_PUBLISHER_URL (internal publisher endpoint)",
+  "SUBSTACK_RSS_URL (public feeds)"
+], "possible_leaks": [
+  "blamouche/Engineering-Forward/substack/substack_cookies.env - has SUBSTACK_SID and SUBSTACK_LLI JWT values that look real (deeper read recommended)"
+]}

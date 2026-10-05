@@ -1,0 +1,14 @@
+substack.com
+substackcdn.com
+substackcdn.net
+substackinc.com
+substack.cc
+substack.info
+substack-staging.com
+substack-custom-domains.com
+keep-substack.com
+substackapp.com
+substack.help
+substackmail.com
+substack.club
+substack.dev

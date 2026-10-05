@@ -1,0 +1,1 @@
+{"query": "ingest.substack.com OR events.substack.com OR cdn.substack.com", "total_count": 0, "note": "No hits - these specific subdomains are NOT referenced in any public GitHub code. Suggests Substack event ingestion endpoints are likely at bucket.substackcdn.com or substack.com itself."}

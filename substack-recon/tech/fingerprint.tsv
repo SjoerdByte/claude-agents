@@ -1,0 +1,177 @@
+host	record_type	value	inferred_provider
+admin.substack.com	A	104.18.37.200	
+admin.substack.com	A	172.64.150.56	
+admin.substack.com	AAAA	2606:4700:4404::6812:25c8	
+admin.substack.com	AAAA	2606:4700:4401::ac40:9638	
+api.substack.com	A	172.64.150.56	
+api.substack.com	A	104.18.37.200	
+api.substack.com	AAAA	2606:4700:4404::6812:25c8	
+api.substack.com	AAAA	2606:4700:4401::ac40:9638	
+app.substack.com	A	172.64.150.56	
+app.substack.com	A	104.18.37.200	
+app.substack.com	AAAA	2606:4700:4401::ac40:9638	
+app.substack.com	AAAA	2606:4700:4404::6812:25c8	
+assets.substack.com	A	104.18.37.200	
+assets.substack.com	A	172.64.150.56	
+assets.substack.com	AAAA	2606:4700:4401::ac40:9638	
+assets.substack.com	AAAA	2606:4700:4404::6812:25c8	
+blog.substack.com	A	172.64.150.56	
+blog.substack.com	A	104.18.37.200	
+blog.substack.com	AAAA	2606:4700:4404::6812:25c8	
+blog.substack.com	AAAA	2606:4700:4401::ac40:9638	
+cdn.substack.com	CNAME	d3b3sm9t19x0yd.cloudfront.net.	AWS CloudFront
+cdn.substack.com	A	13.226.238.6	
+cdn.substack.com	A	13.226.238.99	
+cdn.substack.com	A	13.226.238.53	
+cdn.substack.com	A	13.226.238.56	
+cdn.substack.com	CNAME	d3b3sm9t19x0yd.cloudfront.net.	AWS CloudFront
+cdn.substack.com	AAAA	2600:9000:201f:9400:3:e0f8:540:93a1	
+cdn.substack.com	AAAA	2600:9000:201f:7600:3:e0f8:540:93a1	
+cdn.substack.com	AAAA	2600:9000:201f:dc00:3:e0f8:540:93a1	
+cdn.substack.com	AAAA	2600:9000:201f:2000:3:e0f8:540:93a1	
+cdn.substack.com	AAAA	2600:9000:201f:400:3:e0f8:540:93a1	
+cdn.substack.com	AAAA	2600:9000:201f:8400:3:e0f8:540:93a1	
+cdn.substack.com	AAAA	2600:9000:201f:cc00:3:e0f8:540:93a1	
+cdn.substack.com	AAAA	2600:9000:201f:b000:3:e0f8:540:93a1	
+cdn.substack.com	CNAME	d3b3sm9t19x0yd.cloudfront.net.	AWS CloudFront
+cdn.substack.com	CNAME	d3b3sm9t19x0yd.cloudfront.net.	AWS CloudFront
+cdn.substack.com	CNAME	d3b3sm9t19x0yd.cloudfront.net.	AWS CloudFront
+cdn.substack.com	NS	ns-1238.awsdns-26.org.	AWS Route 53
+cdn.substack.com	NS	ns-128.awsdns-16.com.	AWS Route 53
+cdn.substack.com	NS	ns-1946.awsdns-51.co.uk.	AWS Route 53
+cdn.substack.com	NS	ns-625.awsdns-14.net.	AWS Route 53
+cdn.substack.com	CNAME	d3b3sm9t19x0yd.cloudfront.net.	AWS CloudFront
+dash.substack.com	A	104.18.37.200	
+dash.substack.com	A	172.64.150.56	
+dash.substack.com	AAAA	2606:4700:4401::ac40:9638	
+dash.substack.com	AAAA	2606:4700:4404::6812:25c8	
+e.substack.com	A	172.64.150.56	
+e.substack.com	A	104.18.37.200	
+e.substack.com	AAAA	2606:4700:4404::6812:25c8	
+e.substack.com	AAAA	2606:4700:4401::ac40:9638	
+email.substack.com	A	172.64.150.56	
+email.substack.com	A	104.18.37.200	
+email.substack.com	AAAA	2606:4700:4401::ac40:9638	
+email.substack.com	AAAA	2606:4700:4404::6812:25c8	
+events.substack.com	A	172.64.150.56	
+events.substack.com	A	104.18.37.200	
+events.substack.com	AAAA	2606:4700:4404::6812:25c8	
+events.substack.com	AAAA	2606:4700:4401::ac40:9638	
+go.substack.com	A	104.18.37.200	
+go.substack.com	A	172.64.150.56	
+go.substack.com	AAAA	2606:4700:4401::ac40:9638	
+go.substack.com	AAAA	2606:4700:4404::6812:25c8	
+help.substack.com	A	172.64.150.56	
+help.substack.com	A	104.18.37.200	
+help.substack.com	AAAA	2606:4700:4401::ac40:9638	
+help.substack.com	AAAA	2606:4700:4404::6812:25c8	
+i.substack.com	A	172.64.150.56	
+i.substack.com	A	104.18.37.200	
+i.substack.com	AAAA	2606:4700:4404::6812:25c8	
+i.substack.com	AAAA	2606:4700:4401::ac40:9638	
+images.substack.com	A	172.64.150.56	
+images.substack.com	A	104.18.37.200	
+images.substack.com	AAAA	2606:4700:4404::6812:25c8	
+images.substack.com	AAAA	2606:4700:4401::ac40:9638	
+ingest.substack.com	A	104.18.37.200	
+ingest.substack.com	A	172.64.150.56	
+ingest.substack.com	AAAA	2606:4700:4404::6812:25c8	
+ingest.substack.com	AAAA	2606:4700:4401::ac40:9638	
+l.substack.com	A	104.18.37.200	
+l.substack.com	A	172.64.150.56	
+l.substack.com	AAAA	2606:4700:4401::ac40:9638	
+l.substack.com	AAAA	2606:4700:4404::6812:25c8	
+logs.substack.com	A	172.64.150.56	
+logs.substack.com	A	104.18.37.200	
+logs.substack.com	AAAA	2606:4700:4404::6812:25c8	
+logs.substack.com	AAAA	2606:4700:4401::ac40:9638	
+m.substack.com	A	172.64.150.56	
+m.substack.com	A	104.18.37.200	
+m.substack.com	AAAA	2606:4700:4401::ac40:9638	
+m.substack.com	AAAA	2606:4700:4404::6812:25c8	
+mail.substack.com	A	172.64.150.56	
+mail.substack.com	A	104.18.37.200	
+mail.substack.com	AAAA	2606:4700:4401::ac40:9638	
+mail.substack.com	AAAA	2606:4700:4404::6812:25c8	
+media.substack.com	A	104.18.37.200	
+media.substack.com	A	172.64.150.56	
+media.substack.com	AAAA	2606:4700:4404::6812:25c8	
+media.substack.com	AAAA	2606:4700:4401::ac40:9638	
+on.substack.com	A	172.64.150.56	
+on.substack.com	A	104.18.37.200	
+on.substack.com	AAAA	2606:4700:4404::6812:25c8	
+on.substack.com	AAAA	2606:4700:4401::ac40:9638	
+on.substack.com	TXT	"loaderio=acc0e32a94a60d2be083ed4c1b08b6aa"	
+pm-bounces.substack.com	A	104.18.37.200	
+pm-bounces.substack.com	A	172.64.150.56	
+pm-bounces.substack.com	AAAA	2606:4700:4401::ac40:9638	
+pm-bounces.substack.com	AAAA	2606:4700:4404::6812:25c8	
+s3.substack.com	A	104.18.37.200	
+s3.substack.com	A	172.64.150.56	
+s3.substack.com	AAAA	2606:4700:4404::6812:25c8	
+s3.substack.com	AAAA	2606:4700:4401::ac40:9638	
+static.substack.com	A	104.18.37.200	
+static.substack.com	A	172.64.150.56	
+static.substack.com	AAAA	2606:4700:4404::6812:25c8	
+static.substack.com	AAAA	2606:4700:4401::ac40:9638	
+status.substack.com	A	172.64.150.56	
+status.substack.com	A	104.18.37.200	
+status.substack.com	AAAA	2606:4700:4404::6812:25c8	
+status.substack.com	AAAA	2606:4700:4401::ac40:9638	
+substack.com	A	172.64.150.56	
+substack.com	A	104.18.37.200	
+substack.com	AAAA	2606:4700:4404::6812:25c8	
+substack.com	AAAA	2606:4700:4401::ac40:9638	
+substack.com	MX	10 mxa.mailgun.org.	Mailgun
+substack.com	MX	10 mxb.mailgun.org.	Mailgun
+substack.com	NS	ali.ns.cloudflare.com.	Cloudflare
+substack.com	NS	lee.ns.cloudflare.com.	Cloudflare
+substack.com	TXT	"facebook-domain-verification=8vbxp2ntmkudc6is3h5r840c9fwo7f"	Facebook
+substack.com	TXT	"google-site-verification=4V_X38Yf0J4VJcWFwtG38bOS1nkOWeIWJhticlMgNQE"	Google (verification)
+substack.com	TXT	"google-site-verification=DAkdykID6WqQM6tT7IfSu9_uB7-qIdB039MA_C3T3eA"	Google (verification)
+substack.com	TXT	"google-site-verification=FfNIQIxsRHpj3Y7E_d3N6GFqGgWDZ-sfYojqCilwtqE"	Google (verification)
+substack.com	TXT	"google-site-verification=SXEl7_p4SBszcanSWwVc_3-RFky80c0-94janbeeWI4"	Google (verification)
+substack.com	TXT	"google-site-verification=vQEKLOUDfKNOQAv9W3EUMiRD6e5ibAEPhc2yCzP7big"	Google (verification)
+substack.com	TXT	"tiktok-developers-site-verification=7PgqCAJ52ILLOqf2KELd8uaRfJpuzaLQ"	
+substack.com	TXT	"tiktok-developers-site-verification=A9XRSo8lWy5CPFJ0bqI04KCpUZGAAq7p"	
+substack.com	TXT	"v=spf1 include:_spf.google.com include:mailgun.org include:mail.zendesk.com ~all"	Mailgun
+substack.net	A	198.51.233.1	
+substack.net	NS	ns3.digitalocean.com.	AWS S3
+substack.net	NS	ns2.digitalocean.com.	DigitalOcean
+substack.net	NS	ns1.digitalocean.com.	DigitalOcean
+substackcdn.com	A	3.167.99.103	
+substackcdn.com	A	3.167.99.105	
+substackcdn.com	A	3.167.99.30	
+substackcdn.com	A	3.167.99.65	
+substackcdn.com	AAAA	2600:9000:27ce:a600:4:b4b9:d3c0:93a1	
+substackcdn.com	AAAA	2600:9000:27ce:1600:4:b4b9:d3c0:93a1	
+substackcdn.com	AAAA	2600:9000:27ce:dc00:4:b4b9:d3c0:93a1	
+substackcdn.com	AAAA	2600:9000:27ce:f400:4:b4b9:d3c0:93a1	
+substackcdn.com	AAAA	2600:9000:27ce:a200:4:b4b9:d3c0:93a1	
+substackcdn.com	AAAA	2600:9000:27ce:7200:4:b4b9:d3c0:93a1	
+substackcdn.com	AAAA	2600:9000:27ce:e00:4:b4b9:d3c0:93a1	
+substackcdn.com	AAAA	2600:9000:27ce:b600:4:b4b9:d3c0:93a1	
+substackcdn.com	NS	ns-1445.awsdns-52.org.	AWS Route 53
+substackcdn.com	NS	ns-1936.awsdns-50.co.uk.	AWS Route 53
+substackcdn.com	NS	ns-946.awsdns-54.net.	AWS Route 53
+substackcdn.com	NS	ns-98.awsdns-12.com.	AWS Route 53
+substackcdn.com	TXT	"google-site-verification=tz2v--AUiNuSpVyU440dvghhnTS9kVnvhIWn69muzgs"	Google (verification)
+support.substack.com	CNAME	substack.zendesk.com.	Zendesk
+support.substack.com	A	216.198.53.11	
+support.substack.com	A	216.198.54.11	
+support.substack.com	CNAME	substack.zendesk.com.	Zendesk
+support.substack.com	CNAME	substack.zendesk.com.	Zendesk
+support.substack.com	CNAME	substack.zendesk.com.	Zendesk
+support.substack.com	MX	10 mail-pod-20.int.zendesk.com.	Zendesk
+support.substack.com	CNAME	substack.zendesk.com.	Zendesk
+support.substack.com	CNAME	substack.zendesk.com.	Zendesk
+support.substack.com	TXT	"pod=20"	
+support.substack.com	TXT	"v=spf1 include:mail.zendesk.com ~all"	Zendesk
+v.substack.com	A	104.18.37.200	
+v.substack.com	A	172.64.150.56	
+v.substack.com	AAAA	2606:4700:4401::ac40:9638	
+v.substack.com	AAAA	2606:4700:4404::6812:25c8	
+www.substack.com	A	104.18.37.200	
+www.substack.com	A	172.64.150.56	
+www.substack.com	AAAA	2606:4700:4401::ac40:9638	
+www.substack.com	AAAA	2606:4700:4404::6812:25c8	

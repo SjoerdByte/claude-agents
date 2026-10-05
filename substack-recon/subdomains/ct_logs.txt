@@ -1,0 +1,13 @@
+email.mg-d0.substack.com
+email.mg-d1.substack.com
+email.mg-pr.substack.com
+email.mg-tx1.substack.com
+email.mg1.substack.com
+email.mg2.substack.com
+email.mg3.substack.com
+pages.substack.com
+substack.com
+substack.net
+substackcdn.com
+support.substack.com
+zyncrealtime.substack.com
