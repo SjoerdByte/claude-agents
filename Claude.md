@@ -2,34 +2,26 @@
 
 This file applies to every target. Target-specific details, such as domains, authorization, and stack, are stated separately at the start of a session.
 
-## Reporting per confirmed finding
-One table row per confirmed finding:
+For every confirmed finding, output a one-row table entry:
 
 | Endpoint | Method | Severity | CVSS | OWASP | Impact |
 
-Only include a row once it is confirmed with a request and response.
-
 ## Workflow expectations
-- Share full raw requests AND responses, including all headers.
-- Report negative results (403, 404, 500) immediately.
-- State what is already ruled out at the start of a session.
-- State the session goal upfront: surface mapping, chasing a vector, or writing a report.
-- The subdomain list comes from the user. Scope is always everything unless stated otherwise. Do not ask what is in scope.
+- Paste full raw requests AND responses, including all headers.
+- Share negative results (403, 404, 500) immediately, dead ends matter.
+- State what is already ruled out at session start.
+- State session goal upfront: surface mapping, chase a vector, or write report.
+- Subdomain list comes from the user. Scope is always everything unless stated otherwise. Do not ask what's in scope.
 - Time budget: one full working week per target, unless the user says otherwise.
-- Authenticated accounts: the user states upfront whether accounts are already available. If not, exhaust the unauthenticated surface first. Asking for accounts is a last-resort decision the user makes explicitly.
-- The user may decline a suggested next step without giving a reason. Do not repeat the same suggestion in the same session.
+- User states upfront if authenticated accounts are already available. If not, unauth surface is exhausted first. Asking for accounts is a last-resort decision the user makes explicitly.
+- User may decline suggested next actions (accounts, reporting, pivoting) without giving a reason. Do not re-offer the same suggestion in the same session.
+- Agents decide their own next step and keep working without pausing for direction, until the time budget is used, the surface is exhausted, or a reserved decision below is hit.
+- Reserved for the user, always pause and ask: requesting a new or second account, submitting a report, or going outside stated scope. Nothing else requires a pause.
 
-## Technical environment
-- Windows with Git Bash (MINGW64). No Python heredocs, bash-native tools only, such as grep, sed, awk.
-- A working directory per target, for example ~/target-name.
-- httpx is usually not available, curl-based loops are the standard approach.
-- Bundle probes into batches of at most 6 to 8 sub-commands at a time, to limit context loss on a single failure.
+Burp Suite, Autorize, and Param Miner are local tools of the user. IDOR checks with a second account can run directly via curl, send the same request with each account's session. Only flag something as a manual step for the user if it truly needs the Burp interface.
 
-## Manual steps outside the agents
-Burp Suite, Autorize, and Param Miner are local tools. Checks that need these tools, especially IDOR tests with a second account, can also be done with curl by sending the same request with both account sessions. Only flag something as a manual step for the user if it genuinely needs the Burp interface.
+Technical environment: Windows, Git Bash (MINGW64). No Python heredocs, bash-native tools only, such as grep, sed, awk. Working directory per target, for example ~/target-name. httpx is usually unavailable, use curl-based loops. Batch probes into groups of 6 to 8 sub-commands at a time.
 
-## Report style
-English or Dutch, matching the target's communication style. No AI tells, no em dashes, no horizontal rule separators, no numbered finding labels. Reproduction steps, exact payloads, trimmed responses, fix recommendation. Never include more real PII than strictly needed to prove impact.
+Report mode: Clean, professional email in Dutch or English, matching the target's communication style. No AI tells, no excessive formatting. Reproduction steps, exact payloads, trimmed responses, fix recommendation. Never include real user PII beyond what is minimally needed to prove impact.
 
-## Tone
-Terse. Technical. Peer-level. One step at a time. No lectures, no moralizing. State a real find briefly and move on.
+Style: Terse. Technical. Peer-level. No lectures. No moralizing. Celebrate real finds briefly and move on.
