@@ -713,6 +713,85 @@ brand.deblock.com (from HTTP headers):
 - Platform header: hostinger
 - Panel header: hpanel
 
+### CRITICAL - Hardcoded API Bearer Token in JavaScript Bundle
+
+Found in deblock.com/_next/static/chunks/pages/_app-5b486eb62629c740.js:
+Token: 64726720888b45b06e7f8f22ac2cbb4ece5cefe6016cf31986b80ad47fece262de9bb18db4225f728816d611eb28487fddf9
+
+This token authenticates against the production API:
+- web-api.deblock.com/v1/mobile/account/:id -> HTTP 200 (returns legal documents)
+- waitlist-api.deblock.com/v1/waitlist/company/types -> HTTP 200 (company type data)
+- waitlist-api.deblock.com/v1/waitlist/company/turnovers -> HTTP 200 (turnover ranges)
+- web-api.deblock.com/v1/admin/* -> HTTP 403 (admin access denied with this token)
+
+Exposed document URLs via token:
+- https://cdn1.deblock.com/terms/fee_info/20231206-BETA-Fee_Information_Doc-ENG.pdf
+- https://cdn1.deblock.com/terms/personal-terms/FR/20260918-merged-terms-EN.docx.pdf
+- https://cdn1.deblock.com/terms/personal-terms/FR/20260904-v3_1-Techblock-EN.docx.pdf
+- https://cdn1.deblock.com/terms/privacy/FR/Privacy-Policy-2.2-EN.pdf
+- https://cdn1.deblock.com/terms/fee_info/Fees_Pages_Deblock_EN_v6.3.pdf
+- https://cdn1.deblock.com/terms/personal-terms/FR/20260302-Deblock-New-User-Identity-Declaration-v1.pdf
+
+Note: The /v1/mobile/account/:id endpoint returns the same legal document list
+regardless of the user_id parameter (tested IDs 1-1000 and UUID format).
+The data is regulatory documents, not user-specific PII.
+
+Impact: API key allows bypass of authentication on public-facing endpoints.
+If future authenticated endpoints are added, this key may grant access.
+The token should be moved to server-side configuration.
+
+### HIGH - Firebase Configuration Fully Exposed in JavaScript
+
+Complete Firebase config in deblock.com app bundle:
+- API Key: AIzaSyCLIgRdnsXP6OnH7_qQNdGEZuzdyKMCa94
+- Project ID: deblock-ltd
+- App ID: 1:248017251601:web:c4c92efb859f831a5c70b0
+- Auth Domain: deblock-ltd.firebaseapp.com
+- Storage Bucket: deblock-ltd.firebasestorage.app
+- Messaging Sender ID: 248017251601
+- Measurement ID: G-J82N0MR1FR
+
+Firebase Auth status:
+- Anonymous sign-in: ADMIN_ONLY_OPERATION (disabled)
+- Email/password sign-up: OPERATION_NOT_ALLOWED (disabled)
+- Email lookup via createAuthUri: WORKS (returns session ID)
+- Password reset via sendOobCode: SENDS TO ANY EMAIL ADDRESS
+
+The password reset endpoint sends reset emails from Google/Firebase infrastructure
+to any email address without verification. This enables:
+- Email bombing (send unlimited password reset emails to any target)
+- Phishing (legitimate Google emails sent to victims)
+- The emails come from noreply@deblock-ltd.firebaseapp.com
+
+Firebase Storage and Realtime Database: Not publicly accessible (404).
+Firestore: Not accessible (404).
+
+### HIGH - Company Waitlist API Endpoints Discovered
+
+Found in JavaScript bundle, authenticated with leaked Bearer token:
+- /v1/waitlist/company/email/resend
+- /v1/waitlist/company/email/verify
+- /v1/waitlist/company/join
+- /v1/waitlist/company/migrate
+- /v1/waitlist/company/position?token=
+- /v1/waitlist/company/turnover
+- /v1/waitlist/company/turnovers?country_code=
+- /v1/waitlist/company/types?country_code=
+
+The types endpoint returns all French company types (SARL, SAS, EURL, SA, SNC, etc.)
+The turnovers endpoint returns revenue brackets for KYB verification.
+LocalStorage key: deblock_business_waitlist_token
+
+### MEDIUM - Additional Third-Party Service Identifiers Leaked
+
+From JavaScript bundle:
+- Adjust SDK tokens: adj_t=1awgvj2r, adj_t=1hxn2n8k (mobile app tracking)
+- Trustpilot Business Unit ID: 662a88e35ba5f809f37bfc26
+- Intercom base app_id reference: 6a71f4ca27877d0fb99ab6d1
+- Deep links: dblk.me/br- (short link domain), deblock.go.link (app deep links)
+- Google Play: com.deblock.deblockapp
+- Apple App Store: id6479202981
+
 ### INFO - Sidekiq Dashboard Protected
 
 web-api.deblock.com/sidekiq:
@@ -810,26 +889,30 @@ Based on all phases of testing. Ranked by exploitability and impact.
 
 | # | Severity | Finding | CVE | CVSS | Unauth | Status |
 |---|----------|---------|-----|------|--------|--------|
-| 1 | CRITICAL | Elementor Pro 4.0.1 RCE | CVE-2026-32475 | 9.8 | YES | Vulnerable (precondition unmet) |
-| 2 | CRITICAL | Production OTP brute force | - | - | YES | Confirmed exploitable |
-| 3 | CRITICAL | Staging debug mode public | - | - | YES | Confirmed |
-| 4 | HIGH | BackWPup unauthenticated XSS | CVE-2026-65443 | 7.1 | YES | Vulnerable |
-| 5 | HIGH | BackWPup missing auth | CVE-2026-86815 | 5.5 | Partial | Vulnerable |
-| 6 | HIGH | BackWPup /addjob auth bypass | - | - | YES | Confirmed |
-| 7 | HIGH | xmlrpc.php unlimited brute force | - | - | YES | Confirmed |
-| 8 | HIGH | WordPress user/media enumeration | - | - | YES | Confirmed |
-| 9 | MEDIUM | Elementor Stored XSS | CVE-2026-6127 | 6.4 | No | Vulnerable (needs contributor) |
-| 10 | MEDIUM | Elementor info disclosure | CVE-2026-57619 | 6.5 | No | Vulnerable (needs contributor) |
-| 11 | MEDIUM | Elementor broken access control | CVE-2026-49782 | 5.4 | No | Vulnerable (needs contributor) |
-| 12 | MEDIUM | ActiveStorage direct_uploads | - | - | YES | Endpoint exists (422) |
-| 13 | MEDIUM | ActionMailbox conductor | - | - | Partial | Endpoint exists (403) |
-| 14 | MEDIUM | Ambassador signup no rate limit | - | - | YES | Confirmed |
-| 15 | MEDIUM | DMARC quarantine (not reject) | - | - | - | Confirmed |
-| 16 | LOW | Plugin versions in readme.txt | - | - | YES | Confirmed |
-| 17 | LOW | Server/hosting disclosure | - | - | YES | Confirmed |
-| 18 | LOW | Full REST API schema exposure | - | - | YES | Confirmed |
-| 19 | INFO | Sidekiq dashboard (auth-protected) | - | - | No | No bypass found |
-| 20 | INFO | api.prod.deblock.com locked (403) | - | - | No | Properly firewalled |
+| 1 | CRITICAL | Hardcoded API Bearer token in JS | - | - | YES | Confirmed exploitable |
+| 2 | CRITICAL | Elementor Pro 4.0.1 RCE | CVE-2026-32475 | 9.8 | YES | Vulnerable (precondition unmet) |
+| 3 | CRITICAL | Production OTP brute force | - | - | YES | Confirmed exploitable |
+| 4 | CRITICAL | Staging debug mode public | - | - | YES | Confirmed |
+| 5 | HIGH | Firebase config + email bombing | - | - | YES | Confirmed exploitable |
+| 6 | HIGH | BackWPup unauthenticated XSS | CVE-2026-65443 | 7.1 | YES | Vulnerable |
+| 7 | HIGH | BackWPup missing auth | CVE-2026-86815 | 5.5 | Partial | Vulnerable |
+| 8 | HIGH | BackWPup /addjob auth bypass | - | - | YES | Confirmed |
+| 9 | HIGH | xmlrpc.php unlimited brute force | - | - | YES | Confirmed |
+| 10 | HIGH | WordPress user/media enumeration | - | - | YES | Confirmed |
+| 11 | HIGH | Company waitlist API exposed | - | - | YES | Confirmed (needs token) |
+| 12 | MEDIUM | Elementor Stored XSS | CVE-2026-6127 | 6.4 | No | Vulnerable (needs contributor) |
+| 13 | MEDIUM | Elementor info disclosure | CVE-2026-57619 | 6.5 | No | Vulnerable (needs contributor) |
+| 14 | MEDIUM | Elementor broken access control | CVE-2026-49782 | 5.4 | No | Vulnerable (needs contributor) |
+| 15 | MEDIUM | ActiveStorage direct_uploads | - | - | YES | Endpoint exists (422) |
+| 16 | MEDIUM | ActionMailbox conductor | - | - | Partial | Endpoint exists (403) |
+| 17 | MEDIUM | Ambassador signup no rate limit | - | - | YES | Confirmed |
+| 18 | MEDIUM | DMARC quarantine (not reject) | - | - | - | Confirmed |
+| 19 | MEDIUM | Third-party service IDs leaked | - | - | YES | Confirmed |
+| 20 | LOW | Plugin versions in readme.txt | - | - | YES | Confirmed |
+| 21 | LOW | Server/hosting disclosure | - | - | YES | Confirmed |
+| 22 | LOW | Full REST API schema exposure | - | - | YES | Confirmed |
+| 23 | INFO | Sidekiq dashboard (auth-protected) | - | - | No | No bypass found |
+| 24 | INFO | api.prod.deblock.com locked (403) | - | - | No | Properly firewalled |
 
 ## 15. Session Notes
 
