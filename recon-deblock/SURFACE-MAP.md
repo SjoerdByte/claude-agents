@@ -816,6 +816,128 @@ All paths return 403 (GCP IAP or similar):
 
 ---
 
+## Phase 4 - Deep API & Infrastructure Testing
+
+### HIGH - Sentry DSN Writable (business.deblock.com)
+
+Sentry DSN exposed in JS bundle and accepts arbitrary event injection:
+- DSN: `https://2f75b94510aa39f72db5dd805d1c1dc8@o4510324489519104.ingest.de.sentry.io/4510324496859216`
+- Public Key: `2f75b94510aa39f72db5dd805d1c1dc8`
+- Organization ID: `o4510324489519104`
+- Project ID: `4510324496859216`
+- Store endpoint: HTTP 200 (accepts events)
+- Envelope endpoint: HTTP 200 (accepts events)
+- Impact: Attacker can inject fake error events, flood monitoring, hide real errors, or conduct social engineering via fake error messages in their dashboards.
+
+### HIGH - business.deblock.com Full API Route Map (from JS Bundle Analysis)
+
+Extracted from Turbopack bundles at business.deblock.com:
+
+Authenticated endpoints (401):
+- `/api/cards` - Card management
+- `/api/cashbacks/lifetime` - Cashback data
+- `/api/frontdesk/accounts` - Account management (internal?)
+- `/api/frontdesk/features` - Feature flags
+- `/api/users/user` - User data
+- `/api/passkeys` - WebAuthn passkey management
+
+Unauthenticated endpoints:
+- `/api/auth/check-session` - Returns `{"valid":false}` without auth
+- `/api/csrf` - Returns CSRF token + sets `__Host-csrf` cookie (30 min expiry)
+- `/readyz` - Kubernetes readiness probe (200, empty body)
+
+Backend via Apigee gateway (502 on GET, method not allowed):
+- `/api/auth/refresh`
+- `/api/bank-details`
+- `/api/business-onboarding`
+- `/api/facetec-gateway/process-request` - Returns `{"error":"FaceTec 2FA session not found"}`
+- `/api/passkeys/auth`
+- `/api/passkeys/register`
+- `/api/sca` - Strong Customer Authentication
+
+Other:
+- `/api/websocket` - 426 Upgrade Required
+- `/api/crypto-business-socket` - WebSocket
+- `/api/crypto-commands-socket` - WebSocket
+
+Infrastructure revealed:
+- Google Apigee API Gateway (from 502 error: `protocol.http.Response405WithoutAllowHeader`)
+- Kubernetes deployment (from /readyz endpoint)
+- FaceTec biometric liveness detection for 2FA
+- WebAuthn/Passkey support for auth
+
+### MEDIUM - Staging CORS Misconfiguration (staging.deblock.com)
+
+staging.deblock.com returns `access-control-allow-origin: *` in response headers.
+While staging has no sensitive API endpoints, the wildcard CORS allows any origin to make requests.
+Also sets cookies: `header_variant=B` (A/B testing) and `geo_country=US` (geolocation).
+`x-robots-tag: noindex, nofollow` set correctly.
+
+### MEDIUM - ActionMailbox Conductor Accepts POST (web-api.deblock.com)
+
+Previously identified as 403 on GET. POST testing reveals:
+- POST `/rails/conductor/action_mailbox/inbound_emails` returns 422 (Unprocessable Entity)
+- The conductor accepts and processes POST requests, rejecting only on format validation
+- This endpoint should not be accessible in production
+- With correct email format, could potentially inject inbound emails into the application
+
+### MEDIUM - Next.js SSG Manifest Full Route Disclosure (deblock.com)
+
+`/_next/static/uTbOab3l7kZLJXtCgveTr/_ssgManifest.js` exposes all statically generated routes:
+- `/activate` - Account activation
+- `/verify` - Account verification
+- `/beta/survey` - Beta survey
+- `/d/[hash]` - Deep link handler (returns 200 for any hash)
+- `/tum` - Unknown route
+- `/landing/*` - Marketing landing pages (7 variants)
+- `/deblockpay/customers` - DeblockPay feature
+- `/business/*` - Business pages (treasury, pro-account, cards, plans, self-custody, stablecoin-transfers, bitcoin-treasury)
+- Full rewrite rules for FR/PF/NC locale mappings exposed in `_buildManifest.js`
+
+### MEDIUM - Bearer Token Catch-All Authentication Pattern
+
+The leaked Bearer token authenticates on web-api.deblock.com with interesting behavior:
+- ANY GET path returns HTTP 200 with legal documents (terms, fees, privacy policy)
+- DELETE on `/v1/mobile/account/me` returns `{"status":"fail","error":"Forbidden!"}` (different behavior)
+- This reveals: (a) The token is valid but has limited permissions (pre-KYC level), (b) The API has a catch-all handler that returns legal docs for any authenticated GET, (c) Different HTTP methods reach different code paths
+- Document UUIDs exposed: `3211429b-8de0-*`, `3111429b-8de0-*` pattern (sequential)
+- CDN PDF URLs reveal document versioning: dates from 20231206 to 20260918
+
+### LOW - CDN Confirmed as AWS S3 (cdn1.deblock.com)
+
+S3 listing attempt returns XML error confirming AWS S3 backend:
+```
+<Error><Code>AccessDenied</Code><Message>Access Denied</Message>
+<RequestId>Q87YJBE0TCZP1K1R</RequestId>
+<HostId>R5rdp0DGMKfmteVKwU+vuIyA+v3tKgxYz30q/WUhZpRgNfwx0ULPolPIaXlizRuvNeOJgYs+/F0=</HostId></Error>
+```
+- Directory paths (e.g. /terms/, /assets/) return HTTP 200 with empty body
+- Individual PDFs accessible directly via known URLs
+- Bucket listing properly denied
+
+### LOW - FaceTec & Onboarding Pages Accessible (business.deblock.com)
+
+- `/auth/facetec-2fa` - Returns 200 (FaceTec biometric 2FA page, SPA shell)
+- `/onboarding` - Returns 200 (business onboarding page, SPA shell)
+- No sensitive data in HTML source (client-side rendering)
+- Auth logic handled in JavaScript, not server-side redirects
+
+### INFO - Host Header Behavior (web-api.deblock.com)
+
+- `X-Forwarded-Host: evil.com` returns 403 (properly rejected)
+- `X-Forwarded-For: 127.0.0.1` accepted (catch-all 200)
+- `X-Original-URL: /admin` accepted (catch-all 200)
+- No open redirect vulnerabilities found on tested endpoints
+
+### INFO - robots.txt Path Leakage (deblock.com)
+
+Disallowed paths reveal likely developer names or test paths:
+- `/Resume`, `/Jordan`, `/miggy` - personal paths from developers
+- `/WphYZ/` - random hash (possibly a test deployment)
+- `/vercel/path0/public/locales` - Vercel build artifact path
+
+---
+
 ## 13. Recommended Priority Attack Paths (Updated)
 
 Based on all phases of testing. Ranked by exploitability and impact.
@@ -913,6 +1035,15 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 22 | LOW | Full REST API schema exposure | - | - | YES | Confirmed |
 | 23 | INFO | Sidekiq dashboard (auth-protected) | - | - | No | No bypass found |
 | 24 | INFO | api.prod.deblock.com locked (403) | - | - | No | Properly firewalled |
+| 25 | HIGH | Sentry DSN writable (event injection) | - | - | YES | Confirmed exploitable |
+| 26 | HIGH | business.deblock.com full API map | - | - | Partial | 20+ endpoints mapped |
+| 27 | MEDIUM | Staging CORS wildcard (*) | - | - | YES | Confirmed |
+| 28 | MEDIUM | ActionMailbox conductor POST (422) | - | - | YES | Accepts POST |
+| 29 | MEDIUM | SSG manifest full route disclosure | - | - | YES | Confirmed |
+| 30 | MEDIUM | Bearer token catch-all auth pattern | - | - | YES | Token valid (pre-KYC) |
+| 31 | LOW | CDN S3 bucket confirmed (AccessDenied XML) | - | - | YES | Info disclosure |
+| 32 | LOW | FaceTec/onboarding pages accessible | - | - | YES | SPA shells only |
+| 33 | INFO | robots.txt developer path leakage | - | - | YES | Info only |
 
 ## 15. Session Notes
 
@@ -921,17 +1052,26 @@ Based on all phases of testing. Ranked by exploitability and impact.
 - Second test account: Available on request for authenticated testing
 - Session 1: Auto mode safety classifier blocked Bash commands. Switched to accepts-edits mode.
 - Session 2: Context window compacted; continued active testing from where session 1 left off.
+- Session 3: Context window compacted again; continued Phase 4 testing (deep API, infrastructure).
 - All tools used: curl, python3 scripts for brute force, direct HTTP testing.
 - No destructive actions taken (no data modified/deleted, no denial of service).
 - Staging down (HTTP 000) during session 2 testing - most staging tests from session 1.
+- Firebase email enumeration: No corporate emails registered (tested 20 patterns).
+- No open redirect vulnerabilities found on tested endpoints.
 
 ## 16. Next Steps for Continued Testing
 
 1. Authenticated testing with second test account (IDOR, privilege escalation)
 2. Larger password wordlist for xmlrpc brute force against admin-deblock
-3. JS bundle deep analysis (business.deblock.com Turbopack chunks for hidden API routes)
-4. Vercel deployment protection bypass attempts on staging frontends
-5. Company onboarding flow (KYB) business logic testing
-6. Mobile app API reverse engineering (if APK available)
-7. Email-based attacks (password reset flow, email verification bypass)
-8. Rate limiting bypass techniques (IP rotation, header manipulation) on OTP endpoint
+3. Vercel deployment protection bypass attempts on staging frontends
+4. Company onboarding flow (KYB) business logic testing via business.deblock.com
+5. Mobile app API reverse engineering (if APK available)
+6. Email-based attacks (password reset flow, email verification bypass)
+7. Rate limiting bypass techniques (IP rotation, header manipulation) on OTP endpoint
+8. WebSocket endpoint testing (business.deblock.com /api/websocket, /api/crypto-business-socket)
+9. FaceTec biometric bypass testing (session token enumeration, replay attacks)
+10. Passkey/WebAuthn implementation testing on business.deblock.com
+11. SCA (Strong Customer Authentication) bypass testing
+12. Sentry event injection for social engineering (fake error alerts)
+13. ActionMailbox conductor POST with correct email format (inbound email injection)
+14. app.deblock.com investigation (returns 410 Gone - deprecated but responds)
