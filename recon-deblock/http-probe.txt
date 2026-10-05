@@ -1,0 +1,296 @@
+=== web-app-uat-02.prod.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.366898
+   |  | 
+
+=== marqeta-sandbox.onb.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.392330
+   |  | 
+
+=== web-api-staging.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:0.921385
+  server: Heroku |  | via: 2.0 heroku-router
+
+=== web-business.dev.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.172734
+   |  | 
+
+=== api-test.prod.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.427150
+   |  | 
+
+=== auth.dev.deblock.com ===
+  HTTPS:502|redirect:|ip:127.0.0.1|time:0.920210
+   |  | via: 1.1 google
+
+=== web-app-uat-01.prod.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.115788
+   |  | 
+
+=== web-app.prod.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.371570
+   |  | 
+
+=== pm-bounces.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:8.001916
+   |  | 
+
+=== next.deblock.com ===
+  HTTPS:403|redirect:|ip:127.0.0.1|time:1.045913
+  server: cloudflare |  | 
+
+=== web-partouche.prod.deblock.com ===
+  HTTPS:502|redirect:|ip:127.0.0.1|time:0.574970
+   |  | via: 1.1 google
+
+=== deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:0.352882
+  server: Vercel |  | 
+  Redirect: location: /en/
+
+=== email.mail.deblock.com ===
+  HTTPS:404|redirect:|ip:127.0.0.1|time:0.582165
+   |  | 
+
+=== support.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.444123
+   |  | 
+
+=== o1.ptr1807.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:8.003020
+   |  | 
+
+=== vibe.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.433424
+   |  | 
+
+=== business-uat-02.deblock.com ===
+  HTTPS:503|redirect:|ip:127.0.0.1|time:6.766189
+   |  | via: 1.1 google
+
+=== app-uat-02.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:0.759242
+   |  | via: 1.1 google
+
+=== privacy.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:1.652520
+   |  | 
+  Redirect: location: https://docs.google.com/document/d/e/2PACX-1vTG-0GcT1BSbPQk-fyQxj6w1h5CpWqzXBOVhovanXkGTcDTArXe07Fav2tvlz7NN2F5i2SMy_HVIv0Y/pub
+
+=== bursted-bubbles.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:0.395969
+  server: Vercel |  | 
+
+=== status.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:0.816249
+  server: nginx |  | 
+
+=== auth.prod.deblock.com ===
+  HTTPS:404|redirect:|ip:127.0.0.1|time:0.335847
+   |  | via: 1.1 google
+
+=== season1.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:0.463545
+  server: Vercel | x-powered-by: Next.js | 
+
+=== imap.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.167901
+   |  | 
+
+=== pop.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.168341
+   |  | 
+
+=== web.prod.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.426961
+   |  | 
+
+=== smtp.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.559995
+   |  | 
+
+=== api.prod.deblock.com ===
+  HTTPS:403|redirect:|ip:127.0.0.1|time:0.889386
+   |  | via: 1.1 google
+
+=== web-business-uat-02.prod.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.102947
+   |  | 
+
+=== business-dev.deblock.com ===
+  HTTPS:606|redirect:|ip:127.0.0.1|time:0.580985
+   |  | via: 1.1 google
+
+=== ambassadors-staging.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:2.217023
+  server: Vercel |  | 
+  Redirect: location: /en
+
+=== support.prod.deblock.com ===
+  HTTPS:404|redirect:|ip:127.0.0.1|time:0.193257
+   |  | via: 1.1 google
+
+=== web-business-uat-01.prod.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.173167
+   |  | 
+
+=== support.dev.deblock.com ===
+  HTTPS:404|redirect:|ip:127.0.0.1|time:0.534435
+   |  | via: 1.1 google
+
+=== yield.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.170557
+   |  | 
+
+=== web-app.dev.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.367050
+   |  | 
+
+=== url8596.deblock.com ===
+  HTTPS:404|redirect:|ip:127.0.0.1|time:0.780146
+  server: nginx |  | via: 1.1 cd4031e4934b88564efbd54a91cf8d24.cloudfront.net (CloudFront)
+
+=== app-uat-01.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:1.262038
+   |  | via: 1.1 google
+
+=== brand.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:1.729679
+  server: LiteSpeed | x-powered-by: PHP/8.3.33 | 
+
+=== api.dev.deblock.com ===
+  HTTPS:403|redirect:|ip:127.0.0.1|time:0.583474
+   |  | via: 1.1 google
+
+=== web-app-test.dev.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.160007
+   |  | 
+
+=== transfers.dev.deblock.com ===
+  HTTPS:404|redirect:|ip:127.0.0.1|time:0.532293
+   |  | via: 1.1 google
+
+=== retool.onb.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.156796
+   |  | 
+
+=== pay.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.243946
+   |  | 
+
+=== staging.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:2.142829
+  server: Vercel |  | 
+  Redirect: location: /en/
+
+=== lyncdiscover.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.089296
+   |  | 
+
+=== cashback.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.297212
+   |  | 
+
+=== api-eval.onb.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.466014
+   |  | 
+
+=== ambassadors.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:1.217452
+  server: Vercel |  | 
+  Redirect: location: /en
+
+=== onboarding.prod.deblock.com ===
+  HTTPS:404|redirect:|ip:127.0.0.1|time:0.205458
+   |  | via: 1.1 google
+
+=== proof.prod.deblock.com ===
+  HTTPS:502|redirect:|ip:127.0.0.1|time:0.581508
+   |  | via: 1.1 google
+
+=== blue.onb.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.273342
+   |  | 
+
+=== ftp.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.367708
+   |  | 
+
+=== onboarding-testing.onb.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.345750
+   |  | 
+
+=== autodiscover.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.312673
+   |  | 
+
+=== dl.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:1.263351
+  server: Vercel |  | 
+  Redirect: location: https://deblock.com/
+
+=== web-api.deblock.com ===
+  HTTPS:404|redirect:|ip:127.0.0.1|time:0.561121
+  server: Heroku |  | via: 2.0 heroku-router
+
+=== payments.prod.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.126664
+   |  | 
+
+=== waitlist-api.deblock.com ===
+  HTTPS:404|redirect:|ip:127.0.0.1|time:0.632623
+  server: Heroku |  | via: 2.0 heroku-router
+
+=== app.deblock.com ===
+  HTTPS:410|redirect:|ip:127.0.0.1|time:0.391765
+   |  | via: 1.1 google
+
+=== business-uat-01.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:0.551698
+   |  | via: 1.1 google
+
+=== sip.deblock.com ===
+  HTTPS:000|redirect:|ip:127.0.0.1|time:0.144997
+   |  | 
+
+=== cdn1.deblock.com ===
+  HTTPS:403|redirect:|ip:127.0.0.1|time:0.971552
+  server: AmazonS3 |  | via: 1.1 c1be5ad7b2feed34f1f388f67d13e698.cloudfront.net (CloudFront)
+
+=== waitlist-staging.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:0.565002
+  server: Heroku |  | via: 2.0 heroku-router
+
+=== users.dev.deblock.com ===
+  HTTPS:404|redirect:|ip:127.0.0.1|time:0.184337
+   |  | via: 1.1 google
+
+=== www.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:0.706069
+  server: Vercel |  | 
+  Redirect: location: https://deblock.com/
+
+=== staging-bursted-bubbles.deblock.com ===
+  HTTPS:404|redirect:|ip:127.0.0.1|time:0.491111
+  server: Vercel |  | 
+
+=== staging-season1.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:1.190992
+  server: Vercel |  | 
+  Redirect: location: https://vercel.com/sso-api?url=https%3A%2F%2Fstaging-season1.deblock.com%2F&nonce=a5a258735355571dd45e0c896590c5f3784349e6c2459fe3f31d5e445526069b
+
+=== recovery.deblock.com ===
+  HTTPS:401|redirect:|ip:127.0.0.1|time:0.612451
+  server: Vercel |  | 
+
+=== app-dev.deblock.com ===
+  HTTPS:606|redirect:|ip:127.0.0.1|time:0.501299
+   |  | via: 1.1 google
+
+=== business.deblock.com ===
+  HTTPS:200|redirect:|ip:127.0.0.1|time:0.424614
+   |  | via: 1.1 google
+
+=== lk.deblock.com ===
+  HTTPS:404|redirect:|ip:127.0.0.1|time:0.375349
+  server: msys-et |  | via: 1.1 eacb5a468c39b7a6f5ea6363966ed0bc.cloudfront.net (CloudFront)
+
