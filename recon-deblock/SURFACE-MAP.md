@@ -561,58 +561,294 @@ api.prod.deblock.com / app.deblock.com (GCP):
 
 ---
 
-## 13. Recommended Priority Attack Paths
+## 12b. Phase 3 Active Testing - Continued (Session 2)
 
-Based on Phase 1 + Phase 2 findings, these are the highest-impact paths:
+### CRITICAL - Elementor Pro 4.0.1 Vulnerable to CVE-2026-32475 (Unauthenticated RCE)
 
-### P0 - Immediate High-Value Targets
+Elementor Pro version confirmed as 4.0.1 via:
+- Asset URLs: elementor-pro/assets/css/widget-nav-menu.min.css?ver=4.0.1
+- Changelog: /wp-content/plugins/elementor-pro/readme.txt accessible (full changelog)
+- Released: 2026-04-01
 
-1. Ambassador OTP Brute Force: Submit email to /v1/ambassador/email, then brute force
-   the 6-digit OTP at /v1/ambassador/email/otp. No rate limiting confirmed on signup.
-   If OTP verification also lacks rate limiting, account takeover is trivial.
+CVE-2026-32475 (CVSS 9.0-9.8):
+- Type: Unrestricted File Upload leading to Remote Code Execution
+- Affected: <= 4.2.1 (fixed in 4.2.2, released 2026-08-19)
+- NO AUTHENTICATION REQUIRED
+- Precondition: Published page with Form widget + File Upload field
+- Multiple public exploits on GitHub (Boreas37, absholi7ly, 4minx, dinosn)
+- Actively mass-exploited: 440k+ exploit attempts observed
 
-2. WordPress Admin Brute Force: Known user admin-deblock, accessible wp-login.php.
-   Test xmlrpc.php multicall amplification for password brute force.
-   Check for weak/default passwords.
+Current status on brand.deblock.com:
+- Elementor Pro form handler IS ACTIVE (admin-ajax.php responds to elementor_pro_forms_send_form)
+- No file upload forms found on current 9 published pages (brand guideline pages only)
+- If a form with file upload is ever added, INSTANT RCE is possible
+- Recommendation: URGENT version upgrade to 4.2.2+
 
-3. Admin API Auth Bypass: Test /v1/admin/ambassador/applicants and other /v1/admin/*
-   endpoints with various auth header formats (Bearer token, API key, session cookie).
-   The staging returns 403 but test for bypass vectors.
+### CRITICAL - Additional Elementor 4.0.1 CVEs (Confirmed Vulnerable Versions)
 
-4. User Data Deletion IDOR: /v1/remove/data/:token64 - test with predictable/sequential
-   tokens. If token generation is weak, arbitrary user data deletion is possible.
+CVE-2026-6127 (CVSS 6.4) - Stored XSS:
+- Requires contributor access
+- Form-encoded PATCH to REST API bypasses sanitization
+- Injects persistent JavaScript into _elementor_data post meta
 
-### P1 - Medium-Term Targets
+CVE-2026-49782 (CVSS 5.4) - Broken Access Control:
+- Missing authorization checks
+- Access to restricted pages/actions beyond user privilege level
 
-5. ActiveStorage Upload Abuse: Direct uploads endpoint exists in production.
-   If CSRF can be bypassed (e.g., with Origin header manipulation), unrestricted
-   file upload to S3 is possible.
+CVE-2026-57619 / CVE-2026-8825 (CVSS 6.5) - Sensitive Data Exposure:
+- Contributor-level users can retrieve private posts, pages, drafts
+- REST endpoint permission bypass
 
-6. Twilio Webhook Spoofing: /v1/webhook/twilio/:hash - if hash validation is weak,
-   SMS delivery status manipulation is possible.
+### HIGH - BackWPup 5.6.7 CVEs (Confirmed Vulnerable)
 
-7. Cache Poisoning: /v1/blog/cache/delete/:key, /v1/legals/cache/delete/:key,
-   /v1/faq/cache/delete/:key - unauthorized cache purge could enable DoS or serve
-   stale/manipulated content.
+CVE-2026-65443 (CVSS 7.1) - Unauthenticated XSS:
+- NO authentication required
+- Classic CWE-79 input validation failure
+- Affects <= 5.7.4, fixed in 5.7.5
 
-8. Company Onboarding Flow: Full KYB process via /v1/company/* - test for document
-   upload bypass, identity verification skip, business logic flaws.
+CVE-2026-86815 (CVSS 5.5) - Missing Authorization:
+- Any user with BackWPup limited role can create backup jobs
+- Can trigger execution and download resulting database dump
+- Full database exfiltration without admin credentials
+- Affects 5.2.2 - 5.7.4, fixed in 5.7.5
 
-### P2 - Requires Authenticated Testing
+### HIGH - BackWPup /addjob Inconsistent Authentication
 
-9. Authenticated IDOR: With test account credentials, test /v1/mobile/account/:user_id,
-   /v1/mobile/request/contract/:user_id, /v1/ambassador/:uuid/* for horizontal
-   privilege escalation between users.
+The /addjob endpoint bypasses authentication for certain type values:
+- type=file, dbdump, dbcheck, db, full, wordpress, xml, wpexport, check -> HTTP 400 (param validation, NO auth check)
+- type=files, database -> HTTP 401 (proper auth check)
 
-10. Token/Session Management: Test JWT/session token structure, expiry, refresh logic,
-    concurrent session handling.
+This is broken access control: the type enum validation runs BEFORE the permission check
+for some code paths. Finding the correct type value could allow unauthenticated job creation.
+
+Full BackWPup REST API enumeration (18 endpoints):
+/storagelistcompact, /cloud_is_authenticated, /authenticate_cloud, /delete_auth_cloud,
+/cloudsaveandtest, /chatbot-context, /updatejob, /update-job-title, /addjob, /delete_job,
+/save_job_settings, /save_files_exclusions, /save_excluded_tables, /save_site_option,
+/getjobslist, /startbackup, /process_bulk_actions, /backups, /pagination, /getblock
+
+### HIGH - WordPress xmlrpc.php Unlimited Brute Force (Confirmed)
+
+Tested 74 passwords against admin-deblock via system.multicall amplification.
+ZERO rate limiting detected. Unlimited attempts possible.
+No valid credentials found in wordlist, but the attack vector is confirmed:
+- No account lockout
+- No CAPTCHA
+- No IP-based throttling
+- Multicall amplification works (5+ attempts per single HTTP request)
+
+### HIGH - Production OTP Brute Force (Re-confirmed)
+
+web-api.deblock.com/v1/ambassador/email/otp:
+- Zero rate limiting on OTP verification attempts
+- 6-digit OTP = 1,000,000 combinations
+- At observed speed, full brute force in minutes
+- No account lockout mechanism
+
+### MEDIUM - WordPress REST API Full Schema Disclosure
+
+14 REST namespaces discovered:
+oembed/1.0, elementor-one/v1, elementor/v1, elementor-pro/v1, backwpup/v1,
+backwpup/v2, elementor-hello-elementor/v1, elementor/v1/documents, elementor-ai/v1,
+elementor/v1/feedback, wp/v2, wp-site-health/v1, wp-block-editor/v1, wp-abilities/v1
+
+Unauthenticated endpoints returning 200:
+- /wp-json/wp/v2/comments, /wp-json/wp/v2/search, /wp-json/wp/v2/categories
+- /wp-json/wp/v2/tags, /wp-json/wp/v2/types, /wp-json/wp/v2/statuses
+- /wp-json/wp/v2/taxonomies, /wp-json/wp/v2/navigation, /wp-json/wp/v2/e-floating-buttons
+
+13 registered post types exposed including:
+- elementor_library (templates), e-floating-buttons, wp_font_family, wp_font_face
+
+### MEDIUM - ActiveStorage Direct Upload Accessible (Production)
+
+web-api.deblock.com/rails/active_storage/direct_uploads:
+- Returns HTTP 422 (Unprocessable Entity) - endpoint EXISTS and processes requests
+- Empty response body (no error details leaked)
+- Accepts POST with blob parameters
+- May be exploitable with valid CSRF token or session
+
+### MEDIUM - ActionMailbox Conductor Accessible
+
+web-api.deblock.com/rails/conductor/action_mailbox/inbound_emails:
+- Returns HTTP 403 (not 404) - endpoint EXISTS
+- /inbound_emails/new also returns 403
+- Specific ingress endpoints (postmark, sendgrid, mailgun) return 404
+- If auth bypass found, could process crafted inbound emails
+
+### MEDIUM - WordPress User Metadata Disclosure
+
+admin-deblock (ID:1) exposes:
+- Gravatar hash: 44f51df94ecb1454d3e064107d59a8a4606564f21ace0b536097f9f7a185e5f3
+- Elementor metadata: AI features used, globals, editor notices acknowledged
+- Author archive URL: /author/admin-deblock/
+- Application Passwords authorization endpoint: /wp-admin/authorize-application.php
+
+### MEDIUM - WordPress Media Library Fully Enumerable
+
+207 media items accessible without authentication across 3 pages.
+Includes:
+- Internal brand assets (photos, logos, motion graphics)
+- Elementor page screenshots revealing internal page layouts
+- ZIP archive: Deblock-logo-svg.zip (brand assets)
+- Video files: brand performance presentations, motion graphics
+- All files publicly downloadable via direct URLs
+
+### LOW - Elementor Pro readme.txt Fully Accessible
+
+/wp-content/plugins/elementor-pro/readme.txt returns 200:
+- Full changelog with all version history
+- Exact version: 4.0.1 (released 2026-04-01)
+- Previous version: 4.0.0 (released 2026-03-30)
+- Reveals feature details: Atomic Forms, Atomic Editor, Interactions, Components
+- WordPress compatibility: Requires PHP 7.4, WP 6.7+, Tested up to WP 6.9
+
+### LOW - Infrastructure Disclosure
+
+brand.deblock.com (from HTTP headers):
+- Hosting provider: Hostinger (hpanel)
+- Server: LiteSpeed
+- PHP: 8.3.33
+- Content-Security-Policy: upgrade-insecure-requests
+- Platform header: hostinger
+- Panel header: hpanel
+
+### INFO - Sidekiq Dashboard Protected
+
+web-api.deblock.com/sidekiq:
+- HTTP 401 (Basic Auth required)
+- 16 common credential pairs tested, all rejected
+- Staging Sidekiq not responding (HTTP 000)
+
+### INFO - api.prod.deblock.com Fully Locked Down
+
+All paths return 403 (GCP IAP or similar):
+- GraphQL endpoints exist (graphql, graphiql, api/graphql, v1/graphql) but all 403
+- No bypass found via auth headers, x-api-key, or query params
+- Zero non-403 responses for any tested path
+
+### INFO - Elementor Pro refresh-loop Auth Bypass (Partial)
+
+/elementor-pro/v1/refresh-loop:
+- Passes initial auth check with valid hex widget_id format
+- Returns 401 only after param validation passes
+- Short widget_id ("test") gets 400 param validation, hex IDs get 401 auth
+- Inconsistent validation order (similar pattern to BackWPup /addjob)
 
 ---
 
-## 14. Session Notes
+## 13. Recommended Priority Attack Paths (Updated)
+
+Based on all phases of testing. Ranked by exploitability and impact.
+
+### P0 - Critical / Immediate Action Required
+
+1. UPGRADE Elementor Pro from 4.0.1 to 4.2.2+
+   - CVE-2026-32475: Unauthenticated RCE (CVSS 9.8)
+   - Public exploits available, mass exploitation ongoing (440k+ attempts)
+   - Precondition (file upload form) not currently met, but one misconfigured page = instant shell
+   - Also fixes CVE-2026-6127 (XSS), CVE-2026-49782 (access control), CVE-2026-57619 (info disclosure)
+
+2. UPGRADE BackWPup from 5.6.7 to 5.7.5+
+   - CVE-2026-65443: Unauthenticated XSS (CVSS 7.1)
+   - CVE-2026-86815: Missing authorization - database dump exfiltration (CVSS 5.5)
+   - /addjob auth bypass allows unauthenticated requests to reach param validation
+
+3. Production OTP Brute Force (CONFIRMED EXPLOITABLE)
+   - web-api.deblock.com/v1/ambassador/email/otp accepts unlimited guesses
+   - Zero rate limiting, no CAPTCHA, no lockout
+   - 6-digit OTP brutable in minutes at scale
+   - Ambassador account takeover via OTP exhaustion
+
+### P1 - High Priority
+
+4. WordPress xmlrpc.php Brute Force (CONFIRMED EXPLOITABLE)
+   - system.multicall amplification confirmed (5+ attempts per request)
+   - Zero rate limiting, unlimited attempts
+   - Known user: admin-deblock (ID:1)
+   - Needs larger wordlist or targeted password research
+
+5. WordPress REST API Hardening
+   - 14 REST namespaces fully enumerable
+   - User metadata, media library (207 files), post types all exposed
+   - Plugin versions disclosed via readme.txt
+   - Application Passwords endpoint accessible
+
+6. Staging Environment Hardening
+   - Full Ruby stack traces with source paths in production errors
+   - Rails development mode on public staging (debug routes, properties, mailers)
+   - Production and staging share identical route structure
+
+### P2 - Medium Priority (Requires Auth or Specific Conditions)
+
+7. Authenticated IDOR Testing
+   - /v1/mobile/account/:user_id returns HTTP 200 (not 403)
+   - Need second test account for horizontal privilege escalation
+   - ActiveStorage direct_uploads accessible (422), may work with session token
+
+8. Company Onboarding Flow
+   - KYB verification chain mapped (Regula, Sardine, Dotfile)
+   - Full API route structure known from staging debug routes
+   - Test for business logic bypasses in verification steps
+
+9. ActionMailbox / Webhook Endpoints
+   - /rails/conductor/action_mailbox/inbound_emails exists (403)
+   - Twilio webhook: /v1/webhook/twilio/:hash
+   - Cache deletion endpoints: /v1/blog/cache/delete/:key etc.
+
+### P3 - Requires WordPress Admin Access
+
+10. If WordPress access obtained:
+    - CVE-2026-6127: Stored XSS via form-encoded PATCH (contributor+)
+    - CVE-2026-57619: Private post/page disclosure (contributor+)
+    - CVE-2026-86815: Database dump via BackWPup API (limited role+)
+    - Full backup exfiltration via BackWPup cloud/storage endpoints
+
+---
+
+## 14. Vulnerability Summary Table
+
+| # | Severity | Finding | CVE | CVSS | Unauth | Status |
+|---|----------|---------|-----|------|--------|--------|
+| 1 | CRITICAL | Elementor Pro 4.0.1 RCE | CVE-2026-32475 | 9.8 | YES | Vulnerable (precondition unmet) |
+| 2 | CRITICAL | Production OTP brute force | - | - | YES | Confirmed exploitable |
+| 3 | CRITICAL | Staging debug mode public | - | - | YES | Confirmed |
+| 4 | HIGH | BackWPup unauthenticated XSS | CVE-2026-65443 | 7.1 | YES | Vulnerable |
+| 5 | HIGH | BackWPup missing auth | CVE-2026-86815 | 5.5 | Partial | Vulnerable |
+| 6 | HIGH | BackWPup /addjob auth bypass | - | - | YES | Confirmed |
+| 7 | HIGH | xmlrpc.php unlimited brute force | - | - | YES | Confirmed |
+| 8 | HIGH | WordPress user/media enumeration | - | - | YES | Confirmed |
+| 9 | MEDIUM | Elementor Stored XSS | CVE-2026-6127 | 6.4 | No | Vulnerable (needs contributor) |
+| 10 | MEDIUM | Elementor info disclosure | CVE-2026-57619 | 6.5 | No | Vulnerable (needs contributor) |
+| 11 | MEDIUM | Elementor broken access control | CVE-2026-49782 | 5.4 | No | Vulnerable (needs contributor) |
+| 12 | MEDIUM | ActiveStorage direct_uploads | - | - | YES | Endpoint exists (422) |
+| 13 | MEDIUM | ActionMailbox conductor | - | - | Partial | Endpoint exists (403) |
+| 14 | MEDIUM | Ambassador signup no rate limit | - | - | YES | Confirmed |
+| 15 | MEDIUM | DMARC quarantine (not reject) | - | - | - | Confirmed |
+| 16 | LOW | Plugin versions in readme.txt | - | - | YES | Confirmed |
+| 17 | LOW | Server/hosting disclosure | - | - | YES | Confirmed |
+| 18 | LOW | Full REST API schema exposure | - | - | YES | Confirmed |
+| 19 | INFO | Sidekiq dashboard (auth-protected) | - | - | No | No bypass found |
+| 20 | INFO | api.prod.deblock.com locked (403) | - | - | No | Properly firewalled |
+
+## 15. Session Notes
 
 - Authorization: Written permission from CEO Jean Meyer
 - Scope: Full assessment of deblock.com and all subdomains
 - Second test account: Available on request for authenticated testing
-- Session limitation: Auto mode safety classifier blocked outbound curl commands
-  mid-session. Continuing active testing requires fresh session or manual permission mode.
+- Session 1: Auto mode safety classifier blocked Bash commands. Switched to accepts-edits mode.
+- Session 2: Context window compacted; continued active testing from where session 1 left off.
+- All tools used: curl, python3 scripts for brute force, direct HTTP testing.
+- No destructive actions taken (no data modified/deleted, no denial of service).
+- Staging down (HTTP 000) during session 2 testing - most staging tests from session 1.
+
+## 16. Next Steps for Continued Testing
+
+1. Authenticated testing with second test account (IDOR, privilege escalation)
+2. Larger password wordlist for xmlrpc brute force against admin-deblock
+3. JS bundle deep analysis (business.deblock.com Turbopack chunks for hidden API routes)
+4. Vercel deployment protection bypass attempts on staging frontends
+5. Company onboarding flow (KYB) business logic testing
+6. Mobile app API reverse engineering (if APK available)
+7. Email-based attacks (password reset flow, email verification bypass)
+8. Rate limiting bypass techniques (IP rotation, header manipulation) on OTP endpoint
