@@ -1375,6 +1375,97 @@ Elementor Pro routes: `/elementor-pro/v1/get-post-type-taxonomies`, `/elementor-
 - `/api/health` - Health check (200 OK)
 - `/api/csp-violation` - CSP report sink (204)
 
+### 12d. Full Staging Route Map (Extracted from rails/info/routes)
+
+Routes discovered in Phase 7 (not already listed above):
+- `/v1/acquiring/demo` - Acquiring demo (404 prod)
+- `/v1/acquiring/store` - Acquiring store (404 prod)
+- `/v1/acquiring/wallets` - Acquiring wallets (403 prod)
+- `/v1/admin/ambassador/exist` - Admin ambassador exist check
+- `/v1/admin/ambassador/generate/invoices` - Invoice generation
+- `/v1/admin/ambassador/ledger` - Ambassador ledger
+- `/v1/admin/ambassador/mark/as/paid` - Mark payment
+- `/v1/admin/ambassador/ranking/csv` - Rankings export
+- `/v1/admin/ambassador/revshare/csv` - Revenue share export
+- `/v1/admin/ambassador/referral` - Admin referral management
+- `/v1/admin/ambassador/token` - Token management
+- `/v1/admin/ambassador/upgrade/approve` - Upgrade approval
+- `/v1/admin/ambassador/validate` - Admin validation
+- `/v1/ambassador/:uuid/address` - Ambassador address
+- `/v1/ambassador/:uuid/check` - Ambassador check
+- `/v1/ambassador/:uuid/check/email` - Email check
+- `/v1/ambassador/:uuid/claim` - Claim rewards
+- `/v1/ambassador/:uuid/payments` - Payment history
+- `/v1/ambassador/:uuid/refresh` - Refresh data
+- `/v1/ambassador/:uuid/request` - Request payout
+- `/v1/ambassador/:uuid/revenues` - Revenue data
+- `/v1/ambassador/:uuid/revenues/all` - All revenues
+- `/v1/ambassador/:uuid/search` - Search
+- `/v1/ambassador/:uuid/socials` - Social links
+- `/v1/ambassador/:uuid/tracking` - Tracking data
+- `/v1/bb/:id` - Bursted Bubbles by ID (403 prod)
+- `/v1/bb/beta` - BB beta info disclosure (reveals valid ID range 1-1000)
+- `/v1/beta/check/:token` - Beta token validation
+- `/v1/blog/cache/delete/:key` - Blog cache deletion (200 on GET)
+- `/v1/candles/:id/:currency/:period_in_days` - Price candles (403 prod)
+- `/v1/chart/:id/:currency/:period_in_days` - Price charts
+- `/v1/check/ambassador` - Ambassador certification oracle (406)
+- `/v1/coin/:symbol/:locale` - Coin info (403 prod)
+- `/v1/coins/list-amf/:currency` - AMF-approved coins
+- `/v1/coins/list/:currency/:page` - Coin listing (403 prod)
+- `/v1/collection/:address` - NFT collection (403 prod)
+- `/v1/company/countries` - Supported countries (200, 41 EEA countries)
+- `/v1/company/email` - Set email (200, email_verified stays false)
+- `/v1/company/email/otp` - Email OTP verify (200, rate limited per UUID)
+- `/v1/company/phone` - Set phone (200, PHONE_VERIFIED AUTO-TRUE BUG)
+- `/v1/company/phone/otp` - Phone OTP (404 on production, MISSING)
+- `/v1/company/surveys` - Survey options (200 with UUID)
+- `/v1/company/turnovers` - Turnover ranges (200 with UUID)
+- `/v1/company/types` - Company types (200 with UUID)
+- `/v1/download/link` - Download link (403 prod)
+- `/v1/faq/cache/delete/:key` - FAQ cache delete
+- `/v1/faq/page` - FAQ page data
+- `/v1/feature/show_sheet` - Feature sheet (403 prod)
+- `/v1/home/cache/delete/:key` - Home cache delete
+- `/v1/home/competition` - Competition data (403 prod)
+- `/v1/legals/cache/delete/:key` - Legals cache delete
+- `/v1/legals/history` - Legals version history (403 prod)
+- `/v1/legals/list` - Legals listing (403 prod)
+- `/v1/legals/page` - Legals page data
+- `/v1/meta/bb/:id` - NFT metadata (200, full traits, 1-1000)
+- `/v1/mobile/:locale/:country` - Mobile terms (200)
+- `/v1/mobile/account/:user_id` - Account documents (200, ANY user_id)
+- `/v1/mobile/offer` - Mobile offer (403)
+- `/v1/mobile/request/contract/:user_id` - Contract request (404 prod)
+- `/v1/mobile/sheet/btcrf/:locale` - BTC reference sheet (403)
+- `/v1/mobile/widgets/:platform/:locale` - Mobile widgets (403)
+- `/v1/remove/data/:token64` - GDPR data removal (403 prod)
+- `/v1/sitemap/blog/:locale` - Blog sitemap (200, slug list)
+- `/v1/survey/beta` - Beta survey (403 prod)
+- `/v1/update/android/:token` - Android update (200 empty)
+- `/v1/update/ios/:token` - iOS update (200 empty)
+- `/v1/upload/anthony/:token` - File upload (200 status:ok, NO AUTH)
+- `/v1/waitlist/company/email/resend` - Waitlist email resend
+- `/v1/waitlist/company/email/verify` - Waitlist email verify
+- `/v1/waitlist/company/join` - Waitlist join (403 prod)
+- `/v1/waitlist/company/migrate` - Waitlist migrate
+- `/v1/waitlist/company/position` - Waitlist position
+- `/v1/waitlist/company/turnover` - Waitlist turnover
+- `/v1/waitlist/company/turnovers` - Waitlist turnover options
+- `/v1/waitlist/company/types` - Waitlist company types
+- `/v1/waitlist/email` - Waitlist email (403 prod)
+- `/v1/waitlist/email/verify` - Waitlist email verify
+- `/v1/waitlist/phone` - Waitlist phone
+- `/v1/waitlist/phone/verify` - Waitlist phone verify
+- `/v1/waitlist/status` - Waitlist status (403 prod)
+- `/v1/web/widgets/:locale` - Web widgets (403)
+- `/v1/webhook/twilio/:hash` - Twilio webhook (410 Gone)
+
+Rails internal endpoints (staging only):
+- `/rails/mailers/user_notifier_mailer` - Mailer preview interface (200)
+- `/rails/conductor/action_mailbox/inbound_emails` - 500 with PG error
+- `/sidekiq` - Job dashboard (401 Basic Auth)
+
 ---
 
 ## 13. Recommended Priority Attack Paths (Updated)
@@ -1453,6 +1544,15 @@ Based on all phases of testing. Ranked by exploitability and impact.
    - Returns HTTP 500 on non-JSON Content-Types (x-www-form-urlencoded, text/plain, multipart, XML)
    - Server crash on malformed input = potential DoS vector
    - Also: endpoint reaches backend without authentication (returns "Email is required")
+
+### P1b - Email OTP Rate Limit Bypass via UUID Rotation
+
+8b. Company Email OTP Brute Force (CONFIRMED)
+   - Rate limiting is per-UUID: 5 attempts then 1-hour lockout
+   - Creating new UUIDs resets the counter for the same email
+   - Each new UUID gets 5 fresh OTP attempts
+   - Combined with phone auto-verify bypass: full KYB onboarding bypass chain
+   - 200 UUIDs = 1000 OTP attempts; 200,000 UUIDs = full 6-digit coverage
 
 ### P2 - Medium Priority (Requires Auth or Specific Conditions)
 
@@ -1550,8 +1650,22 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 63 | INFO | WebSocket endpoints exist (websocket, crypto-commands) | - | - | YES | 426 Upgrade Required |
 | 64 | INFO | BackWPup addjob param validation before auth | - | - | YES | Type enum leak |
 | 65 | INFO | 14 REST API namespaces enumerated | - | - | YES | Full route map |
+| 66 | HIGH | Company email OTP rate limit bypass via UUID rotation | - | - | YES | 5 attempts per UUID, unlimited UUIDs |
+| 67 | HIGH | /v1/upload/anthony/:token accepts file uploads no auth | - | - | YES | Returns status:ok |
+| 68 | MEDIUM | Staging rails/mailers preview interface exposed | - | - | YES | UserNotifierMailerPreview class |
+| 69 | MEDIUM | Staging rails/conductor triggers PostgreSQL errors | - | - | YES | Table names leaked |
+| 70 | MEDIUM | /v1/mobile/account/:user_id returns data for any ID | - | - | YES | Terms docs + CDN paths |
+| 71 | MEDIUM | Full company onboarding flow unauthenticated (expanded) | - | - | YES | 90+ routes mapped from staging |
+| 72 | MEDIUM | Company survey/type/turnover enums exposed | - | - | YES | Business logic disclosure |
+| 73 | LOW | /v1/meta/bb/:id returns full NFT metadata (1-1000) | - | - | YES | Attributes + CDN URLs |
+| 74 | LOW | /v1/sitemap/blog/:locale returns blog slugs | - | - | YES | Content enumeration |
+| 75 | LOW | /v1/update/ios/:token and android/:token return 200 | - | - | YES | Unclear purpose |
+| 76 | LOW | Ambassador certification oracle (/v1/check/ambassador) | - | - | YES | 406 response |
+| 77 | INFO | Staging Sidekiq dashboard exists (HTTP 401) | - | - | No | Basic auth protected |
+| 78 | INFO | CDN S3 root returns 403 XML (bucket confirmed) | - | - | YES | AWS error format |
+| 79 | INFO | Staging CORS: no ACAO headers for any origin | - | - | YES | Properly configured |
 
-Total: 65 findings (8 critical, 16 high, 17 medium, 11 low, 13 info)
+Total: 79 findings (8 critical, 18 high, 22 medium, 15 low, 16 info)
 
 ## 15. Session Notes
 
@@ -1571,6 +1685,7 @@ Total: 65 findings (8 critical, 16 high, 17 medium, 11 low, 13 info)
 - ActionMailbox ingress endpoints return 404 on production with proper email format (all providers tested).
 - Ambassador auto-signup sends OTP on staging (confirmed email delivery).
 - Session 5: UAT environment deep dive (app-uat-01, business-uat-01). Sentry event injection confirmed on both DSNs. XMLRPC multicall confirmed at 20+ attempts per request. WordPress deep enumeration. JS bundle API route extraction (14 routes from 85 chunks). WebSocket endpoints confirmed. Multiple app-uat-01 API endpoints reach backend without user auth.
+- Session 6: Production API deep dive (Phase 7). Company onboarding phone verification bypass confirmed with clean session (phone_verified auto-set to true, /v1/company/phone/otp returns 404 on production). OTP rate limit bypass via UUID rotation confirmed (5 attempts per UUID, unlimited new UUIDs per email). /v1/upload/anthony/:token accepts arbitrary file uploads without auth on production and staging. /v1/mobile/account/:user_id returns terms documents for any user_id without auth. Full staging route map extracted (90+ routes). Staging mailer preview interface exposed (UserNotifierMailerPreview). Staging rails/conductor triggers PostgreSQL errors leaking table names. NFT metadata fully enumerable (/v1/meta/bb/1-1000). Company survey/type/turnover reference data exposed. Ambassador certification oracle confirmed. Blog cache delete endpoint accessible via GET. GCS buckets properly locked. CORS on staging properly configured (no ACAO).
 
 ## 16. Next Steps for Continued Testing
 
