@@ -1188,6 +1188,195 @@ Staging UUIDs properly scoped (rejected on production).
 
 ---
 
+## Phase 6 - UAT Environment Deep Dive & WordPress Exploitation (Session 5)
+
+### HIGH - Sentry Event Injection (BOTH DSNs)
+
+Both Sentry DSN keys accept arbitrary event injection from any source:
+
+Business app DSN:
+- Key: `2f75b94510aa39f72db5dd805d1c1dc8`
+- Endpoint: `https://o4510324489519104.ingest.de.sentry.io/api/4510324496859216/store/`
+- HTTP 200 with event ID returned
+
+Personal app DSN:
+- Key: `95a2f173ce955f9d1ff52358da173ece`
+- Endpoint: `https://o4510324489519104.ingest.de.sentry.io/api/0/store/`
+- HTTP 200 with event ID returned
+
+Confirmed impact:
+- Arbitrary error events injected into Sentry dashboard
+- Fake stack traces with internal URL references accepted
+- Fake user PII (email addresses) accepted in event payloads
+- Fake environment/release tags accepted
+- Can be used for alert fatigue, analytics poisoning, developer social engineering
+- Both DSN keys leaked in HTML meta tags on every page load
+
+### HIGH - XMLRPC Multicall Brute Force Amplification (Confirmed at Scale)
+
+Expanded from earlier finding. WordPress xmlrpc.php `system.multicall`:
+- 20 password attempts confirmed in single HTTP request (all processed individually)
+- No per-attempt rate limiting within multicall
+- No request-level rate limiting observed
+- Known user: `admin-deblock` (ID: 1, sole WP admin)
+- Gravatar hash: `44f51df94ecb1454d3e064107d59a8a4606564f21ace0b536097f9f7a185e5f3`
+- Error message confirms valid username: "Identifiant ou mot de passe incorrect" (French)
+- Attacker can test 100-500 passwords per HTTP request, thousands per minute
+
+### HIGH - app-uat-01.deblock.com API Endpoints Reach Backend Without Auth
+
+Multiple Next.js API routes on app-uat-01 reach the Apigee/Rails backend:
+
+Endpoints returning `{"error":"User is not authenticated","status":400}` (note: 400 not 401):
+- `POST /api/promo-codes/use-code` - Promo code redemption
+- `POST /api/frontdesk/transactions/acknowledgements` - Transaction acknowledgement
+- `GET /api/referrals/current` - Referral data
+- `GET /api/promo-codes/claimability` - Promo code validation
+- `GET /api/perks/insurance` - Insurance perks
+
+Endpoints returning `{"error":"User is not authenticated","status":401}`:
+- `GET /api/features` or `POST /api/features` - Feature flags
+
+Previously confirmed (from session 4):
+- `POST /api/facetec/session-token` - FaceTec biometric session ("Device key identifier is required")
+- `POST /api/bank-details` - Bank details submission ("Missing idempotency key")
+
+The inconsistent 400 vs 401 status codes suggest different auth middleware paths. The 400 endpoints may process input before checking authentication.
+
+### HIGH - app-uat-01 Build ID Leak
+
+`GET /api/health` on app-uat-01.deblock.com returns `{"status":"ok"}` and leaks:
+- Sentry release: `e95b8cf` (git commit hash)
+- Sentry environment: `production` (on a UAT host)
+- Full CSP header with all infrastructure details on every response
+
+### MEDIUM - UAT Environment Sentry Misconfiguration
+
+Both app-uat-01 and business-uat-01 report `sentry-environment=production` in the baggage header. This means UAT errors pollute production error tracking, making it harder to identify real production issues.
+
+### MEDIUM - business-uat-01 Exposes CSP Nonce in Response Header
+
+business-uat-01.deblock.com returns the CSP nonce value in `x-nonce` response header. If an attacker can read response headers (e.g., via XSS or network MITM), they can inject scripts using the leaked nonce.
+
+### MEDIUM - business-uat-01 Uses Different KYC Provider
+
+business-uat-01 CSP references `sdk.sumsub.com` while production uses Regula Forensics + Dotfile. This may indicate a KYC provider migration in progress, with potential for provider-specific bypass techniques.
+
+### MEDIUM - GCS Bucket Names Leaked in CSP
+
+Three Google Cloud Storage buckets leaked in CSP img-src:
+- `deblock-dev-crypto-currencies-v2` (dev bucket)
+- `deblock-production-crypto-currencies-v2` (production bucket)
+- `deblock-production-crypto-nfts-v2` (production NFT bucket)
+
+Listing confirmed denied (403), but bucket names enable targeted access testing.
+
+### MEDIUM - recovery.deblock.com Solana Recovery Infrastructure
+
+recovery.deblock.com serves a Solana wallet recovery tool:
+- Protected by HTTP Basic Auth (401 on all requests)
+- CSP reveals Solana RPC endpoints: `api.mainnet-beta.solana.com`, `rpc.helius.xyz`
+- Common credentials tested, all failed
+- If Basic Auth is breached, direct access to Solana wallet recovery functions
+
+### MEDIUM - Rate Limiting Weak on Ambassador Signup
+
+`POST /v1/ambassador/signup` on business.deblock.com:
+- 9 out of 10 rapid requests succeed (HTTP 200)
+- 10th request returns 503 after ~6 seconds (rate limit kicked in)
+- Rate limit threshold is too high for an OTP-sending endpoint
+- Enables significant email OTP flooding before throttling
+
+### MEDIUM - CSP Violation Endpoint Accepts Arbitrary Reports
+
+`POST /api/csp-violation` on app-uat-01.deblock.com:
+- Returns 204 for any JSON payload
+- Accepts arbitrary CSP violation reports
+- Could be used to pollute CSP monitoring data
+- No validation of report content
+
+### LOW - WordPress Admin AJAX Heartbeat Leaks Server Time
+
+`POST /wp-admin/admin-ajax.php` with `action=heartbeat`:
+- Returns `{"wp-auth-check":false,"server_time":1791231343}`
+- Accessible without authentication
+- Leaks exact server Unix timestamp
+
+### LOW - WordPress Sensitive Files Accessible
+
+On brand.deblock.com:
+- `readme.html` - WordPress installation readme (200)
+- `license.txt` - WordPress license file (200)
+- `wp-includes/version.php` - Returns 200 (PHP executes, 0 bytes)
+- `wp-cron.php` - WordPress cron handler accessible (200)
+- `wp-login.php` - Login page accessible (200, reveals WP 7.1.2)
+- `wp-content/plugins/` - Directory returns 200 (listing disabled)
+- `wp-content/themes/` - Directory returns 200 (listing disabled)
+- `sitemap.xml` - 301 redirect (exists)
+- `robots.txt` - Accessible (200)
+
+### LOW - Wallet Provider Data Leak
+
+`GET /v1/acquiring/wallets` with bearer token returns 18 crypto wallet provider names and support email addresses (full provider ecosystem disclosed).
+
+### INFO - WebSocket Endpoints Exist
+
+app-uat-01.deblock.com:
+- `/api/websocket` - Returns 426 Upgrade Required (WebSocket endpoint exists)
+- `/api/crypto-commands-socket` - Returns 426 Upgrade Required (crypto commands socket exists)
+- Both return full CSP header on error responses
+- Connection attempts with wscat close silently (likely require auth)
+
+### INFO - BackWPup addjob Parameter Validation Before Auth
+
+`POST /wp-json/backwpup/v1/addjob`:
+- Without `type` param: returns 400 "Missing parameter: type" (no auth check)
+- With invalid type: returns 400 "Invalid parameter: type" (no auth check)
+- With valid type "database": returns 401 (auth check happens)
+- Leaks valid job type values through differential responses
+
+### INFO - WordPress REST API Namespace Inventory
+
+14 REST API namespaces enumerated on brand.deblock.com:
+- `oembed/1.0`, `wp/v2`, `wp-site-health/v1`, `wp-block-editor/v1`, `wp-abilities/v1`
+- `elementor-one/v1`, `elementor/v1`, `elementor-pro/v1`, `elementor/v1/documents`, `elementor/v1/feedback`
+- `elementor-ai/v1`, `elementor-hello-elementor/v1`
+- `backwpup/v1`, `backwpup/v2`
+- `batch/v1`
+
+BackWPup v1 routes (all enumerated):
+- `/backwpup/v1/startbackup`, `/backwpup/v1/getjobslist`, `/backwpup/v1/backups`
+- `/backwpup/v1/addjob`, `/backwpup/v1/updatejob`, `/backwpup/v1/delete_job`
+- `/backwpup/v1/save_job_settings`, `/backwpup/v1/save_excluded_tables`
+- `/backwpup/v1/save_files_exclusions`, `/backwpup/v1/save_site_option`
+- `/backwpup/v1/authenticate_cloud`, `/backwpup/v1/delete_auth_cloud`
+- `/backwpup/v1/cloud_is_authenticated`, `/backwpup/v1/cloudsaveandtest`
+- `/backwpup/v1/storagelistcompact`, `/backwpup/v1/chatbot-context`
+- `/backwpup/v1/getblock`, `/backwpup/v1/pagination`
+- `/backwpup/v1/process_bulk_actions`, `/backwpup/v1/update-job-title`
+
+Elementor Pro routes: `/elementor-pro/v1/get-post-type-taxonomies`, `/elementor-pro/v1/license/get-license-status`, `/elementor-pro/v1/license/tier-features`, `/elementor-pro/v1/posts-widget`, `/elementor-pro/v1/refresh-loop`, `/elementor-pro/v1/refresh-search`
+
+### INFO - JS Bundle API Route Inventory (app-uat-01)
+
+14 new API routes extracted from 85 JS chunks on app-uat-01:
+- `/api/auth/login` - Login (Next.js 404)
+- `/api/auth/login-2fa` - 2FA login (Next.js 404)
+- `/api/features` - Feature flags (401 auth required)
+- `/api/promo-codes/use-code` - Redeem promo code (400 auth required)
+- `/api/promo-codes/claimability` - Check promo code (400 auth required)
+- `/api/referrals/current` - Referral data (400 auth required)
+- `/api/perks/insurance` - Insurance perks (400 auth required)
+- `/api/onboarding/resend-otp` - Resend OTP (Next.js 404)
+- `/api/frontdesk/transactions/acknowledgements` - Transaction ack (400 auth required)
+- `/api/eth-rpc` - Ethereum RPC proxy (Next.js 404)
+- `/api/websocket` - WebSocket (426 Upgrade Required)
+- `/api/crypto-commands-socket` - Crypto commands (426 Upgrade Required)
+- `/api/health` - Health check (200 OK)
+- `/api/csp-violation` - CSP report sink (204)
+
+---
+
 ## 13. Recommended Priority Attack Paths (Updated)
 
 Based on all phases of testing. Ranked by exploitability and impact.
@@ -1233,13 +1422,26 @@ Based on all phases of testing. Ranked by exploitability and impact.
    - Complete gem version disclosure in stack traces
    - This gives attackers a perfect blueprint of the production API
 
+6. Sentry Event Injection (BOTH DSNS - CONFIRMED EXPLOITABLE)
+   - Both business and personal app DSNs accept arbitrary event injection
+   - Full structured events with fake user PII, stack traces, environment tags
+   - Can pollute error tracking, create alert fatigue, social engineer developers
+   - DSN keys leaked in HTML meta tags on every page load
+
 ### P1 - High Priority
 
-6. WordPress xmlrpc.php Brute Force (CONFIRMED EXPLOITABLE)
-   - system.multicall amplification confirmed (5+ attempts per request)
+7. WordPress xmlrpc.php Brute Force (CONFIRMED EXPLOITABLE)
+   - system.multicall amplification confirmed (20+ attempts per request, tested at scale)
    - Zero rate limiting, unlimited attempts
    - Known user: admin-deblock (ID:1)
+   - Gravatar hash can be used for email reverse lookup
    - Needs larger wordlist or targeted password research
+
+7b. app-uat-01 Unauthenticated Backend Access
+   - FaceTec biometric session endpoint reaches backend without user auth
+   - Bank details submission endpoint reaches backend without user auth
+   - Build ID (git commit hash) leaked via /api/health
+   - 6+ API endpoints confirmed reaching Apigee backend without user session
 
 7. WordPress REST API Hardening
    - 14 REST namespaces fully enumerable
@@ -1330,6 +1532,26 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 45 | MEDIUM | /v1/check/callback unauthenticated OK | - | - | YES | Confirmed |
 | 46 | LOW | Update endpoints expose ActiveRecord queries | - | - | YES | server-timing leak |
 | 47 | LOW | /v1/beta/check differential response | - | - | YES | Token enumeration |
+| 48 | HIGH | Sentry injection both DSNs (business+personal) | - | - | YES | Confirmed exploitable |
+| 49 | HIGH | XMLRPC multicall 20+ attempts per request | - | - | YES | Confirmed at scale |
+| 50 | HIGH | app-uat-01 FaceTec no user auth | - | - | YES | Reaches backend |
+| 51 | HIGH | app-uat-01 bank-details no user auth | - | - | YES | Reaches backend |
+| 52 | HIGH | app-uat-01 build ID leak (/api/health) | - | - | YES | Git hash exposed |
+| 53 | MEDIUM | UAT sentry-environment=production misconfig | - | - | YES | Confirmed both UATs |
+| 54 | MEDIUM | business-uat-01 CSP nonce in x-nonce header | - | - | YES | Confirmed |
+| 55 | MEDIUM | business-uat-01 different KYC provider (Sumsub) | - | - | YES | Provider migration leak |
+| 56 | MEDIUM | GCS bucket names leaked in CSP | - | - | YES | 3 buckets identified |
+| 57 | MEDIUM | recovery.deblock.com Solana recovery behind basic auth | - | - | Partial | Auth blocking access |
+| 58 | MEDIUM | Ambassador signup rate limit too lenient (9/10) | - | - | YES | Confirmed |
+| 59 | MEDIUM | CSP violation endpoint accepts arbitrary reports | - | - | YES | 204 on any payload |
+| 60 | LOW | WP admin-ajax heartbeat leaks server time | - | - | YES | Confirmed |
+| 61 | LOW | WP sensitive files accessible (readme, license, login) | - | - | YES | Multiple files |
+| 62 | LOW | Wallet provider names + emails leaked | - | - | YES | 18 providers |
+| 63 | INFO | WebSocket endpoints exist (websocket, crypto-commands) | - | - | YES | 426 Upgrade Required |
+| 64 | INFO | BackWPup addjob param validation before auth | - | - | YES | Type enum leak |
+| 65 | INFO | 14 REST API namespaces enumerated | - | - | YES | Full route map |
+
+Total: 65 findings (8 critical, 16 high, 17 medium, 11 low, 13 info)
 
 ## 15. Session Notes
 
@@ -1348,6 +1570,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 - No open redirect vulnerabilities found on tested endpoints.
 - ActionMailbox ingress endpoints return 404 on production with proper email format (all providers tested).
 - Ambassador auto-signup sends OTP on staging (confirmed email delivery).
+- Session 5: UAT environment deep dive (app-uat-01, business-uat-01). Sentry event injection confirmed on both DSNs. XMLRPC multicall confirmed at 20+ attempts per request. WordPress deep enumeration. JS bundle API route extraction (14 routes from 85 chunks). WebSocket endpoints confirmed. Multiple app-uat-01 API endpoints reach backend without user auth.
 
 ## 16. Next Steps for Continued Testing
 
