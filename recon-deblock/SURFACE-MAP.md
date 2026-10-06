@@ -1965,7 +1965,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 402 | LOW | UAT-02 auth/refresh token mechanism disclosure | app-uat-02.deblock.com | CWE-200 | YES | "No token or refresh token found" reveals dual-token auth mechanism. |
 | 403 | MEDIUM | UAT-02 onboarding endpoints reached with empty body + e2e | app-uat-02.deblock.com | CWE-287 | YES | resend-onboarding-otp, signature/resend-signature-otp, signature/complete all reach business logic without auth. |
 
-Total: 457 findings (16 critical, 108 high, 177 medium, 103 low, 61 info)
+Total: 460 findings (16 critical, 110 high, 178 medium, 103 low, 61 info)
 
 ## 15. Session Notes
 
@@ -5358,28 +5358,63 @@ F455. HIGH - UAT-02 Analytics Organisms Validates Against Event Catalog Without 
 
 ## 12as. Production Crypto-Simulation Active Node, 2FA Mobile Session Param Leak (Session 30)
 
-F456. HIGH - Production BASE Crypto-Simulation Node Active Without Authentication
-- POST /api/crypto-simulation/BASE on business.deblock.com
+F456. HIGH - Production EVM Crypto-Simulation Nodes Active Without Authentication (3 Chains)
+- POST /api/crypto-simulation/{protocol} on business.deblock.com
 - Requires only CSRF token (freely obtainable from /api/csrf)
-- While most assets return 422 "No simulation node for {asset}", BASE has an active simulation node
+- THREE chains have active simulation nodes: BASE, POLYGON, ARBITRUM
+- JS analysis reveals correct API format: body { accountAddress: string, data: string(hex) }
+- Field name "data" (not "calldata") reaches the simulation node backend
+- "calldata" field name is rejected by proxy-level validation ("Invalid calldata")
+- "data" field with any hex string reaches actual simulation node ("The simulation node could not answer")
 - Without accountAddress: returns {"error":"Invalid account address"} (validation layer 1)
-- With accountAddress parameter: returns {"error":"Invalid calldata"} (validation layer 2, deeper processing)
-- Accepts and processes arbitrary input without authentication
-- BASE chain = Base L2 (Coinbase), active in production for transaction simulation
-- If valid calldata format is discovered, could simulate real financial transactions without auth
-- Other tested assets all return "No simulation node": BTC, ETH, SOL, USDC, USDT, MATIC, AVAX, DOT, LINK, UNI, AAVE
+- Without data or with non-hex data: returns {"error":"Invalid calldata"} (proxy validation)
+- Chains without nodes: BTC, ETH, SOL, USDC, USDT, BSC, DOT, LINK, UNI, AAVE
+- JS reveals simulation response format: { status: "SUCCESS"|"REVERTED", logs: [...], decimals: {...} }
+- Simulation parses ERC-20 Transfer events and checks outflows against grant claims
+- Full protocol list from JS: UNKNOWN, BITCOIN, ETHEREUM, SOLANA, BASE, XRP, FIAT, ARBITRUM, POLYGON, HYPERLIQUID, SPARK, HYPERLIQUID_PERPS, BSC, CARDANO, ROBINHOOD
 - CWE: CWE-306 (Missing Authentication for Critical Function)
-- CVSS: 7.5 (High) - unauthenticated access to production transaction simulation infrastructure
+- CVSS: 7.5 (High) - unauthenticated access to production transaction simulation on 3 EVM chains
 - Reproducible: YES
 
-F457. MEDIUM - Production auth/complete-2fa-mobile-session Validates Parameters Before Auth
+F457. HIGH - Production complete-2fa-mobile-session Returns Success Without Authentication
 - POST /api/auth/complete-2fa-mobile-session on business.deblock.com
-- With auth cookie bypass (__Host-auth-token=x): returns {"error":"Missing mobileSessionKey"}
-- Validates presence of mobileSessionKey parameter before checking authentication
-- Parameter validation before auth check leaks required parameter names
-- If valid mobileSessionKey format is found, could potentially complete 2FA flow with forged session
-- Related to auth flow: EMAIL_PASSWORD -> OTP -> FACETEC -> PASSKEY_FALLBACK -> SUCCESS
-- CWE: CWE-287 (Improper Authentication), CWE-200 (Information Exposure)
+- Returns {"success":true} HTTP 200 for ANY mobileSessionKey value, even WITHOUT auth cookie
+- No authentication required at all (works without __Host-auth-token)
+- No cookies set in response (no auth token issued)
+- Session state unchanged (check-session still returns valid:false)
+- Appears to be phantom success: Next.js proxy accepts and returns 200 without forwarding to real backend
+- Same behavior on UAT-02 ({"success":true})
+- create-2fa-mobile-session still returns "FaceTec 2FA session not found" even with deviceId param
+- Impact: Misleading API response could be used to fool automated security scanners or cause confusion in attack chains. The endpoint signals success without performing any action.
+- CWE: CWE-287 (Improper Authentication), CWE-393 (Return of Wrong Status Code)
+- Reproducible: YES
+
+F458. HIGH - Production Crypto-Messages Endpoints Reach Backend Via Auth Cookie Bypass
+- Five crypto-transaction/signing endpoints discovered from JS analysis, all reach production backend:
+- GET /api/crypto-messages/messages/{id}: "Failed to load the signing request" (401) - transaction signing request retrieval
+- POST /api/crypto-messages/messages/{id}/submit: "Failed to submit the signature" (401) - submit signed transaction
+- POST /api/crypto-messages/messages/{id}/reject: "Failed to reject the message" (406) - reject signing request
+- GET /api/crypto-transactions/{id}/browser-keys/{browserId}: "Failed to unlock this browser's keys" (401) - browser key retrieval
+- GET /api/users/browsers/{id}/ping: "Failed to check this browser" (401) - browser connection check
+- All endpoints reach backend with only __Host-auth-token=x (any value)
+- reject endpoint returns HTTP 406 (Not Acceptable) instead of 401 - different backend handler
+- No message ID enumeration possible (same error for all IDs: 1, 2, 999999, UUID)
+- No rate limiting on rapid submit requests
+- These endpoints handle crypto transaction signing (JWS grants, EVM calldata, key management)
+- CWE: CWE-287 (Improper Authentication), CWE-306 (Missing Authentication for Critical Function)
+- Reproducible: YES
+
+F459. MEDIUM - X-HTTP-Method-Override Processed by Apigee Gateway
+- POST with X-HTTP-Method-Override header changes effective HTTP method at Apigee layer
+- POST /api/passkeys/list with Override:GET returns Apigee 405 (normal POST returns Next.js 404)
+- POST /api/frontdesk/accounts with Override:DELETE returns Apigee 405 (normal GET returns backend 401)
+- POST /api/users/user with Override:GET returns Apigee 405 (normal GET returns backend 401)
+- POST /api/auth/check-session with Override:DELETE returns Apigee 405 (normal GET returns 200)
+- The Apigee API gateway accepts and processes X-HTTP-Method-Override headers
+- bank-details with Override:GET still returns 401 "Failed to load bank details" (override processed and accepted)
+- sca/clear with Override:GET still returns {"cleared":true} (dangerous: GET requests bypass CSRF in some scenarios)
+- Impact: Allows accessing PUT/DELETE/PATCH methods on endpoints that only expose GET/POST, potential CSRF bypass via GET method override
+- CWE: CWE-436 (Interpretation Conflict), CWE-352 (CSRF via GET override)
 - Reproducible: YES
 
 ## 16. Next Steps for Continued Testing
