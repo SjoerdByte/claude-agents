@@ -1838,8 +1838,20 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 280 | LOW | Status page OVH S3 signed URLs with credential IDs exposed | - | CWE-200 | YES | OVH access key IDs in signed asset URLs |
 | 281 | LOW | Status page wildcard CSP (default-src * data: blob:) | - | CWE-16 | YES | Permits loading resources from any origin |
 | 282 | INFO | Staging build ID and deployment metadata disclosure | - | CWE-200 | YES | Build ID jiQWozk8dR12Q2EFM5KOi, deployment timestamps |
+| 283 | MEDIUM | Active Storage direct_uploads 85-line stack trace on CSRF error | web-api-staging | CWE-209 | YES | Full gem versions, Airbrake 13.0.3, Puma 7.2.1, Rack 2.2.23, middleware chain |
+| 284 | HIGH | Ambassador OTP zero rate limiting on staging | web-api-staging | CWE-307 | YES | 30 consecutive wrong OTP attempts, no lockout, no delay |
+| 285 | MEDIUM | Dead route ambassador/search_email ActionNotFound stack trace | web-api-staging | CWE-209 | YES | Route defined but action removed, full trace with file paths |
+| 286 | MEDIUM | Data removal endpoint hits DB before auth verification | web-api-staging | CWE-863 | YES | sql.active_record dur=17.23ms before returning 404 on invalid token |
+| 287 | LOW | Rack::Cors loaded 9 times in middleware stack | web-api-staging | CWE-16 | YES | Misconfigured initializer, 9 separate Rack::Cors entries |
+| 288 | MEDIUM | CORS wildcard on all page responses staging AND production | staging+prod | CWE-942 | YES | Access-Control-Allow-Origin: * on HTML pages |
+| 289 | LOW | Status page 12 incidents with 60 service IDs exposed | status.deblock.com | CWE-200 | YES | window.incidents with timestamps, service names, types |
+| 290 | LOW | OVH load balancer headers leaked on status page | status.deblock.com | CWE-200 | YES | x-iplb-request-id, x-iplb-instance headers |
+| 291 | LOW | Apigee Response405WithoutAllowHeader error on UAT endpoints | uat-business | CWE-200 | YES | New error type on passkeys/options, bank-details |
+| 292 | MEDIUM | Company onboarding session creation without auth | web-api-staging | CWE-306 | YES | POST /v1/company/country returns UUID session without auth |
+| 293 | LOW | Ambassador certification oracle reveals certified status | web-api-staging | CWE-204 | YES | /v1/check/ambassador differentiates certified vs not |
+| 294 | LOW | Deep link /d/[hash] data deletion page publicly accessible | staging.deblock.com | CWE-200 | YES | deleteData i18n strings, SSG page with hash param |
 
-Total: 282 findings (12 critical, 55 high, 101 medium, 71 low, 46 info)
+Total: 294 findings (12 critical, 56 high, 107 medium, 78 low, 46 info)
 
 ## 15. Session Notes
 
@@ -1874,6 +1886,7 @@ Total: 282 findings (12 critical, 55 high, 101 medium, 71 low, 46 info)
 - Session 14: CDN object enumeration via S3 (F247). Intercom messenger API full config extraction (F248). waitlist-api staging route sharing (F249). CDN terms publicly accessible (F250). XMLRPC XXE/Billion Laughs blocked (F251). UpdraftPlus backup files all 403 (LiteSpeed blocks entire directory). BackWPup backups use random hash naming. CloudKit API returns AUTHENTICATION_FAILED. Trustpilot API empty response. Total findings: 251.
 - Session 15: GTM container configuration extracted (F252): GA4 G-3MRQ5Z62VD, Google Ads AW-11482270425, cross-domain linker across 3 domains. GA4 Measurement Protocol accepts events without valid API secret (F253): analytics poisoning confirmed. dblk.me short URL domain fully mapped (F254): Vercel, 75 pages, 276 rewrites. Build manifest full route structure (F255). Developer names in robots.txt (F256). Survey/beta endpoint unauthenticated email spoofing (F257): stored XSS in answer field, no rate limiting. Business app Turbopack chunks reveal 24+ API routes (F258). CSRF token unauthenticated (F259). Apigee error disclosure (F260). Auth/financial endpoints confirmed (F261). PWA manifest exposed (F262). next.deblock.com Cloudflare challenge (F263). Cross-domain tracking GDPR concern (F264). Total findings: 264.
 - Session 16: Committed F265-F270 (Sardine sandbox, Regula IP leak, CSP third-party, UAT verbose errors, Dotfile deployment, app.deblock.com 410). recovery.deblock.com auth bypass confirmed: /_next/static/*, /api/*, /_vercel/* paths bypass Basic Auth (F273). All 3 lazy-loaded chunks are i18n files (EN/ES/FR) revealing complete wallet recovery architecture including Solana Ed25519 key handling (F274). staging.deblock.com discovered: full Vercel staging environment with different build ID (F271). status.deblock.com: Statuspal status page reveals 11 blockchains and full service architecture (F272). support.deblock.com: dangling Intercom CNAME returning 404 (F275). Business API Apigee 502 errors on POST endpoints (F276). CSRF token unauthenticated with 30-min window (F277). WebSocket 426 confirmed (F278). Speed Insights, S3 signed URLs, wildcard CSP on status page (F279-F281). Staging build ID metadata (F282). Google OAuth false positive corrected (all redirect URIs properly rejected). Total findings: 282.
+- Session 17: Staging Rails API deep dive on web-api-staging.deblock.com. Active Storage direct_uploads leaks 85-line stack trace with full gem versions and middleware chain (F283). Ambassador OTP has zero rate limiting: 30 consecutive wrong codes accepted without lockout (F284). Dead route ambassador/search_email returns ActionNotFound trace (F285). Data removal endpoint hits DB (sql.active_record 17ms) before verifying auth token (F286). Rack::Cors loaded 9x in middleware stack indicating misconfigured initializer (F287). CORS wildcard Access-Control-Allow-Origin:* on both staging AND production page responses (F288). Status page window.incidents exposes 12 incidents with 60 service IDs (F289). OVH load balancer headers x-iplb-request-id/x-iplb-instance leaked on status page (F290). Apigee Response405WithoutAllowHeader new error type on UAT passkeys/bank-details (F291). Company onboarding session creation works without auth, returns full session UUID (F292). Ambassador certification oracle at /v1/check/ambassador (F293). Deep link /d/[hash] data deletion page publicly accessible (F294). Company session UUIDs obtained for further testing. Total findings: 294.
 
 ### 12e. Business App API Route Map (from JS bundle analysis)
 
@@ -3709,6 +3722,101 @@ F282 - Staging build ID and deployment metadata disclosure (INFO):
 - /_next/static/jiQWozk8dR12Q2EFM5KOi/ directory accessible
 - Deployment timestamps extractable from build artifacts
 - Impact: Build pipeline enumeration, deployment tracking
+
+### 15f. Session 17 Findings (F283-F294) - Staging Rails API Deep Testing
+
+F283 - Active Storage direct_uploads 85-line stack trace on CSRF error (MEDIUM):
+- POST /rails/active_storage/direct_uploads returns full ActionController::InvalidAuthenticityToken trace
+- 85 lines of stack trace revealing complete middleware chain and gem versions
+- Confirmed versions: Rails 7.0.10, Ruby 3.3.9, Puma 7.2.1, Rack 2.2.23, Airbrake 13.0.3
+- Full file paths from application root visible in trace
+- Middleware chain includes 9x Rack::Cors, 4x SentryMiddleware, ActionDispatch::Cookies
+- Impact: Complete server-side technology fingerprinting from single request
+
+F284 - Ambassador OTP zero rate limiting on staging (HIGH):
+- /v1/ambassador/verify_otp accepts unlimited OTP attempts
+- 30 consecutive requests with wrong codes, zero lockout or delay
+- All responses identical 422 with {"success":false,"error":"wrong_otp"} in ~140ms
+- Standard 6-digit OTP has 1M combinations, at 7 req/sec = brute force in ~40 hours
+- With parallel requests could be significantly faster
+- Same Rails codebase likely deployed to production
+- Impact: Ambassador account takeover via OTP brute force
+
+F285 - Dead route ambassador/search_email ActionNotFound trace (MEDIUM):
+- GET /v1/ambassador/search_email?email=test@test.com returns 500
+- AbstractController::ActionNotFound: The action 'search_email' could not be found
+- Route is defined in config/routes.rb but action was removed from controller
+- Stack trace reveals Rails dispatcher internals and file paths
+- Impact: Dead route information disclosure, confirms route/controller mismatch
+
+F286 - Data removal endpoint hits DB before auth verification (MEDIUM):
+- GET /v1/remove/data/invalidtoken returns 404 after database query
+- Server-Timing header shows: sql.active_record;dur=17.23
+- Database is queried to look up the token BEFORE validating it exists
+- Valid vs invalid tokens may have timing differences (17ms for miss)
+- Could enable token enumeration via timing side-channel
+- Impact: Pre-auth database access, potential timing oracle for token enumeration
+
+F287 - Rack::Cors loaded 9 times in middleware stack (LOW):
+- Stack trace from F283 reveals Rack::Cors appears 9 times in middleware chain
+- Each request processes through 9 separate CORS middleware instances
+- Indicates misconfigured config/initializers/cors.rb or multiple gems inserting middleware
+- Performance overhead: 9x CORS header processing per request
+- Impact: Misconfiguration indicator, potential for inconsistent CORS behavior between instances
+
+F288 - CORS wildcard on all page responses staging AND production (MEDIUM):
+- Both staging.deblock.com and deblock.com return Access-Control-Allow-Origin: *
+- Applies to all HTML page responses (Vercel frontend)
+- Any origin can read page content including any tokens/data in HTML
+- Vercel default configuration, but should be restricted for financial application
+- Does NOT apply to API responses (those use proper origin checking)
+- Impact: Cross-origin page content reading, potential token theft from HTML
+
+F289 - Status page 12 incidents with 60 service IDs exposed (LOW):
+- window.incidents in status page HTML contains full incident history
+- 12 incidents with detailed descriptions, timestamps, affected service IDs
+- 60 unique service IDs mapped to infrastructure components
+- Incident types include maintenance, outage, degraded performance
+- Service names reveal internal architecture naming conventions
+- Impact: Infrastructure reconnaissance, incident pattern analysis
+
+F290 - OVH load balancer headers leaked on status page (LOW):
+- status.deblock.com responses include OVH-specific headers:
+  x-iplb-request-id: unique request identifier
+  x-iplb-instance: load balancer instance ID
+- Headers reveal OVH infrastructure for Statuspal hosting
+- Request IDs could be used for traffic analysis
+- Impact: Infrastructure fingerprinting, OVH load balancer identification
+
+F291 - Apigee Response405WithoutAllowHeader error on UAT endpoints (LOW):
+- POST to uat-business.deblock.com/api/auth/passkeys/options returns:
+  {"fault":{"faultstring":"Response405WithoutAllowHeader","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}
+- New error type not seen on other endpoints (those return NoActivePolicy)
+- Indicates endpoint exists in Apigee proxy but route config differs
+- Same error on /api/bank-details endpoint
+- Impact: API gateway configuration enumeration, endpoint existence confirmation
+
+F292 - Company onboarding session creation without auth (MEDIUM):
+- POST /v1/company/country with {"country_code":"FR"} on staging creates new session
+- Returns full session object with UUID without any authentication
+- Session UUIDs: b82ac54f-21d2-4b23-9f3f-89d21bcde129, 778c0607-e5f3-4273-97aa-eae4f515b815
+- These session IDs unlock access to /v1/company/types, /v1/company/turnovers, and other session-gated endpoints
+- Company onboarding flow does not require prior user authentication on staging
+- Impact: Unauthenticated access to company onboarding flow, session hijack potential
+
+F293 - Ambassador certification oracle (LOW):
+- /v1/check/ambassador returns different responses for certified vs uncertified ambassadors
+- Can be used to enumerate which users have ambassador certification
+- Endpoint accessible without authentication on staging
+- Impact: User status enumeration, ambassador program reconnaissance
+
+F294 - Deep link /d/[hash] data deletion page publicly accessible (LOW):
+- staging.deblock.com/d/[hash] serves a static page for data deletion
+- Page contains deleteData i18n strings in EN/ES/FR
+- SSG (Static Site Generated) page accessible without authentication
+- Part of GDPR data deletion deep link flow
+- Hash parameter format unknown, but page structure reveals deletion flow
+- Impact: Data deletion flow reconnaissance, potential hash brute force surface
 
 ## 16. Next Steps for Continued Testing
 
