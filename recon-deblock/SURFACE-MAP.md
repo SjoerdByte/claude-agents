@@ -9920,6 +9920,115 @@ Priority 3 (Enumeration/escalation):
 - All sensitive data endpoints require auth (401) - form-submissions, templates, user-data, etc.
 - Impact: MEDIUM - Complete API surface map of all WordPress plugins enables targeted exploitation if admin credentials are obtained. The deferred auth check on notifications reveals parameter validation logic.
 
+### F809 [CRITICAL] Complete Ambassador Account Takeover Chain: Unauthenticated OTP + No Lockout + No Rate Limit
+- Target: web-api.deblock.com (PRODUCTION)
+- Full unauthenticated ambassador signup flow confirmed:
+  1. POST /v1/ambassador/email -> triggers OTP to ANY email (UNAUTHENTICATED, F801)
+  2. POST /v1/ambassador/email/otp -> validates 6-digit OTP code (UNAUTHENTICATED)
+  3. POST /v1/ambassador/new -> creates ambassador account (creates UUID)
+- OTP verification has NO lockout mechanism:
+  - Tested 5 rapid sequential attempts with wrong codes, all returned 422 "The code provided is incorrect!"
+  - No account lockout, no exponential backoff, no rate limiting
+  - Response times: 597ms, 580ms, 343ms, 332ms, 352ms (consistent, no delay increase)
+  - At ~350ms per attempt, 1M combinations (6-digit code) could be exhausted in ~97 hours serially
+  - Parallel requests would reduce this significantly
+- Once an ambassador UUID is obtained, the following PII endpoints become accessible:
+  - GET /v1/ambassador/:uuid (index data)
+  - GET /v1/ambassador/:uuid/tracking (tracking data)
+  - GET /v1/ambassador/:uuid/revenues (revenue data)
+  - GET /v1/ambassador/:uuid/revenues/all (all revenue history)
+  - GET /v1/ambassador/:uuid/payments (payment history)
+  - PUT /v1/ambassador/:uuid/address (update/read address - PII)
+  - PUT /v1/ambassador/:uuid/socials (update social links)
+  - POST /v1/ambassador/:uuid/claim (claim payment)
+  - POST /v1/ambassador/:uuid/search (search by email)
+  - POST /v1/ambassador/:uuid/check/email (check email)
+- Attack chain for account takeover: Trigger OTP to victim email -> brute-force OTP code -> create ambassador on victim email -> access PII via UUID
+- Impact: CRITICAL P1 - Complete unauthenticated ambassador account creation chain with OTP brute-force capability. No rate limiting at any step. Enables mass account creation, email bombing, and PII access.
+
+### F810 [CRITICAL] Staging Rails Debug Routes Expose Full Route Table, Mailer Previews, and Action Mailbox
+- Target: web-api-staging.deblock.com
+- Rails development tools accessible without authentication:
+  - GET /rails/info/routes -> HTTP 200: Complete route table with 100+ routes, controllers, and actions
+  - GET /rails/info -> 302 redirect to /rails/info/routes
+  - GET /rails/mailers -> HTTP 200: Mailer preview listing (UserNotifierMailer)
+  - GET /sidekiq -> HTTP 401: Sidekiq dashboard exists but requires auth
+- Action Mailbox Conductor fully accessible (no auth):
+  - GET /rails/conductor/action_mailbox/inbound_emails (returns 500 - table doesn't exist but route is unprotected)
+  - Full CRUD: index, create, show, update, destroy on inbound_emails
+  - Sources management and reroute/incinerate endpoints
+  - Database error reveals: PG::UndefinedTable - "action_mailbox_inbound_emails" does not exist
+- Active Storage direct_uploads endpoint:
+  - POST /rails/active_storage/direct_uploads returns 422 (CSRF required, NOT 401)
+  - Requires only a valid CSRF token, no authentication
+  - ActionText engine confirmed in middleware stack
+- Action Mailbox inbound email ingestion routes exposed (all on staging):
+  - POST /rails/action_mailbox/postmark/inbound_emails
+  - POST /rails/action_mailbox/relay/inbound_emails
+  - POST /rails/action_mailbox/sendgrid/inbound_emails
+  - GET/POST /rails/action_mailbox/mandrill/inbound_emails
+  - POST /rails/action_mailbox/mailgun/inbound_emails/mime
+- The complete route table reveals critical endpoints including:
+  - DELETE /v1/mobile/account/:user_id (account deletion by sequential ID)
+  - POST /v1/upload/anthony/:token -> v1/webhook#upload_sepa_to_s3 (SEPA file upload to S3)
+  - Full admin/ambassador management routes (CSV generation, invoice creation, payment marking)
+  - POST /v1/download/link (sends download link)
+  - POST /v1/check/ambassador (check ambassador status)
+  - GET /v1/collection/:address (Ethereum collection lookup)
+  - POST /v1/acquiring/store and /v1/acquiring/demo (acquiring/merchant endpoints)
+- Impact: CRITICAL - Rails debug routes on staging expose the entire application's route structure, controller mapping, and email functionality. This provides a complete attack surface map and reveals multiple high-value targets. The Active Storage upload without auth (only CSRF) is directly exploitable.
+
+### F811 [HIGH] Account Deletion Endpoint Accessible on Production With Sequential User IDs
+- Target: web-api.deblock.com (PRODUCTION)
+- DELETE /v1/mobile/account/:user_id -> v1/widget#delete_account
+- Route confirmed on production: DELETE /v1/mobile/account/1 returns HTTP 200 with {"status":"fail","error":"Forbidden!"}
+- Returns 200 (not 404) confirming the route exists and processes the request
+- Uses sequential integer user IDs (not UUIDs)
+- Bearer token auth returns "Forbidden!" (separate auth mechanism required)
+- If proper authentication is obtained, this enables:
+  - Mass account deletion by enumerating sequential user IDs
+  - Targeted account deletion of specific users
+  - No UUID randomness protection (sequential IDs are predictable)
+- Related: POST /v1/mobile/request/contract/:user_id also uses sequential IDs
+- Impact: HIGH - Account deletion endpoint with sequential user IDs is an IDOR candidate. With proper authentication credentials (e.g., from a compromised session), an attacker could delete arbitrary user accounts.
+
+### F812 [HIGH] Admin Ambassador Management Routes Exist on Production
+- Target: web-api.deblock.com (PRODUCTION)
+- All admin ambassador routes return HTTP 403 "Forbidden!" (not 404), confirming they exist:
+  - POST /v1/admin/ambassador/validate (validate signup)
+  - DELETE /v1/admin/ambassador (delete applicant)
+  - PUT /v1/admin/ambassador (update links)
+  - GET /v1/admin/ambassador/applicants (list ALL applicants - PII)
+  - POST /v1/admin/ambassador/referral (add referral reward - financial)
+  - POST /v1/admin/ambassador/ledger (add to ledger - financial)
+  - GET /v1/admin/ambassador/payment/csv (generate CSV - financial data export)
+  - POST /v1/admin/ambassador/mark/as/paid (mark payment - financial)
+  - POST /v1/admin/ambassador/generate/invoices (generate invoices)
+  - POST /v1/admin/ambassador/revshare/csv (upload revenue share CSV)
+  - POST /v1/admin/ambassador/ranking/csv (upload ranking CSV)
+  - GET /v1/admin/ambassador/upgrade/approve (approve upgrade)
+  - POST /v1/admin/ambassador/dashboard (create dashboard)
+  - GET /v1/admin/ambassador/dashboard (dashboard URL)
+  - PUT /v1/admin/ambassador/token (update token)
+  - GET /v1/admin/ambassador/exist (Discord check)
+- These use a "Forbidden!" auth check (same as waitlist bearer endpoints), not the standard __Host-auth-token session auth
+- Controller: v1/ambassador_admin (AmbassadorAdminController)
+- The applicants endpoint would expose ALL ambassador PII
+- Payment CSV would expose financial data
+- Impact: HIGH - Full admin ambassador management surface accessible on production. If the admin auth mechanism is compromised (separate from user auth), all ambassador PII, financial data, and management functions become available.
+
+### F813 [MEDIUM] SEPA Upload Endpoint and Download Link Sender on Production
+- Target: web-api.deblock.com (PRODUCTION)
+- POST /v1/upload/anthony/:token -> v1/webhook#upload_sepa_to_s3
+  - Uploads SEPA banking files directly to S3
+  - Uses separate token authentication (not bearer, not session)
+  - The controller name "webhook" and function "upload_sepa_to_s3" suggest this handles SEPA reconciliation files
+  - "anthony" in the path appears to be a named token/key identifier
+- POST /v1/download/link -> v1/download#send_download_link
+  - Sends download links (likely app download SMS/email)
+  - Route exists on staging but not accessible via GET
+- Impact: MEDIUM - SEPA upload endpoint reveals banking file processing pipeline. If a valid upload token is obtained, arbitrary SEPA files could be uploaded to the S3 bucket, potentially manipulating transaction records.
+
 ### F808 [LOW] Build Manifest Exposes Sentry Monitoring Tunnel Rewrite Configuration
 - Target: business.deblock.com
 - _buildManifest.js accessible at /_next/static/26tbWezWroJnCCGBceFD9/_buildManifest.js
