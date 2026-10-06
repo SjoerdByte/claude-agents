@@ -6047,6 +6047,91 @@ F512. LOW - WalletConnect Project ID Active and Querying Explorer API
 - Impact: Project ID is active and queryable; wallet listings accessible
 - Reproducible: YES
 
+F513. MEDIUM - Firebase Auth Configuration Disclosure via Public API Key
+- Firebase API Key: AIzaSyCLIgRdnsXP6OnH7_qQNdGEZuzdyKMCa94
+- Project: deblock-ltd
+- Anonymous account creation: ADMIN_ONLY_OPERATION (properly restricted)
+- Password login: PASSWORD_LOGIN_DISABLED (properly restricted)
+- Phone auth: OPERATION_NOT_ALLOWED (disabled)
+- Google OAuth via Firebase IDP: OPERATION_NOT_ALLOWED (not configured)
+- Email enumeration protection: ENABLED (createAuthUri returns sessionId only, no registered/signinMethods fields)
+- Apple Sign In: ACTIVE and configured
+- Firebase emulator: Not accessible (404)
+- Authorized domains: deblock-ltd.firebaseapp.com (confirmed), deblock-ltd.web.app (rejected by Google OAuth)
+- Impact: Full auth provider configuration enumerated; reveals which auth methods are enabled/disabled; attack surface narrowed to Apple Sign In as sole Firebase auth method
+- Reproducible: YES
+
+F514. MEDIUM - Apple Sign In Client ID and OAuth Configuration Fully Disclosed
+- Apple Sign In client_id: com.deblock.deblockapp.signin
+- Redirect URI: https://deblock-ltd.firebaseapp.com/__/auth/handler
+- Response mode: form_post
+- Scope: email+name
+- Full state parameter with encoded Firebase session data leaked in authUri response
+- Discovered via: Firebase createAuthUri API with providerId=apple.com
+- Impact: Apple Sign In configuration fully disclosed; client_id confirms app bundle ID pattern (com.deblock.deblockapp); enables targeted phishing against Apple Sign In flow
+- Reproducible: YES
+
+F515. MEDIUM - Google OAuth Client ID Redirect URI Analysis
+- Client ID: 248017251601-ja5sommcitlk8ie3sieq4igjrlis9arp.apps.googleusercontent.com
+- Only accepted redirect_uri: https://deblock-ltd.firebaseapp.com/__/auth/handler
+- REJECTED: All localhost URIs (http://localhost, http://localhost:3000)
+- REJECTED: All deblock.com domain URIs (business.deblock.com, app.deblock.com, deblock.com)
+- REJECTED: https://deblock-ltd.web.app/__/auth/handler
+- REJECTED: Arbitrary domains (evil.com)
+- Google IDP not configured in Firebase (OPERATION_NOT_ALLOWED) - suggests OAuth client exists but not actively used, or used only for mobile app
+- Impact: Google OAuth redirect URI is properly locked down to single Firebase handler; however, Google client exists without active Firebase integration, indicating possible dead configuration or mobile-only usage
+- Reproducible: YES
+
+F516. LOW - OneSignalSDKWorker.js Service Worker Accessible on Business Portal
+- URL: https://business.deblock.com/OneSignalSDKWorker.js
+- Status: 200 (accessible)
+- OneSignal App ID (from previous JS analysis): aeaa30ee-d48d-48e8-b0ff-9284c72f4e48
+- Impact: Confirms push notification service worker is registered; combined with known app ID enables push notification subscription analysis
+- Reproducible: YES
+
+F517. LOW - robots.txt Returns HTML App Shell Instead of Standard Format on Business Portal
+- URL: https://business.deblock.com/robots.txt
+- Expected: Standard robots.txt format
+- Actual: Full HTML app shell with Next.js Turbopack chunks, Sentry DSN, build metadata
+- Contains: Build ID 26tbWezWroJnCCGBceFD9, meta robots noindex tag
+- Impact: Missing robots.txt allows unrestricted crawling; HTML response exposes same metadata as 404 pages
+- Reproducible: YES
+
+F518. INFO - Build ID Disclosure Across Multiple Environments
+- Production business.deblock.com: 26tbWezWroJnCCGBceFD9 (Next.js with Turbopack)
+- Production deblock.com: uTbOab3l7kZLJXtCgveTr (Next.js on Vercel)
+- Staging staging.deblock.com: jiQWozk8dR12Q2EFM5KOi (Next.js on Vercel)
+- Staging sets cookies: geo_country, header_variant (value "B" = A/B test variant)
+- deblock.com Google Play disclosure: meta tag with content com.deblock.deblockapp
+- deblock.com staging meta: base:app_id=6a71f4ca27877d0fb99ab6d1
+- Impact: Build IDs enable cache-busting and deployment tracking; Google Play app ID confirms Android package name; staging A/B test variant cookie reveals active experimentation
+- Reproducible: YES
+
+F519. LOW - CSP Violation Reporting Endpoint Accepts Arbitrary Reports Without Authentication on UAT-02
+- POST https://app-uat-02.deblock.com/api/csp-violation
+- Status: 204 No Content (accepted)
+- No authentication required
+- Accepts arbitrary JSON payloads in csp-report format
+- Impact: Could be used for stored XSS if CSP reports are displayed in admin panel without sanitization; enables DoS via report flooding; allows injection of misleading security violation reports
+- Reproducible: YES
+
+F520. INFO - UAT-02 Client Region Detection Ignores IP Spoofing Headers
+- GET https://app-uat-02.deblock.com/api/client-region returns {"region":"US"}
+- X-Forwarded-For header spoofing has no effect (returns US regardless of spoofed IP)
+- Backend uses actual connection IP, not proxy headers (good security practice)
+- Impact: Confirms server-side geo-detection uses trusted IP source; region info exposed without authentication
+- Reproducible: YES
+
+F521. INFO - Prototype Pollution Payload Caused Transient 500 on Business-Onboarding (Not Reproducible)
+- Original payload: {"email":"test@test.com","__proto__":{"outputFunctionName":"x]);process.mainModule.require(\"child_process\").execSync(\"id\")//"}}
+- Original result: 500 Internal Server Error (Session 33)
+- Current result: 404 (normal behavior, not reproducible)
+- Extensive retesting with 20+ prototype pollution variants all return 404
+- Tested: EJS outputFunctionName, localsName, compileDebug, Pug block/type, Handlebars allowedProtoProperties
+- Conclusion: Likely transient server-side error or patched between sessions
+- Impact: If reproducible, could indicate server-side template injection vulnerability; currently classified as transient anomaly
+- Reproducible: NO (transient)
+
 ## 16. Next Steps for Continued Testing
 
 Priority 1 (Critical - requires second test account):
