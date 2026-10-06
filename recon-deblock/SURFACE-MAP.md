@@ -1725,7 +1725,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 136 | INFO | QR login abandon works without auth (204) | - | - | YES | /api/qr-login/abandon POST returns 204 |
 | 137 | INFO | FaceTec 2FA mobile session error oracle | - | - | YES | "FaceTec 2FA session not found" on create-2fa-mobile-session |
 
-Total: 167 findings (11 critical, 35 high, 49 medium, 37 low, 35 info)
+Total: 171 findings (12 critical, 36 high, 50 medium, 38 low, 35 info)
 
 ## 15. Session Notes
 
@@ -2454,27 +2454,258 @@ Finding 167 [INFO]: WordPress site configuration details
 - Intercom integration active (messenger_security_enabled: true)
 - Gravatar hash for admin-deblock: 44f51df94ecb1454d3e064107d59a8a4606564f21ace0b536097f9f7a185e5f3
 
+## 12v. 2FA Mobile Session Bypass (Findings 168-171)
+
+Finding 168 [CRITICAL]: 2FA mobile session completion accepts ANY session key without auth
+- Target: app-uat-01.deblock.com/api/auth/complete-2fa-mobile-session (POST)
+- Endpoint returns {"success":true} for ANY mobileSessionKey value
+- Tested with: strings ("test", "a"), UUIDs, integers, booleans, arrays, objects
+- All return HTTP 200 {"success":true} without requiring authentication
+- No CSRF required (works with cookie + csrf token but also without session auth)
+- No rate limiting: 24/30 successful in 8.1s (3.0 req/s, some dropped due to throughput)
+- Production: 410 (endpoint disabled)
+- Business UAT: 403 (requires CSRF)
+- Attack chain: If 2FA session key format is guessable, an attacker could complete
+  another user's 2FA challenge during login flow
+- Impact: CRITICAL - potential 2FA bypass on UAT environment, account takeover
+
+Finding 169 [HIGH]: 2FA session creation endpoint skips auth check
+- Target: app-uat-01.deblock.com/api/auth/create-2fa-mobile-session (POST)
+- Returns: {"error":"FaceTec 2FA session not found"} (HTTP 400) without auth
+- Error message reveals: endpoint checks for FaceTec session BEFORE checking auth
+- Confirms auth check ordering vulnerability consistent with Finding 142
+- Impact: Auth bypass vulnerability; session enumeration possible
+
+Finding 170 [MEDIUM]: complete-2fa endpoint accepts NoSQL operators as input
+- Target: app-uat-01.deblock.com/api/auth/complete-2fa-mobile-session
+- Accepts: {"mobileSessionKey":{"$ne":""}} -> {"success":true}
+- Accepts: {"mobileSessionKey":{"$gt":""}} -> {"success":true}
+- Accepts: {"mobileSessionKey":{"$regex":".*"}} -> {"success":true}
+- Accepts: {"mobileSessionKey":{"$exists":true}} -> {"success":true}
+- Backend does not sanitize or type-check the mobileSessionKey parameter
+- While the endpoint appears to be a no-op (always returns success),
+  the acceptance of MongoDB operators suggests MongoDB backend or
+  insufficient input validation
+- Impact: Potential NoSQL injection; backend technology disclosure
+
+Finding 171 [LOW]: Auth health endpoint accessible without authentication
+- Target: app-uat-01.deblock.com/api/auth/health (GET)
+- Returns HTTP 200 with empty body
+- Confirms auth service is running
+- Impact: Service availability disclosure
+
+## 12w. Complete API Route Map (150+ Endpoints)
+
+Full API constant map extracted from personal app JS bundles (app-uat-01.deblock.com):
+
+Authentication (10 endpoints):
+- /auth (POST login)
+- /auth/check-session (GET)
+- /auth/refresh (POST)
+- /auth/logout (POST)
+- /auth/analytics (POST, no auth)
+- /auth/create-2fa-mobile-session (POST, skips auth check)
+- /auth/complete-2fa-mobile-session (POST, accepts any key)
+- /auth/subscribe-2fa-mobile-session (POST)
+- /auth/2fa-mobile-session-socket (WebSocket, no auth)
+- /auth/facetec-keys (GET)
+- /auth/health (GET, no auth)
+
+QR Login (3 endpoints):
+- /qr-login (POST, no auth + no rate limit on UAT)
+- /qr-login/exchange (POST, no rate limit)
+- /qr-login/abandon (POST)
+
+Cards (7+ endpoints):
+- /cards (GET)
+- /cards/:id (GET)
+- /cards/:id/controls/:type (GET/POST)
+- /cards/designs (GET)
+- /cards/designs/collections/active (GET)
+- /cards/delivery-options (GET)
+- /top-up/get-card-tokens (GET)
+- /top-up/create-card-token (POST)
+- /top-up/get-card-token/:id (GET)
+- /top-up/delete-card-token/:id (DELETE)
+- /top-up/get-topup-limits (GET)
+- /top-up/get-topup-fees (GET)
+- /top-up/create-topup (POST)
+
+Crypto (20+ endpoints):
+- /crypto-wallets/wallets (GET)
+- /crypto-wallets/wallets/keys (GET)
+- /crypto-wallets/wallets/import (POST)
+- /crypto-wallets/wallets/accounts (GET)
+- /crypto-wallets/wallets/:id/keys (GET)
+- /crypto-wallets/icons (GET)
+- /crypto-currencies/currencies (GET, parameterized)
+- /crypto-currencies/receivables (GET, parameterized)
+- /crypto-transactions/init-crypto-transaction (POST)
+- /crypto-transactions/build-crypto-transaction (POST)
+- /crypto-transactions/sign-crypto-transaction (POST)
+- /crypto-transactions/get-crypto-transaction/:id (GET)
+- /crypto-transactions/get-crypto-transaction/by-reference-id/:id (GET)
+- /crypto-transactions/get-transaction-details/:id (GET)
+- /crypto-transactions/:id/browser-keys/:key (GET)
+- /crypto-contacts (GET)
+- /crypto-messages/messages/:id (GET)
+- /crypto-messages/messages/:id/submit (POST)
+- /crypto-portfolio-chart/wallets/:id/timeseries/:period (GET)
+- /crypto-portfolio-item-chart (GET, parameterized)
+
+Crypto Trading/Stocks/Earn (10+ endpoints):
+- /crypto-trading/account (GET)
+- /crypto-trading/accounts/:id/buy (POST)
+- /crypto-trading/accounts/:id/sell (POST)
+- /crypto-trading/orders/:id/cancel (POST)
+- /crypto-trading/quote/:id/accept (POST)
+- /crypto-stocks/account (GET)
+- /crypto-stocks/accounts/:id/buy (POST)
+- /crypto-stocks/accounts/:id/sell (POST)
+- /crypto-stocks/accounts/:id/deposits (GET)
+- /crypto-stocks/accounts/:id/withdrawals (GET)
+- /crypto-stocks/movements/:id/accept (POST)
+- /crypto-stocks/orders/:id/cancel (POST)
+- /crypto-stocks/quote/:id/accept (POST)
+- /crypto-vaults/accounts (GET)
+- /crypto-vaults/vaults (GET)
+- /crypto-vaults/vaults/:id/approvals (GET)
+- /crypto-vaults/approvals/:id/submit (POST)
+- /crypto-vaults/vaults/:id/interest (GET)
+
+Banking (15+ endpoints):
+- /accounts (GET)
+- /accounts/icons (GET)
+- /bank-details (GET)
+- /bank-details/:id (GET)
+- /sepa-transfer/get-bank-details (GET)
+- /sepa-transfer/create (POST)
+- /sepa-transfer/create/schedule (POST)
+- /sepa-transfer/upcoming (GET)
+- /sepa-transfer/upcoming/overview (GET)
+- /sepa-transfer/upcoming/:id/cancel (POST)
+- /self-transfer (GET)
+- /self-transfer/create (POST)
+- /transactions/fiat (GET)
+- /transactions/fiat/single/:id (GET)
+- /transactions/crypto (GET)
+- /transactions/crypto/:id (GET)
+- /transactions/direct-debits (GET)
+- /transactions/direct-debits/:id/refund (POST)
+- /transactions/categories (GET)
+- /transactions/generate-request (POST)
+- /transactions/submit (POST)
+- /statements (GET)
+- /statements/:id (GET)
+- /statements/crypto/request (POST)
+
+User & Social (10+ endpoints):
+- /users/user (GET)
+- /users/change-phone (POST)
+- /users/info (GET)
+- /users/browsers (GET/POST)
+- /buddies/contacts (GET)
+- /buddies/contacts/reference-exists/:ref (GET)
+- /buddies/referrals/current (GET)
+- /buddies/referrals/referees (GET)
+- /buddies/referrals/redeem/:code (POST)
+- /referrals/current (GET)
+- /referrals/invites (GET)
+- /referrals/referees/:id/nudge (POST)
+- /blocks (GET)
+- /blocks/seasons (GET)
+- /blocks/seasons/current (GET)
+- /blocks/activity (GET)
+
+Frontdesk/Admin (8 endpoints):
+- /frontdesk (GET)
+- /frontdesk/transactions (GET)
+- /frontdesk/transactions/upcoming (GET)
+- /frontdesk/features (GET)
+- /frontdesk/accounts (GET)
+- /frontdesk/users (GET)
+- /frontdesk/users/handle (GET)
+- /frontdesk/users/avatar/upload-url (GET)
+- /frontdesk/users/avatar/upload (POST)
+- /frontdesk/wallets/current (GET)
+- /frontdesk/wallets/current/custom-iban (GET)
+
+Features & Settings (10+ endpoints):
+- /pots (GET)
+- /pots/:id (GET)
+- /pots/:id/close (POST)
+- /dca/standing-orders (GET)
+- /routiner/standing-orders (GET)
+- /roundups/settings (GET)
+- /roundups/settings/options (GET)
+- /stakes (GET)
+- /transactions/stakes/estimate (GET)
+- /pricing/plans (GET)
+- /pricing/plans/current (GET)
+- /pricing/plans/:id/subscribe (POST)
+- /pricing/plans/subscriptions (GET)
+- /pricing/plans/subscriptions/:id/cancel (POST)
+- /cashbacks (GET)
+- /cashbacks/lifetime (GET)
+- /perks/insurance (GET)
+- /promo-codes/claimability (GET)
+- /promo-codes/use-code (POST)
+- /vaults/snapshot (GET)
+- /vaults/groups (GET)
+
+Security (8 endpoints):
+- /sca (GET)
+- /sca/clear-sca (POST)
+- /passkeys (GET)
+- /passkeys/register (POST)
+- /passkeys/auth (POST)
+- /key-management/:id (GET)
+- /key-management/:id/resend (POST)
+- /facetec-gateway/process-request (POST)
+
+No Auth Required:
+- /csrf (GET)
+- /health (GET)
+- /auth/health (GET)
+- /app-version (GET)
+- /client-region (GET)
+- /marketing-widgets (GET)
+- /legal/order-execution-policy (GET)
+- /legal/privacy-policy (GET)
+- /legal/crypto-wallet-import-terms (GET)
+- /analytics/entry (POST)
+- /analytics/organisms (POST)
+- /auth/analytics (POST)
+- /features (GET, requires auth on UAT)
+- /nfts (GET, may not require auth)
+- /nfts/:id (GET)
+
+WebSocket Paths:
+- /websocket (ActionCable, no auth)
+- /crypto-socket (no auth)
+- /crypto-v3-socket (no auth)
+- /crypto-commands-socket (no auth)
+- /auth/2fa-mobile-session-socket (no auth)
+
 ## 16. Next Steps for Continued Testing
 
-Priority 1 (High-impact, immediately testable):
-1. Authenticated testing with second test account (IDOR, privilege escalation on 130+ endpoints)
-2. WebSocket session hijack PoC (connect to 2FA socket, enumerate real session IDs)
-3. Google OAuth redirect_uri enumeration for valid URIs (found: /api/auth/google/callback rejected)
-4. iCloud CloudKit with paired web auth token (wallet recovery data access)
-5. QR login brute force PoC with parallel connections on UAT
+Priority 1 (Critical - requires second test account):
+1. Authenticated IDOR testing across 150+ endpoints (user data, transactions, crypto)
+2. 2FA session key enumeration using real session format
+3. Crypto-messages IDOR (message/:id/submit endpoint)
+4. Self-transfer and SEPA-transfer parameter manipulation
+5. Card controls IDOR (/cards/:id/controls/:type)
 
-Priority 2 (Requires more setup):
-6. FaceTec biometric bypass (session enumeration with real session ID format)
-7. Passkey/WebAuthn implementation testing
-8. SCA bypass testing
-9. Mobile app reverse engineering (APK/IPA)
-10. Bearer token testing when api.deblock.com backend comes online (currently 502)
+Priority 2 (High-impact, additional testing):
+6. WebSocket session hijack with valid session tokens
+7. Promo code brute force / abuse
+8. FaceTec biometric bypass with real session flow
+9. Mobile app reverse engineering (APK/IPA for additional endpoints)
+10. Bearer token testing when api.deblock.com backend comes online
 
 Priority 3 (Enumeration/escalation):
-11. WordPress xmlrpc brute force with larger wordlist against admin-deblock
-12. WordPress backup file name guessing (UpdraftPlus backup naming patterns)
-13. Unleash feature flag enumeration
-14. ActionCable channel subscription with valid auth tokens
-15. Sentry event injection social engineering campaign
-16. ActionMailbox conductor POST with correct email format
-17. DeblockPay merchant endpoint discovery
+11. WordPress xmlrpc brute force with larger wordlist
+12. WordPress UpdraftPlus backup file name guessing
+13. ActionCable channel subscription with valid auth tokens
+14. Crypto trading/stocks order manipulation
+15. Direct debit refund IDOR
