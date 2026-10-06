@@ -6238,3 +6238,262 @@ Priority 3 (Enumeration/escalation):
 13. Crypto trading/stocks order manipulation
 14. Direct debit refund IDOR
 15. BackWPup chatbot-context token guessing
+
+## Session 35 Findings (F530-F558)
+
+### F530 [MEDIUM] PATCH Method on business-onboarding Reveals Verification Endpoint
+- Target: business.deblock.com
+- PATCH /api/business-onboarding returns 400 "Email and code are required" (different from POST which only requires email)
+- This reveals a separate email verification/code confirmation action on the same endpoint via different HTTP method
+- When both email and code are provided, returns 404 (no matching onboarding record)
+- Impact: Information disclosure of verification flow; with valid email and brute-forceable 6-digit code, could potentially verify onboarding without email access
+
+### F531 [LOW] Kubernetes /readyz Health Check Exposed
+- Target: business.deblock.com, app-uat-02.deblock.com
+- GET /readyz returns 200 with empty body on both production and UAT
+- Response headers include x-request-id, security headers, and Google via header
+- UAT response additionally leaks full Content-Security-Policy header with all third-party integrations
+- Sub-paths (readyz/ping, readyz/shutdown etc.) return 404
+- Impact: Confirms Kubernetes deployment, enables availability monitoring; UAT version leaks significantly more information via CSP
+
+### F532 [MEDIUM] TLS Certificate CN Mismatch on Production
+- Target: business.deblock.com
+- SSL certificate Subject CN = app-uat-01.deblock.com (should be business.deblock.com or *.deblock.com)
+- Certificate issued by Google Trust Services WR3
+- Valid: Aug 18 - Nov 16, 2026
+- Impact: Production and UAT share the same TLS certificate; indicates shared infrastructure. Certificate was issued for UAT hostname but serves production traffic. Could indicate misconfiguration or shared load balancer.
+
+### F533 [HIGH] 10 Live Card Management API Endpoints on Production
+- Target: business.deblock.com
+- All return 401 with descriptive error messages when accessed with __Host-auth-token=x:
+  - GET /api/cards => "Failed to load cards" (plural)
+  - GET /api/cards/list => "Failed to load card"
+  - GET /api/cards/transactions => "Failed to load card"
+  - GET /api/cards/create => "Failed to load card"
+  - GET /api/cards/activate => "Failed to load card"
+  - GET /api/cards/freeze => "Failed to load card"
+  - GET /api/cards/unfreeze => "Failed to load card"
+  - GET /api/cards/pin => "Failed to load card"
+  - GET /api/cards/details => "Failed to load card"
+  - GET /api/cards/limits => "Failed to load card"
+- POST /api/cards/create and POST /api/cards/pin return 502 Apigee 405 (method not allowed for POST on these)
+- Without auth cookie, /api/cards/transactions and /api/cards/list return simple 401 {"error":"Unauthorized","status":401}
+- Impact: Full card lifecycle management exposed on production. With authenticated session, these endpoints handle PCI-sensitive card operations (PIN, freeze/unfreeze, transaction history). The descriptive error messages confirm the backend processes the request before rejecting.
+
+### F534 [MEDIUM] bank-details POST Returns 403 "Forbidden" (Not 401)
+- Target: business.deblock.com
+- POST /api/bank-details => 403 {"error":"Forbidden"} regardless of auth cookie, CSRF token, or request body
+- GET /api/bank-details => 502 Apigee 405 (method not allowed)
+- PUT /api/bank-details => 502 Apigee 405
+- Impact: The 403 (not 401) response suggests the endpoint exists and may have IP-based or additional access controls beyond auth token validation. This is different from rate-limited endpoints (which also return 403) as it persists regardless of CSRF.
+
+### F535 [MEDIUM] SCA (Strong Customer Authentication) Endpoints Live on Production
+- Target: business.deblock.com
+- GET /api/sca => 502 Apigee 405 (exists, only accepts POST)
+- POST /api/sca => 403 "Forbidden"
+- GET /api/sca/clear => 502 Apigee 405 (exists, only accepts POST)
+- POST /api/sca/clear => 403 "Forbidden"
+- On UAT-02: POST /api/sca => 400 "User is not authenticated" (NOT rate-limited!)
+- Impact: SCA endpoints handle PSD2 Strong Customer Authentication for financial transactions. Production is 403/rate-limited, but UAT-02 accepts requests (just requires auth). With authenticated session, could bypass or manipulate SCA challenges.
+
+### F536 [MEDIUM] crypto-simulation Endpoints Live on Production
+- Target: business.deblock.com
+- GET /api/crypto-simulation/buy => 502 Apigee 405
+- POST /api/crypto-simulation/buy => 403 "Forbidden"
+- GET /api/crypto-simulation/sell => 502 Apigee 405
+- POST /api/crypto-simulation/sell => 403 "Forbidden"
+- Impact: Crypto trading simulation endpoints exist on production. If 403 clears (rate limit), these could be tested for price manipulation or improper parameter validation.
+
+### F537 [LOW] TRACE Method Returns 500 Internal Server Error
+- Target: business.deblock.com
+- TRACE / => 500 "Internal Server Error"
+- CONNECT / => 400 "Bad Request"
+- Impact: TRACE should return 405 (not supported). The 500 response indicates unhandled exception for the TRACE method, which could potentially be exploited for Cross-Site Tracing (XST) if the 500 includes request headers in the response body. Testing shows no header reflection but the error handling is improper.
+
+### F538 [HIGH] Three GCS Bucket Names Confirmed via CSP Leak
+- Source: UAT-02 CSP header from /readyz response
+- Confirmed buckets:
+  1. deblock-dev-crypto-currencies-v2 (DEVELOPMENT BUCKET)
+  2. deblock-production-crypto-currencies-v2
+  3. deblock-production-crypto-nfts-v2
+- All return 403 "Access Denied" for listing (not public), but the error messages confirm the buckets EXIST
+- Individual objects might be publicly readable if filenames are guessed
+- The DEV bucket name follows predictable pattern: deblock-{env}-crypto-currencies-v2
+- Other possible buckets: deblock-staging-crypto-currencies-v2, deblock-dev-crypto-nfts-v2
+- Impact: GCS bucket enumeration confirmed. Dev bucket name exposed could lead to accessing development assets with less restrictive ACLs. The naming pattern allows discovery of additional buckets.
+
+### F539 [HIGH] Google Drive Wallet Backup Mechanism Exposed ("Project Orwell")
+- Source: UAT-02 JS file 081j6xt3ixwpe.js
+- Wallet encryption keys are stored in Google Drive's appDataFolder as text files
+- File naming convention: {userId}_orwell_deblock.txt
+- Uses Google OAuth implicit flow with scope "drive.appdata"
+- Implementation includes fetchWithAuth class using Bearer token auth
+- Google Drive API endpoints: googleapis.com/drive/v3/files, googleapis.com/upload/drive/v3/files
+- RESEND_KEY_API_URL: /api/key-management/{userId}/resend
+- Impact: The wallet backup mechanism is fully documented in client-side JavaScript. The predictable file naming ({userId}_orwell_deblock.txt) means if an attacker gains access to a user's Google account or the OAuth token, they can directly locate and download the wallet encryption key. The internal project codename "Orwell" is disclosed.
+
+### F540 [HIGH] Apple CloudKit Wallet Encryption Key Escrow
+- Source: UAT-02 JS file 081j6xt3ixwpe.js
+- Wallet encryption keys stored as "Wallet" records in Apple CloudKit privateCloudDatabase
+- Record fields: encryptionKey, userId, id
+- Query: performQuery({recordType:"Wallet", filterBy:[userId, id]}, {resultsLimit:50, desiredKeys:["encryptionKey","userId","id"]})
+- Container: iCloud.com.deblock.deblockapp.production
+- API token: 230f22b656e186689f6fcd1c7965a6bf1f390ab2ca374aeac57eeabce11a8b8b (previously documented in F519)
+- Key validation: base64 strings between 16-64 bytes
+- Impact: Complete CloudKit wallet escrow design exposed. Combined with the CloudKit API token, an attacker who can impersonate CloudKit auth could query all wallet encryption keys.
+
+### F541 [MEDIUM] Complete Custom HTTP Header Map Disclosed
+- Source: UAT-02 JS file 3bd29ap2uas4j.js
+- Seven custom headers identified:
+  1. X-Debug (DEBUG_HEADER) - debug mode toggle
+  2. deblock-dispatch-id (DEBLOCK_DISPATCH_ID_HEADER) - request dispatch tracking
+  3. X-2fa-Context (X_2FA_CONTEXT_HEADER) - 2FA context
+  4. X-Device-Key (X_DEVICE_KEY_HEADER) - device identification
+  5. X-Encrypted (X_ENCRYPTED_HEADER) - PGP encryption control
+  6. X-Kyc-Encrypted (X_KYC_ENCRYPTED_HEADER) - KYC data encryption control
+  7. X-Mobile-Session (X_MOBILE_SESSION_HEADER) - mobile session indicator
+- Testing: Headers don't change visible behavior on unauthenticated requests but may affect backend processing with valid sessions
+- Impact: Full knowledge of the custom header protocol allows crafting requests that match the exact expected format. X-Debug could enable verbose error output with authenticated sessions.
+
+### F542 [LOW] Internal Project Codename "Orwell" Disclosed
+- Source: UAT-02 JS file 081j6xt3ixwpe.js, function: return `${e}_orwell_deblock.txt`
+- "Orwell" appears to be the internal project name for the wallet key escrow/backup system
+- Impact: Internal naming disclosure; may assist social engineering or identifying related internal repositories/documentation.
+
+### F543 [HIGH] 9 Development/Test Routes Registered in UAT-02
+- Source: UAT-02 JS routing manifest (0grmio8w4z7a5.js)
+- Routes (all return 307 redirect to auth):
+  1. /:locale/google-test - Google Drive integration testing
+  2. /:locale/icloud-test - iCloud integration testing
+  3. /:locale/onboarding-dev - Development onboarding flow
+  4. /:locale/flows/cards-testing-flow - Card operations testing
+  5. /:locale/flows/crypto-sdk-testing-flow - Crypto SDK testing
+  6. /:locale/flows/ledger-import-testing-flow - Ledger hardware wallet import testing
+  7. /:locale/flows/components-preview - UI component storybook
+  8. /:locale/flows/design-system - Design system preview
+  9. /:locale/d8d6a147-7828-411c-8a03-78d2007901c5 - HIDDEN UUID route (unknown purpose)
+- None exist in production JS
+- Impact: Test routes expose internal testing tools. The hidden UUID route is particularly concerning as it may be a debug/backdoor page. With authenticated UAT access, these could expose testing tools that bypass normal controls.
+
+### F544 [HIGH] /api/features Feature Flag Endpoint on UAT-02
+- Target: app-uat-02.deblock.com
+- GET /api/features => 401 "User is not authenticated" (status 401)
+- POST /api/features => 401 "User is not authenticated"
+- NOT present on production (404)
+- Impact: Feature flag endpoint could expose internal feature configurations including unreleased features, A/B test groups, and potentially toggle features that change application behavior. This is UAT-only, meaning it's a development leftover. With authenticated access, could list all feature flags and potentially modify them.
+
+### F545 [HIGH] UAT-Only API Endpoints (Development Leftovers)
+- Target: app-uat-02.deblock.com
+- All return 400 "User is not authenticated" (exist, require auth):
+  - /api/promo-codes/claimability - Check if promo code is claimable
+  - /api/promo-codes/use-code - Redeem promo codes
+  - /api/referrals/current - Current referral data
+  - /api/referrals/invites - Referral invites
+  - /api/perks/insurance - Insurance perks data
+  - /api/onboarding/resend-onboarding-otp - OTP resend (returns EMPTY error message)
+  - /api/onboarding/signature/resend-signature-otp - Signature OTP resend
+- NOT present on production (404)
+- Impact: UAT-02 exposes endpoints not available on production. The promo-codes endpoints could allow unauthorized discount/credit claims. The onboarding OTP resend with empty error may indicate it processes requests silently. With UAT auth, these development-only endpoints likely have weaker validation.
+
+### F546 [MEDIUM] Complete API Endpoint Map (100+ Endpoints) Exposed in JS
+- Source: UAT-02 JS config chunk 3bd29ap2uas4j.js line 4
+- Full categorized endpoint map:
+  Auth (14): auth, check-session, login, login-2fa, refresh, logout, create-2fa-mobile-session, complete-2fa-mobile-session, 2fa-mobile-session-socket, subscribe-2fa-mobile-session, facetec-keys, csrf, passkeys, passkeys/auth, passkeys/register, sca, sca/clear-sca
+  Banking (10+): sepa-transfer/create, sepa-transfer/create/schedule, sepa-transfer/get-bank-details, self-transfer/create, transactions/submit, transactions/generate-request, top-up/create-topup, top-up/create-card-token, top-up/get-topup-limits, bank-details
+  Crypto (25+): crypto-wallets/wallets/keys, crypto-wallets/wallets/import, crypto-transactions/build-crypto-transaction, crypto-transactions/sign-crypto-transaction, crypto-stocks/accounts/{id}/buy, crypto-stocks/accounts/{id}/sell, crypto-trading/accounts/{id}/buy, crypto-trading/accounts/{id}/sell, crypto-vaults/vaults/{id}/approvals
+  Key mgmt: key-management/{id}/resend
+- Impact: Complete API surface known. Enables targeted testing of every endpoint. The crypto-wallets/wallets/keys endpoint (accessing wallet private keys) is the most sensitive.
+
+### F547 [MEDIUM] Six WebSocket Endpoints Confirmed Live
+- Target: app-uat-02.deblock.com
+- WebSocket paths (all return 426 Upgrade Required, confirming they are live):
+  1. /api/websocket - Main application WebSocket
+  2. /api/crypto-socket - Crypto price feed
+  3. /api/crypto-v3-socket - V3 crypto WebSocket
+  4. /api/crypto-commands-socket - Crypto command execution
+  5. /api/crypto-business-socket - Business crypto socket (production only)
+  6. /api/auth/2fa-mobile-session-socket - 2FA mobile session
+- Default WebSocket URL in bundled rpc-websockets lib: ws://localhost:8080
+- Impact: WebSocket endpoints handle real-time crypto operations and 2FA. The crypto-commands-socket could potentially be used to send crypto transaction commands. With a WebSocket client and valid auth, these bypass normal REST API rate limiting.
+
+### F548 [MEDIUM] onboarding/resend-onboarding-otp Returns Empty Error
+- Target: app-uat-02.deblock.com
+- POST /api/onboarding/resend-onboarding-otp => 400 {"error":"","status":400}
+- Returns empty error consistently, both with and without request body
+- All other endpoints return "User is not authenticated" or specific errors
+- Impact: The empty error message suggests the endpoint processes requests differently from other auth-required endpoints. It may be triggering OTP sends silently, or the error handler is suppressed. This endpoint could potentially be used for email enumeration or OTP flood attacks if it processes emails before auth validation.
+
+### F549 [LOW] PayPal Integration Routes Discovered
+- Source: UAT-02 JS routing manifest
+- Routes: /:locale/paypal/return, /:locale/paypal/cancel
+- Impact: Confirms PayPal as a payment method for account top-ups. PayPal return/cancel callback handlers could be tested for redirect manipulation.
+
+### F550 [LOW] Testnet/Dev Blockchain URLs in UAT JavaScript
+- Source: UAT-02 JS bundles (various chunks)
+- Includes localhost:8545 (local Ethereum node), Solana devnet/testnet, Goerli/Holesky/Sepolia testnets
+- Multiple Blockscout testnet RPC endpoints
+- gasstation-testnet.polygon.technology
+- Impact: Confirms multi-chain support development. Internal development URLs should not be in production-adjacent UAT builds.
+
+### F551 [LOW] GTM Container ID GTM-TMHB3PGF (UAT-Only)
+- Source: UAT-02 JS file 19ytvx5jhs5aw.js line 15
+- Not present in production
+- Impact: UAT analytics tracking; could be used to inject tracking if GTM container access is compromised.
+
+### F552 [MEDIUM] Google Drive API Integration for Consumer Wallet Backup
+- Source: UAT-02 JS file 081j6xt3ixwpe.js
+- Uses Google OAuth implicit flow with drive.appdata scope
+- Google Drive API v3: files (list, create, update, delete)
+- Upload API: googleapis.com/upload/drive/v3/files
+- AppDataFolder: isolated per-app storage in user's Drive
+- Impact: The OAuth implicit flow is deprecated by Google and considered less secure. The Drive integration handles wallet encryption keys, making any OAuth token leak a direct path to wallet compromise.
+
+### F553 [LOW] edge.prelude.dev Integration (Security Testing Platform)
+- Source: UAT-02 CSP connect-src directive
+- GET https://edge.prelude.dev/ => 401 (requires authentication)
+- Prelude is a security/threat detection testing platform
+- Impact: Confirms Deblock uses Prelude for security testing. The CSP inclusion means the client-side app communicates with Prelude, possibly for device fingerprinting or security posture assessment.
+
+### F554 [HIGH] crypto-wallets/wallets/keys Endpoint Behind Apigee on UAT
+- Target: app-uat-02.deblock.com
+- GET /api/crypto-wallets/wallets/keys => 502 Apigee 405 (method not allowed - endpoint exists but requires different HTTP method)
+- POST /api/crypto-wallets/wallets/keys => 502 Apigee 405
+- On production: 404 (endpoint removed or hidden)
+- Impact: This is the wallet PRIVATE KEY ACCESS endpoint. It exists on UAT behind the Apigee gateway and responds differently than truly non-existent endpoints. The 405 from Apigee (not from Next.js) means Apigee routes this path to the Rails backend which rejects the method. Could accept PUT, PATCH, or other methods. With authenticated access and correct HTTP method, this could return wallet private keys.
+
+### F555 [MEDIUM] crypto-wallets/wallets/import Accessible on UAT
+- Target: app-uat-02.deblock.com
+- POST /api/crypto-wallets/wallets/import => 400 "User is not authenticated"
+- Impact: Wallet import endpoint exists and requires only authentication. Could be used to import external wallets, potentially manipulating wallet state or triggering key processing.
+
+### F556 [MEDIUM] auth/facetec-keys Endpoint Live
+- Target: business.deblock.com, app-uat-02.deblock.com
+- GET /api/auth/facetec-keys => 401 "FaceTec 2FA session not found"
+- The error message is specific to FaceTec session validation, not general auth
+- Impact: This endpoint provides FaceTec biometric configuration/keys used for 2FA. With a valid FaceTec session ID, this could return the biometric verification keys needed to complete or bypass 2FA.
+
+### F557 [MEDIUM] UAT-02 Auth Endpoints Accessible Without Rate Limiting
+- Target: app-uat-02.deblock.com
+- Production rate-limited endpoints that work on UAT-02:
+  - POST /api/auth/create-2fa-mobile-session => 400 "FaceTec 2FA session not found" (production: 403)
+  - POST /api/sca => 400 "User is not authenticated" (production: 403)
+  - POST /api/auth/refresh => 400 "User is not authenticated" (production: 403)
+  - POST /api/auth/logout => "User is not authenticated" (production: 403)
+- Impact: UAT-02 does not apply the same rate limiting as production. This enables brute force and fuzzing attacks against auth endpoints that are protected on production.
+
+### F558 [MEDIUM] WebSocket Endpoints Return 426 Upgrade Required (Confirmed Live)
+- Target: app-uat-02.deblock.com
+- /api/websocket => 426
+- /api/crypto-socket => 426
+- Both confirm the WebSocket server is running and accepting upgrade requests
+- Impact: With a proper WebSocket client, these endpoints can be connected to for real-time crypto operations and application events. WebSocket connections may bypass REST API rate limiting.
+
+### Additional Information Disclosures (Session 35)
+
+- UAT-02 CSP leaks new third-party integrations: Adjust analytics (app.adjust.com, app.adjust.world), Ledger hardware wallet API (ledgerb.api.ledger.com), StakeKit token assets (assets.stakek.it), IPFS gateway (gateway.ipfs.io)
+- UAT-02 uses app-locale cookie (Secure, HttpOnly, SameSite=strict, 1yr expiry)
+- Production /api/features returns 404 (removed from prod), confirming it's a dev-only endpoint
+- FaceTec SSRF via deviceKeyIdentifier NOT exploitable (session validation occurs before parameter processing)
+- JWT algorithm confusion NOT exploitable (all invalid JWTs return {"valid":false} consistently)
+- Custom headers (X-Debug, X-Mobile-Session, etc.) don't visibly change behavior on unauthenticated requests
+
