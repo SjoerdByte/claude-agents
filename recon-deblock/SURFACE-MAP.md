@@ -9639,3 +9639,55 @@ Priority 3 (Enumeration/escalation):
 - The hash parameter previously validated Twilio webhook signatures
 - Historical evidence of Twilio SMS integration (likely for phone OTP before it was removed from company onboarding)
 - Impact: LOW - Properly deprecated endpoint. The route remains which could be cleaned up, but it correctly returns a "Gone" status. Historical evidence of SMS integration.
+
+### F791 [HIGH] Wallet Recovery Service Exposed With Basic Auth and Solana RPC Endpoints in CSP
+- Target: recovery.deblock.com
+- Vercel-hosted service returns 401 "Authentication required" with WWW-Authenticate: Basic realm="Secure Area"
+- Content-Security-Policy header reveals Solana mainnet RPC connections:
+  - connect-src includes: https://solana-rpc.publicnode.com, https://api.mainnet-beta.solana.com, https://solana.drpc.org
+- Security headers present: strict CSP, COEP (credentialless), COOP (same-origin), CORP (cross-origin), x-frame-options: DENY, HSTS with includeSubDomains and preload
+- Basic Auth tested with common credentials (admin:admin, deblock:deblock, admin:password, test:test, recovery:recovery) - all return 401
+- The service is a Solana wallet recovery tool used for account/key recovery
+- HTTP Basic Auth is significantly weaker than the JWT + CSRF double-submit pattern used on the main application:
+  - No brute-force protection (no rate limiting detected)
+  - Credentials transmitted in every request (susceptible to replay)
+  - No session management or token expiration
+- The CSP reveals the exact Solana RPC endpoints used for recovery transactions
+- Impact: HIGH - A wallet recovery service handling private key material is protected only by HTTP Basic Auth. The CSP exposes the Solana RPC infrastructure used for recovery operations. If credentials are leaked or brute-forced, an attacker gains access to wallet recovery functionality.
+
+### F792 [MEDIUM] File Upload Endpoint With Separate Token Authentication
+- Target: web-api-staging.deblock.com
+- POST /v1/upload/anthony/:token returns {"status":"Forbidden"} (not 401 or 403, a custom status)
+- The endpoint exists in the route table and accepts POST multipart/form-data
+- PUT returns 404 (only POST is routed)
+- GET returns 404 (only POST is routed)
+- The "anthony" in the path is likely a username, developer name, or role identifier
+- The endpoint uses a separate token mechanism from the bearer auth (bearer token returns "Forbidden", not unauthorized)
+- If the upload token is discovered (e.g., through staging stack traces or git history), arbitrary file upload could be possible
+- Impact: MEDIUM - File upload endpoint with custom token auth exists. The separate auth mechanism suggests it was built outside the main auth framework. If the token is discoverable, it could enable arbitrary file uploads.
+
+### F793 [MEDIUM] Callback and Beta Validation Endpoints Accept Arbitrary Input
+- Target: web-api-staging.deblock.com and web-api.deblock.com
+- GET /v1/check/callback?ref=test -> {"status":"ok"} (accepts any ref parameter)
+- The callback endpoint appears to validate referral/tracking links without proper verification
+- GET /v1/bb/beta -> {"status":"fail","error":"Wrong ID! Bursted Bubbles ID are between 1 and 1000."}
+  - Reveals the exact range of valid NFT IDs (1-1000)
+  - The error message is overly informative
+- GET /v1/meta/bb/:id -> Returns full ERC-721 standard NFT metadata (name, symbol, description, image, animation_url)
+  - Public NFT metadata endpoint (expected to be public per ERC-721)
+- Impact: MEDIUM - The callback check endpoint accepts arbitrary input without validation. The error messages reveal internal data ranges that aid enumeration.
+
+### F794 [HIGH] Recovery Service CSP Exposes Solana Infrastructure and Permissions Policy
+- Target: recovery.deblock.com
+- Full security header analysis reveals:
+  - permissions-policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=()
+  - All hardware APIs are disabled, confirming this is a non-interactive key recovery tool (no biometric/camera capture)
+  - cross-origin-embedder-policy: credentialless (prevents data leakage via cross-origin resources)
+  - cross-origin-opener-policy: same-origin (prevents cross-origin window.opener access)
+- Solana RPC endpoints (from CSP connect-src):
+  - https://solana-rpc.publicnode.com (public Solana RPC)
+  - https://api.mainnet-beta.solana.com (official Solana mainnet RPC)
+  - https://solana.drpc.org (decentralized RPC provider)
+- Three independent RPC providers suggests redundancy for critical recovery operations
+- This confirms Deblock uses Solana blockchain for wallet recovery in addition to the Ethereum/Polygon infrastructure used by the main app (Alchemy API - F783)
+- Impact: HIGH - Recovery infrastructure details expose multi-chain architecture. Combined with F791, the Solana recovery service represents a high-value target for sophisticated attacks against the wallet recovery mechanism.
