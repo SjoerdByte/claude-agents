@@ -8135,6 +8135,32 @@ Priority 3 (Enumeration/escalation):
 - Confirms multi-currency support (EUR, GBP, USD) and precious metals trading
 - Impact: MEDIUM - Exposes complete marketing site architecture, all product pages, campaign landing pages, and the deeplink hash format. Campaign pages reveal pricing strategy and promotional offers.
 
+### F701 [CRITICAL] Data Deletion via GET Request with Hardcoded Bearer Token (CSRF + No Auth)
+- Target: deblock.com/d/[hash] -> waitlist-api.deblock.com/v1/remove/data/{hash}
+- The deeplink route `/d/[hash]` on the marketing site is a user data deletion page
+- Client-side JS at `/_next/static/chunks/pages/d/%5Bhash%5D-ad5a2ad598d47448.js` reveals:
+  1. Takes hash from URL path parameter
+  2. Client-side validation only: `/^[A-Za-z0-9_-]{1,128}$/`
+  3. Sends GET request to `https://waitlist-api.deblock.com/v1/remove/data/{hash}`
+  4. Uses the SAME hardcoded bearer token from F655: `64726720888b45b06e7f8f22ac2cbb4ece5cefe6016cf31986b80ad47fece262de9bb18db4225f728816d611eb28487fddf9`
+  5. On success: clears localStorage, shows "AND IT'S GONE!", redirects to homepage
+- UI text: "Delete all your data?", "Are you sure you want to leave us?", "I'm 100% sure"
+- CONFIRMED: Endpoint returns `{"status":"ok"}` for ANY hash value (tested: FAKEHASHVALUE123, 1, test)
+- Without bearer token: returns 403 `{"status":"fail","error":"Forbidden!"}`
+- Identical etag `W/"a29ee2b15c494311c52521766e44af56"` for all responses (static response pattern)
+- Attack chain:
+  1. Attacker knows or guesses a user's deletion hash
+  2. Sends GET request with hardcoded bearer token -> data deleted
+  3. Alternatively: CSRF via `<img src="https://waitlist-api.deblock.com/v1/remove/data/{hash}">` in any page (GET request, no CORS needed for img tags, though bearer token would need JS)
+  4. Hash format is simple alphanumeric (brute-forceable if short)
+- Vulnerabilities:
+  - GET for destructive operation (violates RFC 7231, enables CSRF via links/images)
+  - Hardcoded bearer token in client-side JS (no per-user authentication)
+  - No confirmation mechanism beyond client-side button (server processes immediately)
+  - No rate limiting on deletion endpoint
+  - No user session validation (any bearer token holder can delete any user's data)
+- Impact: CRITICAL - Mass user data deletion possible by anyone who can enumerate deletion hashes. The hardcoded bearer token in client-side JS combined with a GET-based destructive endpoint means any script on any origin can trigger data deletion. GDPR right-to-erasure flow implemented without proper authentication.
+
 ### F700 [INFO] Next.js Image Optimizer Restricted to Same-Origin
 - Target: business.deblock.com/_next/image
 - External URLs: Returns 400 `"url" parameter is not allowed`
