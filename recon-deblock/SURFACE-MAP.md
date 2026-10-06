@@ -1956,7 +1956,16 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 394 | MEDIUM | Multiple endpoints reach Apigee backend via 405 without auth | business.deblock.com | CWE-284 | YES | Several endpoints return 405/502 from Apigee without auth. Requests reach backend infrastructure. Method enumeration possible. |
 | 395 | INFO | Updated proxy domain accessibility mapping | *.deblock.com | CWE-200 | YES | app-uat-02, staging, recovery, status accessible. app-uat-01, blog, uat-business blocked by proxy. |
 
-Total: 395 findings (13 critical, 87 high, 153 medium, 97 low, 53 info)
+| 396 | HIGH | UAT-02 cards empty body + e2e cookies reaches card creation | app-uat-02.deblock.com | CWE-287 | YES | POST /api/cards Content-Length:0 + e2e cookies = 500 "Failed to create card". Two-layer auth bypass reaches card creation. |
+| 397 | CRITICAL | UAT-02 bank-details empty body + e2e cookies returns HTTP 200 | app-uat-02.deblock.com | CWE-287 | YES | POST /api/bank-details Content-Length:0 + e2e cookies = 200 "Unknown error occured". Full auth bypass, bank details business logic reached, incorrect 200 status. |
+| 398 | MEDIUM | Three WebSocket endpoints accessible without auth on production | business.deblock.com | CWE-284 | YES | /api/websocket, /api/crypto-commands-socket, /api/crypto-business-socket all return 426 without auth. Proxy strips upgrade headers. |
+| 399 | MEDIUM | New production endpoints reach Rails backend without auth | business.deblock.com | CWE-284 | YES | frontdesk/features, frontdesk/accounts, users/user, users/browsers all reach Rails (401). Expanded admin surface. |
+| 400 | HIGH | UAT-02 analytics injection without auth via e2e cookies | app-uat-02.deblock.com | CWE-287 | YES | POST /api/auth/analytics with e2e cookies: {"success":true}. Arbitrary data stored. PII injection, no rate limit. |
+| 401 | MEDIUM | UAT-02 facetec deeper validation exposed via e2e cookies | app-uat-02.deblock.com | CWE-287 | YES | Empty body + e2e: "Device key identifier is required". Different from production error. FaceTec validates independently of auth. |
+| 402 | LOW | UAT-02 auth/refresh token mechanism disclosure | app-uat-02.deblock.com | CWE-200 | YES | "No token or refresh token found" reveals dual-token auth mechanism. |
+| 403 | MEDIUM | UAT-02 onboarding endpoints reached with empty body + e2e | app-uat-02.deblock.com | CWE-287 | YES | resend-onboarding-otp, signature/resend-signature-otp, signature/complete all reach business logic without auth. |
+
+Total: 403 findings (14 critical, 90 high, 158 medium, 98 low, 53 info)
 
 ## 15. Session Notes
 
@@ -1995,6 +2004,7 @@ Total: 395 findings (13 critical, 87 high, 153 medium, 97 low, 53 info)
 - Session 22: app-uat-02.deblock.com discovered (second UAT with newer build 86c92c6). Production app.deblock.com API fully decommissioned (all endpoints now 410 Gone, was previously returning auth errors). business.deblock.com becomes primary production API target. Business SCA endpoint bypasses auth with CSRF double-submit ("Step-up failed"). UAT bank-details has pre-auth idempotency middleware bypass. UAT-02 confirms all auth bypass patterns from UAT-01 (cards empty body, users/info, create-2fa-mobile-session, bank-details, onboarding). UAT-02 CSP reveals additional third-party integrations (Prelude, StakeKit, Ledger, Apple CloudKit, Adjust, OneSignal). Business frontdesk admin endpoints reach Rails backend (401). Total findings: 375.
 - Session 23: Production business.deblock.com auth bypass expansion. NEW production auth bypasses: /api/facetec-gateway/process-request returns "FaceTec 2DA session not found" (F376), /api/passkeys/auth returns "Passkey authentication failed" (F377). UAT facetec-gateway reaches deeper into FaceTec SDK validation requiring deviceKeyIdentifier (F378). Hardcoded bearer token partially recognized by UAT auth middleware - returns "Failed to fetch user info" instead of "User is not authenticated" (F379). E2E test cookies (e2e-mock-browser-id, e2e-user-type-override) bypass UAT auth entirely creating mock sessions (F380). E2E cookies + CSRF bypass bank-details auth reaching idempotency middleware on both UATs (F381). Business Sentry DSN exposed with different key from UAT (F382). New /api/cashbacks/lifetime endpoint discovered reaching Rails (F383). UAT RSC pages return 200 with e2e cookies for authenticated routes (F384). Business API has limited proxy surface - most auth flow endpoints not proxied (F385). UAT-02 /dashboard not vulnerable to e2e cookie crash (returns 404). Total findings: 385.
 - Session 24: Idempotency key mechanism fully reverse-engineered: UUID v4 in JSON body as "idempotencyKey" field (header and cookie NOT read by Rails). Production business-onboarding POST auth bypass with email enumeration (F386): 404 vs 400 differential reveals whether email exists, endpoint excluded from rate limiting. Production crypto-simulation unauthenticated infrastructure disclosure (F387): "No simulation node" without params, "Forbidden" with params (two validation layers). UAT-02 e2e cookies + body idempotency key bypass TWO middleware layers (F389): idempotency middleware AND first auth layer bypassed, blocked at third layer "User is not authenticated". Production auth/logout confirmed working without auth (F390). Business-onboarding rate-limit exclusion confirmed (F391). Crypto-simulation inconsistent validation order (F392). Production users/info distinct business logic error without auth (F393). Multiple endpoints reach Apigee via 405 without auth (F394). Updated proxy domain accessibility map (F395). Total findings: 395.
+- Session 25: CRITICAL: UAT-02 bank-details empty body + e2e cookies returns HTTP 200 (F397) -- deepest penetration on any endpoint, full auth bypass reaching bank details business logic with incorrect 200 status code. UAT-02 cards empty body + e2e cookies = 500 "Failed to create card" -- server attempts card creation (F396). Three production WebSocket endpoints /api/websocket, /api/crypto-commands-socket, /api/crypto-business-socket return 426 without auth (F398). New production endpoints: frontdesk/features, frontdesk/accounts, users/user, users/browsers all reach Rails backend (F399). UAT-02 auth/analytics injection via e2e cookies confirmed: {"success":true} with arbitrary data including PII fields (F400). UAT-02 facetec deeper validation "Device key identifier is required" with e2e cookies (F401). Auth/refresh reveals dual-token mechanism (F402). Onboarding OTP and signature endpoints reached via empty body + e2e (F403). JS bundle analysis: new API routes discovered including crypto-business, frontdesk/features, frontdesk/accounts, pricing/plans, users/user, users/browsers. Production auth/analytics not proxied (404). Recovery.deblock.com: /api/health bypasses Basic Auth returning full 404 page with JS chunk refs, deployment hash 5E8rtjZA7HwmI0gYYO_WP, CSP with Solana RPC endpoints. Staging.deblock.com: pure Vercel marketing site, no API proxy. Total findings: 403.
 - Session 21: Production auth bypass confirmation + CSRF double-submit exploitation + expanded endpoint enumeration. CRITICAL: Production /api/auth/create-2fa-mobile-session confirmed auth bypassed (returns FaceTec business logic error with CSRF double-submit). Production /api/auth/logout confirmed no auth check (CSRF logout attack, returns 200 "Logged out"). UAT new auth bypasses: onboarding/signature/resend-signature-otp (F348), onboarding/signature/complete (F349). CSRF double-submit technique confirmed: freely obtain token from /api/csrf, set both x-csrf-token header and __Host-csrf cookie to bypass all 403 Forbidden on POST endpoints. All 11 production /api/cards/* sub-routes reach Rails backend (list, create, freeze, unfreeze, details, pin, limits, activate, deactivate, order, virtual). Production 2fa-mobile-session-socket exists (426 Upgrade Required without auth). UAT /api/health exposes buildId + timestamp. UAT .well-known files expose Android signing certs + iOS app config + QR login deep links. app.deblock.com returns 410 Gone (decommissioned). Total findings: 360.
 - Session 20: UAT auth bypass pattern expansion + JS deep analysis + production comparison. Downloaded and analyzed all 52 UAT JS chunks. Discovered auth cookie name "auth-token" with support cookies "idempotency-key" and "reference-id", plus E2E test cookies "e2e-mock-browser-id" and "e2e-user-type-override". Extracted 45 internal application flows including create-virtual-card-flow, create-physical-card-flow, export-wallet-keys-flow. Mapped 100+ API endpoint URL constructions from JS. Found 5 additional UAT auth bypass endpoints beyond cards: create-2fa-mobile-session returns "FaceTec 2FA session not found" (F331), users/info returns "Failed to fetch user info" (F332), subscribe-2fa-mobile-session returns "Missing mobileSessionKey" (F333), 2fa-mobile-session-socket returns 426 without auth (F334), onboarding/resend-onboarding-otp returns "Unable to resend otp" (F335). Production comparison: auth/check-session returns {"valid":false} (session oracle, F336), CSRF endpoint returns token without auth (F337), most API routes return Next.js 404 (not proxied). Next.js version 16.2.11 in Turbopack bootstrap (F344). CSRF token format confirmed: timestamp.expiry.nonce.hmac, __Host-csrf cookie, 30-min validity. Total findings: 345.
 - Session 19: UAT API deep exploitation. CRITICAL finding: /api/cards auth bypass via empty body. POST with no body (Content-Length: 0 or missing) returns 500 "Failed to create card" (business logic) instead of 400 "User is not authenticated". Auth middleware requires valid JSON body >= 2 bytes to activate. 100% reproducible (5/5 consistent). Cards-specific, NOT on production (403 Forbidden regardless). auth/analytics confirmed as blind injection sink: XSS, SQLi, SSTI, mass assignment (userId/role extra fields) all accepted with {"success":true}, zero rate limiting (20/20), 10KB+ payloads. CSP violation /api/csp-violation accepts arbitrary reports (204 No Content, log poisoning). Path traversal via %2e%2e encoding: /api/auth/%2e%2e/%2e%2e/admin redirects to /admin (Apigee normalizes then redirects). UAT health endpoint exposes buildId+timestamp unauthenticated. New live backend endpoints: passkeys/register, sepa-transfer/create, self-transfer/create, roundups/settings. UAT CSP reveals Prelude (phone verify), Ledger (hardware wallet), Adjust (marketing), StakeKit. Marketing-widgets leaks deeplink names (iban, wallet, exchange_btc, referrals). Google Drive appdata scope in JS for wallet recovery. Robots.txt hides /Resume, /WphYZ/, /Jordan, /miggy developer paths. auth/facetec-2fa 307 redirect leaks full CSP service map. Production company endpoints no longer routed through business.deblock.com frontend (404). Total findings: 330.
@@ -4713,6 +4723,72 @@ F395 - Accessible proxy domain mapping update (INFO):
 - blog.deblock.com: blocked by proxy
 - uat-business.deblock.com: blocked by proxy
 - Impact: Updated reachability map for continued testing
+
+## 12an. UAT-02 Empty Body Auth Bypass Chain, New Endpoint Discovery, WebSocket Auth Bypass (Session 25)
+
+F396 - UAT-02 cards empty body auth bypass combined with e2e cookies reaches card creation (HIGH):
+- POST /api/cards with Content-Length: 0 + e2e cookies returns 500 "Failed to create card"
+- E2e cookies bypass first auth layer, empty body bypasses second auth check
+- Server ATTEMPTS to create card but fails due to missing user session context
+- Returns 500 (not 400/401) -- business logic exception, not auth rejection
+- CSP nonce leaked in response headers
+- Same endpoint with body returns 400 "User is not authenticated"
+- Impact: Two-layer auth bypass reaching card creation business logic on UAT
+
+F397 - UAT-02 bank-details empty body + e2e cookies returns 200 with error (CRITICAL):
+- POST /api/bank-details with Content-Length: 0 + e2e cookies returns HTTP 200
+- Response: {"error":"Unknown error occured"} -- server-side error swallowed
+- HTTP 200 with error body = incorrect error handling vulnerability
+- Deepest penetration on any endpoint: bypasses auth, bypasses idempotency, reaches bank details business logic
+- Same endpoint with JSON body returns 400 "User is not authenticated"
+- Empty body skips both JSON parsing AND the auth check that depends on parsed content
+- Impact: Full auth bypass on bank details endpoint, incorrect 200 status code, bank details business logic reached
+
+F398 - Three WebSocket endpoints accessible without authentication on production (MEDIUM):
+- /api/websocket: returns 426 Upgrade Required (no auth check)
+- /api/crypto-commands-socket: returns 426 Upgrade Required (no auth check)
+- /api/crypto-business-socket: returns 426 Upgrade Required (no auth check)
+- Proxy strips WebSocket upgrade headers preventing actual connection
+- All three respond with GCP via header, confirming they reach backend
+- Impact: Three distinct WebSocket services confirmed, auth not checked before upgrade rejection
+
+F399 - New production endpoints discovered reaching Rails backend (MEDIUM):
+- GET /api/frontdesk/features: 401 "Unauthorized" from Rails
+- GET /api/frontdesk/accounts: 401 "Unauthorized" from Rails
+- GET /api/users/user: 401 "Unauthorized" from Rails
+- POST /api/users/browsers: 401 "Unauthorized" from Rails
+- GET /api/users/browsers: 502 from Apigee (reaches infrastructure)
+- PATCH /api/users/browsers/{id}: 401 "Unauthorized" from Rails
+- Previously known endpoints: frontdesk/companies and frontdesk/users return 404 (not proxied)
+- Impact: Expanded admin surface area, multiple frontdesk endpoints reach backend
+
+F400 - UAT-02 auth/analytics injection without authentication via e2e cookies (HIGH):
+- POST /api/auth/analytics with e2e cookies accepts arbitrary event data
+- Required fields revealed: eventId, eventType, flowId, screenId
+- Arbitrary extra fields accepted (userId, role, email, SSN, creditCard)
+- Response: {"success":true} confirming data is stored
+- Empty body reveals field requirements: "Unexpected end of JSON input"
+- No rate limiting, no auth check with e2e cookies
+- Impact: Analytics data poisoning, PII injection into analytics store, stored XSS potential via dashboard
+
+F401 - UAT-02 facetec-gateway deeper validation with e2e cookies (MEDIUM):
+- POST /api/facetec-gateway/process-request with empty body + e2e cookies returns "Device key identifier is required"
+- With body including deviceKeyIdentifier: still returns "Device key identifier is required"
+- Different error from production ("FaceTec 2DA session not found")
+- Shows e2e cookies bypass auth but the FaceTec middleware validates separately
+- Impact: FaceTec validation details exposed without auth
+
+F402 - UAT-02 auth/refresh token mechanism disclosure (LOW):
+- POST /api/auth/refresh with e2e cookies + empty body returns "No token or refresh token found" (401)
+- Reveals exact auth mechanism: expects both "token" and "refresh token"
+- Impact: Auth mechanism implementation detail disclosed
+
+F403 - UAT-02 onboarding endpoints business logic reached with empty body + e2e (MEDIUM):
+- POST /api/onboarding/resend-onboarding-otp: 400 with empty error string
+- POST /api/onboarding/signature/resend-signature-otp: 400 "Unable to resend otp"
+- POST /api/onboarding/signature/complete: 400 with empty error string
+- All three reach business logic without authentication using e2e cookies + empty body
+- Impact: Onboarding OTP and signature flows accessible without auth
 
 ## 16. Next Steps for Continued Testing
 
