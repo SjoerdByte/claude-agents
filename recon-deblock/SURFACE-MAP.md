@@ -1965,7 +1965,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 402 | LOW | UAT-02 auth/refresh token mechanism disclosure | app-uat-02.deblock.com | CWE-200 | YES | "No token or refresh token found" reveals dual-token auth mechanism. |
 | 403 | MEDIUM | UAT-02 onboarding endpoints reached with empty body + e2e | app-uat-02.deblock.com | CWE-287 | YES | resend-onboarding-otp, signature/resend-signature-otp, signature/complete all reach business logic without auth. |
 
-Total: 426 findings (15 critical, 96 high, 168 medium, 100 low, 57 info)
+Total: 441 findings (15 critical, 99 high, 172 medium, 102 low, 60 info)
 
 ## 15. Session Notes
 
@@ -2005,6 +2005,7 @@ Total: 426 findings (15 critical, 96 high, 168 medium, 100 low, 57 info)
 - Session 23: Production business.deblock.com auth bypass expansion. NEW production auth bypasses: /api/facetec-gateway/process-request returns "FaceTec 2DA session not found" (F376), /api/passkeys/auth returns "Passkey authentication failed" (F377). UAT facetec-gateway reaches deeper into FaceTec SDK validation requiring deviceKeyIdentifier (F378). Hardcoded bearer token partially recognized by UAT auth middleware - returns "Failed to fetch user info" instead of "User is not authenticated" (F379). E2E test cookies (e2e-mock-browser-id, e2e-user-type-override) bypass UAT auth entirely creating mock sessions (F380). E2E cookies + CSRF bypass bank-details auth reaching idempotency middleware on both UATs (F381). Business Sentry DSN exposed with different key from UAT (F382). New /api/cashbacks/lifetime endpoint discovered reaching Rails (F383). UAT RSC pages return 200 with e2e cookies for authenticated routes (F384). Business API has limited proxy surface - most auth flow endpoints not proxied (F385). UAT-02 /dashboard not vulnerable to e2e cookie crash (returns 404). Total findings: 385.
 - Session 24: Idempotency key mechanism fully reverse-engineered: UUID v4 in JSON body as "idempotencyKey" field (header and cookie NOT read by Rails). Production business-onboarding POST auth bypass with email enumeration (F386): 404 vs 400 differential reveals whether email exists, endpoint excluded from rate limiting. Production crypto-simulation unauthenticated infrastructure disclosure (F387): "No simulation node" without params, "Forbidden" with params (two validation layers). UAT-02 e2e cookies + body idempotency key bypass TWO middleware layers (F389): idempotency middleware AND first auth layer bypassed, blocked at third layer "User is not authenticated". Production auth/logout confirmed working without auth (F390). Business-onboarding rate-limit exclusion confirmed (F391). Crypto-simulation inconsistent validation order (F392). Production users/info distinct business logic error without auth (F393). Multiple endpoints reach Apigee via 405 without auth (F394). Updated proxy domain accessibility map (F395). Total findings: 395.
 - Session 25: CRITICAL: UAT-02 bank-details empty body + e2e cookies returns HTTP 200 (F397) -- deepest penetration on any endpoint, full auth bypass reaching bank details business logic with incorrect 200 status code. UAT-02 cards empty body + e2e cookies = 500 "Failed to create card" -- server attempts card creation (F396). Three production WebSocket endpoints /api/websocket, /api/crypto-commands-socket, /api/crypto-business-socket return 426 without auth (F398). New production endpoints: frontdesk/features, frontdesk/accounts, users/user, users/browsers all reach Rails backend (F399). UAT-02 auth/analytics injection via e2e cookies confirmed: {"success":true} with arbitrary data including PII fields (F400). UAT-02 facetec deeper validation "Device key identifier is required" with e2e cookies (F401). Auth/refresh reveals dual-token mechanism (F402). Onboarding OTP and signature endpoints reached via empty body + e2e (F403). JS bundle analysis: new API routes discovered including crypto-business, frontdesk/features, frontdesk/accounts, pricing/plans, users/user, users/browsers. Production auth/analytics not proxied (404). Recovery.deblock.com: /api/health bypasses Basic Auth returning full 404 page with JS chunk refs, deployment hash 5E8rtjZA7HwmI0gYYO_WP, CSP with Solana RPC endpoints. Staging.deblock.com: pure Vercel marketing site, no API proxy. Total findings: 403.
+- Session 28: CSRF tokens confirmed NOT invalidated on logout (F427): same token works for SCA clear after session logout, tokens are purely time-based not session-bound. SCA clear accepts arbitrary input types without validation (F428): wildcard, arrays, integers, extra params all accepted. Production passkeys endpoint surface mapped (F429): 9 sub-routes discovered via 502/401 error differentials, DELETE is correct method for list/delete. Passkeys/auth processes WebAuthn without session (F430). Rails _method parameter confirmed as second method override vector (F431). CDN1 S3 bucket recon (F432): eu-west-3, directories /terms/, /assets/, /documents/, /legal/, /privacy/, /kyc/, /onboarding/ confirmed. Fixed rate yield terms PDFs publicly accessible (F433). UAT-02 vaults endpoint reaches backend (F434). New UAT-02 endpoints: features, perks/insurance, promo-codes, referrals (F435). Fireblocks custodian integration fully exposed in client JS (F436). Complete wallet key export escrow system implementation revealed (F437): AES decryption, Ed25519 PKCS8 seed extraction, deriveMissingChainKeys, Fireblocks key handling. PGP handling in client (F438). Separate crypto microservice detected behind Apigee on UAT-02 (F439): /api/crypto/keys causes Unexpected EOF from live service. Recovery tool architecture disclosed (F440). 8+ blockchain network configs exposed (F441). Downloaded and analyzed 48 new UAT-02 JS chunks (3.8MB total). IP-based auth bypass tested (not vulnerable). Host header injection tested (not vulnerable). CORS confirmed restrictive (no ACAO headers). Total findings: 441.
 - Session 21: Production auth bypass confirmation + CSRF double-submit exploitation + expanded endpoint enumeration. CRITICAL: Production /api/auth/create-2fa-mobile-session confirmed auth bypassed (returns FaceTec business logic error with CSRF double-submit). Production /api/auth/logout confirmed no auth check (CSRF logout attack, returns 200 "Logged out"). UAT new auth bypasses: onboarding/signature/resend-signature-otp (F348), onboarding/signature/complete (F349). CSRF double-submit technique confirmed: freely obtain token from /api/csrf, set both x-csrf-token header and __Host-csrf cookie to bypass all 403 Forbidden on POST endpoints. All 11 production /api/cards/* sub-routes reach Rails backend (list, create, freeze, unfreeze, details, pin, limits, activate, deactivate, order, virtual). Production 2fa-mobile-session-socket exists (426 Upgrade Required without auth). UAT /api/health exposes buildId + timestamp. UAT .well-known files expose Android signing certs + iOS app config + QR login deep links. app.deblock.com returns 410 Gone (decommissioned). Total findings: 360.
 - Session 20: UAT auth bypass pattern expansion + JS deep analysis + production comparison. Downloaded and analyzed all 52 UAT JS chunks. Discovered auth cookie name "auth-token" with support cookies "idempotency-key" and "reference-id", plus E2E test cookies "e2e-mock-browser-id" and "e2e-user-type-override". Extracted 45 internal application flows including create-virtual-card-flow, create-physical-card-flow, export-wallet-keys-flow. Mapped 100+ API endpoint URL constructions from JS. Found 5 additional UAT auth bypass endpoints beyond cards: create-2fa-mobile-session returns "FaceTec 2FA session not found" (F331), users/info returns "Failed to fetch user info" (F332), subscribe-2fa-mobile-session returns "Missing mobileSessionKey" (F333), 2fa-mobile-session-socket returns 426 without auth (F334), onboarding/resend-onboarding-otp returns "Unable to resend otp" (F335). Production comparison: auth/check-session returns {"valid":false} (session oracle, F336), CSRF endpoint returns token without auth (F337), most API routes return Next.js 404 (not proxied). Next.js version 16.2.11 in Turbopack bootstrap (F344). CSRF token format confirmed: timestamp.expiry.nonce.hmac, __Host-csrf cookie, 30-min validity. Total findings: 345.
 - Session 19: UAT API deep exploitation. CRITICAL finding: /api/cards auth bypass via empty body. POST with no body (Content-Length: 0 or missing) returns 500 "Failed to create card" (business logic) instead of 400 "User is not authenticated". Auth middleware requires valid JSON body >= 2 bytes to activate. 100% reproducible (5/5 consistent). Cards-specific, NOT on production (403 Forbidden regardless). auth/analytics confirmed as blind injection sink: XSS, SQLi, SSTI, mass assignment (userId/role extra fields) all accepted with {"success":true}, zero rate limiting (20/20), 10KB+ payloads. CSP violation /api/csp-violation accepts arbitrary reports (204 No Content, log poisoning). Path traversal via %2e%2e encoding: /api/auth/%2e%2e/%2e%2e/admin redirects to /admin (Apigee normalizes then redirects). UAT health endpoint exposes buildId+timestamp unauthenticated. New live backend endpoints: passkeys/register, sepa-transfer/create, self-transfer/create, roundups/settings. UAT CSP reveals Prelude (phone verify), Ledger (hardware wallet), Adjust (marketing), StakeKit. Marketing-widgets leaks deeplink names (iban, wallet, exchange_btc, referrals). Google Drive appdata scope in JS for wallet recovery. Robots.txt hides /Resume, /WphYZ/, /Jordan, /miggy developer paths. auth/facetec-2fa 307 redirect leaks full CSP service map. Production company endpoints no longer routed through business.deblock.com frontend (404). Total findings: 330.
@@ -5005,6 +5006,176 @@ F426. INFO - CSRF Token Cross-Environment Isolation
 - Positive finding: prevents cross-environment CSRF attacks
 - CWE: N/A
 - Reproducible: YES
+
+## 12aq. CSRF Logout Bypass, Passkeys Discovery, Crypto Microservice, CDN Bucket Recon, Wallet Export (Session 28)
+
+F427. HIGH - CSRF Tokens Not Invalidated on Session Logout
+- CSRF tokens remain valid after calling /api/auth/logout
+- Confirmed: get token -> SCA clear succeeds -> logout -> SCA clear STILL succeeds with same token
+- Tokens are purely time-based (30-min window), not tied to session state
+- An attacker who captures a CSRF token can use it for the full validity window regardless of logout
+- Combined with unauthenticated SCA clear (F416), logout provides no revocation
+- CWE: CWE-613 (Insufficient Session Expiration)
+- Reproducible: YES
+
+F428. HIGH - SCA Clear Accepts Arbitrary Input Types Without Validation
+- POST /api/sca/clear returns {"cleared":true} for ALL input types:
+- Empty body: {} -> cleared:true
+- Wildcard: {"userId":"*"} -> cleared:true
+- Array: {"userId":["uuid1","uuid2"]} -> cleared:true
+- Integer: {"userId":1} -> cleared:true
+- With extra params: {"userId":"uuid","admin":true,"scope":"all"} -> cleared:true
+- No input validation, no type checking, no parameter filtering
+- Extends F416: endpoint is completely permissive
+- CWE: CWE-20 (Improper Input Validation), CWE-285 (Improper Authorization)
+- Reproducible: YES
+
+F429. MEDIUM - Production Passkeys Endpoint Surface Discovery
+- Multiple passkeys sub-routes exist on production:
+- DELETE /api/passkeys/list -> 401 (backend, correct method is DELETE)
+- DELETE /api/passkeys/delete -> 401 (backend, correct method is DELETE)
+- POST /api/passkeys/challenge -> 502 (Apigee, route exists but method wrong)
+- POST /api/passkeys/options -> 502 (Apigee, route exists)
+- POST /api/passkeys/verify -> 502 (Apigee, route exists)
+- POST /api/passkeys/create -> 502 (Apigee, route exists)
+- POST /api/passkeys/status -> 502 (Apigee, route exists)
+- POST /api/passkeys/recovery -> 502 (Apigee, route exists)
+- POST /api/passkeys/update -> 502 (Apigee, route exists)
+- The 502 errors reveal Apigee proxy configuration for each sub-route
+- CWE: CWE-200 (Exposure of Sensitive Information)
+- Reproducible: YES
+
+F430. MEDIUM - Passkeys Auth Processes WebAuthn Without Session
+- POST /api/passkeys/auth returns {"error":"Passkey authentication failed"} (401)
+- Processes full WebAuthn payload (authenticatorData, clientDataJSON, signature) without auth
+- Returns distinct business logic error, not generic auth error
+- Response headers include x-request-id (fe536bf1-391b-4650-a590-9bc462322443)
+- Unlike passkeys/register which returns generic "Unauthorized"
+- Allows probing passkey authentication logic without a session
+- CWE: CWE-306 (Missing Authentication for Critical Function)
+- Reproducible: YES
+
+F431. LOW - Rails _method Parameter Override Confirms Method Bypass
+- POST with form-urlencoded _method=DELETE on /api/sca/clear returns {"cleared":true}
+- Confirms Rails processes _method from form body alongside X-HTTP-Method-Override header (F422)
+- _method=GET on /api/users/user reaches Apigee (502 error, method changed)
+- _method=GET on /api/bank-details returns 401 (reaches backend)
+- Two independent method override vectors: header and body parameter
+- CWE: CWE-16 (Configuration)
+- Reproducible: YES
+
+F432. MEDIUM - CDN1 S3 Bucket Structure Disclosure
+- cdn1.deblock.com is Amazon S3 in eu-west-3 behind CloudFront
+- X-Amz-Bucket-Region: eu-west-3 header exposed
+- CloudFront POP identifier leaked: IAD55-P10
+- Existing directories confirmed (200 empty response): /terms/, /assets/, /terms/fixed_rate-yield-terms/
+- Denied directories (403, confirmed to exist): /documents/, /legal/, /privacy/, /kyc/, /onboarding/
+- S3 bucket listing blocked (AccessDenied on ?list-type=2)
+- /kyc/ and /onboarding/ directories suggest sensitive document storage
+- CWE: CWE-200 (Information Exposure)
+- Reproducible: YES
+
+F433. LOW - CDN1 Terms Documents Publicly Accessible
+- Fixed rate yield terms PDFs accessible without auth:
+- /terms/fixed_rate-yield-terms/20260220_fixed_rate_yield_terms_v0_DE.pdf (211KB)
+- /terms/fixed_rate-yield-terms/20260220_fixed_rate_yield_terms_v0_EN.pdf (204KB)
+- /terms/fixed_rate-yield-terms/20260220_fixed_rate_yield_terms_v0_FR.pdf (237KB)
+- Version date: February 20, 2026
+- Referenced from auto-sweep terms acceptance flow in app JS
+- CWE: CWE-200
+- Reproducible: YES
+
+F434. MEDIUM - UAT-02 Vaults Endpoint Reaches Backend
+- GET /api/vaults returns 400 "User is not authenticated" (reaches Rails backend)
+- POST /api/vaults returns 502 (Apigee method not allowed)
+- Related to AutoSweep yield product (4% APY on checking account)
+- Not available on production (404)
+- With valid auth token, vault management operations would be accessible
+- CWE: CWE-200
+- Reproducible: YES
+
+F435. MEDIUM - UAT-02 New Endpoint Surface Discovery
+- Multiple new endpoints reach Rails backend on UAT-02:
+- GET /api/features -> 401 "User is not authenticated" (feature flags)
+- GET /api/perks/insurance -> 400 "User is not authenticated" (insurance perks)
+- GET /api/promo-codes/claimability -> 400 "User is not authenticated" (promo validation)
+- GET /api/referrals/current -> 400 "User is not authenticated" (referral info)
+- GET /api/referrals/invites -> 400 "User is not authenticated" (invite list)
+- All are GET-only at Apigee level (POST returns 502)
+- Features endpoint returns 401 (different status from others' 400)
+- CWE: CWE-200
+- Reproducible: YES
+
+F436. MEDIUM - Fireblocks Custodian Integration Exposed in Client JS
+- Client-side JavaScript reveals Fireblocks as wallet custody provider
+- CryptoWalletProvider enum: DEBLOCK, FIREBLOCKS, HYBRID, IMPORTED
+- Two signing modes: "standard" and "fireblocks"
+- Fireblocks key format detection: hex format validation (isFireblocksHex, isFireblocksKey)
+- Key signing with error handling: "error signing with fireblocks key"
+- Reveals critical custodial architecture to attackers
+- CWE: CWE-200 (Exposure of Sensitive Information)
+- Reproducible: YES
+
+F437. HIGH - Wallet Key Export Escrow System Client-Side Implementation
+- Complete client-side wallet key export/decryption flow exposed in JS:
+- Function: decryptWalletSecrets({encryptedPrivateKeys, encryptedMnemonic, escrowKey})
+- Uses AES decryption with user-provided escrow key
+- Outputs raw private keys and mnemonic seed phrases
+- deriveMissingChainKeys() derives additional chain keys from decrypted material
+- Ed25519 PKCS8 seed extraction for Solana keys
+- Fireblocks hex key decoding and signing
+- escrowToken passed in auth flow parameters alongside deviceId, mobileSessionKey
+- Resend escrow key function uses POST with empty body
+- Risk: If escrow key or encrypted material is intercepted, wallet keys fully compromised
+- CWE: CWE-312 (Cleartext Storage of Sensitive Information), CWE-327 (Broken Crypto)
+- Reproducible: YES (code analysis)
+
+F438. INFO - PGP Key and Message Handling in Client JS
+- Full PGP armor format handling in client-side code (3bd29ap2uas4j.js)
+- Supports: PGP SIGNATURE, PGP MESSAGE, PGP PUBLIC KEY BLOCK, PGP PRIVATE KEY BLOCK
+- BigInt-based cryptographic operations (modular exponentiation, inverse)
+- Used for encrypted message handling in crypto communication
+- CWE: CWE-200
+- Reproducible: YES (code analysis)
+
+F439. INFO - Crypto Microservice Backend Detected on UAT-02
+- Apigee routes to a SEPARATE crypto backend service (distinct from main Rails):
+- POST /api/crypto/keys -> 502 "Unexpected EOF at target" (service closes connection)
+- GET /api/crypto/export -> 503 "TARGET_CONNECT_CONNECTION_REFUSED"
+- GET /api/crypto/wallet/keys -> 503 "TARGET_CONNECT_TIMEOUT"
+- GET /api/users/wallet-keys -> 503 "TARGET_CONNECT_TIMEOUT"
+- The 502 "Unexpected EOF" on /api/crypto/keys means a service IS listening but crashes
+- Error patterns differ from main Rails backend, confirming separate microservice
+- Architecture: Apigee -> crypto-service (different from Apigee -> Rails for other routes)
+- Endpoints intermittently available (returned 404 on some re-tests)
+- CWE: CWE-200 (Architecture Disclosure)
+- Reproducible: INTERMITTENT
+
+F440. LOW - Recovery Tool Architecture Disclosure
+- recovery.deblock.com is a standalone client-side Next.js app
+- Description in HTML: "Modern Deblock recovery tool built with Next.js and Material UI"
+- Vercel deployment ID: dpl_mAs9M7NnoB1oNqhMS685n2kDmngD
+- Build ID: 5E8rtjZA7HwmI0gYYO_WP
+- Uses Pages Router (not App Router), only /_error page in build manifest
+- No API proxy (all /api/ routes return 404)
+- Recovery works entirely client-side using escrow key decryption
+- dl.deblock.com redirects to deblock.com (deep link handler, Vercel)
+- CWE: CWE-200
+- Reproducible: YES
+
+F441. INFO - Multiple Blockchain Network Configurations Exposed
+- Client JS reveals all supported blockchain networks and explorers:
+- Ethereum: mainnet + Holesky/Sepolia/Goerli testnets (Etherscan, Blockscout)
+- Solana: mainnet-beta + devnet + testnet (solana RPC providers)
+- Polygon: mainnet + Amoy testnet (Polygonscan)
+- Base: mainnet + Sepolia testnet (Basescan, Blockscout)
+- Arbitrum: mainnet + Goerli testnet (Arbiscan, Blockscout)
+- BSC: mainnet + testnet (Bscscan)
+- Optimism: mainnet + Goerli testnet (Etherscan Optimistic)
+- Ethereum Classic: mainnet (Blockscout)
+- Intercom regions: US (intercom.io), EU (eu.intercom.io), AU (au.intercom.io)
+- CWE: CWE-200
+- Reproducible: YES (JS analysis)
 
 ## 16. Next Steps for Continued Testing
 
