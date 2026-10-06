@@ -7954,3 +7954,137 @@ Priority 3 (Enumeration/escalation):
 - Region parameter (`r=`) is optional; tunnel works with or without it
 - Impact: INFO - Negative finding. Tunnel implementation is secure against SSRF and cross-project injection.
 
+### F686 [MEDIUM] Build Manifest Exposes Sentry Tunnel Rewrite Configuration
+- Target: business.deblock.com/_next/static/26tbWezWroJnCCGBceFD9/_buildManifest.js
+- Publicly accessible without authentication
+- Reveals internal Next.js rewrite rules:
+  - `/monitoring` endpoint rewrites with query params: `o` (orgid, digits), `p` (projectid, digits), `r` (region, 2 lowercase letters)
+  - Second rule allows `/monitoring` without region parameter
+  - Regex validation patterns: `(?<orgid>\\d*)`, `(?<projectid>\\d*)`, `(?<region>[a-z]{2})`
+- `sortedPages` shows only `/_app` and `/_error` (minimal pages router, app router for all routes)
+- `_ssgManifest.js` contains empty Set (no static pre-rendering)
+- Impact: MEDIUM - Exposes internal routing configuration, including regex patterns for the Sentry tunnel proxy. Helps attackers understand request routing and validation rules.
+
+### F687 [HIGH] UAT-02 CSP Massively More Permissive Than Production
+- Target: app-uat-02.deblock.com
+- UAT-02 CSP weaknesses vs production:
+  - `script-src` includes `https:` - allows loading scripts from ANY HTTPS domain
+  - `object-src data:` - allows data: URIs in object/embed tags (XSS vector)
+  - `default-src` includes `data: blob: https://storage.googleapis.com` (production: only `'self'`)
+  - `script-src-attr wasm-eval` - additional script execution vector
+  - `child-src blob:` - allows blob: in child frames
+  - 60+ external domains whitelisted vs ~10 on production
+  - `report-uri /api/csp-violation` exposes violation reporting endpoint
+- UAT-02 nonce format: base64 (`t/IHWe+5doo2q5NSWCdiwg==`) vs production UUID format
+- UAT-02 includes `expect-ct: enforce, max-age=86400` header (production doesn't)
+- UAT-02 runs on SAME IP (34.8.230.142) as production
+- Impact: HIGH - UAT environment accessible on production infrastructure has a severely weakened CSP that would allow script injection from any HTTPS source. If an attacker can inject HTML/JS in the UAT context (e.g., via the HTML lang attribute reflection in F683), the permissive CSP would not prevent execution.
+
+### F688 [MEDIUM] GCS Bucket Names Exposed in UAT-02 CSP
+- Target: app-uat-02.deblock.com CSP img-src directive
+- Three GCS bucket names leaked:
+  1. `deblock-dev-crypto-currencies-v2` (DEV environment)
+  2. `deblock-production-crypto-currencies-v2` (PRODUCTION)
+  3. `deblock-production-crypto-nfts-v2/images` (PRODUCTION NFT images)
+- All three buckets confirmed to exist (403 Access Denied on listing, not 404)
+- Bucket listing and individual object access properly restricted
+- Bucket naming convention reveals: `deblock-{env}-{service}-v2` pattern
+- Impact: MEDIUM - Exposes internal cloud storage bucket names and naming convention. While buckets are properly locked down, the naming pattern enables targeted enumeration of other buckets (e.g., deblock-production-user-data-v2, deblock-dev-backups-v2).
+
+### F689 [MEDIUM] Apigee Gateway Error Format Disclosure
+- Target: business.deblock.com
+- Sending requests that trigger backend 405 (without Allow header) causes Apigee to return 502 with error details:
+  ```
+  {"fault":{"faultstring":"Received 405 Response without Allow Header","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}
+  ```
+- Triggered by: PATCH, DELETE, or POST with Transfer-Encoding on GET-only endpoints
+- The error format reveals:
+  - Google Apigee as the API gateway technology
+  - Internal protocol error codes (protocol.http.*)
+  - Backend response details (405 without Allow header)
+- The `via: 1.1 google` header in all responses also confirms Google infrastructure
+- Impact: MEDIUM - Reveals API gateway technology and internal error handling. Apigee-specific error codes can help attackers craft targeted bypass attempts for known Apigee vulnerabilities.
+
+### F690 [MEDIUM] TRACE Method Not Blocked by Gateway
+- Target: business.deblock.com/api/csrf, business.deblock.com/api/auth/check-session
+- HTTP TRACE method reaches the backend application and returns 500 "Internal Server Error"
+- Expected behavior: TRACE should be blocked at the gateway/load balancer level
+- The 500 response (instead of 405 or gateway block) indicates:
+  - Apigee forwards TRACE requests to the backend
+  - Next.js/Node.js backend doesn't handle TRACE, causing an unhandled error
+  - The error response is minimal (no stack trace), but the behavior itself is a misconfiguration
+- Impact: MEDIUM - TRACE method forwarded to application layer. While no data echo was observed, TRACE can potentially be used for Cross-Site Tracing (XST) attacks to steal HTTP headers including cookies in environments where HttpOnly is bypassed.
+
+### F691 [LOW] CSP Violation Reporting Endpoint Accepts Unauthenticated Reports
+- Target: app-uat-02.deblock.com/api/csp-violation
+- Accepts POST requests with Content-Type: application/csp-report
+- Returns 204 No Content (success) for arbitrary CSP report payloads
+- No authentication or rate limiting observed
+- Production business.deblock.com does NOT have this endpoint (404)
+- The reports are presumably logged/stored for security monitoring
+- Impact: LOW - Unauthenticated CSP violation reporting could be used to: (1) pollute CSP monitoring with fake violations, (2) inject payloads into admin dashboards that display violation reports, (3) trigger false alerts.
+
+### F692 [MEDIUM] Apple App Site Association Exposes App Team ID and QR Login Deep Links
+- Target: app-uat-02.deblock.com/.well-known/apple-app-site-association
+- Configuration reveals:
+  - Apple Developer Team ID: `7C8K5383JS`
+  - App bundle identifier: `com.deblock.deblockapp.production`
+  - Full appID: `7C8K5383JS.com.deblock.deblockapp.production`
+  - Deep link paths: `/qr-login/*` and `/*/qr-login/*`
+  - Comment: "QR web sign-in pairing links"
+- This reveals a QR code-based web-to-app authentication flow
+- Not served on production (business.deblock.com) or main domain (deblock.com)
+- Impact: MEDIUM - Exposes Apple Developer Team ID, app bundle identifier, and the existence of a QR-based web sign-in pairing mechanism. The deep link structure could be used to craft phishing links that trigger the app's QR login handler.
+
+### F693 [MEDIUM] Android Asset Links Exposes Package Name and Signing Certificates
+- Target: app-uat-02.deblock.com/.well-known/assetlinks.json
+- Configuration reveals:
+  - Package name: `com.deblock.deblockapp`
+  - Two SHA-256 certificate fingerprints:
+    1. `68:84:A7:99:78:A0:68:43:71:32:6D:55:36:E6:0F:F5:E5:C7:85:C2:61:9F:83:A3:6B:0E:29:34:B7:42:99:02`
+    2. `65:4A:46:8F:CB:15:26:48:62:04:4B:23:37:06:E0:A7:B2:A2:AA:A9:E3:D0:19:5F:62:EB:7A:82:D2:97:C3:EB`
+  - Permission: `delegate_permission/common.handle_all_urls`
+- Two certificates suggest separate debug/release signing keys or key rotation
+- Not served on production or main domain
+- Impact: MEDIUM - Exposes Android app signing certificate fingerprints. While these are intended to be public for deep linking, they confirm the app's identity chain and could aid in targeted attacks on the mobile app.
+
+### F694 [MEDIUM] Production CSP Contains unsafe-eval in script-src
+- Target: business.deblock.com
+- Production CSP script-src directive: `'self' 'nonce-{uuid}' 'strict-dynamic' https://smp-device-content.apple.com https://cdn.onesignal.com https://api.onesignal.com 'wasm-unsafe-eval' 'unsafe-eval'`
+- The presence of `'unsafe-eval'` weakens the CSP significantly:
+  - Allows `eval()`, `Function()`, `setTimeout("string")`, `setInterval("string")`
+  - In combination with a DOM XSS sink, this enables arbitrary code execution
+  - Bypasses the protection that nonce-based CSP would otherwise provide
+- `'wasm-unsafe-eval'` additionally allows WebAssembly compilation from arbitrary sources
+- The policy also includes `'strict-dynamic'` which trusts scripts loaded by already-trusted scripts
+- Impact: MEDIUM - While the CSP uses nonces and strict-dynamic correctly, the inclusion of unsafe-eval creates a bypass path for any DOM XSS vulnerability. An attacker who can inject a string into an eval context can execute arbitrary JavaScript despite the CSP.
+
+### F695 [MEDIUM] Third-Party Service Stack Exposed via UAT-02 CSP
+- Target: app-uat-02.deblock.com CSP connect-src and related directives
+- Services not visible in production CSP but revealed in UAT-02:
+  1. Adjust (app.adjust.com, app.adjust.world) - Mobile attribution/analytics
+  2. Intercom (widget.intercom.io, api-iam.eu.intercom.io, etc.) - Customer support chat
+  3. Google Analytics/GTM/Ads (multiple domains) - Full tracking stack
+  4. Apple CloudKit (cdn/api/feedbackws.apple-cloudkit.com) - Apple cloud services
+  5. Apple Sign-In (appleid.apple.com, appleid.cdn-apple.com) - Authentication
+  6. Ledger (ledgerb.api.ledger.com) - Hardware wallet integration
+  7. Prelude (edge.prelude.dev) - Security/identity SDK (CORS: * on this endpoint)
+  8. StakeKit (assets.stakek.it) - Staking token assets (S3/CloudFront backend)
+  9. Sardine (api.eu.sardine.ai, api.production.eu.sardine.ai) - Fraud detection
+  10. Regula Forensics (wasm/lic/api.regulaforensics.com) - Document verification
+  11. Dotfile (client-portal.dotfile.com) - KYC/compliance portal
+- Intercom WebSocket endpoints: wss://nexus-websocket-a.intercom.io, wss://nexus-websocket-b.intercom.io
+- Impact: MEDIUM - Reveals the complete third-party integration stack including fraud detection, document verification, hardware wallet support, and staking services. Enables targeted attacks on specific third-party integrations and reveals the full scope of external data flows.
+
+### F696 [LOW] Marketing Site Technology Stack and BuildId Exposed
+- Target: deblock.com (Vercel-hosted marketing site)
+- BuildId: `uTbOab3l7kZLJXtCgveTr` (webpack-based, pages router)
+- Technology: Next.js with styled-components v5.3.11 (older architecture than business app)
+- Font: HelveticaNowDisplay (Regular, Medium, Bold, Light)
+- Base app ID meta tag: `6a71f4ca27877d0fb99ab6d1`
+- Google Play app ID: `com.deblock.deblockapp`
+- Schema.org markup confirms organization name, logo, social links
+- Social: twitter.com/DeblockApp, linkedin.com/company/deblock/
+- Does NOT serve apple-app-site-association or assetlinks.json (returns HTML 404 instead of JSON)
+- Impact: LOW - Exposes marketing site technology stack details. The older architecture (pages router + webpack) compared to business app (app router + Turbopack) suggests the marketing site is maintained separately.
+
