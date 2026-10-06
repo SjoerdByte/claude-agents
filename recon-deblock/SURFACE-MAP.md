@@ -1820,8 +1820,14 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 262 | LOW | Business PWA manifest and service worker config exposed | - | CWE-200 | YES | Unusual /sitemap.xml/pwa/ path, full PWA installable |
 | 263 | INFO | next.deblock.com behind Cloudflare managed challenge | - | CWE-200 | YES | Separate CF zone, strict CSP with nonce, 403 default |
 | 264 | MEDIUM | Cross-domain tracking bridge without clear consent per domain | - | CWE-200 | YES | GCLID sync across 3 domains, GDPR privacy concern |
+| 265 | HIGH | Business CSP redirect headers expose full third-party service stack | - | CWE-200 | YES | Regula, Sardine, Dotfile, OneSignal, Apple attestation |
+| 266 | HIGH | Sardine sandbox fraud API accessible with enumerable endpoints | - | CWE-284 | YES | /v1/events 200 unauth, /v1/customers 401, version 7e5617f |
+| 267 | MEDIUM | Regula Forensics API leaks client IP in error responses | - | CWE-200 | YES | userIp in 404/400, serverTime, no auth required |
+| 268 | MEDIUM | UAT returns verbose auth errors vs production | - | CWE-209 | YES | "User is not authenticated" vs generic 401 |
+| 269 | LOW | Dotfile KYB portal branch deployment system exposed | - | CWE-200 | YES | _branch param, preview envs, release.json validation |
+| 270 | INFO | app.deblock.com returns 410 Gone on all API routes | - | CWE-200 | YES | Personal app APIs deprecated/migrated |
 
-Total: 264 findings (12 critical, 51 high, 96 medium, 64 low, 44 info)
+Total: 270 findings (12 critical, 53 high, 98 medium, 65 low, 45 info)
 
 ## 15. Session Notes
 
@@ -3523,6 +3529,63 @@ F264 - dblk.me serves as cross-domain tracking bridge between marketing and app 
 - Cross-domain cookie sync enabled (acceptIncoming: true, enableCrossDomain: true)
 - Enables tracking user journey from marketing (deblock.com) through short URLs (dblk.me) to app (app.deblock.com)
 - Impact: privacy concern for 300k+ users, GDPR implications if consent not properly obtained across all domains
+
+## 12al. Sardine Fraud API Sandbox, Regula IP Leak, CSP Third-Party Infrastructure Exposure (Session 15 continued)
+
+F265 - Business app CSP redirect headers expose full third-party service stack (HIGH):
+- 307 redirect to /login includes CSP with all production integrations:
+  Regula Forensics: wasm.regulaforensics.com, lic.regulaforensics.com, api.regulaforensics.com (document/ID verification)
+  Sardine: api.eu.sardine.ai, api.production.eu.sardine.ai, api.sandbox.eu.sardine.ai (fraud detection)
+  Dotfile: client-portal.dotfile.com (KYB/KYC onboarding, frame-src)
+  OneSignal: cdn.onesignal.com, api.onesignal.com (push notifications)
+  Apple: smp-device-content.apple.com (device attestation)
+- X-Nonce header continues to leak CSP nonce (356150d0-3b2b-4710-b291-6a4cde68d0ba)
+- business-locale cookie: HttpOnly, Secure, SameSite=strict, 1-year expiry
+- Impact: Complete KYC/fraud technology stack disclosed, enables targeted bypass research
+
+F266 - Sardine sandbox fraud API accessible from production with enumerable endpoints (HIGH):
+- api.sandbox.eu.sardine.ai reachable from production CSP connect-src
+- Kubernetes default backend responses (not isolated from external access)
+- /v1/sessions: 401 with x-version-id: 7e5617f (version disclosure)
+- /v1/customers: 401 with {"reason":"Credential are incorrect","status":"Not Authorized"}
+- /v1/rules: 401 (fraud rules endpoint exists)
+- /v1/events: 200 unauthenticated GET (returns empty), POST with empty body returns 500 "failed to parse data"
+- x-request-id header on all responses (per-request tracking)
+- api.production.eu.sardine.ai returns 000 (connection refused, properly isolated)
+- Impact: Sandbox fraud API reachable without credentials, event submission endpoint processes data without auth
+
+F267 - Regula Forensics API leaks client IP address in error responses (MEDIUM):
+- 404 responses include: {"ctx": {"userIp": "160.79.106.140"}}
+- 400 responses include: {"ctx": {"userIp": "160.79.106.129"}}
+- Server timestamp in metadata: {"serverTime": "2026-10-06T04:43:41.786619Z"}
+- Document scan endpoint at /api/process returns 400 "bad recognition input data" (not 401)
+- No authentication required to reach the API endpoint
+- /nonexistent returns S3 AccessDenied XML (S3-backed static assets)
+- lic.regulaforensics.com returns {"status": "OK"} (license server reachable)
+- Impact: IP address disclosure via third-party API, useful for network reconnaissance
+
+F268 - UAT environment returns verbose error messages vs production (MEDIUM):
+- app-uat-01.deblock.com /api/cards: {"error":"User is not authenticated","status":400}
+- Production business.deblock.com /api/cards: {"error":"Unauthorized","status":401}
+- UAT uses 400 (Bad Request) vs production 401 (Unauthorized) for auth failures
+- UAT error message explicitly states "User is not authenticated" (more verbose)
+- UAT CSRF endpoint returns same format as production (functional parity)
+- Impact: UAT reveals implementation details through verbose errors
+
+F269 - Dotfile KYB portal branch deployment system exposed (LOW):
+- client-portal.dotfile.com serves KYB/KYC onboarding portal
+- Branch override bootstrap JS exposes internal deployment logic:
+  _branch URL parameter triggers branch switching via cookie (dotfile_frontend_branch)
+  Validates branch name format (regex: /^(?![._-])[a-z0-9._-]+$/)
+  Syncs with /_branches/{name}/assets/release.json
+- preview.dotfile.tech domain used for preview deployments
+- Impact: Internal deployment infrastructure of KYB provider exposed
+
+F270 - app.deblock.com returns 410 Gone on all API routes (INFO):
+- All tested API routes (csrf, check-session, auth, cards, users, transactions) return 410
+- Indicates personal app APIs were deprecated/moved
+- Same Turbopack chunk hashes as business.deblock.com (shared codebase)
+- API functionality likely migrated to business.deblock.com backend
 
 ## 16. Next Steps for Continued Testing
 
