@@ -1965,7 +1965,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 402 | LOW | UAT-02 auth/refresh token mechanism disclosure | app-uat-02.deblock.com | CWE-200 | YES | "No token or refresh token found" reveals dual-token auth mechanism. |
 | 403 | MEDIUM | UAT-02 onboarding endpoints reached with empty body + e2e | app-uat-02.deblock.com | CWE-287 | YES | resend-onboarding-otp, signature/resend-signature-otp, signature/complete all reach business logic without auth. |
 
-Total: 411 findings (14 critical, 93 high, 161 medium, 98 low, 55 info)
+Total: 421 findings (15 critical, 94 high, 166 medium, 100 low, 56 info)
 
 ## 15. Session Notes
 
@@ -4858,6 +4858,102 @@ F411 - Production SCA endpoint accepts any action type without validation (MEDIU
 - No validation of action type parameter (any string accepted)
 - Reaches business logic without authentication (only CSRF required)
 - Impact: SCA step-up mechanism can be probed for all financial operations, action type enumeration
+
+## 12ap. SCA Clear Auth Bypass, Analytics Stored XSS, New Endpoint Discovery, CSRF Cross-Environment (Session 27)
+
+F412. CRITICAL - Production SCA Clear Without Authentication
+- Endpoint: POST /api/sca/clear on business.deblock.com
+- Request: POST with CSRF token only (no auth-token JWT required)
+- Response: {"cleared":true} HTTP 200
+- Accepts arbitrary userId and sessionId parameters in request body
+- CSRF token obtained unauthenticated from GET /api/csrf
+- SCA (Strong Customer Authentication) is a PSD2 regulatory requirement for EU financial transactions
+- Clearing SCA state for a target user could bypass transaction verification
+- Impact: An attacker can clear SCA verification state for any user by knowing their userId (UUID), potentially enabling unauthorized financial transactions without step-up authentication
+- Severity: CRITICAL (PSD2 compliance bypass, financial transaction protection bypass)
+- CWE: CWE-306 (Missing Authentication for Critical Function)
+- Reproducible: YES
+
+F413. HIGH - UAT-02 Analytics Stored XSS via Unsanitized Input
+- Endpoint: POST /api/auth/analytics on app-uat-02.deblock.com
+- No authentication required
+- No CSRF required
+- Accepts arbitrary content in eventId, eventType, flowId, screenId fields
+- XSS payload stored: {"eventType":"<script>alert(1)</script>"} returns {"success":true}
+- SQL injection payload stored: {"eventId":"evt' OR 1=1--"} returns {"success":true}
+- SSTI payload stored: {"eventType":"{{7*7}}"} returns {"success":true}
+- Log injection with newlines stored successfully
+- No rate limiting (10/10 200 in rapid succession)
+- If admin dashboard renders these analytics events without sanitization, stored XSS executes in admin context
+- Impact: Stored XSS in analytics pipeline could compromise admin sessions when viewing event data
+- CWE: CWE-79 (Stored Cross-Site Scripting), CWE-117 (Log Injection)
+- Reproducible: YES
+
+F414. MEDIUM - CSRF Token Environment Isolation Confirmed
+- Production CSRF tokens rejected on UAT-02 (502 via Apigee)
+- UAT-02 CSRF tokens rejected on production (403 Forbidden)
+- Tokens are environment-specific (different HMAC keys per environment)
+- Prevents cross-environment token reuse attacks
+- CWE: N/A (positive finding)
+- Reproducible: YES
+
+F415. MEDIUM - Production Users/Browsers Endpoint Reached Without Auth
+- POST /api/users/browsers on business.deblock.com returns {"error":"Unauthorized","status":401}
+- GET returns 405 (POST-only), confirming Apigee routes to Rails backend
+- Browser connection/registration endpoint accessible with only CSRF token
+- CWE: CWE-200 (Information Exposure)
+- Reproducible: YES
+
+F416. MEDIUM - UAT-02 Health Endpoint Information Disclosure
+- GET /api/health on app-uat-02.deblock.com returns {"status":"ok","buildId":"86c92c6","timestamp":"2026-10-06T10:43:00.958Z"}
+- No authentication required
+- Exposes build commit hash and exact server timestamp
+- Not available on production (404)
+- CWE: CWE-200 (Information Exposure)
+- Reproducible: YES
+
+F417. MEDIUM - UAT-02 Pots Endpoints Reach Backend Without Auth
+- GET/POST /api/pots, /api/pots/create, /api/pots/list, /api/pots/transfer all return {"error":"User is not authenticated","status":400}
+- Different error format (400 vs 401) suggests different auth middleware path
+- POST /api/pots/create and /api/pots/transfer return 405 via Apigee (GET-only at gateway level)
+- These savings/jar features are financial endpoints
+- CWE: CWE-200
+- Reproducible: YES
+
+F418. MEDIUM - UAT-02 Signature OTP Resend Without Auth
+- POST /api/onboarding/signature/resend-signature-otp on app-uat-02.deblock.com
+- Returns {"error":"Unable to resend otp","status":400} without any authentication
+- Reaches backend business logic (not a 401/403)
+- Not available on production (404)
+- Could be used to trigger OTP sending to phone numbers during onboarding
+- CWE: CWE-306
+- Reproducible: YES
+
+F419. LOW - Production Frontdesk Endpoints Method Discovery
+- GET /api/frontdesk/accounts -> 401 (reaches backend, GET-only)
+- GET /api/frontdesk/features -> 401 (reaches backend, GET-only)
+- POST /api/frontdesk/accounts -> 502/405 (method not allowed at Apigee)
+- POST /api/frontdesk/transactions -> 502/405 (method not allowed at Apigee)
+- GET /api/cashbacks/lifetime -> 401 (reaches backend)
+- GET /api/users/user -> 401 (reaches backend, separate from /api/users/info)
+- These all require auth but confirm additional backend route mapping
+- CWE: CWE-200
+- Reproducible: YES
+
+F420. LOW - UAT-02 Frontdesk/Accounts Different Auth Error Pattern
+- UAT-02 returns {"error":"User is not authenticated","status":400} (400)
+- Production returns {"error":"Unauthorized","status":401} (401)
+- Suggests different middleware or auth check implementation between environments
+- UAT-02 may have weaker auth enforcement in the middleware layer
+- CWE: CWE-209
+- Reproducible: YES
+
+F421. INFO - Production Endpoint Proxy Mapping Differences
+- Endpoints available on UAT-02 but NOT on production: /api/pots/*, /api/health, /api/settings (page), /api/auth/analytics, /api/onboarding/*
+- Production has stricter Next.js proxy configuration than UAT-02
+- Production only proxies: /api/csrf, /api/auth/check-session, /api/auth/logout, /api/auth/refresh, /api/sca, /api/sca/clear, /api/crypto-simulation/*, /api/facetec-gateway/*, /api/auth/create-2fa-mobile-session, /api/passkeys/*, /api/bank-details, /api/cards, /api/users/info, /api/users/user, /api/users/browsers, /api/frontdesk/accounts, /api/frontdesk/features, /api/cashbacks/lifetime
+- CWE: N/A
+- Reproducible: YES
 
 ## 16. Next Steps for Continued Testing
 
