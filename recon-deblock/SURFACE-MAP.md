@@ -10133,3 +10133,159 @@ Priority 3 (Enumeration/escalation):
 - /monitoring endpoint processes requests server-side (returns 500 on malformed Sentry envelopes)
 - /monitoring/envelope/ returns 308 redirect
 - Impact: LOW - Confirms Sentry tunnel architecture and parameter requirements. The tunnel could potentially be used for event injection attacks against the Sentry project.
+
+### F820 [CRITICAL] Data Removal Endpoint Accepts Any Base64 Token - Potential Mass Account Deletion
+- Target: web-api.deblock.com (PRODUCTION)
+- GET /v1/remove/data/<any_base64_token> returns {"status":"ok"} with bearer token for ANY base64 value
+- Tested tokens:
+  - /v1/remove/data/dGVzdA== -> {"status":"ok"}
+  - /v1/remove/data/YWJj -> {"status":"ok"}
+  - /v1/remove/data/MTIzNDU2 -> {"status":"ok"}
+  - /v1/remove/data/AAAAAAAA -> {"status":"ok"}
+- Without bearer token: returns 403 Forbidden
+- The endpoint name suggests GDPR data removal functionality
+- No token validation: the base64 parameter is supposed to identify the user/account for deletion, but ANY value returns success
+- Bearer token used: hardcoded waitlist API token (64726720888b45b06e7f8f22ac2cbb4ece5cefe6016cf31986b80ad47fece262de9bb18db4225f728816d611eb28487fddf9)
+- Impact: CRITICAL - If this endpoint triggers actual data removal operations, an attacker with the hardcoded bearer token (exposed in production JavaScript, F005) could send arbitrary base64 tokens to trigger data removal for any user. Combined with the lack of rate limiting (no Rack::Attack), this could enable mass account data deletion. Even if the endpoint only queues removals, the missing token validation is a severe access control failure on a GDPR-critical operation.
+
+### F821 [HIGH] Hardcoded Bearer Token Grants Unauthenticated Access to Production Financial and Market Data
+- Target: web-api.deblock.com (PRODUCTION)
+- Bearer token from production JavaScript bundle (F005): 64726720888b45b06e7f8f22ac2cbb4ece5cefe6016cf31986b80ad47fece262de9bb18db4225f728816d611eb28487fddf9
+- Endpoints accessible with this token:
+  1. GET /v1/coins/list/EUR/1 -> 200 (full cryptocurrency market data: BTC, ETH, SOL, etc. with real-time prices, 24h changes, market caps)
+  2. GET /v1/home/competition -> 200 (competitor pricing data: Kraken, Coinbase, Revolut, Binance, ZenGo fees)
+  3. GET /v1/chart/BTC/EUR/1M -> 200 (price history charts with timestamps and values)
+  4. GET /v1/bb/1 -> 200 (Bursted Bubbles NFT details including owner Ethereum addresses)
+  5. GET /v1/acquiring/wallets -> 200 (18 wallet providers with internal IDs, names, support email addresses)
+  6. GET /v1/collection/<eth_address> -> 200 (OpenSea collection data for any Ethereum address)
+  7. GET /v1/mobile/account/<any_id> -> 200 (legal documents with UUIDs and CloudFront CDN URLs)
+  8. GET /v1/remove/data/<any_base64> -> 200 {"status":"ok"} (data removal, see F820)
+- The token is embedded in the production JS bundle served to all visitors
+- Any visitor can extract it and access all these endpoints without authentication
+- No rate limiting on any of these endpoints
+- Impact: HIGH - A hardcoded bearer token in client-side JavaScript grants access to production financial data, competitor intelligence, NFT ownership data, wallet provider details, and data removal operations. While market data may be intentionally public, the data removal endpoint and internal business intelligence (competitor pricing) should not be accessible with a client-side token.
+
+### F822 [MEDIUM] Mobile Account Endpoint Ignores User ID Parameter - Broken Access Control
+- Target: web-api.deblock.com (PRODUCTION)
+- GET /v1/mobile/account/:id returns identical response regardless of the ID value
+- Tested with:
+  - /v1/mobile/account/1 -> 200 (legal documents with UUIDs)
+  - /v1/mobile/account/2 -> 200 (same legal documents)
+  - /v1/mobile/account/test -> 200 (same legal documents)
+- Response contains legal document entries with:
+  - UUIDs (e.g., unique document identifiers)
+  - CloudFront CDN URLs to PDF documents
+  - Document types and titles
+- The :id parameter in the route is completely ignored by the controller
+- This suggests either the endpoint is misconfigured or it was designed to return user-specific data but the user lookup is broken
+- Impact: MEDIUM - The endpoint ignores the user ID, returning the same data for all requests. While currently only returning legal documents, this broken access control pattern could expose user-specific data if the endpoint is later modified to return personalized content. The exposed CDN URLs and document UUIDs could be used in further enumeration.
+
+### F823 [MEDIUM] Download Link Endpoint Validates Phone Format - Potential SMS Bombing Vector
+- Target: web-api.deblock.com (PRODUCTION)
+- POST /v1/download/link with bearer token
+- With invalid phone: {"status":"fail","error":"Please check your phone number. Doesn't seem right!"}
+- The endpoint validates phone number format before processing
+- Combined with no rate limiting (no Rack::Attack middleware), a valid phone number would trigger SMS delivery
+- No CAPTCHA or additional authentication beyond the hardcoded bearer token
+- Impact: MEDIUM - If the endpoint sends SMS messages (download links), the combination of the hardcoded bearer token and no rate limiting creates an SMS bombing vector. An attacker could repeatedly trigger SMS delivery to any valid phone number, incurring costs and harassing the recipient.
+
+### F824 [LOW] Survey Beta Endpoint Validates Email - Information Disclosure
+- Target: web-api.deblock.com (PRODUCTION)
+- POST /v1/survey/beta with bearer token
+- With invalid email: {"status":"fail","error":"Please check your email. Doesn't seem right!"}
+- The endpoint validates email format before processing
+- Confirms endpoint is active and processing input
+- Impact: LOW - Minor information disclosure confirming endpoint functionality and input validation behavior.
+
+### F825 [HIGH] Company Onboarding Full Session Takeover via UUID - All PII Fields Writable Without Auth
+- Target: web-api.deblock.com (PRODUCTION)
+- Complete company onboarding flow confirmed exploitable with UUID-only access:
+  1. POST /v1/company/country {"country_code":"FR"} -> creates session (UUID: 78f177ef-b548-486d-ba0b-5111eabb49a9)
+  2. POST /v1/company/email {"uuid":"...","email":"any@example.com"} -> sets email (no verification)
+  3. POST /v1/company/phone {"uuid":"...","phone":"+33612345678"} -> sets phone AND auto-verifies (phone_verified=true)
+  4. POST /v1/company/website {"uuid":"...","url":"https://example.com"} -> sets website/domain
+  5. POST /v1/company/name {"uuid":"...","name":"Company SAS"} -> sets company_name
+  6. POST /v1/company/type {"uuid":"...","type_code":"SAS"} -> sets company type
+  7. POST /v1/company/contact/firstname {"uuid":"...","name":"FirstName"} -> sets first_name
+  8. POST /v1/company/contact/lastname {"uuid":"...","name":"LastName"} -> sets last_name
+  9. POST /v1/company/turnover {"uuid":"...","max_value":1000000} -> sets fiat_turnover
+  10. POST /v1/company/survey {"uuid":"...","answers":"CRYPTO"} -> sets survey_answers
+  11. POST /v1/company/validate {"uuid":"..."} -> checks completeness
+- Data endpoints available unauthenticated:
+  - GET /v1/company/countries -> lists supported countries
+  - GET /v1/company/types?uuid=... -> lists company types for the session's country
+  - GET /v1/company/turnovers?uuid=... -> lists turnover brackets (< 1M, 1-10M, 10-100M, 100-500M, > 500M EUR)
+  - GET /v1/company/surveys?uuid=... -> lists survey options
+- All POST endpoints accept any UUID without authentication or session binding
+- Full PII (email, phone, name, company details, turnover) readable and writable by anyone with the UUID
+- Impact: HIGH - The entire company onboarding flow operates on UUID-only authentication. Any party with a valid UUID can read and overwrite all business and personal information. Combined with the phone verification bypass (F814), a company can be onboarded with a verified phone without any OTP.
+
+### F826 [MEDIUM] NFT Metadata Endpoint Exposes 1000 Owner Ethereum Addresses Without Authentication
+- Target: web-api.deblock.com (PRODUCTION)
+- GET /v1/bb/:id (id 1-1000) returns full NFT metadata including owner Ethereum address
+- Each response contains:
+  - Owner ETH address: "owner": "0xa586fa52be32702625be5537c1da76958ca41d39"
+  - Short owner: "0xa586...1d39"
+  - Last transfer timestamp
+  - Research status (level, progress, next level)
+  - Image URLs (CDN), download URLs
+  - Properties with rarity percentages
+- Error on invalid ID reveals exact range: "Wrong ID! Bursted Bubbles ID are between 1 and 1000."
+- GET /v1/meta/bb/:id returns OpenSea-compatible metadata (name, description, image, animation_url)
+- All accessible with the hardcoded bearer token (F005)
+- No rate limiting on enumeration
+- Impact: MEDIUM - All 1000 NFT owner Ethereum addresses can be enumerated in bulk. These addresses are linked to Deblock user accounts and can be used to identify users, track their on-chain activity, and potentially correlate with other PII through blockchain analytics.
+
+### F827 [MEDIUM] Action Mailbox Conductor Accessible on Staging - Database Schema Leak
+- Target: web-api-staging.deblock.com
+- GET /rails/conductor/action_mailbox/inbound_emails -> 500 Internal Server Error
+- GET /rails/conductor/action_mailbox/inbound_emails/new -> 500 Internal Server Error
+- Error reveals PostgreSQL table structure:
+  - PG::UndefinedTable: ERROR: relation "action_mailbox_inbound_emails" does not exist
+  - Full ActiveRecord stack trace with gem paths
+  - Database query structure exposed
+- POST to conductor returns 422 InvalidAuthenticityToken (CSRF protected)
+- Production conductor returns 403 (properly blocked)
+- Action Mailbox ingress endpoints (relay, sendgrid, mailgun, mandrill, postmark) all 404 on production
+- Impact: MEDIUM - The staging Action Mailbox conductor reveals database schema information and confirms that Action Mailbox tables were never migrated. Combined with the development mode exposure (F817), this provides detailed internal architecture information.
+
+### F828 [MEDIUM] recovery.deblock.com Reveals Solana Blockchain RPC Integration
+- Target: recovery.deblock.com (Vercel)
+- Returns 401 with HTTP Basic Auth challenge (realm: "Secure Area")
+- CSP header reveals Solana RPC connections:
+  - connect-src: solana-rpc.publicnode.com, api.mainnet-beta.solana.com, solana.drpc.org
+- Strict security headers: DENY framing, strict CSP, HSTS, CORP cross-origin
+- Likely a wallet recovery tool for Solana-based crypto wallets
+- Protected by HTTP Basic Auth (tested admin:admin - rejected)
+- Impact: MEDIUM - Reveals Solana blockchain integration not publicly documented. The recovery subdomain confirms the existence of a wallet recovery mechanism, which is a high-value target for social engineering attacks.
+
+### F829 [MEDIUM] Cache Deletion Endpoints Exist on Production - Admin Panel Route Exposure
+- Target: web-api.deblock.com (PRODUCTION)
+- Four cache deletion endpoints exist and return 403 (require admin auth):
+  - GET /v1/blog/cache/delete/:key -> 403 Forbidden
+  - GET /v1/faq/cache/delete/:key -> 403 Forbidden
+  - GET /v1/home/cache/delete/:key -> 403 Forbidden
+  - GET /v1/legals/cache/delete/:key -> 403 Forbidden
+- Cache deletion uses GET method (unconventional - should be DELETE or POST)
+- Only protected by application-level auth check (bearer token insufficient)
+- Admin ambassador endpoints also confirmed on production:
+  - GET /v1/admin/ambassador/applicants -> 403
+  - GET /v1/admin/ambassador/dashboard -> 403
+  - GET /v1/admin/ambassador/exist -> 403
+- Impact: MEDIUM - Admin-level cache management and ambassador management endpoints are accessible on the production API. While properly requiring admin authentication, the use of GET for destructive cache operations means these are vulnerable to CSRF if an admin session is compromised. The existence of these routes confirms an admin panel accessible through the same API.
+
+### F830 [LOW] Mobile App Update Endpoints Accept Any Token Without Validation
+- Target: web-api.deblock.com (PRODUCTION)
+- GET /v1/update/ios/:token -> 200 (empty body) for any token value
+- GET /v1/update/android/:token -> 200 (empty body) for any token value
+- POST to same endpoints returns 404 (GET only)
+- The endpoints likely register device tokens for push notification-based app updates
+- No validation on token format or value
+- Impact: LOW - While the tokens are likely Firebase/APNs device tokens that would be meaningless without the push notification credentials, the lack of validation means arbitrary data can be submitted to the token registration system.
+
+### F831 [LOW] Deprecated Twilio Webhook Endpoint Still Responds
+- Target: web-api.deblock.com (PRODUCTION)
+- POST /v1/webhook/twilio/:hash -> 410 Gone with message: "This endpoint is deprecated and no longer available."
+- The endpoint still processes requests and returns a proper JSON response
+- The hash parameter accepts any value
+- Impact: LOW - The deprecated webhook endpoint should be fully removed rather than returning 410. The continued existence of the route handler could potentially be exploited if the deprecation logic has edge cases.
