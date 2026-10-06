@@ -8632,3 +8632,76 @@ Priority 3 (Enumeration/escalation):
   - The backend services are not currently running or are unreachable
   - These may be maintenance mode or scheduled downtime services
 - Impact: INFO - Microservice architecture mapping. Confirms separate services for onboarding, payments, proof (likely identity verification), transfers, and users. The .dev endpoints suggest a development environment accessible on the internet.
+
+### F728 [MEDIUM] Mobile Legal Document Endpoint Exposes All Terms Documents and CDN Paths Without Auth
+- Targets: web-api.deblock.com (PRODUCTION), web-api-staging.deblock.com
+- Endpoint: GET /v1/mobile/:locale/:country
+- Production: `GET /v1/mobile/en/FR` returns full legal document listing
+- 12 documents returned with UUIDs, titles, CDN PDF URLs, and label types:
+  - Fee Information Document (BETA): cdn1.deblock.com/terms/fee_info/20231206-BETA-Fee_Information_Doc-ENG.pdf
+  - Fees Document v6.3: cdn1.deblock.com/terms/fee_info/Fees_Pages_Deblock_EN_v6.3.pdf
+  - Personal Terms (multiple versions):
+    - Production latest TERMS_SIGNATURE_V2: 20260918-merged-terms-EN.docx.pdf
+    - Pre-KYC Techblock v3.1: 20260904-v3_1-Techblock-EN.docx.pdf
+    - Pre-KYC v13.1: 20260319-v13.1-personal-terms-EN.docx.pdf
+    - QES/Signature v12.3: 20260223-v12.3-personal-terms-EN.pdf
+  - Privacy Policy v2.2
+  - User Identity Declaration v1: 20260302-Deblock-New-User-Identity-Declaration-v1.pdf
+- Document label types reveal KYC flow stages: TERMS_PRE_KYC, TERMS_PRE_KYC_V2, TERMS_SIGNATURE, TERMS_SIGNATURE_V2, TERMS_QES, TERMS_QES_V2, TERMS_KYC_2_PRIVACY
+- Version differences between production and staging reveal recent updates:
+  - Production TERMS_SIGNATURE_V2: September 18, 2026 (newer)
+  - Staging TERMS_SIGNATURE_V2: July 2, 2026 (older)
+  - Production Techblock terms: v3.1 (September 4, 2026)
+  - Staging Techblock terms: v2.1 (March 19, 2026)
+- All PDF URLs are directly accessible on cdn1.deblock.com without auth
+- Impact: MEDIUM - Exposes internal document management system with UUIDs, the complete KYC flow structure (pre-KYC, signature, QES, privacy stages), and direct CDN paths to all legal documents. While terms of service are generally public, the UUID-based document IDs and version tracking reveal internal systems. The "BETA" prefix on fee documents and "Techblock" naming (original company name) leak historical development information.
+
+### F729 [LOW] Blog Sitemap Accessible Without Authentication on Production
+- Target: web-api.deblock.com/v1/sitemap/blog/en
+- Returns blog post slugs without authentication
+- Currently only one post: "embracing-regulation-the-path-to-a-stronger-crypto-ecosystem"
+- Impact: LOW - Blog content sitemap disclosure. Limited impact with only one post.
+
+### F730 [LOW] Ambassador Code Check Oracle on Production
+- Target: web-api.deblock.com/v1/check/ambassador
+- POST with `{"code":"test"}` returns: `{"status":"fail","error":"This person is not certified by Deblock!"}`
+- Same response for codes: "jean", "deblock", "test"
+- No authentication required
+- The endpoint validates ambassador referral codes
+- Could be used to enumerate valid ambassador codes (different response for valid codes)
+- No rate limiting observed
+- Impact: LOW - Ambassador code validation oracle. An attacker could brute-force ambassador codes to find valid ones, potentially hijacking referral rewards.
+
+### F731 [LOW] Beta Token Validation Oracle on Production
+- Target: web-api.deblock.com/v1/beta/check/:token
+- Returns `{"status":"fail","error":"Wrong token"}` for invalid tokens
+- Different from the standard "Forbidden" response, indicating the endpoint processes the token
+- The Twilio webhook endpoint returns: `{"status":"Gone","message":"This endpoint is deprecated and no longer available."}` (properly deprecated)
+- Impact: LOW - Beta token validation exists as an oracle. Limited risk since the beta program appears inactive.
+
+### F732 [INFO] SEPA Upload Endpoint is a No-Op on Production
+- Target: web-api.deblock.com/v1/upload/anthony/:token
+- Further analysis of F717 reveals the endpoint is likely a no-op:
+  - Response time: 1.28-1.46ms (too fast for actual S3 upload)
+  - Any token value accepted: "testtoken", "aaaa", "realtoken123" all return `{"status":"ok"}`
+  - Any body content accepted: empty, JSON, XML all return `{"status":"ok"}`
+  - Any Content-Type accepted: application/json, application/xml all work
+  - Only multipart/form-data on staging returns "Forbidden" (different code path)
+  - GET requests return empty (only POST is routed)
+- The endpoint likely has the file upload functionality disabled or moved, with the route still returning a default success response
+- While not actively exploitable, the endpoint's presence on production with no validation is a code quality concern
+- Impact: INFO - Downgraded from HIGH (F717) after deeper analysis. The endpoint appears non-functional, always returning "ok" without processing.
+
+### F733 [INFO] Production/Staging CORS Properly Configured (Negative Finding)
+- Targets: web-api.deblock.com, web-api-staging.deblock.com
+- CORS preflight testing results:
+  - Origin: evil.com -> No CORS headers (200 empty response, no access-control-allow-origin)
+  - Origin: null -> No CORS headers
+  - Origin: evil.deblock.com -> No CORS headers (not a wildcard subdomain match)
+  - Origin: deblock.com -> access-control-allow-origin: https://deblock.com, all methods allowed
+  - Origin: staging.deblock.com -> access-control-allow-origin: https://staging.deblock.com, all methods allowed
+- CORS configuration uses an explicit allowlist of known subdomains, not a regex or wildcard
+- Max-age: 7200 seconds (2 hours)
+- Methods allowed: GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD
+- Same configuration on both staging and production
+- Impact: INFO - Negative finding. CORS is properly configured with an explicit origin allowlist. No cross-origin exploitation possible from attacker-controlled domains.
