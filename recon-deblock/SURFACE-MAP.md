@@ -8886,3 +8886,82 @@ Priority 3 (Enumeration/escalation):
   - This reveals the expected input type (integer for type codes)
 - The return_fail method at line 51 reveals error handling logic
 - Impact: MEDIUM - Application code paths and method names are exposed. Combined with the full route table (F714), an attacker has a detailed map of the controller structure, method names, and input expectations, significantly reducing the effort needed for targeted exploitation.
+
+### F745 [HIGH] recovery.deblock.com Basic Auth Bypass on Static Assets and API Routes
+- Target: recovery.deblock.com
+- The recovery portal is protected by Vercel Basic Auth (WWW-Authenticate: Basic realm="Secure Area")
+- However, the protection has gaps:
+  - Root `/` -> 401 (protected)
+  - `/api` -> 200 (NOT protected, returns Next.js error page)
+  - `/api/*` -> 404 (NOT protected, API routes bypass auth)
+  - `/_next/static/chunks/*.js` -> 200 (NOT protected, JavaScript bundles accessible)
+  - `/_next/data` -> 401 (protected)
+  - `/manifest.json` -> 401 (protected)
+  - `/robots.txt` -> 401 (protected)
+- CSP header reveals Solana wallet recovery infrastructure:
+  - `connect-src 'self' https://solana-rpc.publicnode.com https://api.mainnet-beta.solana.com https://solana.drpc.org`
+  - This confirms Deblock uses Solana blockchain for self-custody wallet recovery
+  - Three different Solana RPC endpoints are configured for redundancy
+- Additional security headers:
+  - COEP: credentialless, COOP: same-origin, CORP: cross-origin
+  - X-Frame-Options: DENY, HSTS with includeSubDomains and preload
+  - Permissions-Policy disables camera, microphone, geolocation, payment, USB, sensors
+- Vercel deployment ID: dpl_mAs9M7NnoB1oNqhMS685n2kDmngD
+- Next.js with webpack bundling
+- Five framework JS bundles are publicly accessible (React, webpack, polyfills)
+- Page-specific bundles with Solana wallet recovery logic are only loaded on authenticated pages
+- Impact: HIGH - The Vercel Basic Auth bypass exposes the application's JavaScript framework bundles and API route structure. The CSP header leaks the Solana wallet recovery architecture, confirming the blockchain infrastructure used for self-custody features. While the page-specific code requires auth, the API routes are unprotected (returning 404 rather than 401), meaning any API endpoint that exists can be called without Basic Auth credentials.
+
+### F746 [MEDIUM] lk.deblock.com Email Link Tracking Infrastructure Exposed
+- Target: lk.deblock.com
+- Link tracking/click-tracking domain for email campaigns
+- Infrastructure:
+  - Behind AWS CloudFront CDN (x-cache: Error from cloudfront)
+  - Backend: OpenResty (nginx-based, different from main GCP infrastructure)
+  - Server header: "msys-et" (MessageSys/SparkPost Email Tracking)
+  - CloudFront POP: IAD61-P8 (US-East Virginia)
+  - CloudFront distribution ID visible in x-amz-cf-id header
+- Returns 404 for root path (requires valid tracking link ID)
+- This is the first non-GCP/non-Vercel/non-Heroku infrastructure discovered
+- SparkPost/MessageSys is their transactional email provider
+- Impact: MEDIUM - Reveals email infrastructure provider (SparkPost/MessageSys) and separate AWS CloudFront deployment for email tracking. Could be used for phishing link crafting if tracking link format is discovered.
+
+### F747 [LOW] dl.deblock.com Deep Link/Download Domain with A/B Testing
+- Target: dl.deblock.com
+- Vercel-hosted redirect domain
+- 307 redirects to https://deblock.com/ (main marketing site)
+- Sets cookies revealing business logic:
+  - `header_variant=B` (A/B testing variant, Max-Age=30 days)
+  - `geo_country=US` (geographic detection, Max-Age=90 days)
+- x-robots-tag: noindex, nofollow (not meant for indexing)
+- CSP: frame-ancestors 'none'
+- Impact: LOW - Deep link/download redirect domain. The A/B testing variant and geo cookies reveal marketing experimentation. The geo detection could be used to fingerprint which markets are being targeted.
+
+### F748 [INFO] Microservice Subdomain Infrastructure: Envoy Fault Filter Pattern
+- Targets: transfers.dev.deblock.com, users.dev.deblock.com, onboarding.prod.deblock.com
+- All return "fault filter abort" (HTTP 404) - same pattern as auth.prod.deblock.com (F735)
+- Confirms these services are in the same GKE/Istio service mesh with catch-all fault filter
+- payments.prod.deblock.com and proof.prod.deblock.com return 502 Bad Gateway (GCP infrastructure)
+- This reveals the full microservice architecture:
+  - auth.prod / auth.dev: Authentication service
+  - transfers.dev: Transfer/payment processing service
+  - users.dev: User management service
+  - onboarding.prod: Onboarding flow service
+  - payments.prod: Payment processing service
+  - proof.prod: Identity verification/proof service
+- The .dev subdomains likely had active services during development that were later disabled
+- Impact: INFO - Complete microservice architecture mapping. The fault filter pattern confirms intentional service mesh traffic control, and the subdomain names reveal the domain-driven design of the backend.
+
+### F749 [MEDIUM] Hardcoded Waitlist Bearer Token Provides Access to Company Waitlist API on Production
+- Target: web-api.deblock.com/v1/waitlist/company/*
+- The hardcoded waitlist API bearer token (from earlier findings) provides access to company waitlist endpoints on production:
+  - GET /v1/waitlist/company/types?country_code=FR -> Returns company type options (SARL, SAS, EURL, SA, SNC, AUTRE, AUTO)
+  - GET /v1/waitlist/company/turnovers?country_code=FR -> Returns turnover brackets with internal IDs (109-114)
+  - POST /v1/waitlist/company/join -> Accepts company registration (requires: email, country_code, company_name)
+  - POST /v1/waitlist/company/email/verify -> Email verification
+  - POST /v1/waitlist/company/email/resend -> OTP resend
+  - GET /v1/waitlist/company/position -> Waitlist position check
+- The turnovers endpoint reveals internal database IDs (109-114) that could be used for IDOR testing
+- This is separate from the /v1/company/* flow (F742) which requires no auth at all
+- The waitlist flow requires the bearer token but the company onboarding flow is completely unprotected
+- Impact: MEDIUM - The hardcoded bearer token extends to company waitlist functionality, providing full access to create company waitlist entries and enumerate internal data structures.
