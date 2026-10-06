@@ -6786,3 +6786,168 @@ Priority 3 (Enumeration/escalation):
 - All these endpoints process input before authenticating the user, which is a systematic middleware ordering vulnerability
 - Impact: P3 systematic vulnerability. The middleware ordering issue (body parsing before auth) across 7+ endpoints suggests a framework-level configuration problem rather than individual endpoint bugs. This pattern could lead to auth bypass if any endpoint processes business logic during body validation.
 
+### F587 [MEDIUM] Server PGP Public Key Leaked via RSC Payload
+- Target: business.deblock.com, app-uat-02.deblock.com
+- The React Server Components (RSC) payload, accessible via "RSC: 1" header, embeds the server's PGP public key used for client-side encryption
+- Production has TWO pgpPublicKey references: one in the "business-auth-gate" component (pgpPublicKey:"$29"), another wrapping the entire app body (pgpPublicKey:"$2b"). Both resolve to the same key.
+- UAT-02 has one publicPgpKey:"$69" reference
+- The full PGP PUBLIC KEY BLOCK is embedded in the RSC response (not in JavaScript bundles)
+- This key is used with OpenPGP.js 6.3.0 for encrypting sensitive data before transmission (controlled by X-Encrypted and X-Kyc-Encrypted headers)
+- Combined with the RSC payload, the complete component tree is also exposed, revealing: initialIsAuth, initialAuthExpireDateIsoString, initialUserData, userType, initialIsVulnerable, initialFiatAccountsSummary, initialPlan, initialHasPasskeys, initialCryptoWallets
+- Impact: The PGP key itself is public (designed to be shared), but its exposure via RSC reveals the encryption architecture. The full component tree with provider names and initial values is a significant information disclosure that maps the entire client-side state management.
+
+### F588 [MEDIUM] "initialIsVulnerable" User State Exposed in Client Context
+- Target: business.deblock.com (production), app-uat-02.deblock.com
+- Both production and UAT RSC payloads expose "initialIsVulnerable" as a user state context parameter
+- From JS analysis: this uses a React Query hook with key ["vulnerable-user"], 5-minute stale time, refetching on window focus
+- The isVulnerable flag gates UI behavior for SEPA transfers, external wallet imports, and wallet key exports
+- This appears to be a regulatory consumer protection mechanism (UK FCA "vulnerable customer" classification)
+- An attacker who can read this state would know which users are flagged as vulnerable by the bank
+- Impact: P3 - Sensitive user classification data (vulnerability status under financial regulations) exposed in client-side state. If an attacker achieves authenticated access, they can determine whether any user is classified as "vulnerable" under regulatory frameworks, which is protected personal data under GDPR.
+
+### F589 [MEDIUM] Production RSC Payload Leaks Complete Application Architecture
+- Target: business.deblock.com
+- Production RSC payload (42KB) at GET / with header "RSC: 1" exposes:
+  - Production buildId: "26tbWezWroJnCCGBceFD9"
+  - Complete React component tree with all context providers
+  - All i18n namespace names revealing feature areas: business-auth, business-card, business-pricing-plan, business-top-ups, bank-account-details, business-account-overview, business-transaction-history, business-transaction-category, business-live-activity, business-fiat-live-activity, business-settings, business-crypto-signing
+  - Test data attributes in production: data-testid="testid-business-auth-gate"
+  - Provider chain revealing state management: UserProvider, AuthProvider, PricingPlanProvider, FiatAccountsProvider, etc.
+- UAT-02 RSC payload is 148KB (3.5x larger), additionally exposes __RUNTIME_ENV__ with GOOGLE_MAPS_EMBED_API_KEY
+- Impact: P3 information disclosure. The production RSC payload provides a complete map of the application architecture, feature set, and state management to any unauthenticated user. Test data-testid attributes should be stripped in production builds.
+
+### F590 [INFO] crypto-v3-socket WebSocket Accepts Unauthenticated Connections on UAT-02
+- Target: app-uat-02.deblock.com
+- Fourth WebSocket endpoint accepting connections without authentication: wss://app-uat-02.deblock.com/api/crypto-v3-socket
+- Connection persists indefinitely without authentication
+- Responds to {"event":"ping"} with {"event":"ping"} (echo)
+- Does not respond to subscribe or auth events
+- Not available on production (502 error)
+- Complete list of unauthenticated WebSockets on UAT-02: crypto-socket, 2fa-mobile-session-socket, crypto-commands-socket, crypto-v3-socket
+- Impact: Informational - UAT-02 only. Persistent connection without auth could be used for resource exhaustion, but the socket appears to be non-functional beyond ping echo.
+
+### F591 [MEDIUM] Full Crypto-Stocks Trading API Surface Discovered
+- Target: app-uat-02.deblock.com
+- Complete stock trading API found in JS bundles (3bd29ap2uas4j.js):
+  - POST /api/crypto-stocks/accounts/{accountId}/buy (buy stocks)
+  - POST /api/crypto-stocks/accounts/{accountId}/sell (sell stocks)
+  - POST /api/crypto-stocks/quote/{quoteId}/accept (accept quote)
+  - POST /api/crypto-stocks/orders/{orderId}/cancel (cancel order)
+  - POST /api/crypto-stocks/movements/{movementId}/accept (accept movement)
+  - GET/POST /api/crypto-stocks/account (account info)
+  - GET /api/crypto-stocks/accounts/{accountId}/deposits
+  - GET /api/crypto-stocks/accounts/{accountId}/withdrawals
+- All POST endpoints confirmed to require auth (400 "User is not authenticated")
+- GET endpoints return 502 (Apigee method mismatch, need POST instead)
+- Crypto-stocks endpoints do NOT exist on production (all 404) - UAT-02 only feature
+- Impact: P3 - Full stock trading API surface mapped. With authenticated access, this enables buy/sell/cancel operations on user's crypto-stock accounts. IDOR testing of accountId, quoteId, orderId parameters is high priority.
+
+### F592 [INFO] Ledger Hardware Wallet Integration in Client Bundle
+- Target: app-uat-02.deblock.com
+- Full Ledger hardware wallet integration found in JS (0pmw3ha9eky7u.js):
+  - IndexedDB store: dbName="ledgerWalletDB", storeName="ledgerWalletStore"
+  - Device session management with session refresher
+  - ledgerSignAndSubmitTransaction function
+  - BTC-specific signing: signBtcTransactionOnDevice
+  - Signing states: OPENING_APP, AWAITING_CONFIRMATION, SIGNING
+  - Blind signing error handling
+- Impact: Informational - Reveals the hardware wallet integration architecture. The IndexedDB store could be a target if XSS is found, as it may contain device session data.
+
+### F593 [INFO] Cryptocurrency Asset UUID Mapping Discovered
+- Target: app-uat-02.deblock.com
+- Internal cryptocurrency asset UUIDs found in JS (3cp6yj5zsp2mj.js):
+  - 7d3b1f42-9c6e-4c2f-8e17-2b14c8f4b9d3 = SPARK_BTC
+  - 753eb3a4-1511-5f39-888c-6c7160c5f517 = XRP
+  - b4e8c7a2-9f3d-4e5b-8c1a-6d2f9e8b7c4a = BSC_BNB
+  - f6922295-d90c-4dba-b04a-f9195768db68 = ROBINHOOD_ETH
+  - da204feb-3f3b-4fc9-9b65-a915a27ef20e = BASE_ETH
+  - e3d377d3-3036-57d9-8d55-56726b0deb29 = (likely BASE_USDC)
+  - 199eac04-5564-4f90-b0cb-5842894a3164 = CARDANO_ADA
+- These UUIDs can be used to construct valid crypto transaction requests for IDOR testing
+- Impact: Informational - Internal asset IDs useful for authenticated testing.
+
+### F594 [INFO] Auth Flow UUIDs and Session Types in Client Bundle
+- Target: app-uat-02.deblock.com
+- Three hardcoded UUIDs found in auth flow JS (1w0zenzb3z0q3.js):
+  - d8d6a147-7828-411c-8a03-78d2007901c5 (matches the hardcoded QR login test page)
+  - aeaa30ee-d48d-48e8-b0ff-9284c72f4e48 (matches OneSignal app ID)
+  - 32f1a686-ea76-4ac6-93be-f9d8958aaa5a (unknown - possibly auth-method or session-type identifier)
+- Impact: Informational - Confirms the QR login test page UUID is hardcoded in the auth flow.
+
+### F595 [MEDIUM] cards/designs Pre-Auth Parameter Validation
+- Target: app-uat-02.deblock.com
+- GET /api/cards/designs without cardProductType parameter returns {"error":"cardProductType query parameter is required"} (400) WITHOUT checking auth
+- GET /api/cards/designs?cardProductType=PHYSICAL returns {"error":"User is not authenticated"} (400) - auth checked AFTER parameter validation
+- This is the same pre-auth body validation pattern as F586, but on a GET endpoint with query parameters
+- No auth cookie needed to trigger the parameter validation error
+- Impact: P3 - Adds to the systematic pre-auth validation pattern (F586). The parameter name leak reveals the internal card product type taxonomy.
+
+### F596 [MEDIUM] DCA (Dollar Cost Averaging) Standing Orders API Confirmed
+- Target: app-uat-02.deblock.com
+- POST /api/dca/standing-orders requires auth (400 "User is not authenticated")
+- PATCH /api/dca/standing-orders returns 502 (Apigee method mismatch)
+- Endpoint not available on production (404)
+- Combined with Frequency enum from JS (ONE_OFF, DAILY, WEEKLY, FORTNIGHTLY, MONTHLY, QUARTERLY, HALF_YEARLY, YEARLY), this enables automated recurring crypto purchases
+- Impact: P3 - DCA standing orders are a financial operation. With authenticated access, IDOR on standing order IDs could allow cancellation or modification of other users' recurring purchases.
+
+### F597 [MEDIUM] Crypto Wallet Import Endpoint Accepts Mnemonic/Private Key
+- Target: app-uat-02.deblock.com
+- POST /api/crypto-wallets/wallets/import requires auth (400 "User is not authenticated")
+- From JS analysis (109gnc7v1d6md.js): the import flow accepts {mnemonic, privateKey, importMethod}
+- The isVulnerable flag is checked during wallet import (gates whether vulnerable users can import)
+- This endpoint, when combined with authenticated access, could be used to import wallets and potentially redirect funds if IDOR exists on the wallet association
+- Not available on production (404)
+- Impact: P3 - Wallet import is a critical financial operation. The endpoint accepts raw mnemonics and private keys, making it a high-value target for authenticated testing.
+
+### F598 [INFO] Auto-Sweep Yield Feature Architecture
+- Target: app-uat-02.deblock.com
+- Auto-sweep feature automatically converts idle balance to earn yield interest, then converts back when needed
+- From JS (0862ivvcts-h0.js, 04gb2-ich7-6z.js, 1f8m5rrf5gc7d.js):
+  - Services: getAutoSweepVaultsService, auto-sweep vault-interest, auto-sweep accounts
+  - State enum: AutoSweepVaultState with ACTIVE state
+  - Eligibility: requires isEligible=true, autoSweepEnabled=true, hasRecentCardTransaction=true
+  - Yield type: YIELD with id "autosweep_interest"
+  - Terms: cdn1.deblock.com/terms/fixed_rate-yield-terms/
+- API endpoints not found on UAT-02 (404 for auto-sweep/* paths)
+- Impact: Informational - Feature architecture mapped. The eligibility requirements suggest rate abuse potential if the hasRecentCardTransaction check can be bypassed.
+
+### F599 [MEDIUM] Production vs UAT-02 Endpoint Availability Gap
+- Target: business.deblock.com vs app-uat-02.deblock.com
+- Comprehensive testing confirms production (business.deblock.com) is much more locked down:
+  - UAT-02-only endpoints (404 on production): crypto-stocks/*, crypto-wallets/wallets/import, sepa-transfer/create/schedule, crypto-vaults/vaults, crypto-vaults/approvals/*/submit, dca/standing-orders, users/change-phone, transactions/submit, transactions/generate-request, app-version, auth/analytics, csp-violation, client-region, qr-login, health (with version), legal/*, marketing-widgets
+  - Production-only working endpoints: csrf, auth/check-session, business-onboarding, auth/refresh, facetec-gateway/process-request, readyz
+  - Shared endpoints (behind auth on both): cards, passkeys, crypto-wallets, users/info, users/user, frontdesk/accounts, frontdesk/features, cashbacks/lifetime
+- Production buildId: 26tbWezWroJnCCGBceFD9 (different from UAT-02's 86c92c6)
+- The "business" deployment on production appears to be a stripped-down version exposing only business onboarding and authenticated account management
+- Impact: P3 - The significant endpoint gap suggests UAT-02 runs a different (consumer) app build while production runs a business-specific build. If UAT-02 shares any backend services with production, the additional endpoints could be exploited against production data.
+
+### F600 [INFO] Apigee Gateway Method Resolution Update
+- Target: app-uat-02.deblock.com
+- Updated method mappings after testing all 502 endpoints with corrected methods:
+  - frontdesk/users/handle: PATCH returns 400 "User is not authenticated" (was 502 on POST/GET)
+  - due-gateway/account: GET returns 400 "User is not authenticated" (was 502 on POST)
+  - due-gateway/tos: POST returns 403 "Forbidden" - rate limited (was 502 on GET)
+  - top-up/get-topup-fees: POST returns 400 "User is not authenticated" (was 502 on GET)
+  - sepa-transfer/upcoming: POST returns 400 "User is not authenticated" (was 502 on GET)
+  - sepa-transfer/upcoming/overview: POST returns 400 "User is not authenticated" (was 502 on GET)
+  - analytics/entry: POST returns 403 "Forbidden" - rate limited (was 502 on GET)
+  - frontdesk/users/avatar: both GET and PUT return 502 (only POST with specific MIME type works)
+  - dca/standing-orders: only GET returns 502; POST returns 400 "User is not authenticated"
+  - crypto-stocks/account: GET returns 502; POST returns 400 "User is not authenticated"
+  - crypto-stocks/accounts/{id}/deposits: GET returns 502; POST returns 400 "User is not authenticated"
+  - crypto-stocks/accounts/{id}/withdrawals: GET returns 502; POST returns 400 "User is not authenticated"
+  - crypto-wallets/wallets/accounts: GET returns 502 (need POST)
+  - subscribe-2fa-mobile-session: POST returns 502 (need GET or different method)
+- Impact: Informational - Several previously unmapped endpoints now confirmed as functional with the correct HTTP method. Key finding: most GET endpoints that return 502 actually need POST, suggesting the Apigee proxy routes all traffic through POST-only backend endpoints.
+
+### F601 [INFO] QR Login Session Creation Unlimited and Unthrottled
+- Target: app-uat-02.deblock.com
+- QR login sessions can be created at unlimited rate without authentication:
+  - POST /api/qr-login with only CSRF token creates a session with UUID
+  - 5 rapid requests all succeeded with unique session UUIDs
+  - Sessions point to production domain: https://app.deblock.com/qr-login/{uuid}
+  - Sessions expire after ~10 minutes
+- Exchange endpoint (POST /api/qr-login/exchange) with invalid UUID returns {"outcome":"SECURITY_ERROR"} (200)
+- No rate limiting observed on session creation
+- Impact: Informational on UAT-02. Could enable resource exhaustion via mass session creation, but no direct data exposure without a mobile device to complete the QR flow.
+
