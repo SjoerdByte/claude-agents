@@ -1737,8 +1737,18 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 182 | LOW | OPTIONS method reveals allowed methods per endpoint | - | CWE-200 | YES | GET,HEAD,POST,PUT,DELETE,PATCH disclosed on all routes |
 | 183 | LOW | No JSON request body depth limit | - | CWE-400 | YES | 100-level nested objects accepted without rejection |
 | 184 | LOW | Inconsistent auth error format on /api/auth/logout | - | CWE-209 | YES | Returns {"message":"User is not authenticated"} vs standard {"error":...} |
+| 185 | HIGH | RSC state tree crash affects all environments (DoS) | - | CWE-400 | YES | Malformed RSC header causes 500 on UAT, business-UAT, and production, zero rate limit |
+| 186 | HIGH | Analytics dashboard poisoning via fake events | - | CWE-20 | YES | Fake registration_complete, transaction_complete events accepted, no dedup |
+| 187 | MEDIUM | WordPress batch API validates params before auth | - | CWE-200 | YES | DELETE /users/1 returns "missing: reassign" (400) not 401 |
+| 188 | MEDIUM | UpdraftPlus backup directory confirmed (/wp-content/updraft/) | - | CWE-538 | YES | Directory exists (403), confirms active backup system |
+| 189 | MEDIUM | WordPress password reset user enumeration | - | CWE-203 | YES | 302 for valid user vs 200+error for invalid, timing delta |
+| 190 | MEDIUM | Apigee 405 error detail leak on POST to GET-only endpoints | - | CWE-209 | YES | faultstring+errorcode on complete-2fa-mobile-session GET/PUT |
+| 191 | LOW | WordPress OEmbed leaks author name and URL | - | CWE-200 | YES | author_name: admin-deblock, author_url exposed via /wp-json/oembed |
+| 192 | LOW | Analytics event replay (no eventId deduplication) | - | CWE-799 | YES | Same eventId accepted 3+ times |
+| 193 | INFO | Next.js Server Actions enabled (404 on unknown IDs) | - | CWE-200 | YES | "Server action not found" on POST with Next-Action header |
+| 194 | INFO | Prelude edge SDK endpoint with CORS wildcard (*) | - | CWE-200 | YES | ACAO: * on edge.prelude.dev (third-party, not Deblock's) |
 
-Total: 184 findings (12 critical, 38 high, 57 medium, 42 low, 35 info)
+Total: 194 findings (12 critical, 40 high, 62 medium, 44 low, 36 info)
 
 ## 15. Session Notes
 
@@ -1757,6 +1767,7 @@ Total: 184 findings (12 critical, 38 high, 57 medium, 42 low, 35 info)
 - No open redirect vulnerabilities found on tested endpoints.
 - Session 8: Extended unauthenticated testing. XMLRPC multicall brute force confirmed (68 pw/sec, admin-deblock valid). Analytics stored injection (XSS/SQLi/NoSQLi all accepted). WordPress REST API user enumeration. BackWPup/Elementor Pro/site-health route enumeration. Firebase only used for phone auth (no Firestore/RTDB/Storage). Google Maps key restricted to JS API. OneSignal requires API key. CDN S3 properly secured. api.deblock.com still down. All WebSockets returning 502. Production endpoints returning 410 Gone.
 - Session 8 (continued): Added findings 179-184 (TRACE 500, text/plain CSRF bypass, prototype pollution, OPTIONS disclosure, no JSON depth limit, inconsistent auth error format).
+- Session 9: RSC state tree crash confirmed on ALL environments including production (DoS vector). Analytics dashboard poisoning with fake events confirmed. WordPress batch API validates params before auth. UpdraftPlus backup directory exists. Password reset user enumeration confirmed. 126 more XMLRPC passwords tested (none matched). No cache poisoning, no SSRF, no subdomain takeover. Total 194 findings.
 - ActionMailbox ingress endpoints return 404 on production with proper email format (all providers tested).
 - Ambassador auto-signup sends OTP on staging (confirmed email delivery).
 - Session 5: UAT environment deep dive (app-uat-01, business-uat-01). Sentry event injection confirmed on both DSNs. XMLRPC multicall confirmed at 20+ attempts per request. WordPress deep enumeration. JS bundle API route extraction (14 routes from 85 chunks). WebSocket endpoints confirmed. Multiple app-uat-01 API endpoints reach backend without user auth.
@@ -2826,6 +2837,52 @@ Endpoints accept deeply nested JSON objects (tested 100 levels) without rejectin
 
 F184 - Inconsistent Auth Error Format on /api/auth/logout (LOW):
 POST /api/auth/logout returns {"message":"User is not authenticated"} with HTTP 401, while other auth endpoints return {"error":"...","status":400}. This inconsistency indicates different middleware or controller handling, useful for fingerprinting backend architecture and identifying which endpoints share code paths.
+
+## 12ab. RSC Crash, Analytics Poisoning, and WordPress Batch API (Session 9)
+
+F185 - RSC State Tree Crash (HIGH):
+Sending a request with "RSC: 1" header and ANY malformed Next-Router-State-Tree value causes HTTP 500 Internal Server Error on ALL three environments: app-uat-01.deblock.com, business-uat-01.deblock.com, and business.deblock.com (PRODUCTION). Tested with: [""], [null], {}, [], null, true, 1, "test", ["__proto__"]. ALL cause 500. The server returns "Internal Server Error" in plain text. No rate limiting exists - 10 rapid requests all returned 500. This is a Denial-of-Service vector that affects production. Without the malformed state tree (just RSC: 1), the server returns valid text/x-component data with the full React component tree.
+
+F186 - Analytics Dashboard Poisoning (HIGH):
+POST /api/auth/analytics accepts completely fabricated event data with no authentication. Tested injecting fake "registration_complete" events with fake email/campaign source, and fake "transaction_complete" events with fake EUR amounts. All accepted with success:true. Combined with F192 (no deduplication), an attacker can flood analytics dashboards with fake data, skewing business metrics (conversion rates, revenue, user counts). Combined with F180 (text/plain CSRF), this can be triggered from any website.
+
+F187 - WordPress Batch API Auth Bypass Pattern (MEDIUM):
+POST /wp-json/batch/v1 processes request parameters before checking authentication. DELETE /wp/v2/users/1 within a batch returns HTTP 400 "missing param: reassign" instead of 401 Unauthorized. POST /wp/v2/posts returns 401. This differential behavior leaks information about endpoint parameter requirements without authentication. The batch endpoint only allows write methods (POST, PUT, PATCH, DELETE).
+
+F188 - UpdraftPlus Backup Directory Exists (MEDIUM):
+/wp-content/updraft/ returns HTTP 403 (LiteSpeed denies listing). The directory exists and confirms UpdraftPlus is actively creating backups. Backup file names were not guessable with tested patterns. /wp-content/updraft/index.php and index.html both return 403.
+
+F189 - WordPress Password Reset User Enumeration (MEDIUM):
+POST /wp-login.php?action=lostpassword with user_login=admin-deblock returns HTTP 302 (password reset email sent). With a non-existent username, returns HTTP 200 with error message "il n'y a pas de compte avec cet identifiant". Timing difference also observable: known user 0.64s vs unknown 0.93s. This confirms admin-deblock as valid username via a second independent method.
+
+F190 - Apigee 405 Error Detail Leak (MEDIUM):
+POST/GET/PUT to endpoints that only accept specific methods returns Apigee gateway error details: {"fault":{"faultstring":"Received 405 Response without Allow Header","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}. This reveals the Apigee gateway processes the request before rejecting it, and leaks internal error codes.
+
+F191 - WordPress OEmbed Author Leak (LOW):
+/wp-json/oembed/1.0/embed?url=https://brand.deblock.com/ returns author_name: "admin-deblock" and author_url: "https://brand.deblock.com/author/admin-deblock/". While users are already enumerable via REST API, this is an additional enumeration vector.
+
+F192 - Analytics Event Replay (LOW):
+POST /api/auth/analytics accepts the same eventId multiple times. Tested sending identical events with eventId "duplicate-test" three times - all returned success:true. No deduplication exists, enabling analytics metric inflation.
+
+F193 - Next.js Server Actions Enabled (INFO):
+POST with "Next-Action: test" header returns "Server action not found" (404) instead of a generic error. This confirms Server Actions are enabled and could be targeted if action IDs are discovered. Action IDs are SHA-256 hashes not extractable from client JS.
+
+F194 - Prelude Edge SDK CORS Wildcard (INFO):
+Third-party endpoint edge.prelude.dev returns Access-Control-Allow-Origin: * with allowed headers including X-SDK-Key and X-SDK-User-Agent. This is Prelude's endpoint, not Deblock's infrastructure, but the wildcard CORS could be relevant if SDK keys are leaked.
+
+Additional testing results (no new findings):
+- X-Forwarded-Host not reflected in any response (no cache poisoning)
+- X-Original-URL / X-Rewrite-URL headers ignored (no path override)
+- Path traversal via dot segments normalizes to same endpoint (no bypass)
+- JWT none algorithm properly rejected
+- CSRF tokens properly randomized (same timestamp, different nonces)
+- OEmbed proxy requires auth (no SSRF)
+- WordPress debug.log not exposed
+- WordPress comments require login (properly configured)
+- WordPress post/media creation requires auth
+- No subdomain takeover (no dangling CNAMEs)
+- Third-party APIs (Sardine, Regula, StakeKit) properly secured
+- 126 additional password guesses via XMLRPC multicall (admin-deblock): no match
 
 ## 16. Next Steps for Continued Testing
 
