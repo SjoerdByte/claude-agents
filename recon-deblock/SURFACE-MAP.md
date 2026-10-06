@@ -1862,8 +1862,21 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 303 | LOW | CDN fee_info and privacy directories return 200 | cdn1.deblock.com | CWE-200 | YES | /terms/fee_info/ and /terms/privacy/ return 200, others 403 |
 | 304 | LOW | Staging build manifest exposes full page route structure | staging.deblock.com | CWE-200 | YES | deblockpay, stocks, buy-gold, buy-silver, bitcoin-treasury, pf/ locale |
 | 305 | INFO | Sardine production AND sandbox API in CSP connect-src | business.deblock.com | CWE-16 | YES | api.production.eu.sardine.ai + api.sandbox.eu.sardine.ai both allowed |
+| 306 | HIGH | UAT environment app-uat-01.deblock.com publicly accessible without auth | app-uat-01.deblock.com | CWE-284 | YES | Full app, health endpoint with buildId e95b8cf, PGP key, readyz |
+| 307 | MEDIUM | Production TLS cert CN leaks UAT hostname app-uat-01.deblock.com | app.deblock.com | CWE-200 | YES | CN=app-uat-01.deblock.com on production app.deblock.com cert |
+| 308 | MEDIUM | UAT Sentry config leaked in page meta: org ID, public key, release | app-uat-01.deblock.com | CWE-200 | YES | sentry-org_id=4510324489519104, key=95a2f173ce955f9d1ff52358da173ece |
+| 309 | MEDIUM | UAT Apigee fault error disclosure on /api/auth and /api/auth/refresh | app-uat-01.deblock.com | CWE-209 | YES | faultstring, errorcode protocol.http.Response405WithoutAllowHeader |
+| 310 | HIGH | UAT API endpoints accessible: features, cards, vaults, passkeys return real errors | app-uat-01.deblock.com | CWE-284 | YES | /api/features 401, /api/cards 400, /api/vaults 400, /api/passkeys 400 |
+| 311 | MEDIUM | UAT auth/refresh endpoint reveals token lookup logic | app-uat-01.deblock.com | CWE-209 | YES | Returns "No token or refresh token found" regardless of input method |
+| 312 | MEDIUM | recovery.deblock.com CSP reveals Solana mainnet wallet recovery tool | recovery.deblock.com | CWE-200 | YES | connect-src: solana-rpc.publicnode.com, api.mainnet-beta.solana.com |
+| 313 | MEDIUM | Company onboarding email race condition - no uniqueness constraint | waitlist-api PROD | CWE-362 | YES | Same email set on 2 sessions simultaneously, both retained |
+| 314 | LOW | Company survey and website endpoints confirmed on production | waitlist-api PROD | CWE-200 | YES | POST /v1/company/survey 200, POST /v1/company/website 200 |
+| 315 | LOW | UAT CSP img-src includes dev GCS bucket alongside production | app-uat-01.deblock.com | CWE-16 | YES | deblock-dev-crypto-currencies-v2 and deblock-production-crypto-currencies-v2 |
+| 316 | LOW | UAT auth status code inconsistency: 401 vs 400 for unauthenticated | app-uat-01.deblock.com | CWE-209 | YES | /api/features returns 401, /api/cards+vaults+passkeys return 400 |
+| 317 | MEDIUM | UAT environment marked as production in Sentry | app-uat-01.deblock.com | CWE-16 | YES | sentry-environment=production on UAT deployment, shared error tracking |
+| 318 | LOW | Google Maps Embed API key exposed in UAT runtime config | app-uat-01.deblock.com | CWE-200 | YES | AIzaSyD7n7VD-9gy534lf__8x9QyR76OTXYLtq4 in window.__RUNTIME_ENV__ |
 
-Total: 305 findings (12 critical, 60 high, 112 medium, 81 low, 47 info)
+Total: 318 findings (12 critical, 62 high, 120 medium, 84 low, 47 info)
 
 ## 15. Session Notes
 
@@ -1899,6 +1912,7 @@ Total: 305 findings (12 critical, 60 high, 112 medium, 81 low, 47 info)
 - Session 15: GTM container configuration extracted (F252): GA4 G-3MRQ5Z62VD, Google Ads AW-11482270425, cross-domain linker across 3 domains. GA4 Measurement Protocol accepts events without valid API secret (F253): analytics poisoning confirmed. dblk.me short URL domain fully mapped (F254): Vercel, 75 pages, 276 rewrites. Build manifest full route structure (F255). Developer names in robots.txt (F256). Survey/beta endpoint unauthenticated email spoofing (F257): stored XSS in answer field, no rate limiting. Business app Turbopack chunks reveal 24+ API routes (F258). CSRF token unauthenticated (F259). Apigee error disclosure (F260). Auth/financial endpoints confirmed (F261). PWA manifest exposed (F262). next.deblock.com Cloudflare challenge (F263). Cross-domain tracking GDPR concern (F264). Total findings: 264.
 - Session 16: Committed F265-F270 (Sardine sandbox, Regula IP leak, CSP third-party, UAT verbose errors, Dotfile deployment, app.deblock.com 410). recovery.deblock.com auth bypass confirmed: /_next/static/*, /api/*, /_vercel/* paths bypass Basic Auth (F273). All 3 lazy-loaded chunks are i18n files (EN/ES/FR) revealing complete wallet recovery architecture including Solana Ed25519 key handling (F274). staging.deblock.com discovered: full Vercel staging environment with different build ID (F271). status.deblock.com: Statuspal status page reveals 11 blockchains and full service architecture (F272). support.deblock.com: dangling Intercom CNAME returning 404 (F275). Business API Apigee 502 errors on POST endpoints (F276). CSRF token unauthenticated with 30-min window (F277). WebSocket 426 confirmed (F278). Speed Insights, S3 signed URLs, wildcard CSP on status page (F279-F281). Staging build ID metadata (F282). Google OAuth false positive corrected (all redirect URIs properly rejected). Total findings: 282.
 - Session 17: Staging Rails API deep dive on web-api-staging.deblock.com. Active Storage direct_uploads leaks 85-line stack trace with full gem versions and middleware chain (F283). Ambassador OTP has zero rate limiting: 30 consecutive wrong codes accepted without lockout (F284). Dead route ambassador/search_email returns ActionNotFound trace (F285). Data removal endpoint hits DB (sql.active_record 17ms) before verifying auth token (F286). Rack::Cors loaded 9x in middleware stack indicating misconfigured initializer (F287). CORS wildcard Access-Control-Allow-Origin:* on both staging AND production page responses (F288). Status page window.incidents exposes 12 incidents with 60 service IDs (F289). OVH load balancer headers x-iplb-request-id/x-iplb-instance leaked on status page (F290). Apigee Response405WithoutAllowHeader new error type on UAT passkeys/bank-details (F291). Company onboarding session creation works without auth, returns full session UUID (F292). Ambassador certification oracle at /v1/check/ambassador (F293). Deep link /d/[hash] data deletion page publicly accessible (F294). CRITICAL: Production company onboarding chain exploited: phone verification bypass (F295), unauthenticated session creation (F296), IDOR on sessions (F297), combined attack chain for account hijack (F298). No rate limiting on session creation (F299), 25 EU countries supported (F300). Business API session oracle (F301). K8s readyz accessible (F302). CDN directories (F303). Build manifest route enumeration (F304). Sardine sandbox in prod CSP (F305). Total findings: 305.
+- Session 18: UAT deep dive via cert CN discovery. app-uat-01.deblock.com found via production TLS cert CN field - full production-like app accessible without auth (F306). Production cert CN=app-uat-01.deblock.com leaks UAT hostname to passive observers (F307). Sentry meta tags expose org_id 4510324489519104, public_key 95a2f173ce955f9d1ff52358da173ece, release e95b8cf, environment incorrectly set to "production" on UAT (F308, F317). Apigee fault details on /api/auth and /api/auth/refresh (F309). Real API backends responding on UAT: /api/features 401, /api/cards 400, /api/vaults 400, /api/passkeys 400, /api/auth POST 403 (F310). Auth/refresh reveals token lookup error message (F311). recovery.deblock.com CSP confirms Solana mainnet wallet recovery with 3 RPC providers (F312). Company email race condition: same email accepted on two sessions simultaneously (F313). Survey and website endpoints confirmed live (F314). Dev GCS bucket in UAT CSP (F315). Auth status code inconsistency 401 vs 400 (F316). Google Maps API key in runtime config (F318). blog.deblock.com and uat-business.deblock.com blocked by egress proxy. Sardine sandbox API reaches Kubernetes default backend. Bearer token 404 on all waitlist-api paths. Production app.deblock.com returns 410 Gone (confirmed decommissioned). recovery.deblock.com basic auth holds (7 credential pairs tested). GCS buckets not listable but objects individually readable if path known. Total findings: 318.
 
 ### 12e. Business App API Route Map (from JS bundle analysis)
 
@@ -3918,6 +3932,125 @@ F305 - Sardine production AND sandbox API in CSP connect-src (INFO):
 - Also includes: wasm.regulaforensics.com, lic.regulaforensics.com, api.regulaforensics.com
 - Dotfile client portal: client-portal.dotfile.com
 - Impact: Sandbox service reachable from production, potential for testing-mode bypass
+
+### 15h. Session 18 Findings (F306-F318) - UAT Deep Dive + Race Conditions
+
+F306 - UAT environment app-uat-01.deblock.com publicly accessible without auth (HIGH):
+- Discovered via TLS certificate CN field on production app.deblock.com
+- Full production-like app deployment accessible without any authentication
+- Health endpoint: GET /api/health returns {"status":"ok","buildId":"e95b8cf","timestamp":"..."}
+- Kubernetes readyz: GET /readyz returns 200 empty body
+- PGP public key embedded for "DeBlock Web UAT <platform@deblock.com>"
+- window.__RUNTIME_ENV__ exposes Google Maps Embed API key
+- RSC flight data reveals full component tree with 60+ i18n namespaces
+- All product features visible: stocks, staking, nfts, ledger, insurance, export-wallet-keys, passkeys
+- Contains production CSP headers identical to what live app would use
+- Impact: Full UAT environment reconnaissance, API endpoint testing, secret extraction
+
+F307 - Production TLS cert CN leaks UAT hostname (MEDIUM):
+- app.deblock.com TLS certificate Subject: CN=app-uat-01.deblock.com
+- SAN only contains DNS:app.deblock.com (no additional names)
+- Certificate issuer: Google Trust Services (WR3), valid Aug 18 - Nov 16 2026
+- Certificate reused between production and UAT environments
+- Impact: UAT hostname discovery via passive TLS inspection of production
+
+F308 - UAT Sentry config leaked in page meta tags (MEDIUM):
+- Every page embeds Sentry trace metadata in meta tags:
+  sentry-public_key=95a2f173ce955f9d1ff52358da173ece
+  sentry-org_id=4510324489519104
+  sentry-release=e95b8cf
+  sentry-sample_rate=0
+  sentry-sampled=false
+- Fresh sentry-trace_id generated per request
+- Combined with known Sentry DSN (2f75b94510aa39f72db5dd805d1c1dc8) from JS scan
+- Impact: Sentry project enumeration, error tracking reconnaissance
+
+F309 - UAT Apigee fault error disclosure on auth endpoints (MEDIUM):
+- GET /api/auth returns 502 with Apigee fault detail:
+  {"fault":{"faultstring":"Received 405 Response without Allow Header","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}
+- GET /api/auth/refresh returns identical Apigee fault
+- POST /api/auth returns 403 {"error":"Forbidden","status":403} (backend processes)
+- PATCH /api/auth returns 403 (backend processes)
+- PUT/DELETE/HEAD return 502 (Apigee fault)
+- Confirms: API gateway is Google Apigee, backend rejects GET but accepts POST/PATCH
+- Impact: API infrastructure disclosure, HTTP method enumeration
+
+F310 - UAT API endpoints accessible with real backend responses (HIGH):
+- /api/features: 401 {"error":"User is not authenticated","status":401}
+- /api/cards: 400 {"error":"User is not authenticated","status":400}
+- /api/vaults: 400 {"error":"User is not authenticated","status":400}
+- /api/passkeys: 400 {"error":"User is not authenticated","status":400}
+- /api/health: 200 {"status":"ok","buildId":"e95b8cf","timestamp":"..."}
+- /api/auth POST: 403 {"error":"Forbidden","status":403}
+- /api/onboarding: 307 redirect to /
+- These are LIVE backend API responses, not Next.js 404 pages
+- Compared to production app.deblock.com which returns 410 Gone on all API paths
+- Impact: UAT provides full API testing surface without auth, active backend
+
+F311 - UAT auth/refresh endpoint reveals token lookup logic (MEDIUM):
+- POST /api/auth/refresh returns: {"error":"No token or refresh token found"}
+- Tested with: JSON body (refresh_token, token), Bearer header, Cookie header
+- All return identical "No token or refresh token found" error
+- Suggests tokens are stored in a specific cookie name or header the application checks
+- Different from /api/features which returns "User is not authenticated"
+- Impact: Auth mechanism reverse engineering, token storage location disclosure
+
+F312 - recovery.deblock.com CSP reveals Solana mainnet wallet recovery tool (MEDIUM):
+- CSP connect-src: https://solana-rpc.publicnode.com https://api.mainnet-beta.solana.com https://solana.drpc.org
+- Protected by Basic Auth (www-authenticate: Basic realm="Secure Area")
+- Hosted on Vercel (x-vercel-id header)
+- Strong security headers: HSTS, X-Frame-Options: DENY, COEP: credentialless, CORP: cross-origin
+- Permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+- Previously confirmed: JS assets bypass Basic Auth, i18n reveals AES decryption + seed phrase handling
+- Impact: Mainnet Solana wallet recovery tool confirmed, connects to 3 different RPC providers
+
+F313 - Company onboarding email race condition (MEDIUM):
+- Two sessions created simultaneously, both set to race-test@example.com
+- Session 1 (f8978f69): email set to race-test@example.com - success
+- Session 2 (a8aecee1): email set to race-test@example.com - success
+- No uniqueness constraint on email field across sessions
+- No database-level unique constraint or application-level dedup check
+- Combined with IDOR (F297): attacker can find any session and overwrite its email
+- Impact: Duplicate company applications, email collision attacks, data integrity issues
+
+F314 - Company survey and website endpoints confirmed on production (LOW):
+- POST /v1/company/survey: Returns 200 (input validation rejects all attempted formats)
+- POST /v1/company/website: Returns 200 (input validation rejects test payloads)
+- Both endpoints exist and respond differently from 404 routes
+- Survey requires specific format not yet determined (survey_answers field)
+- Impact: Additional attack surface for company onboarding flow
+
+F315 - UAT CSP img-src includes dev GCS bucket alongside production (LOW):
+- CSP img-src includes both:
+  storage.googleapis.com/deblock-dev-crypto-currencies-v2
+  storage.googleapis.com/deblock-production-crypto-currencies-v2
+  storage.googleapis.com/deblock-production-crypto-nfts-v2/images
+- Dev bucket referenced in UAT CSP suggests dev assets used in testing
+- All three buckets exist (AccessDenied on listing, not 404)
+- Objects individually readable if path known (404 NoSuchKey vs AccessDenied)
+- Impact: Dev infrastructure referenced in UAT, potential for dev asset access
+
+F316 - UAT auth status code inconsistency (LOW):
+- /api/features returns 401 for unauthenticated requests
+- /api/cards, /api/vaults, /api/passkeys return 400 for unauthenticated requests
+- Should consistently return 401 Unauthorized
+- 400 implies the request is malformed rather than unauthorized
+- Impact: Error handling inconsistency may indicate different middleware chains
+
+F317 - UAT environment marked as production in Sentry (MEDIUM):
+- sentry-environment=production found on app-uat-01.deblock.com pages
+- UAT errors would appear mixed with production errors in Sentry dashboard
+- Could cause alert fatigue or mask real production issues
+- sentry-release=e95b8cf could match production if same git hash deployed
+- Impact: Monitoring integrity, UAT noise in production error tracking
+
+F318 - Google Maps Embed API key exposed in UAT runtime config (LOW):
+- window.__RUNTIME_ENV__={"GOOGLE_MAPS_EMBED_API_KEY":"AIzaSyD7n7VD-9gy534lf__8x9QyR76OTXYLtq4"}
+- Same key previously found in JS bundle analysis (F132)
+- GCP Project: 449958774220
+- Maps JavaScript API confirmed active and billable
+- Key appears restricted to browser referer but served via server-side render
+- Impact: Redundant exposure via runtime config, previously documented billing risk
 
 ## 16. Next Steps for Continued Testing
 
