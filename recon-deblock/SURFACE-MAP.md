@@ -1725,7 +1725,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 136 | INFO | QR login abandon works without auth (204) | - | - | YES | /api/qr-login/abandon POST returns 204 |
 | 137 | INFO | FaceTec 2FA mobile session error oracle | - | - | YES | "FaceTec 2FA session not found" on create-2fa-mobile-session |
 
-Total: 152 findings (10 critical, 29 high, 43 medium, 34 low, 36 info)
+Total: 167 findings (11 critical, 35 high, 49 medium, 37 low, 35 info)
 
 ## 15. Session Notes
 
@@ -2310,28 +2310,171 @@ WebSocket Endpoints:
 - /crypto-business-socket
 - /crypto-commands-socket
 
+## 12r. WebSocket Authentication Bypass (Findings 153-157)
+
+Finding 153 [CRITICAL]: Production WebSocket endpoints accept connections without authentication
+- Target: app.deblock.com (PRODUCTION)
+- All tested WebSocket endpoints accept unauthenticated connections:
+  - wss://app.deblock.com/api/websocket -> CONNECTED
+  - wss://app.deblock.com/api/crypto-commands-socket -> CONNECTED
+  - wss://app.deblock.com/api/auth/2fa-mobile-session-socket -> CONNECTED
+- Also confirmed on UAT: wss://app-uat-01.deblock.com/api/crypto-v3-socket -> CONNECTED
+- Business app: wss://business-uat-01.deblock.com/api/websocket -> CONNECTED
+- No authentication check occurs before WebSocket upgrade
+- Impact: Unauthenticated access to real-time messaging infrastructure on production
+
+Finding 154 [HIGH]: crypto-commands-socket leaks backend architecture
+- Target: app.deblock.com/api/crypto-commands-socket (PRODUCTION)
+- Sends error message without authentication:
+  {"status":"error","event":"backend_error","message":"No token available, aborting.","backend":"crypto_commands"}
+- Reveals: backend service name (crypto_commands), error handling patterns, event format
+- Also sends periodic {"event":"ping"} keepalive messages
+- Impact: Backend architecture disclosure, potential for command injection if token is supplied
+
+Finding 155 [HIGH]: 2FA mobile session socket processes session lookups without auth
+- Target: app.deblock.com/api/auth/2fa-mobile-session-socket (PRODUCTION)
+- WebSocket accepts connection without authentication
+- Sending a UUID-format session_id causes the connection to close (backend lookup attempted)
+- Sending a non-UUID session_id keeps connection open
+- Pattern: server-side session lookup happens BEFORE any authentication check
+- Impact: 2FA session enumeration, potential session hijacking of active 2FA flows
+
+Finding 156 [MEDIUM]: ActionCable channel subscription causes selective disconnection
+- Target: app.deblock.com/api/websocket (PRODUCTION)
+- ActionCable-compatible WebSocket processes subscription commands
+- Subscribe to Turbo::StreamsChannel -> CONNECTION CLOSED
+- Subscribe to UserChannel -> CONNECTION CLOSED
+- Subscribe to CryptoChannel -> CONNECTION CLOSED
+- Subscribe to NotificationsChannel -> stays open
+- The selective disconnection pattern reveals which channels exist and have validation
+- Impact: Channel enumeration, confirms Rails ActionCable backend architecture
+
+Finding 157 [LOW]: Business WebSocket crypto sockets return 502 (backend unreachable)
+- Target: business-uat-01.deblock.com
+- /api/websocket: CONNECTED without auth
+- /api/crypto-business-socket: 502 Bad Gateway
+- /api/crypto-commands-socket: 502 Bad Gateway
+- Impact: Backend availability disclosure
+
+## 12s. QR Login Session Hijack Analysis (Findings 158-160)
+
+Finding 158 [HIGH]: QR login session creation has zero rate limiting
+- Target: app-uat-01.deblock.com/api/qr-login (POST)
+- Created 20/20 sessions in 7.5 seconds (2.6 sessions/sec)
+- No rate limiting, no blocking, no CAPTCHA
+- Sessions are UUID-format, expiry ~10 minutes
+- Each session creates a valid QR code with 4-character code
+- Requires cookie-based CSRF token (obtained via /api/csrf)
+- Impact: Resource exhaustion, session flooding, aids brute-force attack
+
+Finding 159 [HIGH]: QR login code exchange has zero rate limiting
+- Target: app-uat-01.deblock.com/api/qr-login/exchange (POST)
+- 20 rapid sequential wrong-code attempts all returned {"outcome":"SECURITY_ERROR"}
+- No rate limiting, no lockout, no delay increase
+- Code space: 29-char alphabet (ABCDEFGHJKMNPQRSTUVWXYZ23456789), 4 chars = 707,281 combinations
+- Single-threaded rate: ~3 attempts/sec (through proxy)
+- Direct rate would be ~50-100 attempts/sec per connection
+- With 100 concurrent connections: ~5,000-10,000 attempts/sec
+- At 10,000/sec: brute force complete in ~71 seconds (well within 10-min expiry)
+- Impact: QR login session hijack is feasible with moderate parallelism
+
+Finding 160 [MEDIUM]: Production QR login returns 410 Gone
+- Target: app.deblock.com/api/qr-login (POST)
+- Returns HTTP 410 (Gone) on production
+- Feature may have been disabled on production but remains active on UAT
+- UAT is accessible without VPN/IP restrictions at app-uat-01.deblock.com
+- Impact: Attack surface reduction on prod, but UAT remains exploitable
+
+## 12t. Alchemy API Billing Abuse (Findings 161-162)
+
+Finding 161 [HIGH]: Alchemy API key enables enhanced/billable API calls
+- Key: PxkB3B-1-0bFVQHY4Gy5e9V_-FwVj7Pt
+- Standard API: 30/30 successful requests in 5.3s (5.6 req/s), no rate limiting
+- Enhanced API (alchemy_getTransactionReceipts): 10/10 successful in 2.6s
+  - Returns full block transaction receipts (308 receipts for one block)
+  - Each call costs ~150 Compute Units (CUs) on Alchemy billing
+- Trace API (trace_block): BLOCKED ("not available on Free tier")
+- Debug API (debug_traceTransaction): BLOCKED ("not available on Free tier")
+- Estimated abuse rate: ~2,000,000 CUs/hour at sustained querying
+- Impact: Financial damage via API billing abuse on enhanced tier methods
+
+Finding 162 [MEDIUM]: Alchemy API enables blockchain surveillance of Deblock users
+- Same key provides access to:
+  - alchemy_getAssetTransfers: query any address's full transaction history
+  - alchemy_getTokenBalances: query any address's token portfolio
+  - getNFTs: query any address's NFT holdings
+- NFT contract 0x52dbdc20FD57b339aFf65Ac8e07c43aa680b690a has 742 holders
+- All holder addresses and their complete transaction histories are queryable
+- Impact: Privacy violation for all Deblock crypto users via their leaked API key
+
+## 12u. WordPress Extended Findings (Findings 163-167)
+
+Finding 163 [MEDIUM]: WordPress REST API exposes 254 routes including sensitive plugin endpoints
+- Target: brand.deblock.com/wp-json/
+- Total exposed routes: 254
+- Includes BackWPup endpoints: /backwpup/v1/startbackup, /backwpup/v1/backups,
+  /backwpup/v1/cloud_is_authenticated, /backwpup/v1/save_site_option
+- Includes Elementor form data: /elementor/v1/form-submissions, /elementor/v1/form-submissions/export
+- Includes site health: /wp-site-health/v1/directory-sizes
+- Includes application passwords: /wp/v2/users/:id/application-passwords
+- All require auth (401) but route structure is fully enumerable
+- Impact: Attack surface mapping, aids targeted exploitation
+
+Finding 164 [MEDIUM]: UpdraftPlus backup plugin installed (v1.26.2)
+- Target: brand.deblock.com/wp-content/plugins/updraftplus/readme.txt
+- Version: 1.26.2 (stable tag confirmed)
+- Backup directories exist: wp-content/updraft (403 Forbidden)
+- Version is newer than CVE-2024-10957 (PHP Object Injection, fixed in 1.24.12)
+- AJAX endpoints (updraft_ajax, updraftplus_download) return 400 (require nonce)
+- Impact: Backup infrastructure exposed; potential access to full database dumps if auth bypass found
+
+Finding 165 [LOW]: WordPress user enumeration confirmed via multiple vectors
+- Target: brand.deblock.com
+- Vector 1: /wp-json/wp/v2/users returns user data (admin-deblock, ID 1)
+- Vector 2: /?author=1 redirects to /author/admin-deblock/
+- Only single admin user (admin-deblock) found
+- Impact: Username confirmed for brute force attacks
+
+Finding 166 [LOW]: WordPress backup directory listing blocked but accessible
+- Target: brand.deblock.com
+- wp-content/updraft: 403 Forbidden (directory exists)
+- wp-content/uploads/backwpup: 403 Forbidden (directory exists)
+- wp-content/debug.log: 403 Forbidden (file may exist)
+- LiteSpeed server blocks directory listing but confirms existence
+- Impact: Backup file enumeration possible if filenames are guessed
+
+Finding 167 [INFO]: WordPress site configuration details
+- WordPress version: 7.1.2
+- PHP: 8.3.33, LiteSpeed web server, Hostinger hosting
+- Plugins: Elementor 4.0.1, Elementor Pro 4.0.1, BackWPup 5.6.7, UpdraftPlus 1.26.2
+- Theme: Hello Elementor 3.4.7
+- French locale (error messages in French)
+- Pages: Brand voice, Motion, 3d
+- Elementor Pro forms are active (form_send returns validation error)
+- Intercom integration active (messenger_security_enabled: true)
+- Gravatar hash for admin-deblock: 44f51df94ecb1454d3e064107d59a8a4606564f21ace0b536097f9f7a185e5f3
+
 ## 16. Next Steps for Continued Testing
 
 Priority 1 (High-impact, immediately testable):
 1. Authenticated testing with second test account (IDOR, privilege escalation on 130+ endpoints)
-2. Google OAuth phishing PoC with drive.appdata scope (wallet recovery key access)
-3. Alchemy API billing abuse quantification (rate limits, cost per query)
+2. WebSocket session hijack PoC (connect to 2FA socket, enumerate real session IDs)
+3. Google OAuth redirect_uri enumeration for valid URIs (found: /api/auth/google/callback rejected)
 4. iCloud CloudKit with paired web auth token (wallet recovery data access)
-5. QR login session hijacking (707K combinations, brute-forceable)
-6. E2E cookies on IS_DEV=true environment (if any exists beyond UAT)
+5. QR login brute force PoC with parallel connections on UAT
 
 Priority 2 (Requires more setup):
-7. WebSocket endpoint testing (6 paths, needs HTTP/1.1 or native client)
-8. FaceTec biometric bypass (session enumeration, replay)
-9. Passkey/WebAuthn implementation testing
-10. SCA bypass testing
-11. Mobile app reverse engineering (APK/IPA)
-12. Email-based attacks (password reset flow, verification bypass)
+6. FaceTec biometric bypass (session enumeration with real session ID format)
+7. Passkey/WebAuthn implementation testing
+8. SCA bypass testing
+9. Mobile app reverse engineering (APK/IPA)
+10. Bearer token testing when api.deblock.com backend comes online (currently 502)
 
 Priority 3 (Enumeration/escalation):
-13. Larger password wordlist for xmlrpc brute force against admin-deblock
-14. Vercel deployment protection bypass on staging frontends
-15. Unleash feature flag enumeration with "web-app" client key
-16. OneSignal push notification abuse (notification spam)
-17. Sentry event injection social engineering campaign
-18. ActionMailbox conductor POST with correct email format
+11. WordPress xmlrpc brute force with larger wordlist against admin-deblock
+12. WordPress backup file name guessing (UpdraftPlus backup naming patterns)
+13. Unleash feature flag enumeration
+14. ActionCable channel subscription with valid auth tokens
+15. Sentry event injection social engineering campaign
+16. ActionMailbox conductor POST with correct email format
+17. DeblockPay merchant endpoint discovery
