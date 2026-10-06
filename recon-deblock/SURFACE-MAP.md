@@ -3025,6 +3025,43 @@ Additional testing results (no new findings):
 - WordPress wp-mail.php: 403 (blocked)
 - WordPress wp-signup.php: 302 (redirect, multisite not enabled)
 
+## 12af. Sentry PII Injection, Health Endpoint Leak, NFT Site Exposure (Session 11 continued)
+
+F212 - Health endpoint leaks build ID and full CSP with third-party service map (MEDIUM):
+GET /api/health on app-uat-01.deblock.com returns {"status":"ok","buildId":"e95b8cf","timestamp":"2026-10-06T03:37:47.008Z"} without authentication. The buildId is a short git commit hash useful for version fingerprinting and tracking deployments. The response headers include a massive Content-Security-Policy that reveals all third-party integrations: api.production.eu.sardine.ai (fraud detection EU), wasm.regulaforensics.com + lic.regulaforensics.com + api.regulaforensics.com (document verification), cdn.apple-cloudkit.com + api.apple-cloudkit.com (Apple CloudKit), ledgerb.api.ledger.com (Ledger hardware wallet), edge.prelude.dev (phone verification), cdn.onesignal.com + api.onesignal.com (push notifications), storage.googleapis.com/deblock-dev-crypto-currencies-v2 (DEV GCS bucket in production CSP), assets.stakek.it/tokens/ (StakeKit staking). x-request-id header leaks internal request tracing IDs. Via: 1.1 google confirms GCP load balancer. CSP allows wasm-eval in script-src-attr and data: in object-src.
+
+F213 - Sentry DSN event injection with arbitrary PII data (HIGH):
+Both Sentry DSNs accept fabricated error events with arbitrary user PII data. Tested injecting events with fake user objects containing id, email, and ip_address fields. Personal DSN (sentry.io, project 4510324496859216, key 95a2f173ce955f9d1ff52358da173ece) returned {"id":"aaaabbbbccccddddeeeeffffaaaabbbb"} confirming event storage. Business/UAT DSN (DE region, key 2f75b94510aa39f72db5dd805d1c1dc8) also accepted the event. Attack impact: (1) Deblock's Sentry dashboard gets polluted with fake error data, (2) fake user PII (email, IP) is injected into their error tracking system creating GDPR compliance issues, (3) incident response teams get confused by fabricated errors during real incidents, (4) if Sentry data feeds into other systems (alerting, analytics), those get poisoned too. Zero rate limiting on event submission.
+
+F214 - bursted-bubbles.deblock.com NFT site shares API keys with main app (MEDIUM):
+bursted-bubbles.deblock.com is a live Vercel-hosted NFT minting site ("Bursted Bubbles - 1K NFTs by Deblock", 1000 NFTs by artist Pierone). Uses the SAME Alchemy API key (PxkB3B-1-0bFVQHY4Gy5e9V_-FwVj7Pt) and SAME WalletConnect projectId (bd6ba992febab0bad0434e02099098db) as the main Deblock app. Build ID cpCt2fvkz82KJWk2WE8Se. Uses wagmi, RainbowKit, styled-components 5.3.9, Plausible analytics (plausible.io). CORS wildcard (Access-Control-Allow-Origin: *). OpenSea collection link exposed. 14 contract addresses in JS including ENS Registry and Multicall3. CDN video at cdn1.deblock.com/videos/pierre-hand.mp4. Sharing API keys across the main financial app and a public NFT site increases the blast radius of key compromise.
+
+F215 - WordPress heartbeat leaks server Unix timestamp (LOW):
+POST /wp-admin/admin-ajax.php with action=heartbeat on brand.deblock.com returns {"wp-auth-check":false,"server_time":1791257733} without authentication. This reveals the exact server Unix timestamp, useful for: (1) calculating UpdraftPlus backup file timestamps, (2) timing attacks on session tokens, (3) predicting nonce values if they incorporate timestamps.
+
+F216 - BackWPup uploads directory exists on server (LOW):
+/wp-content/uploads/backwpup/ returns 403 on brand.deblock.com, confirming BackWPup backup files are stored in the uploads directory. index.php and .htaccess both return 403 within the directory. Combined with the BackWPup REST API routes (F201) and wp-cron.php accessibility (F210), the backup infrastructure is fully mapped. Also confirmed: /wp-content/uploads/elementor/ (403), /wp-content/uploads/elementor/css/ (403), /wp-content/uploads/elementor/custom-icons/ (403), /wp-content/uploads/2026/ (403).
+
+F217 - Elementor Pro form submission endpoint accessible without authentication (MEDIUM):
+POST /wp-admin/admin-ajax.php with action=elementor_pro_forms_send_form returns HTTP 200 with {"success":false,"data":{"message":"Votre envoi a echoue car le formulaire est non valide."}} without any authentication or nonce. The endpoint processes form submissions but validates the form definition from the database first, returning the same error for all post_id values (1-1000 tested). While not directly exploitable without valid form IDs from the database, the endpoint is reachable and processes logic before rejecting. This could enable: form field enumeration if valid form IDs are discovered, stored XSS testing through form field values, and form submission spam if valid form definitions are created.
+
+F218 - support.deblock.com CNAME to Intercom returns 404 (INFO):
+support.deblock.com has a CNAME record pointing to custom.eu.intercom.help, but Intercom returns 404 on all paths (/, /en, /fr, /en/collections, /en/articles). The Intercom help center is either not configured, not public, or has been decommissioned while the DNS record remains. This is not a subdomain takeover risk (Intercom validates domain ownership), but indicates potentially unused infrastructure.
+
+Additional testing results (no new findings):
+- UpdraftPlus backup files all return 403 within /wp-content/updraft/ (LiteSpeed blocks entire directory)
+- BackWPup admin-ajax actions (download_log, download_backup) return 400 (registered but no payload)
+- UpdraftPlus admin-ajax actions (updraft_download_backup, updraftplus_ajax) return 400
+- Elementor admin-ajax action (elementor_send_form) returns 400
+- UAT /api/users/me/promo-codes, /api/users/me/referral, /api/users/me/referral-code all return 503
+- UAT /api/features returns 401
+- UAT /api/frontdesk/features returns 400 (incorrect status code for auth error)
+- Business /api/sca returns Apigee 405 on GET, "Forbidden" on POST
+- Auth endpoints (/api/auth/magic-link, /api/auth/register, /api/auth/forgot-password, /api/auth/login, /api/auth/phone-verify) return 404 HTML (Next.js frontend routes, not API routes)
+- NFT site uses same contract addresses as already documented (0x52dbdc20FD57b339aFf65Ac8e07c43aa680b690a)
+- No Infura API key found in NFT site (uses Alchemy instead)
+- No private keys in NFT site JS (only library references)
+
 ## 16. Next Steps for Continued Testing
 
 Priority 1 (Critical - requires second test account):
@@ -3042,7 +3079,7 @@ Priority 2 (High-impact, additional testing):
 10. Bearer token testing when api.deblock.com backend comes online
 
 Priority 3 (Enumeration/escalation):
-11. WordPress UpdraftPlus backup file name guessing
+11. WordPress UpdraftPlus backup file name guessing (LiteSpeed blocks entire directory)
 12. ActionCable channel subscription with valid auth tokens
 13. Crypto trading/stocks order manipulation
 14. Direct debit refund IDOR
