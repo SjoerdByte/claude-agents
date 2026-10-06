@@ -8965,3 +8965,54 @@ Priority 3 (Enumeration/escalation):
 - This is separate from the /v1/company/* flow (F742) which requires no auth at all
 - The waitlist flow requires the bearer token but the company onboarding flow is completely unprotected
 - Impact: MEDIUM - The hardcoded bearer token extends to company waitlist functionality, providing full access to create company waitlist entries and enumerate internal data structures.
+
+### F750 [HIGH] Alchemy API Key Provides Full RPC Access on 5 EVM Chains Including Transaction Relay
+- Target: Alchemy API (exposed in client-side JavaScript)
+- API Key: PxkB3B-1-0bFVQHY4Gy5e9V_-FwVj7Pt
+- The hardcoded Alchemy API key provides FULL unrestricted Ethereum JSON-RPC access on 5 blockchain networks:
+  - Ethereum mainnet (eth-mainnet.g.alchemy.com) - confirmed
+  - Polygon mainnet (polygon-mainnet.g.alchemy.com) - confirmed
+  - Arbitrum mainnet (arb-mainnet.g.alchemy.com) - confirmed
+  - Optimism mainnet (opt-mainnet.g.alchemy.com) - confirmed
+  - Base mainnet (base-mainnet.g.alchemy.com) - confirmed
+- Confirmed accessible methods:
+  - eth_blockNumber: Read current block number on all chains
+  - eth_gasPrice: Read current gas price
+  - eth_getBalance: Query any address balance
+  - eth_getTransactionCount: Query transaction count
+  - eth_call: Read any smart contract state
+  - eth_sendRawTransaction: ENABLED - transaction relay (returns decode error for invalid input, not method-not-allowed)
+  - alchemy_getAssetTransfers: Enhanced Alchemy API for transfer history
+  - alchemy_getTokenMetadata: Token metadata queries
+  - net_version: Network identification
+- The NFT contract 0x52dbdc20fd57b339aff65ac8e07c43aa680b690a has 1 transaction, balance 0
+- Impact: HIGH - An attacker can:
+  1. Use Deblock's Alchemy compute units on 5 blockchain networks (resource theft)
+  2. Relay signed transactions through Deblock's account (eth_sendRawTransaction enabled)
+  3. Monitor any blockchain address across 5 chains (surveillance)
+  4. Exhaust Deblock's API rate limits (DoS on blockchain infrastructure)
+  5. Access enhanced Alchemy APIs (alchemy_getAssetTransfers, metadata) that may reveal customer transaction patterns
+  6. The key appears to be a free tier key, but still provides full RPC access and transaction relay capability
+
+### F751 [INFO] Host Header Injection Reveals Heroku Routing on Production
+- Target: web-api.deblock.com
+- Sending `Host: evil.com` returns Heroku's "No such app" error page
+- This confirms the application uses Heroku's default routing behavior
+- The `X-Forwarded-Host: evil.com` header properly returns 403 (Rails HostAuthorization middleware blocks it)
+- Impact: INFO - The Host header injection is handled by Heroku's router before reaching the application. The X-Forwarded-Host protection confirms proper HostAuthorization configuration.
+
+### F752 [INFO] Staging Server-Timing Header Leaks Processing Duration
+- Target: web-api-staging.deblock.com
+- Staging includes Server-Timing header in responses (production does not):
+  - `server-timing: start_processing.action_controller;dur=0.10, process_action.action_controller;dur=24.47`
+  - This leaks exact processing time for each request
+- Could be used for timing-based side-channel attacks on staging
+- Impact: INFO - Processing time disclosure on staging only. Production does not expose this header.
+
+### F753 [INFO] Company Onboarding Mass Assignment Properly Filtered on Production
+- Target: web-api.deblock.com/v1/company/country
+- Tested mass assignment by including extra parameters: admin, role, verified, approved, email_verified, phone_verified
+- All extra parameters were silently ignored
+- Session returned with all verification fields at their default values (false)
+- The ambassador email endpoint also accepts extra parameters without error but they don't affect behavior
+- Impact: INFO - Negative finding. Strong parameter filtering is in place for the company onboarding flow.
