@@ -7236,3 +7236,73 @@ Priority 3 (Enumeration/escalation):
 - CloudFront -> S3 eu-west-3 serving pipeline confirmed from earlier CDN analysis
 - Impact: MEDIUM - Publicly accessible asset directory. The 403 vs 200 pattern suggests per-file ACLs rather than directory-level protection, with some assets inadvertently exposed.
 
+### F626 [HIGH] WebSocket Endpoints Accept Connections Without Any Authentication
+- Target: business.deblock.com (PRODUCTION), app-uat-02.deblock.com
+- Three WebSocket endpoints establish full 101 Switching Protocols connections WITHOUT any authentication cookie:
+  - /api/websocket: Connects, then sends "Error initializing handler" (binary WS frame)
+  - /api/crypto-commands-socket: Connects, then sends structured JSON error (see F627)
+  - /api/crypto-business-socket: Connects, then sends "Error initializing handler"
+- Tested with NO cookie, with dummy cookie (__Host-auth-token=x), same behavior
+- The WebSocket upgrade bypasses the cookie-presence middleware that protects REST API endpoints
+- Connection reveals server headers: x-request-id (UUID), x-accel-buffering: no (nginx), via: 1.1 google (GCP LB)
+- On UAT-02: websocket and crypto-commands-socket also accept unauthenticated connections; crypto-business-socket returns 502 (backend not running)
+- Impact: HIGH - Authentication bypass on WebSocket endpoints. While the connections error after establishing, the upgrade itself succeeds, consuming server resources (connection slots, memory). This enables denial-of-service through connection exhaustion, and the error messages reveal internal service architecture.
+
+### F627 [HIGH] crypto-commands-socket Leaks Internal Backend Service Name
+- Target: business.deblock.com (PRODUCTION)
+- The /api/crypto-commands-socket WebSocket returns a structured JSON error message without any authentication:
+  {"status":"error","event":"backend_error","message":"No token available, aborting.","backend":"business-crypto-commands"}
+- This reveals:
+  1. Internal backend service name: "business-crypto-commands"
+  2. Event type taxonomy: "backend_error"
+  3. Error message format confirming token-based internal authentication
+  4. The backend processes the connection far enough to attempt token extraction before failing
+- Combined with F626: an unauthenticated attacker can connect to the WebSocket and extract internal service naming
+- Impact: HIGH - Internal service name disclosure on production through unauthenticated WebSocket. Reveals the microservice architecture and internal authentication mechanism. The "business-crypto-commands" name pattern suggests other services may follow the "business-{function}" naming convention.
+
+### F628 [MEDIUM] Onboarding OTP Resend Endpoint Has Empty Error Response
+- Target: app-uat-02.deblock.com
+- POST /api/onboarding/resend-onboarding-otp returns {"error":"","status":400} with an EMPTY error string
+- The endpoint exists and processes the request without authentication
+- Even with a valid CSRF token, the same empty error is returned
+- POST /api/onboarding/signature/resend-signature-otp returns {"error":"Unable to resend otp","status":400}
+- No rate limiting observed on this endpoint (5 parallel requests all succeed)
+- Neither endpoint exists on production (404)
+- Impact: MEDIUM - Empty error response indicates broken error handling. Without rate limiting, the OTP resend could be used for email bombing if a valid onboarding session is established. The signature OTP endpoint confirms the validation pipeline.
+
+### F629 [LOW] Pre-Authentication Parameter Validation on Multiple Endpoints
+- Target: app-uat-02.deblock.com
+- Several endpoints validate input parameters BEFORE checking authentication, revealing their expected schema:
+  1. /api/cards/designs: "cardProductType query parameter is required" (then auth check with valid param)
+  2. /api/referrals/referees/{id}: "Invalid id" for non-UUID format, "User is not authenticated" for valid UUID
+  3. /api/facetec-gateway/process-request: "Device key identifier is required" -> "Request blob is required" (progressive validation)
+- This allows unauthenticated users to discover:
+  - Required query parameters and their names
+  - Expected ID formats (UUID vs other)
+  - API field requirements and validation order
+- Impact: LOW - Information disclosure through pre-auth validation. Enables schema discovery without credentials, aiding targeted API exploitation.
+
+### F630 [LOW] auth/logout Uses Different Error Format Than Other Endpoints
+- Target: app-uat-02.deblock.com
+- POST /api/auth/logout returns {"message":"User is not authenticated"} (using "message" key)
+- All other endpoints use {"error":"...","status":...} format
+- This indicates auth/logout routes through a different middleware stack (possibly Express middleware vs Next.js API routes)
+- On production: auth/logout returns {"error":"Forbidden"} (rate limited, but also different format)
+- Impact: LOW - Error format inconsistency reveals middleware architecture differences. Different middleware stacks may have different security characteristics.
+
+### F631 [LOW] bank-details Endpoint Exists at Apigee Gateway Without Authentication
+- Target: business.deblock.com (PRODUCTION)
+- GET /api/bank-details returns Apigee 405 error (wrong method) without any authentication
+- POST /api/bank-details returns 403 Forbidden (rate limited)
+- The Apigee route configuration allows the request to reach the method-validation layer before any authentication check
+- Other POST-only endpoints (sepa-transfer/create, top-up/create-card-token, users/change-phone) show the same 405 behavior
+- Impact: LOW - Endpoint existence confirmation through Apigee 405 errors. Reveals which endpoints are deployed and their allowed methods without authentication.
+
+### F632 [LOW] Physical Bank Address Exposed in Client-Side Locale Strings
+- Target: business.deblock.com (production JS)
+- German locale bundle (3c6bpxshvfxeb.js) contains bank address sharing template:
+  "Spaces Shake Building - 612 Rue de la chaude riviere, 59800 Lille, France"
+- This is the physical address of Deblock/Techblock's banking operations
+- Part of the bank-account-details-share-data locale string for generating bank detail exports
+- Impact: LOW - Physical bank address is publicly available in client-side JS. While likely public information, it reveals the operational location.
+
