@@ -9016,3 +9016,88 @@ Priority 3 (Enumeration/escalation):
 - Session returned with all verification fields at their default values (false)
 - The ambassador email endpoint also accepts extra parameters without error but they don't affect behavior
 - Impact: INFO - Negative finding. Strong parameter filtering is in place for the company onboarding flow.
+
+### F754 [MEDIUM] WordPress REST API User Enumeration on brand.deblock.com Exposes Admin Username and Metadata
+- Target: brand.deblock.com
+- WordPress REST API at /wp-json/wp/v2/users is publicly accessible without authentication
+- Enumerated user: admin-deblock (user ID 1)
+  - Slug: admin-deblock
+  - Gravatar hash: 44f51df94ecb1454d3e064107d59a8a4606564f21ace0b536097f9f7a185e5f3
+  - Profile URL: https://brand.deblock.com
+  - Elementor introduction flags exposed (meta.elementor_introduction)
+  - Avatar URLs via Gravatar with secure_gravatar enabled
+- Only one user returned (single admin account)
+- The Gravatar hash (SHA256 of lowercase email) could theoretically be reversed via rainbow tables or known email lists
+- WordPress version: confirmed via REST API headers (PHP 8.3.33 on Hostinger/LiteSpeed)
+- Impact: MEDIUM - Admin username disclosure enables targeted brute-force against wp-login.php or xmlrpc.php. The Gravatar hash could leak the admin's email address. Combined with the known plugins (Elementor Pro 4.0.1, BackWPup 5.6.7, Safe SVG), this provides a targeted attack profile.
+
+### F755 [LOW] WordPress Media API Exposes Upload Metadata and Internal Post IDs on brand.deblock.com
+- Target: brand.deblock.com/wp-json/wp/v2/media
+- Media API returns upload metadata without authentication:
+  - Internal post IDs for media attachments
+  - Upload dates and modification timestamps
+  - MIME types and file dimensions
+  - Alt text, captions, and descriptions
+  - Source URLs to full-size uploads on brand.deblock.com/wp-content/uploads/
+  - Elementor-generated screenshots and internal marketing images
+- Media items include Elementor page builder screenshots revealing internal page layouts
+- Post IDs are sequential, allowing enumeration of all uploaded media
+- Impact: LOW - Media metadata exposure is common on WordPress sites. The internal post IDs and Elementor screenshots reveal page structure but do not directly expose sensitive data.
+
+### F756 [MEDIUM] WordPress XMLRPC Pingback May Enable SSRF on brand.deblock.com
+- Target: brand.deblock.com/xmlrpc.php
+- XMLRPC endpoint is enabled and accepts pingback requests
+- Test with pingback.ping method to an internal URL returned fault code 0 (no message)
+- Fault code 0 is ambiguous: it could mean the request was processed (SSRF successful) or silently blocked
+- Standard WordPress XMLRPC pingback SSRF attack:
+  - The server fetches the sourceUrl to verify the pingback
+  - If the server reaches internal networks, this enables port scanning and service discovery
+  - The targetUrl must be a valid WordPress post URL
+- XMLRPC also exposes method listing (system.listMethods) confirming available methods
+- The pingback.ping response time was consistent with an outbound HTTP request being made
+- Impact: MEDIUM - XMLRPC pingback is a known SSRF vector. The inconclusive fault code 0 response means either the request was processed (enabling SSRF to internal services) or silently blocked. The endpoint is confirmed active and accepting requests.
+
+### F757 [MEDIUM] business.deblock.com Build Manifest Reveals Active Sentry Tunnel via /monitoring Rewrite
+- Target: business.deblock.com
+- The Next.js build manifest contains a rewrites configuration:
+  - Source: /monitoring
+  - Destination: https://o4510324489519104.ingest.de.sentry.io/api/4510324496859216/envelope/?hsts=0
+  - This creates a server-side proxy from /monitoring to Sentry's event ingestion endpoint
+- Testing the tunnel:
+  - GET /monitoring -> 405 Method Not Allowed (from Sentry backend, not Next.js 404)
+  - This confirms the rewrite is ACTIVE and forwarding requests to Sentry
+  - Standard Next.js 404 pages return differently than this 405
+- The Sentry tunnel is used to bypass ad-blockers and browser privacy extensions that block sentry.io
+- Sentry org ID: o4510324489519104
+- Sentry project ID: 4510324496859216
+- The same Sentry DSN is shared between production and UAT (previously documented)
+- An attacker could POST crafted Sentry envelopes via /monitoring to:
+  1. Inject fake error events into Deblock's Sentry project
+  2. Potentially exfiltrate data via custom event metadata
+  3. Pollute error tracking with false positives
+- Impact: MEDIUM - Active Sentry tunnel on production enables event injection into Deblock's error monitoring. While Sentry has some validation, crafted envelopes could pollute error tracking or be used for social engineering (fake critical errors triggering incident response).
+
+### F758 [INFO] web-partouche.prod.deblock.com Reveals Casino Group Partnership
+- Target: web-partouche.prod.deblock.com
+- Returns 502 Bad Gateway (service not running)
+- The subdomain name reveals a partnership with Partouche Group:
+  - Partouche is a major French casino group (Groupe Partouche SA, Euronext: PARP)
+  - This appears to be a white-label or co-branded web application
+  - The .prod. subdomain indicates this was intended for production use
+- The subdomain follows the same naming pattern as other production web apps (web-app.prod, web-business.prod)
+- Impact: INFO - Business intelligence. Reveals an undisclosed or upcoming partnership between Deblock (fintech) and Partouche (casino group). This could be relevant for regulatory analysis given gambling/crypto intersection.
+
+### F759 [LOW] business.deblock.com Card API Routes Confirmed Active Behind Authentication
+- Target: business.deblock.com
+- The following card management API endpoints are confirmed active (return 401 Unauthorized, not 404):
+  - POST /api/cards/order -> 401
+  - POST /api/cards/activate -> 401
+  - POST /api/cards/pin -> 401
+  - POST /api/cards/freeze -> 401
+  - GET /api/cards/limits -> 401
+  - POST /api/cards/replace -> 401
+- These endpoints require valid authentication (__Host-auth-token cookie with valid JWT)
+- The 401 response (vs 404) confirms the routes exist and are actively served
+- Card operations include: ordering new cards, activation, PIN management, freeze/unfreeze, limit queries, and card replacement
+- These would be high-value targets for IDOR testing with authenticated sessions
+- Impact: LOW - Route confirmation only. No data exposed without valid authentication. The endpoint mapping is useful for targeted testing once authenticated access is obtained.
