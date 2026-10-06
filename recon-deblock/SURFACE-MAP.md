@@ -1965,7 +1965,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 402 | LOW | UAT-02 auth/refresh token mechanism disclosure | app-uat-02.deblock.com | CWE-200 | YES | "No token or refresh token found" reveals dual-token auth mechanism. |
 | 403 | MEDIUM | UAT-02 onboarding endpoints reached with empty body + e2e | app-uat-02.deblock.com | CWE-287 | YES | resend-onboarding-otp, signature/resend-signature-otp, signature/complete all reach business logic without auth. |
 
-Total: 455 findings (16 critical, 107 high, 176 medium, 103 low, 61 info)
+Total: 457 findings (16 critical, 108 high, 177 medium, 103 low, 61 info)
 
 ## 15. Session Notes
 
@@ -5354,6 +5354,32 @@ F455. HIGH - UAT-02 Analytics Organisms Validates Against Event Catalog Without 
 - Could be used to enumerate valid event names and organism types
 - analytics/entry endpoint validates "entrySource" parameter before auth
 - CWE: CWE-200 (Exposure of Sensitive Information), CWE-287 (Improper Authentication)
+- Reproducible: YES
+
+## 12as. Production Crypto-Simulation Active Node, 2FA Mobile Session Param Leak (Session 30)
+
+F456. HIGH - Production BASE Crypto-Simulation Node Active Without Authentication
+- POST /api/crypto-simulation/BASE on business.deblock.com
+- Requires only CSRF token (freely obtainable from /api/csrf)
+- While most assets return 422 "No simulation node for {asset}", BASE has an active simulation node
+- Without accountAddress: returns {"error":"Invalid account address"} (validation layer 1)
+- With accountAddress parameter: returns {"error":"Invalid calldata"} (validation layer 2, deeper processing)
+- Accepts and processes arbitrary input without authentication
+- BASE chain = Base L2 (Coinbase), active in production for transaction simulation
+- If valid calldata format is discovered, could simulate real financial transactions without auth
+- Other tested assets all return "No simulation node": BTC, ETH, SOL, USDC, USDT, MATIC, AVAX, DOT, LINK, UNI, AAVE
+- CWE: CWE-306 (Missing Authentication for Critical Function)
+- CVSS: 7.5 (High) - unauthenticated access to production transaction simulation infrastructure
+- Reproducible: YES
+
+F457. MEDIUM - Production auth/complete-2fa-mobile-session Validates Parameters Before Auth
+- POST /api/auth/complete-2fa-mobile-session on business.deblock.com
+- With auth cookie bypass (__Host-auth-token=x): returns {"error":"Missing mobileSessionKey"}
+- Validates presence of mobileSessionKey parameter before checking authentication
+- Parameter validation before auth check leaks required parameter names
+- If valid mobileSessionKey format is found, could potentially complete 2FA flow with forged session
+- Related to auth flow: EMAIL_PASSWORD -> OTP -> FACETEC -> PASSKEY_FALLBACK -> SUCCESS
+- CWE: CWE-287 (Improper Authentication), CWE-200 (Information Exposure)
 - Reproducible: YES
 
 ## 16. Next Steps for Continued Testing
