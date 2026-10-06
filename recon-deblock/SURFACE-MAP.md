@@ -1788,6 +1788,7 @@ Total: 207 findings (12 critical, 43 high, 68 medium, 48 low, 36 info)
 - Session 7: Phase 8 - Business app deep dive. Egress proxy blocked api.deblock.com and deblock.com but business.deblock.com, app-uat-01, business-uat-01, brand.deblock.com, staging, recovery, status, bursted-bubbles still accessible. Downloaded 39 JS chunks from business.deblock.com, extracted full 25-endpoint API route map including auth flow, passkeys/WebAuthn, FaceTec biometric, SCA, crypto business, bank details, and CSRF implementation. Discovered PGP-encrypted auth body, device ID persistence via IndexedDB, Redis pub/sub for FaceTec 2FA sessions. Tested all API endpoints: CSRF token returned unauthenticated, Apigee API gateway error details leaked on 10+ POST-only endpoints (faultstring+errorcode), FaceTec keys endpoint returns distinct error "FaceTec 2FA session not found". WordPress deep dive: BackWPup v1/v2 API route enumeration (20+ endpoints), addjob and chatbot-context validate params before auth check (info leak), exposed readme/install/version/cron files, Elementor documents media import endpoint exists. app.deblock.com confirmed deprecated (410 Gone, empty body, via GCP). Total findings: 96.
 - Session 8: Phase 9/10 - UAT JS deep scan + active API key testing. Downloaded and scanned 86 JS chunks from app-uat-01.deblock.com. Found Alchemy API key (ACTIVE, enhanced API with getTokenBalances, getNFTs, getAssetTransfers all working), iCloud CloudKit API token (production container, 401 on direct query), Google OAuth Client ID with drive.appdata scope for "Orwell" wallet recovery, Google Maps Embed API key (Maps JS API active/billable, project 449958774220), WalletConnect projectId (working), OneSignal App ID + Safari Web Push ID, GTM Container, second Intercom App ID, Unleash feature flag client key. Discovered UUID-gated hidden route bypassing IS_DEV check, 7 test routes in production JS, E2E testing cookies. Mapped 130+ API endpoints and 6 WebSocket paths. Confirmed Kubernetes readyz endpoint accessible. GCS dev bucket has public object listing (NoSuchKey response). NFT contract is upgradeable BeaconProxy (FairXYZDeployer, 742 holders, 1000 supply). WordPress REST API fully open (users, media, search, categories enumerable). Elementor Pro v1 license routes exposed. Total findings: 124.
 - Session 10: WordPress REST API 14-namespace deep dive. Confirmed BackWPup v1/v2 full route structure (chatbot-context, startbackup, authenticate_cloud, storagelistcompact, getjobslist). Elementor v1 35+ routes including form-submissions, form-submissions/export, send-event, user-data/current-user. Elementor Pro refresh-loop/refresh-search don't check auth before param validation. CSP violation endpoint (/api/csp-violation) accepts arbitrary POST data with zero rate limiting (50 rapid requests all 204). UpdraftPlus backup directory confirmed (403, not 404). staging.deblock.com back online with CORS wildcard (Access-Control-Allow-Origin: *). Apple AASA and Android assetlinks expose app config and signing certs. Status page wildcard CSP. Alchemy key confirmed getTokenBalances for NFT contract (holds HEX token). No source maps, no debug endpoints, no open redirects on QR login. Total findings: 207.
+- Session 11: recovery.deblock.com deep dive. Downloaded 8 JS chunks without auth (static assets bypass Basic Auth). i18n files reveal complete wallet recovery architecture: AES decryption of email-delivered backup files, private key + seed phrase output, Solana transaction signing and broadcasting. RSC flight data leaks route tree, component IDs, Vercel deployment ID. WordPress wp-cron.php publicly accessible (can trigger scheduled tasks including backups). WordPress version confirmed 7.1.2 via wp-links-opml.php OPML generator. XMLRPC pingback SSRF returns consistent faultCode 0 (no differential exploitation). Total findings: 211.
 
 ### 12e. Business App API Route Map (from JS bundle analysis)
 
@@ -2974,6 +2975,55 @@ Additional testing results (no new findings):
 - Prelude edge API (edge.prelude.dev) properly requires auth (401)
 - next.deblock.com behind Cloudflare challenge (403)
 - 58 more WordPress XMLRPC multicall passwords tested, none matched
+
+## 12ae. Recovery Tool Architecture Exposure, WordPress Cron, and XMLRPC Findings (Session 11)
+
+F208 - recovery.deblock.com wallet recovery tool architecture fully exposed via unauthenticated JS assets (HIGH):
+recovery.deblock.com is a Next.js App Router application (build ID 5E8rtjZA7HwmI0gYYO_WP, deployment dpl_mAs9M7NnoB1oNqhMS685n2kDmngD) on Vercel behind HTTP Basic Auth (realm "Secure Area"). However, ALL static JS assets bypass Basic Auth entirely and serve with HTTP 200. Downloaded and analyzed 8 JS chunks (22KB app code + 463KB framework code) without any authentication. The 3 app-specific chunks are i18n localization files (EN/FR/ES) that reveal the complete wallet recovery workflow:
+
+Wallet Recovery Flow:
+- Step 1: User pastes an AES encryption key received by email during signup (search email for "Your encryption key")
+- Step 2: User uploads "backup.txt" file received by email recently (search for "Your backup file")
+- Click "Recover my wallet" to decrypt client-side
+- Output: Private keys AND/OR seed phrase displayed in the browser
+
+Solana Transfer Flow (separate page):
+- Step 1: Paste Solana private key (64 hex chars) from recovered wallet info
+- Enter expected Deblock Solana address for verification
+- Tool handles 3 key formats: raw Ed25519 scalar big-endian (legacy Deblock export), raw Ed25519 scalar little-endian, standard Ed25519 seed
+- Step 2: Check balance via Solana RPC, enter destination address and amount
+- Step 3: Transaction built and signed in the browser, broadcast to Solana network
+- Shows Solscan explorer link for transaction
+
+Security implications:
+1. AES encryption keys sent via email (not a secure channel) - email compromise = wallet theft
+2. Encrypted backup files also sent via email
+3. Client-side decryption means the tool's security depends entirely on the Basic Auth gate
+4. An attacker who compromises the email account gets both the AES key and the backup file
+5. The Solana transfer feature can drain wallets directly from the browser
+6. CSP reveals Solana RPC endpoints: solana-rpc.publicnode.com, api.mainnet-beta.solana.com, solana.drpc.org
+7. Cross-Origin-Resource-Policy: cross-origin allows embedding from any origin
+8. Security headers are comprehensive: X-Frame-Options: DENY, HSTS preload, CSP, Permissions-Policy (camera, microphone, geolocation, payment all disabled)
+
+F209 - recovery.deblock.com RSC flight data and Vercel deployment metadata leak (MEDIUM):
+The 404 error page on recovery.deblock.com (served without Basic Auth for non-static paths) contains React Server Components flight data that leaks: build ID (5E8rtjZA7HwmI0gYYO_WP), Vercel deployment ID (dpl_mAs9M7NnoB1oNqhMS685n2kDmngD), route tree segments ["", "api", "recovery"], component module IDs (9766, 98924, 24431, 15278, 57150, 80622), component names (OutletBoundary, AsyncMetadataOutlet, ViewportBoundary, MetadataBoundary, IconMark), app description ("Modern Deblock recovery tool built with Next.js and Material UI"), noindex robots meta. The route tree confirms the app's internal structure. The Vercel toolbar script reference with data-deployment-id confirms this is a Vercel-hosted deployment with toolbar access for developers.
+
+F210 - WordPress wp-cron.php publicly accessible (MEDIUM):
+brand.deblock.com/wp-cron.php returns HTTP 200 (0.41s response time) without authentication. WordPress cron is triggered on every page load by default, but the public wp-cron.php endpoint allows external triggering of all scheduled tasks including: backup creation (UpdraftPlus, BackWPup), plugin/theme updates, cache clearing, and any custom scheduled events. An attacker can repeatedly trigger wp-cron.php to: (1) force backup creation to predictable locations, (2) cause resource exhaustion, (3) trigger actions at attacker-controlled timing.
+
+F211 - WordPress version and locale disclosure via wp-links-opml.php and readme.html (LOW):
+brand.deblock.com/wp-links-opml.php returns an OPML document with generator comment "WordPress/7.1.2" and French title "Liens pour Deblock", confirming the exact WordPress version and French locale configuration. brand.deblock.com/readme.html returns the standard WordPress readme page (HTTP 200) with version information and installation instructions. brand.deblock.com/license.txt returns HTTP 200 with the full GPL license text. These three files should be access-restricted in production as they aid attacker reconnaissance.
+
+Additional testing results (no new findings):
+- XMLRPC pingback.ping returns consistent faultCode 0 for all targets (169.254.169.254, metadata.google.internal, 10.0.0.1, localhost) - no differential timing, no evidence of actual outbound connections, server validates target post URL before processing source
+- XMLRPC demo.addTwoNumbers and demo.sayHello confirmed active in production (return 42 and "Hello!" respectively) but pose no direct security risk
+- recovery.deblock.com CORS: Access-Control-Allow-Origin: * on static assets only (Vercel default), NOT on authenticated pages
+- recovery.deblock.com /api/recovery returns 404 (route exists in segment tree but no handler), no server-side API
+- recovery.deblock.com /solana, /recovery, /en, /fr, /es all return 401 (behind Basic Auth)
+- recovery.deblock.com framework chunks (React, Next.js) contain no app-specific secrets
+- WordPress wp-trackback.php: 404 (disabled)
+- WordPress wp-mail.php: 403 (blocked)
+- WordPress wp-signup.php: 302 (redirect, multisite not enabled)
 
 ## 16. Next Steps for Continued Testing
 
