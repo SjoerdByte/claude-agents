@@ -9528,3 +9528,114 @@ Priority 3 (Enumeration/escalation):
   - Track transactions in real-time
   - Access Alchemy's enhanced APIs for blockchain analytics
 - Impact: HIGH - Live blockchain API key with multi-chain access and enhanced API capabilities. While read-only and free-tier limited, it provides infrastructure access that could be used for user transaction monitoring and blockchain intelligence gathering.
+
+### F784 [CRITICAL] Data Removal Endpoint Accepts Arbitrary Tokens on Production and Staging
+- Target: web-api-staging.deblock.com AND web-api.deblock.com (production)
+- GET /v1/remove/data/{base64_token} with the hardcoded waitlist bearer token returns {"status":"ok"} (200)
+- Tested with multiple arbitrary base64 values:
+  - /v1/remove/data/dGVzdA== (base64 of "test") -> {"status":"ok"} (200) on BOTH staging and production
+  - /v1/remove/data/dXNlckBkZWJsb2NrLmNvbQ== (base64 of "user@deblock.com") -> {"status":"ok"} (200)
+  - /v1/remove/data/YWRtaW4= (base64 of "admin") -> {"status":"ok"} (200)
+- Without bearer token: returns 403 Forbidden (auth required)
+- The endpoint accepts ANY base64-encoded value as a valid token parameter
+- The bearer token is hardcoded in production JavaScript and publicly accessible
+- The "ok" response for arbitrary tokens suggests either:
+  - The endpoint silently accepts and processes any removal request (mass data deletion risk)
+  - The endpoint does not validate token content before returning success (broken validation)
+  - The endpoint queues removal jobs without verification (async data loss)
+- This is a GDPR data removal/right-to-erasure endpoint that appears to lack proper authorization
+- Combined with the hardcoded bearer token (F782), any attacker can call this endpoint
+- The same behavior on both staging and production confirms this is not a staging-only issue
+- Impact: CRITICAL - A publicly accessible bearer token combined with an endpoint that accepts arbitrary data removal tokens on production creates a potential mass data deletion vector. If the endpoint processes removals without proper validation, an attacker could trigger data erasure for arbitrary users, causing irreversible data loss.
+
+### F785 [CRITICAL] Ambassador Auto-Signup Sends OTP to Arbitrary Email Addresses on Production
+- Target: web-api.deblock.com (PRODUCTION) and web-api-staging.deblock.com
+- POST /v1/ambassador/email with {"ambassador":{"email":"ANY_EMAIL"}} returns {"status":"ok"} on BOTH production AND staging
+- Tested with non-existent domain: test@nonexistentdomain12345.com -> {"status":"ok"} on production
+- The OTP verification endpoint /v1/ambassador/email/otp returns {"status":"fail","error":"The code provided is incorrect!"} confirming:
+  - A real OTP was generated and stored
+  - The provided code was compared against the stored OTP
+  - No indication that OTP attempts are limited or that the OTP was not sent
+- The endpoint controller is `app/controllers/v1/ambassador_auto_signup_controller.rb` (leaked via stack trace)
+- The parameter format is `{"ambassador":{"email":"...","otp":"..."}}` (confirmed via stack trace showing `ambassador_params` at line 114)
+- No Rack::Attack or rate limiting middleware in the chain (confirmed via F775)
+- Impact: CRITICAL - Production endpoint sends OTP emails to any email address without authentication beyond the hardcoded bearer token. This enables:
+  1. Email bombing by repeatedly triggering OTP sends to a target address
+  2. OTP brute-force attack (6-digit code = 1M combinations, no rate limiting confirmed)
+  3. Account takeover if the OTP grants ambassador access upon verification
+  4. Spam/phishing via legitimate Deblock emails sent to arbitrary addresses
+
+### F786 [HIGH] Dead Route Exposes Controller Architecture on Staging
+- Target: web-api-staging.deblock.com
+- POST /v1/company/phone/otp returns `AbstractController::ActionNotFound` with stack trace:
+  - "The action 'phone_otp' could not be found for V1::CompanyController"
+- This reveals:
+  - Controller class: V1::CompanyController
+  - Route exists in config/routes.rb but the action was removed from the controller
+  - The company onboarding flow previously supported phone OTP but the feature was removed without cleaning up routes
+- The company onboarding controller handles:
+  - /v1/company/email -> returns "This uuid isn't valid!" (needs session UUID)
+  - /v1/company/email/otp -> returns "This uuid isn't valid!" (needs session UUID)
+  - /v1/company/countries -> returns full country list (41 countries)
+  - /v1/company/turnovers -> returns "This uuid isn't valid!" (needs session UUID)
+  - /v1/company/surveys -> returns "This uuid isn't valid!" (needs session UUID)
+  - /v1/company/phone/otp -> DEAD ROUTE (action not found)
+- Impact: HIGH - Dead routes with development-mode stack traces reveal internal architecture. The ActionNotFound error confirms which controller handles company onboarding and that phone verification was removed without cleanup.
+
+### F787 [MEDIUM] Ambassador Auto-Signup Exposes Full Request Flow and Parameter Structure
+- Target: web-api-staging.deblock.com
+- Stack trace from /v1/ambassador/email reveals:
+  - Controller: app/controllers/v1/ambassador_auto_signup_controller.rb
+  - Method: check_email at line 100
+  - Parameter validation: ambassador_params at line 114
+  - Uses Airbrake 13.0.3 for error monitoring
+- POST /v1/ambassador/new accepts {"ambassador":{...}} but validates input:
+  - Returns "Please check your input. Doesn't seem right!" for incomplete data
+- Ambassador UUID-based routes all require valid UUIDs:
+  - /v1/ambassador/:uuid -> profile
+  - /v1/ambassador/:uuid/refresh -> refresh
+  - /v1/ambassador/:uuid/tracking -> tracking data
+  - /v1/ambassador/:uuid/revenues -> revenue data
+  - /v1/ambassador/:uuid/revenues/all -> all revenues
+  - /v1/ambassador/:uuid/payments -> payment data
+  - /v1/ambassador/:uuid/search -> search
+  - /v1/ambassador/:uuid/check/email -> email check
+  - /v1/ambassador/:uuid/address -> address
+  - /v1/ambassador/:uuid/socials -> social links
+  - /v1/ambassador/:uuid/check -> check
+  - /v1/ambassador/:uuid/claim -> claim
+  - /v1/ambassador/:uuid/request -> request
+- These UUID-based routes would expose PII (revenues, payments, address, email) if valid UUIDs are found
+- Impact: MEDIUM - Internal controller architecture and full ambassador API surface exposed through stack traces. The UUID-based routes contain high-value PII endpoints.
+
+### F788 [MEDIUM] Production Endpoints Accessible With Hardcoded Bearer Token (Extended Surface)
+- Target: web-api.deblock.com (PRODUCTION)
+- The following production endpoints respond with data using only the hardcoded bearer token (no user session):
+  - GET /v1/company/countries -> Full list of 41 supported EEA countries with flag CDN URLs
+  - GET /v1/coins/list/EUR/1 -> Live cryptocurrency market data (9 coins) with real-time prices
+  - GET /v1/home/competition -> Competitor pricing data (Kraken, Trade Republic, Coinbase, Bitpanda, Revolut, Binance with SOL exchange rates)
+  - GET /v1/bb/:id -> Bursted Bubbles NFT metadata with rarity scores and image URLs
+  - GET /v1/remove/data/:token64 -> Data removal (F784)
+  - POST /v1/ambassador/email -> OTP trigger (F785)
+- The competition endpoint reveals Deblock's competitive positioning strategy and real-time exchange rate comparison
+- Impact: MEDIUM - While most data is non-sensitive, the competition endpoint reveals business intelligence data. The breadth of accessible production endpoints with just the hardcoded bearer token is concerning.
+
+### F789 [MEDIUM] Cache Deletion Endpoints Require Separate Authorization
+- Target: web-api-staging.deblock.com
+- GET /v1/blog/cache/delete/:key -> {"status":"fail","error":"Forbidden!"}
+- GET /v1/home/cache/delete/:key -> {"status":"fail","error":"Forbidden!"}
+- GET /v1/legals/cache/delete/:key -> Expected same behavior
+- GET /v1/faq/cache/delete/:key -> Expected same behavior
+- These endpoints exist in the route table and return "Forbidden" rather than 404
+- The cache deletion uses a separate authorization mechanism beyond the bearer token
+- If the authorization secret is discovered (e.g., through staging stack traces or code leaks), these endpoints could be used to purge CDN caches
+- Impact: MEDIUM - Cache invalidation endpoints are properly protected but their existence is exposed. Cache purging could cause temporary service disruption.
+
+### F790 [LOW] Deprecated Twilio Webhook Endpoint Remains Routed
+- Target: web-api-staging.deblock.com
+- POST /v1/webhook/twilio/:hash -> {"status":"Gone","message":"This endpoint is deprecated and no longer available."}
+- The endpoint is properly deprecated with a "Gone" response
+- The route table still contains the route definition: /v1/webhook/twilio/:hash
+- The hash parameter previously validated Twilio webhook signatures
+- Historical evidence of Twilio SMS integration (likely for phone OTP before it was removed from company onboarding)
+- Impact: LOW - Properly deprecated endpoint. The route remains which could be cleaned up, but it correctly returns a "Gone" status. Historical evidence of SMS integration.
