@@ -1682,7 +1682,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 94 | INFO | OneSignal push notification SDK loaded | - | - | YES | sdk loaded from cdn.onesignal.com |
 | 95 | INFO | app.deblock.com deprecated (410 Gone, empty body) | - | - | YES | Via GCP, x-request-id header |
 | 96 | INFO | Browser ping endpoint /api/users/browsers/:id/ping | - | - | YES | Active session tracking |
-| 97 | HIGH | Alchemy API key active with enhanced API access | - | - | YES | eth_blockNumber, getTokenBalances, getNFTs, getAssetTransfers all working |
+| 97 | HIGH | Alchemy API key active on 10 chains (enhanced API) | - | - | YES | 5 mainnets + 5 testnets, getTokenBalances/getNFTs/getAssetTransfers all working |
 | 98 | HIGH | iCloud CloudKit API token hardcoded in production JS | - | - | YES | Token: 230f22b...11a8b8b, container: iCloud.com.deblock.deblockapp.production |
 | 99 | HIGH | Google OAuth Client ID with Drive.appdata scope (wallet recovery) | - | - | YES | OAuth ID: 248017251601-...apps.googleusercontent.com, "Orwell" recovery |
 | 100 | HIGH | 130+ API endpoints mapped from UAT JS bundles | - | - | YES | Full route map with params, methods, auth requirements |
@@ -1747,8 +1747,10 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 192 | LOW | Analytics event replay (no eventId deduplication) | - | CWE-799 | YES | Same eventId accepted 3+ times |
 | 193 | INFO | Next.js Server Actions enabled (404 on unknown IDs) | - | CWE-200 | YES | "Server action not found" on POST with Next-Action header |
 | 194 | INFO | Prelude edge SDK endpoint with CORS wildcard (*) | - | CWE-200 | YES | ACAO: * on edge.prelude.dev (third-party, not Deblock's) |
+| 195 | HIGH | Google OAuth localhost redirect_uri in production | - | CWE-601 | YES | http://localhost:3000 accepted as redirect_uri, dev URI in prod config |
+| 196 | HIGH | Alchemy API key works on 10 blockchain networks | - | CWE-798 | YES | 5 mainnets + 5 testnets, multiplied billing abuse surface |
 
-Total: 194 findings (12 critical, 40 high, 62 medium, 44 low, 36 info)
+Total: 196 findings (12 critical, 42 high, 62 medium, 44 low, 36 info)
 
 ## 15. Session Notes
 
@@ -1767,7 +1769,7 @@ Total: 194 findings (12 critical, 40 high, 62 medium, 44 low, 36 info)
 - No open redirect vulnerabilities found on tested endpoints.
 - Session 8: Extended unauthenticated testing. XMLRPC multicall brute force confirmed (68 pw/sec, admin-deblock valid). Analytics stored injection (XSS/SQLi/NoSQLi all accepted). WordPress REST API user enumeration. BackWPup/Elementor Pro/site-health route enumeration. Firebase only used for phone auth (no Firestore/RTDB/Storage). Google Maps key restricted to JS API. OneSignal requires API key. CDN S3 properly secured. api.deblock.com still down. All WebSockets returning 502. Production endpoints returning 410 Gone.
 - Session 8 (continued): Added findings 179-184 (TRACE 500, text/plain CSRF bypass, prototype pollution, OPTIONS disclosure, no JSON depth limit, inconsistent auth error format).
-- Session 9: RSC state tree crash confirmed on ALL environments including production (DoS vector). Analytics dashboard poisoning with fake events confirmed. WordPress batch API validates params before auth. UpdraftPlus backup directory exists. Password reset user enumeration confirmed. 126 more XMLRPC passwords tested (none matched). No cache poisoning, no SSRF, no subdomain takeover. Total 194 findings.
+- Session 9: RSC state tree crash confirmed on ALL environments including production (DoS vector). Analytics dashboard poisoning with fake events confirmed. WordPress batch API validates params before auth. UpdraftPlus backup directory exists. Password reset user enumeration confirmed. 126 more XMLRPC passwords tested (none matched). No cache poisoning, no SSRF, no subdomain takeover. Google OAuth localhost redirect_uri accepted in production. Alchemy API key confirmed on 10 chains (5 mainnets + 5 testnets). Total 196 findings.
 - ActionMailbox ingress endpoints return 404 on production with proper email format (all providers tested).
 - Ambassador auto-signup sends OTP on staging (confirmed email delivery).
 - Session 5: UAT environment deep dive (app-uat-01, business-uat-01). Sentry event injection confirmed on both DSNs. XMLRPC multicall confirmed at 20+ attempts per request. WordPress deep enumeration. JS bundle API route extraction (14 routes from 85 chunks). WebSocket endpoints confirmed. Multiple app-uat-01 API endpoints reach backend without user auth.
@@ -2869,6 +2871,12 @@ POST with "Next-Action: test" header returns "Server action not found" (404) ins
 
 F194 - Prelude Edge SDK CORS Wildcard (INFO):
 Third-party endpoint edge.prelude.dev returns Access-Control-Allow-Origin: * with allowed headers including X-SDK-Key and X-SDK-User-Agent. This is Prelude's endpoint, not Deblock's infrastructure, but the wildcard CORS could be relevant if SDK keys are leaked.
+
+F195 - Google OAuth localhost redirect_uri in production (HIGH):
+Google OAuth Client ID 248017251601-ja5sommcitlk8ie3sieq4igjrlis9arp.apps.googleusercontent.com accepts redirect_uri=http://localhost:3000/api/auth/google/callback in production. This is a development URI left in the Google Cloud Console OAuth configuration. An attacker on the same local network could intercept the authorization code by getting a victim to click a crafted OAuth URL. The OAuth client also accepts multiple deblock subdomains: app-uat-01.deblock.com, business.deblock.com, deblock.com. The UAT environment has a /en/google-test route that processes OAuth callbacks (returns 307 on ?code= and ?state= parameters).
+
+F196 - Alchemy API key works on 10 blockchain networks (HIGH):
+The Alchemy API key PxkB3B-1-0bFVQHY4Gy5e9V_-FwVj7Pt works on 10 chains total: 5 mainnets (eth-mainnet, polygon-mainnet, arb-mainnet, opt-mainnet, base-mainnet) and 5 testnets (eth-sepolia, polygon-amoy, arb-sepolia, opt-sepolia, base-sepolia). Originally reported as Ethereum-only in F97/F161. This significantly expands the abuse surface: an attacker can run enhanced API calls (getTokenBalances, getNFTs, getAssetTransfers) against any of these 10 networks, multiplying the billing impact and surveillance capability. 718 NFT holder addresses accessible via the NFT contract alone.
 
 Additional testing results (no new findings):
 - X-Forwarded-Host not reflected in any response (no cache poisoning)
