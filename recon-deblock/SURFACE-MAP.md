@@ -9225,3 +9225,144 @@ Priority 3 (Enumeration/escalation):
   - "merged-terms" in the latest version (2026-09-18) suggests terms consolidation
   - BETA fee document from 2023 still served alongside current version
 - Impact: MEDIUM - Internal document UUIDs, version history, and CDN paths are exposed without authentication. The version progression reveals business decisions (product naming, terms merges) and the label types expose the internal KYC flow stages. The sequential UUID pattern (3211429b-8de0-80xx) suggests predictable document ID generation.
+
+### F768 [HIGH] CSRF Token Endpoint Freely Accessible Without Authentication on Production
+- Target: business.deblock.com/api/csrf
+- The CSRF token endpoint returns valid tokens without any authentication:
+  - GET /api/csrf -> `{"csrfToken":"1791319749.1791321549.Mv20alinpIvXVWOjcT3J-g._EAf_0UoPbYgC1yvrjeyMOoq0lvFfT4-3M2aflmXlYM"}`
+- Token format analysis:
+  - Part 1: Unix timestamp of issuance (e.g., 1791319749 = 2026-10-06 20:49:09 UTC)
+  - Part 2: Unix timestamp of expiry (issuance + 1800 = 30-minute validity)
+  - Part 3: Random nonce (base64url encoded)
+  - Part 4: HMAC signature (base64url encoded)
+- Each request generates a unique token (different nonce and HMAC)
+- Tokens are NOT bound to any session or user
+- No rate limiting on token generation
+- Combined with F762 (Active Storage direct upload requires only CSRF), this provides one half of the attack chain
+- The 30-minute validity window is generous for exploitation
+- Impact: HIGH - Session-independent CSRF tokens defeat the purpose of CSRF protection. Any attacker can obtain valid tokens for cross-site request forgery attacks against all business.deblock.com endpoints that rely on CSRF tokens instead of authentication.
+
+### F769 [HIGH] FaceTec Biometric Gateway Accessible Without Authentication on Production
+- Target: business.deblock.com/api/facetec-gateway/process-request
+- The FaceTec 2FA/biometric verification gateway processes requests without authentication:
+  - POST with empty body: `{"error":"FaceTec 2FA session not found"}`
+  - POST with FaceTec parameters (sessionId, faceScan, auditTrail): Same response
+  - No authentication cookie or token required
+  - No CSRF token required
+- The endpoint processes requests and validates against a session store
+- FaceTec is used for liveness detection and facial recognition during KYC/2FA
+- The error message reveals the endpoint expects a pre-existing "2FA session" (likely created during an authenticated flow)
+- While a valid FaceTec session is needed, the lack of authentication on the gateway itself means:
+  1. An attacker who obtains a valid session ID can submit biometric data without account access
+  2. Session IDs may be predictable or enumerable
+  3. The endpoint can be used for denial of service (resource-intensive biometric processing)
+- Impact: HIGH - Biometric processing gateway exposed without authentication. If FaceTec session IDs are leaked or enumerable, an attacker could submit fake biometric data to interfere with legitimate users' KYC/2FA verification.
+
+### F770 [MEDIUM] business.deblock.com Full API Endpoint Map Extracted from JavaScript Bundles
+- Target: business.deblock.com
+- Complete API surface extracted from 38 JavaScript chunks:
+  - Authentication:
+    - GET /api/auth/check-session (unauthenticated, returns {"valid":false})
+    - POST /api/auth/login (404 - routed via Apigee gateway)
+    - POST /api/auth/login-2fa (404 - routed via Apigee gateway)
+    - POST /api/auth/refresh (403 without auth)
+  - Financial:
+    - GET /api/frontdesk/accounts (401)
+    - GET /api/frontdesk/features (401, feature flags)
+    - GET /api/cashbacks/lifetime (401)
+    - GET /api/bank-details (502, Apigee error)
+    - GET /api/transactions (404, may need path parameter)
+    - GET /api/pricing/plans (404, may need path parameter)
+  - Cards:
+    - GET /api/cards (401)
+    - GET /api/cards/list (401)
+    - GET /api/cards/transactions (401)
+    - GET /api/cards/details (401)
+    - GET /api/cards/balance (401)
+    - GET /api/cards/history (401)
+    - GET /api/cards/settings (401)
+    - GET /api/cards/3ds (401)
+    - GET /api/cards/virtual (401)
+    - GET /api/cards/physical (401)
+    - GET /api/cards/shipping (401)
+    - GET /api/cards/design (401)
+    - GET /api/cards/spending (401)
+    - GET /api/cards/cancel (401)
+    - POST /api/cards/order (401)
+    - POST /api/cards/activate (401)
+    - POST /api/cards/pin (401)
+    - POST /api/cards/freeze (401)
+    - POST /api/cards/replace (401)
+    - GET /api/cards/limits (401)
+  - Crypto:
+    - /api/crypto-business (404 via Apigee)
+    - /api/crypto-business-socket (426, WebSocket)
+    - /api/crypto-commands-socket (426, WebSocket)
+    - /api/crypto-messages/messages/ (404)
+    - /api/crypto-simulation/ (404)
+    - /api/crypto-transactions/ (404)
+  - Users:
+    - GET /api/users/user (401)
+    - GET /api/users/browsers (502, Apigee error)
+  - Security:
+    - POST /api/sca (auth-gated, Strong Customer Authentication)
+    - GET /api/passkeys (401)
+    - POST /api/passkeys/auth (502, Apigee)
+    - POST /api/passkeys/register (502, Apigee)
+    - POST /api/facetec-gateway/process-request (UNAUTHENTICATED)
+    - GET /api/csrf (UNAUTHENTICATED, returns tokens)
+  - WebSocket:
+    - /api/websocket (426 Upgrade Required)
+  - Onboarding:
+    - POST /api/business-onboarding (UNAUTHENTICATED, validates email)
+- Apigee Gateway Errors (502): bank-details, users/browsers, passkeys/auth, passkeys/register, facetec-gateway/session - these return `{"fault":{"faultstring":"Received 405 Response without Allow Header"}}` confirming Google Apigee as the API gateway
+- Impact: MEDIUM - Complete API surface mapping from client-side JavaScript. Three endpoints are accessible without authentication (check-session, csrf, facetec-gateway). The extensive card management API (14+ endpoints) represents the highest-value IDOR target once authenticated access is obtained.
+
+### F771 [HIGH] Waitlist Company Email OTP Has No Rate Limiting on Production (30+ Attempts)
+- Target: web-api.deblock.com/v1/waitlist/company/email/verify
+- The waitlist company email OTP verification has NO rate limiting:
+  - 30 consecutive failed OTP attempts with NO lockout
+  - All 30 returned "The code provided is incorrect!" (not "please wait")
+  - No CAPTCHA, no exponential backoff, no IP throttling
+  - Requires the waitlist bearer token (hardcoded, from earlier findings)
+- Comparison with other OTP endpoints:
+  - Ambassador OTP (F738): NO lockout (25+ tested)
+  - Company OTP (F743): 5-attempt lockout, 1hr cooldown
+  - Waitlist Company OTP (this finding): NO lockout
+- The waitlist company join flow creates sessions with:
+  - Required fields: email, country_code, name, company_name, type_code
+  - The endpoint progressively reveals which field is missing (information disclosure)
+  - 30-second rate limit between join requests (but not on OTP verification)
+- Impact: HIGH - An attacker with the hardcoded bearer token can create unlimited waitlist entries and brute-force email verification OTPs without any lockout. This enables unauthorized company waitlist verification.
+
+### F772 [MEDIUM] Apigee API Gateway Error Messages Confirm Architecture on Production
+- Target: business.deblock.com
+- Multiple endpoints return detailed Apigee error messages:
+  - `{"fault":{"faultstring":"Received 405 Response without Allow Header","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}`
+- Affected endpoints (confirmed via Apigee errors):
+  - GET /api/sca -> 502
+  - GET /api/users/browsers -> 502
+  - DELETE /api/users/browsers -> 405 (Apigee error)
+  - GET /api/bank-details -> 502
+  - GET /api/business-onboarding -> 502
+  - GET /api/passkeys/auth -> 502
+  - GET /api/passkeys/register -> 502
+- The Apigee errors reveal:
+  - Google Apigee is the API gateway between Next.js frontend and GKE backend services
+  - The 405/502 pattern indicates the Next.js server proxies requests to Apigee, which forwards to backend microservices
+  - Backend services respond without proper Allow headers for unsupported methods
+- PUT /api/cards/list and DELETE /api/cards/list also return 502 (method not supported by backend)
+- Impact: MEDIUM - Apigee error messages confirm the API gateway architecture and expose error handling patterns. The detailed error codes could aid in crafting targeted requests that bypass Apigee proxy rules.
+
+### F773 [MEDIUM] Three WebSocket Endpoints Confirmed Active on Production
+- Target: business.deblock.com
+- Three WebSocket endpoints return 426 Upgrade Required (confirming they exist and accept WebSocket upgrades):
+  - /api/websocket (general WebSocket endpoint)
+  - /api/crypto-business-socket (crypto business operations WebSocket)
+  - /api/crypto-commands-socket (crypto command execution WebSocket)
+- All return 426 with both authenticated and unauthenticated requests
+- The 426 status code indicates the server recognizes the endpoint but requires a proper WebSocket upgrade
+- HTTP/2 does not support traditional WebSocket upgrade (requires HTTP/1.1 or H2 CONNECT)
+- The crypto WebSocket endpoints likely carry real-time blockchain transaction data, order execution, and wallet management commands
+- If WebSocket auth can be established (via cookie or token), these provide real-time data streams and command execution
+- Impact: MEDIUM - Real-time WebSocket endpoints for crypto operations are active on production. Once authenticated, these could provide real-time access to transaction streams, order execution, and wallet management, representing high-value targets for session hijacking or MITM attacks.
