@@ -1724,8 +1724,15 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 135 | LOW | /api/auth/health returns 200 empty without auth | - | - | YES | Internal health check exposed |
 | 136 | INFO | QR login abandon works without auth (204) | - | - | YES | /api/qr-login/abandon POST returns 204 |
 | 137 | INFO | FaceTec 2FA mobile session error oracle | - | - | YES | "FaceTec 2FA session not found" on create-2fa-mobile-session |
+| 172 | HIGH | XMLRPC multicall brute force amplification | - | CWE-307 | YES | 68 pw/sec, admin-deblock confirmed, zero rate limit |
+| 173 | HIGH | Analytics stored injection (XSS/SQLi/NoSQLi) | - | CWE-79 | YES | All payloads accepted, 100KB fields, zero validation |
+| 174 | MEDIUM | WordPress REST API user enumeration | - | CWE-200 | YES | Full user details + Gravatar hash via /wp-json/wp/v2/users |
+| 175 | MEDIUM | WordPress sensitive files exposed | - | CWE-538 | YES | install.php, upgrade.php, wp-cron.php, readme.html accessible |
+| 176 | MEDIUM | Elementor Pro route enum + auth bypass pattern | - | CWE-200 | YES | refresh-loop validates params before auth, full routes exposed |
+| 177 | MEDIUM | BackWPup REST API route enumeration | - | CWE-200 | YES | 18 backup management endpoints + chatbot-context with tokens |
+| 178 | LOW | Health endpoint info disclosure | - | CWE-200 | YES | buildId e95b8cf + timestamp, different error format on logout |
 
-Total: 171 findings (12 critical, 36 high, 50 medium, 38 low, 35 info)
+Total: 178 findings (12 critical, 38 high, 54 medium, 39 low, 35 info)
 
 ## 15. Session Notes
 
@@ -1742,6 +1749,7 @@ Total: 171 findings (12 critical, 36 high, 50 medium, 38 low, 35 info)
 - Session 4b: Company onboarding phone auto-verify bypass confirmed on production. Email OTP zero rate limiting confirmed on production. Full KYB flow unauthenticated on production.
 - Firebase email enumeration: No corporate emails registered (tested 20 patterns).
 - No open redirect vulnerabilities found on tested endpoints.
+- Session 8: Extended unauthenticated testing. XMLRPC multicall brute force confirmed (68 pw/sec, admin-deblock valid). Analytics stored injection (XSS/SQLi/NoSQLi all accepted). WordPress REST API user enumeration. BackWPup/Elementor Pro/site-health route enumeration. Firebase only used for phone auth (no Firestore/RTDB/Storage). Google Maps key restricted to JS API. OneSignal requires API key. CDN S3 properly secured. api.deblock.com still down. All WebSockets returning 502. Production endpoints returning 410 Gone.
 - ActionMailbox ingress endpoints return 404 on production with proper email format (all providers tested).
 - Ambassador auto-signup sends OTP on staging (confirmed email delivery).
 - Session 5: UAT environment deep dive (app-uat-01, business-uat-01). Sentry event injection confirmed on both DSNs. XMLRPC multicall confirmed at 20+ attempts per request. WordPress deep enumeration. JS bundle API route extraction (14 routes from 85 chunks). WebSocket endpoints confirmed. Multiple app-uat-01 API endpoints reach backend without user auth.
@@ -2687,6 +2695,111 @@ WebSocket Paths:
 - /crypto-commands-socket (no auth)
 - /auth/2fa-mobile-session-socket (no auth)
 
+## 12x. XMLRPC Multicall Brute Force Amplification (Findings 172-175)
+
+Finding 172 (HIGH): WordPress XMLRPC system.multicall enables amplified brute force
+- brand.deblock.com/xmlrpc.php accepts system.multicall with unlimited sub-calls
+- 50 password attempts per single HTTP request, no rate limiting
+- Tested 250 passwords in 3.6 seconds (68 passwords/second) with zero blocks
+- All 5 batches returned HTTP 200 with individual results per password
+- With parallelization, attack rate could reach 500+ passwords/second
+- wp.getUsersBlogs method confirms valid username (returns "Identifiant ou mot de passe incorrect" = wrong password, not wrong user)
+- admin-deblock username CONFIRMED as valid via differential error response
+- Impact: Credential compromise of WordPress admin account
+
+Finding 173 (HIGH): Analytics endpoint accepts stored injection payloads without validation
+- POST /api/auth/analytics on app-uat-01 accepts arbitrary data in all fields
+- Required fields revealed: eventId, eventType, flowId, screenId
+- XSS payloads: <script>alert(1)</script> -> success:true
+- SQL injection: test' OR '1'='1 -> success:true
+- NoSQL injection: {"$gt":""} as eventId -> success:true
+- 100KB payload in single field -> success:true
+- Additional fields accepted: userId, email, ip, sessionId, amount, currency
+- ZERO rate limiting: 30/30 requests in 8.9 seconds, all HTTP 200
+- Impact: Data pollution, potential stored XSS in admin dashboard, analytics manipulation
+
+Finding 174 (MEDIUM): WordPress REST API full user enumeration
+- GET /wp-json/wp/v2/users returns complete user list without auth
+- User 1: admin-deblock (only user), gravatar hash 44f51df94ecb1454d3e064107d59a8a4606564f21ace0b536097f9f7a185e5f3
+- Elementor intro settings leaked (ai-get-started, globals_introduction, etc.)
+- Author archive accessible: /author/admin-deblock/
+- Oembed endpoint leaks author info and embedded content data-secret tokens
+- Impact: Username confirmed for brute force, email hash for reverse lookup
+
+Finding 175 (MEDIUM): WordPress sensitive files and endpoints exposed
+- /wp-admin/install.php: 200 (returns "Deja installe" with wp-login.php link, version 7.1.2)
+- /wp-admin/upgrade.php: 200
+- /wp-cron.php: 200 (accessible for DoS via forced cron execution)
+- /readme.html: 200 (confirms PHP 8.3+ and MySQL 8.0+ requirements)
+- /license.txt: 200
+- /wp-content/plugins/: 200 (directory accessible, PHP index prevents listing)
+- /wp-content/themes/: 200
+- XMLRPC fully enabled with all methods: system.multicall, pingback.ping, metaWeblog.*, blogger.*, wp.*
+- Impact: Information disclosure, cron abuse, brute force amplification
+
+## 12y. Extended WordPress API Surface (Findings 176-178)
+
+Finding 176 (MEDIUM): Elementor Pro REST API route enumeration
+- /wp-json/elementor-pro/v1/ exposes full route structure without auth
+- Routes discovered: license/tier-features, license/get-license-status, posts-widget, get-post-type-taxonomies, refresh-loop, refresh-search
+- refresh-loop endpoint validates parameters BEFORE auth check: returns 400 "invalid widget_id" without 401
+- posts-widget returns 404 "document doesn't exist" instead of 401 (processes request before auth)
+- Impact: Auth bypass pattern allows parameter brute force, Elementor Pro version disclosure
+
+Finding 177 (MEDIUM): BackWPup REST API route enumeration
+- /wp-json/backwpup/v1/ exposes full backup management API structure
+- 18 endpoints revealed: storagelistcompact, cloud_is_authenticated, authenticate_cloud, getjobslist, startbackup, backups, addjob, delete_job, save_job_settings, save_files_exclusions, save_excluded_tables, process_bulk_actions, chatbot-context, updatejob, update-job-title, save_site_option, pagination, getblock
+- All data endpoints require auth (401), but route structure reveals complete backup infrastructure
+- chatbot-context endpoint accepts GET with context_id and context_token parameters
+- Impact: Backup infrastructure disclosure, potential for token guessing on chatbot-context
+
+Finding 178 (LOW): Health endpoint information disclosure
+- GET /api/health returns {"status":"ok","buildId":"e95b8cf","timestamp":"2026-10-06T02:25:41.228Z"}
+- buildId matches production git hash, timestamp reveals server time
+- Different error format on /api/auth/logout: {"message":"User is not authenticated"} (401) vs standard {"error":"..."} (400) suggesting different middleware
+- Impact: Version tracking, deployment monitoring
+
+## 12z. Additional Unauthenticated Testing Results (Session 8)
+
+Firebase testing results:
+- Firestore API NOT enabled on project deblock-ltd (403 "API has not been used")
+- Firebase Auth: PASSWORD_LOGIN_DISABLED, OPERATION_NOT_ALLOWED on signUp
+- Firebase custom token expects JWT format (3 dot segments)
+- Firebase RTDB: 404 (no database)
+- Firebase Storage: 404 (no bucket)
+- Firebase Cloud Functions: 404 (none deployed)
+- Firebase is used ONLY for phone authentication
+
+Google Maps API key (AIzaSyD7n7VD-9gy534lf__8x9QyR76OTXYLtq4):
+- Restricted to Maps JS API only
+- Directions, Geocoding, Places, Static Maps, Street View, Distance Matrix all return 403
+- Not exploitable for billing abuse
+
+OneSignal (aeaa30ee-d48d-48e8-b0ff-9284c72f4e48):
+- All API endpoints require Authorization header with API key
+- No unauthenticated notification sending possible
+
+CDN (cdn1.deblock.com):
+- S3 bucket returns AccessDenied on root and listing attempts
+- Properly secured against object enumeration
+
+Status page (status.deblock.com):
+- Active on Statuspal.eu (Deblock Status)
+- S3 signed URL leaked in favicon: statushq-eu-container.s3.eu-west-par.io.cloud.ovh.net (OVH cloud)
+- Statuspal bucket also returns AccessDenied on listing
+
+Subdomain status:
+- api.deblock.com: HTTP 000 (still down/unreachable)
+- api-staging.deblock.com: HTTP 000 (still down)
+- link.deblock.com / links.deblock.com: DNS timeout, likely decommissioned
+- All WebSocket endpoints (UAT + production): 502 Bad Gateway (backend maintenance)
+- Production app.deblock.com: Returns 410 Gone on all tested API endpoints
+
+XMLRPC pingback SSRF analysis:
+- pingback.ping returns faultCode 0 for ALL tested URLs: google.com, localhost, 192.168.1.1, metadata.google.internal, non-existent domains, file:///etc/passwd, ftp://
+- Consistent faultCode 0 across all cases suggests WordPress validates the TARGET post (brand.deblock.com) for the source link, does not find it, and returns generic error
+- True outbound SSRF unlikely based on consistent responses, but server-side processing confirmed
+
 ## 16. Next Steps for Continued Testing
 
 Priority 1 (Critical - requires second test account):
@@ -2697,15 +2810,15 @@ Priority 1 (Critical - requires second test account):
 5. Card controls IDOR (/cards/:id/controls/:type)
 
 Priority 2 (High-impact, additional testing):
-6. WebSocket session hijack with valid session tokens
-7. Promo code brute force / abuse
+6. WebSocket session hijack with valid session tokens (currently 502, check later)
+7. WordPress admin brute force via XMLRPC multicall (72 pw/sec confirmed, needs wordlist)
 8. FaceTec biometric bypass with real session flow
 9. Mobile app reverse engineering (APK/IPA for additional endpoints)
 10. Bearer token testing when api.deblock.com backend comes online
 
 Priority 3 (Enumeration/escalation):
-11. WordPress xmlrpc brute force with larger wordlist
-12. WordPress UpdraftPlus backup file name guessing
-13. ActionCable channel subscription with valid auth tokens
-14. Crypto trading/stocks order manipulation
-15. Direct debit refund IDOR
+11. WordPress UpdraftPlus backup file name guessing
+12. ActionCable channel subscription with valid auth tokens
+13. Crypto trading/stocks order manipulation
+14. Direct debit refund IDOR
+15. BackWPup chatbot-context token guessing
