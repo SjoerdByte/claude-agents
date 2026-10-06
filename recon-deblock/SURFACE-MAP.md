@@ -6132,6 +6132,90 @@ F521. INFO - Prototype Pollution Payload Caused Transient 500 on Business-Onboar
 - Impact: If reproducible, could indicate server-side template injection vulnerability; currently classified as transient anomaly
 - Reproducible: NO (transient)
 
+F522. MEDIUM - CDN S3 Bucket Publicly Accessible with Avatar Enumeration via Sequential IDs
+- CDN: cdn1.deblock.com => CloudFront => Amazon S3 (eu-west-3 / Paris)
+- CloudFront distribution ID: a2cf5f946d8e42ffa4242f7cdf3d17a0
+- S3 server-side encryption: AES256
+- Bucket listing: AccessDenied (properly blocked)
+- Direct S3 bucket name: NOT cdn1.deblock.com (NoSuchBucket), real bucket name unknown
+- Publicly accessible S3 folder objects (200 empty body): /images/, /assets/, /avatars/, /emails/
+- Avatar files: /avatars/1.png through /avatars/16.png ALL accessible without authentication
+  - IDs 1-10, 11-16 confirmed (16 total preset avatars)
+  - Sizes: 2.5KB to 96KB (PNG images, 363x363 pixels)
+  - Upload dates: Most Dec 20, 2023 (initial), ID 2 updated Apr 20, 2024
+  - Likely preset avatar options, not user-uploaded photos
+- Terms documents: /terms/ directory contains publicly accessible PDFs
+  - /terms/fixed_rate-yield-terms/ (v0, Feb 2026, 4 languages)
+  - /terms/personal-terms/FR/ (v3.0, Jun 2026, 6 languages - DE/EN/ES/FR/IT/PT)
+  - /terms/vaults/FR/ (v1.0, Jun 2026, 6 languages)
+  - Company legal name revealed: Techblock
+- /emails/ folder: Exists but no template files found at guessed paths
+- Impact: S3 bucket region and CDN infrastructure exposed; sequential avatar IDs enable enumeration; if user-uploaded content uses predictable paths, IDOR to access user data; terms documents reveal versioning and company legal name
+- Reproducible: YES
+
+F523. MEDIUM - URL Path Traversal via Encoded Dots Causes Load Balancer 302 Redirect
+- %2e%2e (encoded ..) in URL path causes GCP load balancer to normalize and redirect
+- /api/auth/%2e%2e/%2e%2e/admin => 302 to https://business.deblock.com/admin
+- /api/auth/%2e%2e/%2e%2e/%2e%2e/etc/passwd => 302 to https://business.deblock.com/etc/passwd
+- /api/%2e%2e/admin => 302 to https://business.deblock.com/admin
+- Double-encoded (%252e%252e): Returns 404 (not processed)
+- The redirect comes from GCP infrastructure (empty body, text/html content-type)
+- The redirect targets are not exploitable (all resolve to Next.js 404)
+- Impact: Confirms load balancer decodes URL-encoded path components before routing; path normalization behavior could be chained with other vulnerabilities if backend/frontend handle paths differently
+- Reproducible: YES
+
+F524. LOW - Null Byte (%00) in URL Path Returns 400 from GCP Load Balancer
+- Appending %00 to any endpoint returns 400 with empty body
+- Response headers: "via: 1.1 google" (GCP load balancer)
+- Tested on: /api/csrf, /api/auth/check-session, /api/users/user, /api/frontdesk/accounts, /api/cards/list
+- All consistently return 400 (blocked at infrastructure level)
+- Impact: GCP load balancer properly blocks null bytes; no bypass possible at application level
+- Reproducible: YES
+
+F525. LOW - Apigee Gateway Returns XML Error Format Based on Accept Header
+- GET /api/auth with Accept: application/xml => XML fault response (502)
+- GET /api/auth with Accept: text/plain => JSON fault response (502)
+- XML response: <fault><faultstring>Received 405 Response without Allow Header</faultstring><detail><errorcode>protocol.http.Response405WithoutAllowHeader</errorcode></detail></fault>
+- JSON response: {"fault":{"faultstring":"Received 405 Response without Allow Header","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}
+- Impact: Apigee version and error handling behavior exposed; XML processing active (though XXE unlikely via Accept header)
+- Reproducible: YES
+
+F526. LOW - UAT-02 New Consumer Endpoints Discovered
+- GET /api/statements => 400 "User is not authenticated" (financial statements endpoint)
+- GET /api/cards/transactions => 400 "User is not authenticated" (card transaction history)
+- GET /api/cards/list => 400 "User is not authenticated" (card listing)
+- These endpoints exist only on UAT-02 (consumer app), not on business.deblock.com
+- /api/referrals/referees/{uuid} => 400 "User is not authenticated" (accepts UUID format)
+- POST /api/referrals/referees/{uuid}/nudge => 400 "User is not authenticated" (IDOR candidate)
+- With numeric ID: "Invalid id" (400) - confirms UUID format required
+- Impact: Consumer banking endpoints confirmed active on UAT; referral nudge endpoint is IDOR candidate with authenticated access; statements and card transactions would expose financial PII
+- Reproducible: YES
+
+F527. INFO - dl.deblock.com Subdomain Discovery
+- dl.deblock.com => Vercel (ac60b8dd6fd59b08.vercel-dns-016.com)
+- Response: 307 redirect to https://deblock.com/
+- Sets cookies: header_variant=B, geo_country=US
+- X-Robots-Tag: noindex, nofollow
+- Purpose: Download redirect domain (app download links)
+- Impact: Additional Vercel-hosted subdomain; A/B test variant cookie reveals active experimentation
+- Reproducible: YES
+
+F528. INFO - Rate Limiting Cannot Be Bypassed via IP Spoofing Headers
+- Tested headers: X-Forwarded-For, X-Real-IP, True-Client-IP, CF-Connecting-IP, X-Client-IP, Forwarded
+- All rate-limited endpoints (auth/logout, sca/clear, passkeys/auth, etc.) remain 403
+- Rate limiting is implemented at GCP infrastructure level using actual connection IP
+- Impact: Confirms robust rate limiting implementation; not bypassable via common header manipulation
+- Reproducible: YES (rate limiting is persistent)
+
+F529. INFO - E2E Mock Cookies Properly Disabled on UAT-02 Production-Like Environment
+- Tested: e2e-mock-browser-id + e2e-user-type-override cookies on UAT-02
+- UserTypeEnum values tested: ACTIVE="0", SUSPENDED="1", SANCTIONED="2"
+- All attempts return 401 "User is not authenticated"
+- X-Is-Dev, X-Internal-Request, X-Service-Name headers also ineffective
+- IS_DEV=false confirmed as compile-time constant on UAT-02
+- Impact: E2E mock authentication properly gated behind compile-time IS_DEV flag; cannot be bypassed via runtime headers or cookies
+- Reproducible: YES
+
 ## 16. Next Steps for Continued Testing
 
 Priority 1 (Critical - requires second test account):
