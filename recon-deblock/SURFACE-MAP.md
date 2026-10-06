@@ -9366,3 +9366,114 @@ Priority 3 (Enumeration/escalation):
 - The crypto WebSocket endpoints likely carry real-time blockchain transaction data, order execution, and wallet management commands
 - If WebSocket auth can be established (via cookie or token), these provide real-time data streams and command execution
 - Impact: MEDIUM - Real-time WebSocket endpoints for crypto operations are active on production. Once authenticated, these could provide real-time access to transaction streams, order execution, and wallet management, representing high-value targets for session hijacking or MITM attacks.
+
+### F774 [HIGH] WebSocket Endpoints Accept Unauthenticated Connections With No Origin Validation
+- Target: business.deblock.com
+- All three production WebSocket endpoints accept connections via HTTP/1.1 upgrade WITHOUT authentication:
+  - wss://business.deblock.com/api/websocket -> 101 Switching Protocols
+  - wss://business.deblock.com/api/crypto-business-socket -> 101 Switching Protocols
+  - wss://business.deblock.com/api/crypto-commands-socket -> 101 Switching Protocols
+- Cross-origin WebSocket connections accepted from any origin (tested with Origin: https://evil.com)
+- No WebSocket origin validation is performed by the server
+- The crypto-commands-socket returns an error message but STAYS CONNECTED:
+  - `{"status":"error","event":"backend_error","message":"No token available, aborting.","backend":"business-crypto-commands"}`
+- This reveals the internal backend service name: "business-crypto-commands"
+- The connection accepts Action Cable protocol messages and responds with periodic pings
+- Turbo::StreamsChannel subscription commands are accepted without rejection
+- While __Host-auth-token has SameSite=strict (preventing CSWSH for authenticated sessions), the unauthenticated connection acceptance means:
+  - Any website can establish WebSocket connections to the production crypto infrastructure
+  - The server maintains open connections and allocates resources without auth
+  - WebSocket DoS potential: mass unauthenticated connections could exhaust connection pools
+  - Internal backend naming is exposed to any origin
+- Impact: HIGH - Unauthenticated WebSocket access to crypto infrastructure with no origin validation. The connection persistence and resource allocation without auth creates DoS potential. The internal backend name disclosure aids further targeting.
+
+### F775 [CRITICAL] Staging Rails Server Exposes Full Server Configuration via Debug Endpoints
+- Target: web-api-staging.deblock.com
+- The staging Rails server runs in DEVELOPMENT mode (confirmed via /rails/info/properties)
+- Three Rails debug endpoints are publicly accessible:
+  1. /rails/info/routes - Full application route table (50,882 bytes, 100+ routes)
+  2. /rails/info/properties - Complete server configuration
+  3. /rails/mailers - Email template previews
+- Server properties exposed:
+  - Rails version: 7.0.10
+  - Ruby version: ruby 3.3.9 (2025-07-24 revision f5c772fc7c) [x86_64-linux]
+  - RubyGems version: 3.5.22
+  - Rack version: 2.2.23
+  - rack-cors version: 1.1.1 (from stack traces)
+  - Puma version: 7.2.1
+  - Database adapter: postgresql
+  - Database schema version: 20260923100000 (migration from Sept 23, 2026)
+  - Environment: development
+  - Application root: /app (container path)
+  - Full middleware chain (23 middleware components in exact order)
+  - Session storage: CookieStore
+- Complete middleware chain exposed:
+  Rack::Cors (x8) -> ActionDispatch::HostAuthorization -> Rack::Sendfile -> ActionDispatch::Static -> ActionDispatch::Executor -> ActionDispatch::ServerTiming -> ActiveSupport::Cache::Strategy::LocalCache::Middleware -> Rack::Runtime -> ActionDispatch::RequestId -> ActionDispatch::RemoteIp -> Rails::Rack::Logger -> ActionDispatch::ShowExceptions -> ActionDispatch::DebugExceptions -> Airbrake::Rack::Middleware -> ActionDispatch::ActionableExceptions -> ActionDispatch::Reloader -> ActionDispatch::Callbacks -> ActiveRecord::Migration::CheckPending -> Rack::Head -> Rack::ConditionalGet -> Rack::ETag -> ActionDispatch::Cookies -> ActionDispatch::Session::CookieStore
+- Key observation: NO rate limiting middleware (Rack::Attack or similar) in the chain
+- Every 404 response includes full Ruby/Rails stack traces with gem versions and file paths
+- The staging and production share the same Heroku infrastructure and likely same database schema
+- Impact: CRITICAL - Full server configuration, middleware chain, database schema version, and route table exposed on publicly accessible staging server. This provides a complete blueprint for attacking the production system. The development mode exposure directly violates OWASP security guidelines.
+
+### F776 [MEDIUM] Staging Mailer Preview Exposes Email Template System
+- Target: web-api-staging.deblock.com
+- /rails/mailers returns 200 with a list of available mailer previews
+- One mailer found: "User Notifier Mailer" at /rails/mailers/user_notifier_mailer
+- Mailer previews in development mode can render actual email templates
+- This reveals the email notification system's internal structure
+- The mailer name suggests a single notification system handles all user communications
+- Impact: MEDIUM - Email template preview system accessible. Could reveal email content structure, variables, and potentially test user data rendered in preview templates.
+
+### F777 [MEDIUM] Sentry Release Hash and Trace IDs Exposed in Production HTML
+- Target: business.deblock.com
+- The /monitoring path renders the main application with Sentry trace metadata in HTML meta tags:
+  - sentry-release: 54029c4 (current production git commit hash)
+  - sentry-trace: 7ff39609133f6f1fc011d559a56fc4ec-9850363ae344f8a8-0
+  - sentry-org_id: 4510324489519104
+  - sentry-environment: production
+  - sentry-public_key: 2f75b94510aa39f72db5dd805d1c1dc8
+  - sentry-sample_rate: 0
+- The /monitoring path with query parameters (?o=...&p=...&r=de) reaches the actual Sentry tunnel:
+  - Returns `{"detail":"event submission rejected with_reason: Cors"}` (403)
+  - This confirms the Next.js rewrite rule is functional but validates CORS
+- PWA manifest accessible at /monitoring/pwa/manifest.json:
+  - App name: "Deblock Business"
+  - Start URL: /en
+  - Display: standalone
+- Impact: MEDIUM - Production git commit hash exposed allows tracking deployment timeline and potentially finding specific code changes between versions. Sentry configuration details are exposed.
+
+### F778 [MEDIUM] Production API Endpoints Return Descriptive Error Messages
+- Target: business.deblock.com
+- Authenticated API endpoints return descriptive error messages that reveal their function:
+  - GET /api/frontdesk/accounts -> {"error":"Failed to load your accounts","status":401}
+  - GET /api/frontdesk/features -> {"error":"Failed to load feature flags","status":401}
+  - GET /api/users/user -> {"error":"Failed to load your profile","status":401}
+  - GET /api/cashbacks/lifetime -> {"error":"Failed to load cashback","status":401}
+  - GET /api/cards -> {"error":"Failed to load cards","status":401}
+  - POST /api/auth/refresh -> {"error":"Forbidden"} (403)
+  - POST /api/auth/logout -> {"error":"Forbidden"} (403)
+  - POST /api/sca -> {"error":"Forbidden"} (403)
+  - POST /api/passkeys/auth -> {"error":"Forbidden"} (403)
+  - POST /api/passkeys/register -> {"error":"Forbidden"} (403)
+- Endpoints with Apigee 405/502 errors (method mismatch):
+  - GET /api/auth/check-session POST -> Apigee 405/502
+  - POST /api/cards/virtual -> Apigee 405/502
+  - PUT /api/users/browsers -> Apigee 405/502
+  - GET /api/bank-details -> Apigee 405/502
+- The descriptive errors confirm:
+  - Feature flag system exists (frontdesk/features)
+  - Cashback program active (cashbacks/lifetime)
+  - Passkey/WebAuthn authentication implemented
+  - SCA (Strong Customer Authentication) endpoint for PSD2 compliance
+- Impact: MEDIUM - Descriptive error messages confirm endpoint functionality and aid in building targeted authenticated attack payloads.
+
+### F779 [LOW] WordPress wp-cron.php Accessible on brand.deblock.com
+- Target: brand.deblock.com
+- wp-cron.php returns 200 with empty body
+- WordPress scheduled tasks can be triggered by any external request to wp-cron.php
+- This is the default WordPress behavior but can be used for:
+  - Triggering scheduled events (like BackWPup backup jobs)
+  - Resource exhaustion via rapid repeated requests
+  - Timing attacks on scheduled operations
+- LiteSpeed server blocks access to backup files and plugin directories (403)
+- .env files return 403 (blocked by LiteSpeed but may exist on disk)
+- Impact: LOW - Default WordPress behavior, but combined with BackWPup 5.6.7 plugin could be used to trigger backup operations that consume server resources.
