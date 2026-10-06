@@ -1965,7 +1965,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 402 | LOW | UAT-02 auth/refresh token mechanism disclosure | app-uat-02.deblock.com | CWE-200 | YES | "No token or refresh token found" reveals dual-token auth mechanism. |
 | 403 | MEDIUM | UAT-02 onboarding endpoints reached with empty body + e2e | app-uat-02.deblock.com | CWE-287 | YES | resend-onboarding-otp, signature/resend-signature-otp, signature/complete all reach business logic without auth. |
 
-Total: 421 findings (15 critical, 94 high, 166 medium, 100 low, 56 info)
+Total: 426 findings (15 critical, 96 high, 168 medium, 100 low, 57 info)
 
 ## 15. Session Notes
 
@@ -4952,6 +4952,57 @@ F421. INFO - Production Endpoint Proxy Mapping Differences
 - Endpoints available on UAT-02 but NOT on production: /api/pots/*, /api/health, /api/settings (page), /api/auth/analytics, /api/onboarding/*
 - Production has stricter Next.js proxy configuration than UAT-02
 - Production only proxies: /api/csrf, /api/auth/check-session, /api/auth/logout, /api/auth/refresh, /api/sca, /api/sca/clear, /api/crypto-simulation/*, /api/facetec-gateway/*, /api/auth/create-2fa-mobile-session, /api/passkeys/*, /api/bank-details, /api/cards, /api/users/info, /api/users/user, /api/users/browsers, /api/frontdesk/accounts, /api/frontdesk/features, /api/cashbacks/lifetime
+- CWE: N/A
+- Reproducible: YES
+
+F422. HIGH - X-HTTP-Method-Override Bypasses Apigee Method Restrictions on Production
+- POST requests to business.deblock.com with X-HTTP-Method-Override header bypass Apigee's method-level access control
+- Rails Rack middleware honors the override header before routing
+- Confirmed: POST with X-HTTP-Method-Override: PUT on /api/sca/clear -> {"cleared":true} (200)
+- Confirmed: POST with X-HTTP-Method-Override: DELETE on /api/auth/logout -> {"message":"Logged out"} (200)
+- Confirmed: POST with X-HTTP-Method-Override: PATCH on /api/bank-details -> 401 (reaches backend)
+- Confirmed: POST with X-HTTP-Method-Override: PUT on /api/cards -> 401 (reaches backend)
+- Confirmed: POST with X-HTTP-Method-Override: DELETE on /api/users/browsers -> 401 (reaches backend)
+- Confirmed: POST with X-HTTP-Method-Override: PATCH on /api/passkeys/register -> 401 (reaches backend)
+- crypto-simulation accepts ALL methods (GET/PUT/PATCH/DELETE all return same 422)
+- Impact: Attackers can access PUT/PATCH/DELETE routes through POST, bypassing any gateway-level method restrictions
+- CWE: CWE-16 (Configuration), CWE-284 (Improper Access Control)
+- Reproducible: YES
+
+F423. HIGH - UAT-02 Full Card Management Surface Exposed Without Auth
+- All card sub-routes reach backend with 400 "User is not authenticated":
+- /api/cards/list, /api/cards/virtual, /api/cards/freeze, /api/cards/activate
+- /api/cards/unfreeze, /api/cards/block, /api/cards/unblock
+- /api/cards/pin, /api/cards/reveal, /api/cards/details
+- /api/cards/limits, /api/cards/controls, /api/cards/spending, /api/cards/settings
+- All are GET-only at Apigee level (POST returns 405)
+- PIN reveal, card details, and spending controls are highly sensitive
+- With a valid auth token, all card management operations are accessible
+- CWE: CWE-200, CWE-306
+- Reproducible: YES
+
+F424. MEDIUM - UAT-02 Financial Statements Endpoint Surface
+- /api/statements reaches backend without auth (400)
+- Sub-routes also accessible: /download, /list, /generate, /pdf, /csv
+- /api/statements/generate is POST-only at Apigee (405 on GET)
+- Not available on production (404)
+- Could expose financial statement generation/download with valid session
+- CWE: CWE-200
+- Reproducible: YES
+
+F425. MEDIUM - UAT-02 Signature OTP Resend Without Authentication
+- POST /api/onboarding/signature/resend-signature-otp returns 400 without auth
+- Reaches backend business logic, not just middleware rejection
+- Could trigger OTP delivery to phone numbers during onboarding signature flow
+- Not available on production (404)
+- CWE: CWE-306
+- Reproducible: YES
+
+F426. INFO - CSRF Token Cross-Environment Isolation
+- Production and UAT-02 use different HMAC keys for CSRF token signing
+- Production token on UAT-02: 502 (Apigee rejected)
+- UAT-02 token on production: 403 Forbidden
+- Positive finding: prevents cross-environment CSRF attacks
 - CWE: N/A
 - Reproducible: YES
 
