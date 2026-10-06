@@ -1731,8 +1731,14 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 176 | MEDIUM | Elementor Pro route enum + auth bypass pattern | - | CWE-200 | YES | refresh-loop validates params before auth, full routes exposed |
 | 177 | MEDIUM | BackWPup REST API route enumeration | - | CWE-200 | YES | 18 backup management endpoints + chatbot-context with tokens |
 | 178 | LOW | Health endpoint info disclosure | - | CWE-200 | YES | buildId e95b8cf + timestamp, different error format on logout |
+| 179 | MEDIUM | TRACE method returns 500 instead of 405 | - | CWE-749 | YES | All endpoints return 500 on TRACE, should return 405 |
+| 180 | MEDIUM | Analytics CSRF bypass via text/plain Content-Type | - | CWE-352 | YES | No CORS preflight for text/plain, analytics injection from any domain |
+| 181 | MEDIUM | Prototype pollution payloads accepted by analytics | - | CWE-1321 | YES | __proto__, constructor.prototype accepted without sanitization |
+| 182 | LOW | OPTIONS method reveals allowed methods per endpoint | - | CWE-200 | YES | GET,HEAD,POST,PUT,DELETE,PATCH disclosed on all routes |
+| 183 | LOW | No JSON request body depth limit | - | CWE-400 | YES | 100-level nested objects accepted without rejection |
+| 184 | LOW | Inconsistent auth error format on /api/auth/logout | - | CWE-209 | YES | Returns {"message":"User is not authenticated"} vs standard {"error":...} |
 
-Total: 178 findings (12 critical, 38 high, 54 medium, 39 low, 35 info)
+Total: 184 findings (12 critical, 38 high, 57 medium, 42 low, 35 info)
 
 ## 15. Session Notes
 
@@ -1750,6 +1756,7 @@ Total: 178 findings (12 critical, 38 high, 54 medium, 39 low, 35 info)
 - Firebase email enumeration: No corporate emails registered (tested 20 patterns).
 - No open redirect vulnerabilities found on tested endpoints.
 - Session 8: Extended unauthenticated testing. XMLRPC multicall brute force confirmed (68 pw/sec, admin-deblock valid). Analytics stored injection (XSS/SQLi/NoSQLi all accepted). WordPress REST API user enumeration. BackWPup/Elementor Pro/site-health route enumeration. Firebase only used for phone auth (no Firestore/RTDB/Storage). Google Maps key restricted to JS API. OneSignal requires API key. CDN S3 properly secured. api.deblock.com still down. All WebSockets returning 502. Production endpoints returning 410 Gone.
+- Session 8 (continued): Added findings 179-184 (TRACE 500, text/plain CSRF bypass, prototype pollution, OPTIONS disclosure, no JSON depth limit, inconsistent auth error format).
 - ActionMailbox ingress endpoints return 404 on production with proper email format (all providers tested).
 - Ambassador auto-signup sends OTP on staging (confirmed email delivery).
 - Session 5: UAT environment deep dive (app-uat-01, business-uat-01). Sentry event injection confirmed on both DSNs. XMLRPC multicall confirmed at 20+ attempts per request. WordPress deep enumeration. JS bundle API route extraction (14 routes from 85 chunks). WebSocket endpoints confirmed. Multiple app-uat-01 API endpoints reach backend without user auth.
@@ -2799,6 +2806,26 @@ XMLRPC pingback SSRF analysis:
 - pingback.ping returns faultCode 0 for ALL tested URLs: google.com, localhost, 192.168.1.1, metadata.google.internal, non-existent domains, file:///etc/passwd, ftp://
 - Consistent faultCode 0 across all cases suggests WordPress validates the TARGET post (brand.deblock.com) for the source link, does not find it, and returns generic error
 - True outbound SSRF unlikely based on consistent responses, but server-side processing confirmed
+
+## 12aa. HTTP Method and Content-Type Testing Results (Session 8 continued)
+
+F179 - TRACE Method Returns 500 (MEDIUM):
+All tested endpoints on app-uat-01.deblock.com return HTTP 500 Internal Server Error when sent a TRACE request. The correct behavior per RFC 7231 is 405 Method Not Allowed. A 500 response indicates the server attempts to process TRACE requests but fails, suggesting unhandled exception paths. Tested on /api/auth/check-session, /api/auth/analytics, /api/auth/health, /api/auth/logout.
+
+F180 - Analytics CSRF Bypass via text/plain (MEDIUM):
+POST /api/auth/analytics on app-uat-01.deblock.com accepts Content-Type: text/plain and still processes the body as JSON. Since browsers do not send a CORS preflight for text/plain, any website can inject analytics events cross-origin using a simple HTML form with enctype="text/plain". Combined with F127 (no rate limit) and F173 (stored injection), this enables cross-site stored XSS/SQLi injection into Deblock analytics without user interaction.
+
+F181 - Prototype Pollution Payloads Accepted (MEDIUM):
+POST /api/auth/analytics accepts JSON bodies containing __proto__ and constructor.prototype keys. If the backend uses a vulnerable merge/extend function, these payloads could pollute Object.prototype. Tested payloads: {"__proto__":{"isAdmin":true}}, {"constructor":{"prototype":{"isAdmin":true}}}. Both returned success:true.
+
+F182 - OPTIONS Reveals Allowed Methods (LOW):
+OPTIONS requests to all endpoints return Access-Control-Allow-Methods or Allow headers disclosing the full set of accepted HTTP methods. Example: /api/auth/analytics returns GET,HEAD,POST,PUT,DELETE,PATCH. This aids attacker reconnaissance by confirming which methods to test.
+
+F183 - No JSON Depth Limit (LOW):
+Endpoints accept deeply nested JSON objects (tested 100 levels) without rejecting. This could enable HashDoS or stack overflow attacks with sufficiently deep nesting. Tested on /api/auth/analytics with 100-level nested {"a":{"a":{"a":...}}} structure, returned success:true.
+
+F184 - Inconsistent Auth Error Format on /api/auth/logout (LOW):
+POST /api/auth/logout returns {"message":"User is not authenticated"} with HTTP 401, while other auth endpoints return {"error":"...","status":400}. This inconsistency indicates different middleware or controller handling, useful for fingerprinting backend architecture and identifying which endpoints share code paths.
 
 ## 16. Next Steps for Continued Testing
 
