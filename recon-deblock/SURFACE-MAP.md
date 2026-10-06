@@ -1665,7 +1665,25 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 78 | INFO | CDN S3 root returns 403 XML (bucket confirmed) | - | - | YES | AWS error format |
 | 79 | INFO | Staging CORS: no ACAO headers for any origin | - | - | YES | Properly configured |
 
-Total: 79 findings (8 critical, 18 high, 22 medium, 15 low, 16 info)
+| 80 | MEDIUM | Apigee API gateway error leak on business.deblock.com | - | - | YES | faultstring + errorcode exposed |
+| 81 | MEDIUM | Business app 25 API routes extracted from JS bundles | - | - | YES | Full auth/crypto/passkey/SCA route map |
+| 82 | MEDIUM | FaceTec 2FA session enumeration via /api/auth/facetec-keys | - | - | YES | "FaceTec 2FA session not found" oracle |
+| 83 | MEDIUM | PGP/OpenPGP encryption used for auth body - key exposure risk | - | - | YES | pgpPublicKey param in auth flow |
+| 84 | LOW | Business CSRF token exposed unauthenticated (/api/csrf) | - | - | YES | Token format: timestamp.expiry.nonce.hmac |
+| 85 | LOW | Business auth error type enumeration from JS | - | - | YES | 11 error types including MAINTENANCE |
+| 86 | LOW | Business auth flow reveals 5-step auth (email/pass, OTP, FaceTec, passkey, success) | - | - | YES | Full auth step enum |
+| 87 | LOW | WordPress readme.html, install.php, version.php exposed | - | - | YES | WP 7.1.2 confirmed |
+| 88 | LOW | WordPress wp-cron.php accessible (potential DoS/timing) | - | - | YES | 200 OK |
+| 89 | INFO | WordPress Elementor/BackWPup plugin readmes with versions exposed | - | - | YES | Elementor 4.0.1, BackWPup 5.6.7 |
+| 90 | INFO | BackWPup API v1/v2 route enumeration (20+ routes) | - | - | YES | Backup management endpoints |
+| 91 | INFO | WordPress Application Passwords auth scheme enabled | - | - | YES | authorize-application.php |
+| 92 | INFO | Business device ID persistence via IndexedDB | - | - | YES | getBusinessDeviceIdEntries() |
+| 93 | INFO | Business inactivity timeout config in JS | - | - | YES | BUSINESS_INACTIVITY_TIMEOUT_SECONDS |
+| 94 | INFO | OneSignal push notification SDK loaded | - | - | YES | sdk loaded from cdn.onesignal.com |
+| 95 | INFO | app.deblock.com deprecated (410 Gone, empty body) | - | - | YES | Via GCP, x-request-id header |
+| 96 | INFO | Browser ping endpoint /api/users/browsers/:id/ping | - | - | YES | Active session tracking |
+
+Total: 96 findings (8 critical, 18 high, 26 medium, 20 low, 24 info)
 
 ## 15. Session Notes
 
@@ -1686,6 +1704,117 @@ Total: 79 findings (8 critical, 18 high, 22 medium, 15 low, 16 info)
 - Ambassador auto-signup sends OTP on staging (confirmed email delivery).
 - Session 5: UAT environment deep dive (app-uat-01, business-uat-01). Sentry event injection confirmed on both DSNs. XMLRPC multicall confirmed at 20+ attempts per request. WordPress deep enumeration. JS bundle API route extraction (14 routes from 85 chunks). WebSocket endpoints confirmed. Multiple app-uat-01 API endpoints reach backend without user auth.
 - Session 6: Production API deep dive (Phase 7). Company onboarding phone verification bypass confirmed with clean session (phone_verified auto-set to true, /v1/company/phone/otp returns 404 on production). OTP rate limit bypass via UUID rotation confirmed (5 attempts per UUID, unlimited new UUIDs per email). /v1/upload/anthony/:token accepts arbitrary file uploads without auth on production and staging. /v1/mobile/account/:user_id returns terms documents for any user_id without auth. Full staging route map extracted (90+ routes). Staging mailer preview interface exposed (UserNotifierMailerPreview). Staging rails/conductor triggers PostgreSQL errors leaking table names. NFT metadata fully enumerable (/v1/meta/bb/1-1000). Company survey/type/turnover reference data exposed. Ambassador certification oracle confirmed. Blog cache delete endpoint accessible via GET. GCS buckets properly locked. CORS on staging properly configured (no ACAO).
+- Session 7: Phase 8 - Business app deep dive. Egress proxy blocked api.deblock.com and deblock.com but business.deblock.com, app-uat-01, business-uat-01, brand.deblock.com, staging, recovery, status, bursted-bubbles still accessible. Downloaded 39 JS chunks from business.deblock.com, extracted full 25-endpoint API route map including auth flow, passkeys/WebAuthn, FaceTec biometric, SCA, crypto business, bank details, and CSRF implementation. Discovered PGP-encrypted auth body, device ID persistence via IndexedDB, Redis pub/sub for FaceTec 2FA sessions. Tested all API endpoints: CSRF token returned unauthenticated, Apigee API gateway error details leaked on 10+ POST-only endpoints (faultstring+errorcode), FaceTec keys endpoint returns distinct error "FaceTec 2FA session not found". WordPress deep dive: BackWPup v1/v2 API route enumeration (20+ endpoints), addjob and chatbot-context validate params before auth check (info leak), exposed readme/install/version/cron files, Elementor documents media import endpoint exists. app.deblock.com confirmed deprecated (410 Gone, empty body, via GCP). Total findings: 96.
+
+### 12e. Business App API Route Map (from JS bundle analysis)
+
+Authentication flow:
+- POST /api/auth/login - Email + passphrase login (PGP-encrypted body)
+- POST /api/auth/login-2fa - Second factor (OTP or FaceTec)
+- GET /api/auth/check-session - Returns {"valid": true/false}
+- POST /api/auth/refresh - Token refresh
+- POST /api/auth/logout - Session termination
+- GET /api/auth/facetec-keys - FaceTec 2FA session keys (returns "FaceTec 2FA session not found" without valid session)
+
+CSRF:
+- GET /api/csrf - Returns CSRF token unauthenticated (format: timestamp.expiry.nonce.hmac)
+- Header name: x-csrf-token
+- Token validity: ~30 minutes (1800 second offset between timestamps)
+
+Passkeys/WebAuthn:
+- GET /api/passkeys - List registered passkeys (401 without auth)
+- POST /api/passkeys/auth - Initiate passkey auth (502 from Apigee)
+- POST /api/passkeys/auth/verify - Complete passkey auth
+- POST /api/passkeys/register - Start passkey registration
+- POST /api/passkeys/register/verify - Complete passkey registration
+
+Business operations:
+- POST /api/bank-details - IBAN validation/lookup (502 from Apigee on GET)
+- GET /api/frontdesk/features - Feature flags (401 without auth)
+- GET /api/frontdesk/accounts - User accounts (401 without auth)
+- GET /api/users/user - Current user profile (401 without auth)
+- GET /api/users/browsers/:id/ping - Browser session keepalive
+- POST /api/business-onboarding - Company onboarding flow
+- /api/business-onboarding/:locale/waitlist/redemptions - Waitlist redemption
+
+Financial:
+- GET /api/cards - Card management (401 without auth)
+- GET /api/cashbacks/lifetime - Lifetime cashback totals (401 without auth)
+- GET /api/transactions - Transaction history
+- GET /api/pricing/plans - Pricing plans
+- GET /api/sca - Strong Customer Authentication status (502 from Apigee on GET)
+- POST /api/sca/clear - Clear SCA session (502 from Apigee)
+
+Crypto:
+- /api/crypto-business - Business crypto operations
+- /api/crypto-business-socket - WebSocket for business crypto (426)
+- /api/crypto-commands-socket - WebSocket for crypto commands (426)
+- /api/websocket - General WebSocket (426)
+
+Biometric:
+- POST /api/facetec-gateway/process-request - FaceTec biometric processing (502 from Apigee)
+- FaceTec mobile session via Redis channel "facetec-2fa-updates"
+
+Auth flow steps: EMAIL_PASSWORD -> OTP -> FACETEC/FACETEC_MOBILE -> PASSKEY_FALLBACK -> SUCCESS
+Auth error types: CSRF_REJECTED, FACE_CHECK_REJECTED, INVALID_CREDENTIALS, INVALID_INPUT, INVALID_OTP, MAINTENANCE, PROVIDER_UNAVAILABLE, RATE_LIMITED, SERVER_ERROR, SESSION_EXPIRED, UNKNOWN
+
+### 12f. Apigee API Gateway Error Disclosure
+
+Multiple endpoints on business.deblock.com proxy through Google Apigee API gateway.
+When GET is used on POST-only endpoints, Apigee returns detailed error:
+```json
+{"fault":{"faultstring":"Received 405 Response without Allow Header","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}
+```
+Affected endpoints: /api/bank-details, /api/sca, /api/sca/clear, /api/passkeys/auth, /api/passkeys/register, /api/passkeys/auth/verify, /api/passkeys/register/verify, /api/auth/facetec-keys (different error), /api/facetec-gateway/process-request, /api/business-onboarding
+This confirms Apigee as the API gateway and reveals HTTP method restrictions.
+
+### 12g. WordPress Deep Enumeration (brand.deblock.com)
+
+BackWPup v1 API routes (20+ endpoints):
+- GET /backwpup/v1/storagelistcompact (401)
+- GET /backwpup/v1/cloud_is_authenticated (401)
+- POST /backwpup/v1/authenticate_cloud (401)
+- POST /backwpup/v1/delete_auth_cloud (401)
+- POST /backwpup/v1/cloudsaveandtest (401)
+- POST/GET /backwpup/v1/chatbot-context (400 with missing params before auth check)
+- POST /backwpup/v1/updatejob (401)
+- POST /backwpup/v1/update-job-title (401)
+- POST /backwpup/v1/addjob (400 with missing "type" param before auth check)
+- DELETE /backwpup/v1/delete_job (401)
+- POST /backwpup/v1/save_job_settings (401)
+- POST /backwpup/v1/save_files_exclusions (401)
+- POST /backwpup/v1/save_excluded_tables (401)
+- POST /backwpup/v1/save_site_option (401)
+- GET /backwpup/v1/getjobslist (401)
+- POST /backwpup/v1/startbackup (401)
+- POST /backwpup/v1/process_bulk_actions (401)
+- POST /backwpup/v1/backups (401)
+- POST /backwpup/v1/pagination (401)
+- POST /backwpup/v1/getblock (401)
+
+BackWPup v2 API routes:
+- POST /backwpup/v2/storages
+- GET /backwpup/v2/messages (401)
+- POST /backwpup/v2/save_job_format
+- POST /backwpup/v2/backups/:id/type
+
+Note: addjob and chatbot-context validate parameters BEFORE checking auth, leaking parameter names.
+
+Exposed files:
+- /readme.html (200) - WordPress readme
+- /wp-admin/install.php (200) - Shows "Already installed" in French
+- /wp-admin/setup-config.php (409) - Error page
+- /wp-includes/version.php (200) - Empty (PHP not rendered)
+- /wp-cron.php (200) - Cron accessible
+- /wp-content/plugins/elementor/readme.txt (200) - Version 4.0.1
+- /wp-content/plugins/elementor-pro/readme.txt (200) - Version info
+- /wp-content/plugins/backwpup/readme.txt (200) - Version 5.6.7
+- /wp-content/plugins/elementor/changelog.txt (200) - Full changelog
+- /wp-content/uploads/elementor/custom-icons/ (403) - Exists but forbidden
+
+WordPress API namespaces: oembed/1.0, elementor-one/v1, elementor/v1, elementor-pro/v1, backwpup/v1, backwpup/v2, elementor-hello-theme/v1, elementor/v1/documents, elementor-ai/v1, elementor/v1/feedback, wp/v2, wp-site-health/v1, wp-block-editor/v1, wp-abilities/v1
+
+Elementor documents endpoint: /elementor/v1/documents/:id/media/import (POST) - Could be SSRF vector but requires auth
 
 ## 16. Next Steps for Continued Testing
 
