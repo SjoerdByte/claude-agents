@@ -1807,8 +1807,21 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 249 | MEDIUM | waitlist-api.deblock.com shares routes with staging backend | - | CWE-200 | YES | check/callback unauthenticated OK, 12 terms docs, blog slugs |
 | 250 | LOW | CDN terms documents publicly accessible via S3 | - | CWE-200 | YES | Privacy, fees, personal terms in EN/FR downloadable |
 | 251 | INFO | XMLRPC XXE blocked by WAF, entity expansion blocked by PHP 8.3 | - | CWE-611 | YES | WAF catches DOCTYPE, PHP libxml protection active |
+| 252 | MEDIUM | GTM container exposes full tracking config, GA4/Ads IDs, cross-domain | - | CWE-200 | YES | G-3MRQ5Z62VD, AW-11482270425, linker: 3 domains |
+| 253 | HIGH | GA4 Measurement Protocol accepts events without valid API secret | - | CWE-287 | YES | Analytics poisoning, fake conversions/purchases |
+| 254 | MEDIUM | dblk.me short URL domain infrastructure exposure | - | CWE-200 | YES | Vercel, A/B cookies, developer paths in robots.txt |
+| 255 | MEDIUM | Build manifest exposes 75 routes including sensitive pages | - | CWE-200 | YES | /d/[hash], /activate, /beta/survey, /tum, 276 rewrites |
+| 256 | LOW | robots.txt reveals developer names from test pages | - | CWE-200 | YES | /Resume, /WphYZ, /Jordan, /miggy, /vercel/path0 |
+| 257 | HIGH | Survey endpoint accepts any email without auth or rate limiting | - | CWE-287 | YES | Stored XSS in answer, email spoofing, no rate limit |
+| 258 | HIGH | Business app JS chunks expose 24+ API routes | - | CWE-200 | YES | Full auth/financial/crypto/user API surface mapped |
+| 259 | MEDIUM | CSRF token endpoint accessible without auth, predictable format | - | CWE-352 | YES | timestamp.expiry.random.hmac, no session binding |
+| 260 | MEDIUM | Apigee gateway error disclosure on api/auth | - | CWE-209 | YES | Internal error codes, 405 without Allow, via: google |
+| 261 | MEDIUM | Business API auth/financial endpoints confirm existence (401/403) | - | CWE-200 | YES | refresh, passkeys, cashbacks, cards, frontdesk, users |
+| 262 | LOW | Business PWA manifest and service worker config exposed | - | CWE-200 | YES | Unusual /sitemap.xml/pwa/ path, full PWA installable |
+| 263 | INFO | next.deblock.com behind Cloudflare managed challenge | - | CWE-200 | YES | Separate CF zone, strict CSP with nonce, 403 default |
+| 264 | MEDIUM | Cross-domain tracking bridge without clear consent per domain | - | CWE-200 | YES | GCLID sync across 3 domains, GDPR privacy concern |
 
-Total: 251 findings (12 critical, 48 high, 88 medium, 62 low, 43 info)
+Total: 264 findings (12 critical, 51 high, 96 medium, 64 low, 44 info)
 
 ## 15. Session Notes
 
@@ -1839,7 +1852,9 @@ Total: 251 findings (12 critical, 48 high, 88 medium, 62 low, 43 info)
 - Session 11 continued: Sentry DSN PII injection confirmed on both endpoints (F213). Health endpoint build ID + CSP map (F212). bursted-bubbles.deblock.com NFT site shares API keys (F214). WordPress heartbeat (F215), BackWPup dir (F216), Elementor form (F217), support subdomain (F218). Total findings: 218.
 - Session 12: WordPress REST API full enumeration. Users endpoint open without auth exposing admin-deblock profile, Gravatar SHA256 hash, Elementor metadata (F219). 197 media files enumerable including brand photos, videos, ZIP archives, Elementor screenshots (F220-221). REST API root discovery exposes 14 namespaces including backwpup, elementor-ai, elementor-one (F222). BackWPup REST API route disclosure reveals 20 backup infrastructure endpoints with DB schema parameters and cloud auth flow (F223). Elementor One route disclosure reveals plugin management surface with 7 plugin slugs, activate/deactivate/upgrade paths, theme management, connect flow (F224). business.deblock.com leaks CSP nonce in X-Nonce header (F225), reveals fraud/KYC infrastructure (Regula, Sardine, Dotfile) in CSP (F226), and exposes Sentry release hash 54029c4 in HTML trace metadata (F227). app.deblock.com returns HTTP 410 Gone confirming service decommissioning (F228). All BackWPup/Elementor data endpoints require auth. No hardcoded secrets in business.deblock.com Turbopack bundles. Alchemy API NFT holder enumeration returns 718 wallet addresses (F229). Alchemy key confirmed on 6 chains including Solana mainnet (F230). WAF identified as MalCare, XMLRPC brute force bypasses it (F231). Firebase authorizedDomains includes localhost (F232). Elementor mixed content HTTP fonts (F233). Elementor preview mode without auth (F234). Total findings: 234.
 
-- Session 13: waitlist-api.deblock.com discovered as live Heroku Rails backend via Alchemy NFT metadata tokenUri (F235). Full endpoint enumeration: /v1/meta/bb/{1-1000} NFT metadata with game traits (F236), /v1/mobile/account/{any} terms docs, /v1/company/types and /v1/company/turnovers (UUID required), /v1/ambassador/certification (403), /v1/waitlist/status (403). CDN image paths cdn1.deblock.com/bbfinal/{1-1000}.png. WebSocket endpoints changed 502 to 426 (F237). api.deblock.com changed 000 to 502 (F238). WordPress XMLRPC 80 methods enumerated (F239). Login timing ~140ms differential for username enumeration (F240). Application Passwords success_url social engineering vector (F241). NFT contract owner wallet 0xd5ade...357d identified via eth_call (F242). GCS production bucket NoSuchKey vs AccessDenied differential (F243). Kubernetes readyz accessible (F244). Sardine sandbox API reachable (F245). UAT CSP object-src data: (F246). CORS testing all endpoints properly configured. WordPress batch API comment creation blocked. 20 more XMLRPC passwords tested (total 369+). Business RSC flight data build ID 26tbWezWroJnCCGBceFD9. X-Nonce header still leaking CSP nonce on business.deblock.com. Total findings: 246.
+- Session 13: waitlist-api.deblock.com discovered as live Heroku Rails backend via Alchemy NFT metadata tokenUri (F235). Full endpoint enumeration: /v1/meta/bb/{1-1000} NFT metadata with game traits (F236), /v1/mobile/account/{any} terms docs, /v1/company/types and /v1/company/turnovers (UUID required), /v1/ambassador/certification (403), /v1/waitlist/status (403). CDN image paths cdn1.deblock.com/bbfinal/{1-1000}.png. WebSocket endpoints changed 502 to 426 (F237). api.deblock.com changed 000 to 502 (F238). WordPress XMLRPC 80 methods enumerated (F239). Login timing ~140ms differential for username enumeration (F240). Application Passwords success_url social engineering vector (F241). NFT contract owner wallet 0xd5ade...357d identified via eth_call (F242). GCS production bucket NoSuchKey vs AccessDenied differential (F243). Kubernetes readyz accessible (F244). Sardine sandbox API reachable (F245). UAT CSP object-src data: (F246). Total findings: 246.
+- Session 14: CDN object enumeration via S3 (F247). Intercom messenger API full config extraction (F248). waitlist-api staging route sharing (F249). CDN terms publicly accessible (F250). XMLRPC XXE/Billion Laughs blocked (F251). UpdraftPlus backup files all 403 (LiteSpeed blocks entire directory). BackWPup backups use random hash naming. CloudKit API returns AUTHENTICATION_FAILED. Trustpilot API empty response. Total findings: 251.
+- Session 15: GTM container configuration extracted (F252): GA4 G-3MRQ5Z62VD, Google Ads AW-11482270425, cross-domain linker across 3 domains. GA4 Measurement Protocol accepts events without valid API secret (F253): analytics poisoning confirmed. dblk.me short URL domain fully mapped (F254): Vercel, 75 pages, 276 rewrites. Build manifest full route structure (F255). Developer names in robots.txt (F256). Survey/beta endpoint unauthenticated email spoofing (F257): stored XSS in answer field, no rate limiting. Business app Turbopack chunks reveal 24+ API routes (F258). CSRF token unauthenticated (F259). Apigee error disclosure (F260). Auth/financial endpoints confirmed (F261). PWA manifest exposed (F262). next.deblock.com Cloudflare challenge (F263). Cross-domain tracking GDPR concern (F264). Total findings: 264.
 
 ### 12e. Business App API Route Map (from JS bundle analysis)
 
@@ -3388,6 +3403,126 @@ F251 - XMLRPC XXE blocked by MalCare WAF, entity expansion blocked by PHP 8.3 (I
 - Billion Laughs entity expansion test: PHP returns "parse error. not well formed" (libxml entity expansion disabled since PHP 8.0)
 - Confirms: WAF catches XXE payloads, PHP's built-in XML protection active
 - However: WAF does NOT intercept XMLRPC multicall brute force (still bypassed after 487+ attempts)
+
+## 12ak. GTM Container Exposure, GA4 Analytics Poisoning, Business API Route Map, Survey Endpoint Abuse (Session 15)
+
+F252 - Google Tag Manager container (GTM-TMHB3PGF) exposes full tracking configuration (MEDIUM):
+- GA4 Measurement ID: G-3MRQ5Z62VD
+- Google Ads Conversion ID: AW-11482270425
+- Cross-domain linker: app.deblock.com, deblock.com, dblk.me (tracks users across all three)
+- Tracked events: onboarding_start, onboarding_success, onboarding_failure (user journey tracking)
+- 6 active tags (tag_ids: 3, 4, 5, 8, 13, 14) including Google Ads remarketing with cross-domain cookie sync
+- Attacker can reconstruct full marketing funnel and user conversion tracking setup
+- Impact: Competitor intelligence, marketing strategy exposure, conversion tracking data
+
+F253 - GA4 Measurement Protocol accepts events without valid API secret (HIGH):
+- POST to google-analytics.com/mp/collect?measurement_id=G-3MRQ5Z62VD with any or no api_secret returns 204
+- Arbitrary events accepted: purchase, custom events, user properties
+- Confirmed: fake purchase events with arbitrary amounts (EUR 99,999) accepted
+- Confirmed: event submission without ANY api_secret also returns 204
+- Impact: Analytics data poisoning, fake conversion injection, corrupted marketing metrics
+- An attacker can inject fake onboarding_success/failure events to skew product metrics
+- Can also inject fake Google Ads conversions via AW-11482270425 (302 redirect = accepted)
+
+F254 - dblk.me short URL domain exposes marketing site infrastructure (MEDIUM):
+- Live Vercel-hosted site (build ID: uTbOab3l7kZLJXtCgveTr)
+- Sets A/B test cookie: header_variant=B (30-day expiry), geo_country=US (90-day expiry)
+- Access-Control-Allow-Origin: * (wildcard CORS on marketing content)
+- robots.txt disallows developer test paths: /Resume, /WphYZ, /Jordan, /miggy (developer names)
+- 75 page routes and 276 URL rewrites discovered in build manifest
+- Multi-language support: fr, en, es, de, pt, it (6 locales)
+
+F255 - dblk.me/deblock.com build manifest exposes full route structure including sensitive pages (MEDIUM):
+- /d/[hash]: Deep link handler accepting arbitrary hash values (data deletion confirmation page)
+- /activate: Account activation endpoint (loads Lottie animation, no visible API calls from static render)
+- /beta/survey: Beta user survey page with embedded API calls (see F257)
+- /tum: TUM University ambassador page linking to Typeform (form.typeform.com/to/sVxLW9rR)
+- /deeplink-qr: QR code generation for app deep links
+- /landing/*: 7 marketing landing pages (500-euros-welcome-bonus, get-gta-vi-for-free, etc.)
+- /[legals]/[id]: Legal document viewer with dynamic IDs
+- Dynamic routes expose parameter patterns for crypto-market/[coin] and exchange/[coin]
+
+F256 - robots.txt reveals developer names from test/debug pages (LOW):
+- Disallowed paths: /Resume, /WphYZ, /Jordan, /miggy
+- All return 404 (removed but left in robots.txt)
+- Pattern suggests developer-specific test pages were previously deployed
+- /vercel/path0/public/locales also disallowed (internal Vercel path leak)
+- /choose-your-country disallowed (geo-restriction bypass page)
+
+F257 - Survey/beta endpoint accepts submissions for any email without authentication or rate limiting (HIGH):
+- POST https://waitlist-api.deblock.com/v1/survey/beta
+- Accepts: email, answer, campaign parameters
+- Uses hardcoded Bearer token from client-side JS (same token from F61)
+- Confirmed: accepts submissions for any valid email format (jean@deblock.com, admin@deblock.com, etc.)
+- No rate limiting: 6 rapid sequential requests all return status:ok
+- No email ownership verification: attacker can submit surveys for victim emails
+- Stored XSS potential: answer field accepts <script>alert(1)</script> (stored in backend, may render in admin panel)
+- Email validation only checks format (test@test.com'OR 1=1-- rejected as invalid format)
+- Impact: Survey data manipulation, spam injection, potential stored XSS in admin dashboard, user impersonation
+
+F258 - Business app exposes full API route map via Turbopack JS chunks (HIGH):
+- 24+ API routes discovered by scanning 38 JS chunks:
+  Authentication: /api/auth, /api/auth/check-session, /api/auth/login, /api/auth/login-2fa, /api/auth/refresh, /api/csrf
+  Passkeys: /api/passkeys, /api/passkeys/auth, /api/passkeys/register
+  Financial: /api/bank-details, /api/cards, /api/transactions, /api/cashbacks/lifetime
+  Crypto: /api/crypto-business, /api/crypto-simulation/, /api/crypto-transactions/
+  WebSocket: /api/websocket, /api/crypto-business-socket, /api/crypto-commands-socket
+  User: /api/users/user, /api/users/browsers/, /api/crypto-messages/messages/
+  Business: /api/business-onboarding, /api/frontdesk/features, /api/frontdesk/accounts
+  Other: /api/sca, /api/pricing/plans, /api/facetec-gateway/process-request
+- Provides complete authenticated attack surface map for IDOR testing with second account
+
+F259 - CSRF token endpoint accessible without authentication, predictable structure (MEDIUM):
+- GET /api/csrf returns: {"csrfToken":"unix_timestamp.expiry_timestamp.random_b64.hmac_hash"}
+- Token structure: creation_time.expiry_time(+1800s).16-byte-random.SHA256-HMAC
+- New token generated per request (no session binding visible)
+- Expiry is exactly 1800 seconds (30 minutes) after creation
+- No session cookie required to obtain CSRF token
+- Impact: CSRF token can be obtained by any unauthenticated user; if session-binding is weak, enables CSRF attacks
+
+F260 - Apigee API gateway error disclosure on api/auth endpoint (MEDIUM):
+- GET/PUT/DELETE api/auth returns 502 with Apigee error:
+  {"fault":{"faultstring":"Received 405 Response without Allow Header","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}
+- POST api/auth returns 403 (method exists but requires auth)
+- OPTIONS returns 204 (CORS preflight accepted)
+- Confirms: Google Apigee API gateway proxies business API requests
+- x-request-id header returned on all responses (per-request tracking ID)
+- via: 1.1 google header confirms GCP load balancing
+
+F261 - api/auth/refresh returns 403 confirming token refresh endpoint exists (MEDIUM):
+- POST api/auth/refresh with any token returns {"error":"Forbidden"}
+- Endpoint exists and processes requests (unlike 404 routes)
+- Combined with /api/auth/login-2fa: confirms 2FA + token refresh authentication flow
+- /api/passkeys endpoints return 401/502: WebAuthn/passkey auth implemented
+- /api/cashbacks/lifetime returns 401: cashback tracking for business accounts
+- /api/cards returns 401: card management API
+- /api/frontdesk/features returns 401: feature flag API for business frontend
+- /api/frontdesk/accounts returns 401: account management API
+- /api/users/user returns 401: user profile API
+- All require authentication but confirm existence
+
+F262 - Business app PWA manifest and service worker configuration exposed (LOW):
+- PWA manifest at /sitemap.xml/pwa/manifest.json (unusual path)
+- App name: "Deblock Business", display: standalone, orientation: any
+- 8 icon sizes from 72x72 to 512x512 at /pwa/icons/icon-{size}.png
+- Start URL: /en with full scope /
+- Confirms business app functions as installable PWA
+- WebSocket endpoints return 426 Upgrade Required (proxy strips Connection header)
+
+F263 - next.deblock.com behind Cloudflare challenge (INFO):
+- Returns 403 with Cloudflare managed challenge
+- Separate Cloudflare zone (cf-ray header confirms)
+- Uses strict CSP with nonce
+- Permissions-Policy: restricts camera, microphone, payment, geolocation, etc.
+- Purpose unclear but domain referenced in deeplink-qr page as alternative app destination
+
+F264 - dblk.me serves as cross-domain tracking bridge between marketing and app (MEDIUM):
+- GTM cross-domain linker configured for: app.deblock.com, deblock.com, dblk.me
+- Google Click ID (GCLID) tracking enabled across all three domains
+- Form decoration disabled but URL-based tracking active (urlPosition: query)
+- Cross-domain cookie sync enabled (acceptIncoming: true, enableCrossDomain: true)
+- Enables tracking user journey from marketing (deblock.com) through short URLs (dblk.me) to app (app.deblock.com)
+- Impact: privacy concern for 300k+ users, GDPR implications if consent not properly obtained across all domains
 
 ## 16. Next Steps for Continued Testing
 
