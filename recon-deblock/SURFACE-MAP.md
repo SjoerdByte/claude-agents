@@ -9677,6 +9677,108 @@ Priority 3 (Enumeration/escalation):
   - Public NFT metadata endpoint (expected to be public per ERC-721)
 - Impact: MEDIUM - The callback check endpoint accepts arbitrary input without validation. The error messages reveal internal data ranges that aid enumeration.
 
+### F795 [HIGH] WordPress XML-RPC Enabled With 80 Methods Including Batch Brute-Force
+- Target: brand.deblock.com
+- XML-RPC endpoint at /xmlrpc.php is fully enabled with 80 methods
+- system.multicall confirmed working: allows testing multiple credentials in a single HTTP request
+  - Tested with wp.getUsersBlogs for admin-deblock: returns individual fault responses per attempt
+  - Each multicall can contain hundreds of credential attempts, bypassing per-request rate limiting
+- Single credential test: wp.getUsersBlogs returns faultCode 403 "Identifiant ou mot de passe incorrect" confirming username validation
+- Key methods exposed:
+  - system.multicall: Batch method calls (amplified brute-force)
+  - pingback.ping: SSRF vector (confirmed processing, faultCode 0)
+  - wp.uploadFile, metaWeblog.newMediaObject: File upload
+  - wp.newPost, wp.editPost, wp.deletePost: Content management
+  - wp.getUsers, wp.getUser, wp.getAuthors: User enumeration
+  - wp.getOptions, wp.setOptions: Site configuration
+  - wp.newComment, wp.editComment: Comment management
+  - All metaWeblog and blogger API methods
+- No rate limiting detected on XML-RPC requests
+- Combined with confirmed admin username "admin-deblock" (ID 1), this enables:
+  1. Batch credential brute-force via system.multicall
+  2. SSRF via pingback.ping to reach internal services
+  3. Full admin access if credentials are found (content, files, users, settings)
+- Impact: HIGH - XML-RPC with system.multicall is a well-known WordPress attack vector. Combined with the known admin username and no rate limiting, credential brute-force is practical.
+
+### F796 [MEDIUM] WordPress User Enumeration via Multiple Vectors
+- Target: brand.deblock.com
+- Admin user confirmed through three independent vectors:
+  1. REST API: GET /wp-json/wp/v2/users -> ID:1, Name:admin-deblock, Slug:admin-deblock
+  2. Author enumeration: GET /?author=1 -> 301 redirect to /author/admin-deblock/
+  3. XML-RPC: wp.getUsersBlogs validates the username (returns "incorrect password" not "user not found")
+- User details exposed:
+  - Username: admin-deblock
+  - User ID: 1
+  - Gravatar hash: 44f51df94ecb1454d3e064107d59a8a4606564f21ace0b536097f9f7a185e5f3
+  - Author page: https://brand.deblock.com/author/admin-deblock/
+  - User URL: http://brand.deblock.com (HTTP, not HTTPS - suggests old config)
+- Only one user found (ID 1) suggesting single-admin setup
+- Impact: MEDIUM - Username enumeration enables targeted credential attacks via XML-RPC system.multicall (F795).
+
+### F797 [MEDIUM] BackWPup REST API Exposes Full Backup Management Surface
+- Target: brand.deblock.com
+- BackWPup 5.6.7 exposes two API versions with backup management routes:
+- BackWPup v1 routes (all require auth except chatbot-context parameter check):
+  - GET /backwpup/v1/cloud_is_authenticated (check cloud backup auth)
+  - POST /backwpup/v1/authenticate_cloud (authenticate cloud storage)
+  - POST /backwpup/v1/cloudsaveandtest (test cloud connection)
+  - POST/GET /backwpup/v1/chatbot-context (AI chatbot, leaks param names: context_id, context_token)
+  - POST /backwpup/v1/startbackup (trigger backup execution)
+  - POST /backwpup/v1/addjob, /updatejob, /delete_job (backup job management)
+  - POST /backwpup/v1/save_job_settings, /save_files_exclusions, /save_excluded_tables
+  - POST /backwpup/v1/save_site_option (modify site settings)
+  - GET /backwpup/v1/getjobslist (list all backup jobs)
+  - POST /backwpup/v1/backups, /process_bulk_actions
+- BackWPup v2 routes:
+  - POST /backwpup/v2/storages (storage management)
+  - GET /backwpup/v2/messages (backup messages/logs)
+  - POST /backwpup/v2/save_job_format, /backups/:id/type
+- The chatbot-context endpoint reveals parameter names without authentication (returns 400 "missing params: context_id, context_token" instead of 401)
+- If admin credentials are obtained via F795, these endpoints allow:
+  - Triggering full database backups
+  - Downloading backup archives containing all site data
+  - Modifying backup destinations (redirect backups to attacker-controlled storage)
+  - Deleting existing backups
+- Impact: MEDIUM - Backup management API surface exposed. Auth is properly enforced but the attack surface is large. Combined with F795 (brute-force), credential compromise gives full backup control.
+
+### F798 [MEDIUM] WordPress Pingback SSRF Confirmed Active
+- Target: brand.deblock.com
+- pingback.ping method processes source URL HTTP requests:
+  - Self-referencing pingback returns faultCode 0 (request processed, no valid pingback found)
+  - The WordPress server makes an outbound HTTP request to the source URL
+- This enables server-side request forgery (SSRF):
+  - Can probe internal services from the WordPress server's network position
+  - The Hostinger/LiteSpeed infrastructure may have access to internal services
+  - Can be used for port scanning internal hosts
+  - Can interact with cloud metadata endpoints if not blocked
+- Combined with the LiteSpeed server and Hostinger hosting, the SSRF could reach:
+  - Hostinger internal management APIs
+  - Other sites on shared hosting (if applicable)
+  - Internal database connections
+- Impact: MEDIUM - SSRF via pingback is a known technique. The severity depends on the WordPress server's network access to internal services. On Hostinger shared hosting, internal access may be limited.
+
+### F799 [MEDIUM] WordPress REST API Exposes 254 Routes With Plugin Management Endpoints
+- Target: brand.deblock.com
+- 14 API namespaces exposed:
+  - oembed/1.0 (oEmbed discovery)
+  - elementor-one/v1 (Elementor One - cloud-connected admin)
+  - elementor/v1 (Elementor core - site builder)
+  - elementor-pro/v1 (Elementor Pro - premium features)
+  - backwpup/v1, backwpup/v2 (backup management)
+  - elementor-hello-elementor/v1 (theme integration)
+  - elementor/v1/documents (document management)
+  - elementor-ai/v1 (AI features)
+  - elementor/v1/feedback (feedback system)
+  - wp/v2 (WordPress core API)
+  - wp-site-health/v1 (site diagnostics)
+  - wp-block-editor/v1 (Gutenberg editor)
+  - wp-abilities/v1 (WordPress capabilities)
+- Elementor One endpoints include plugin activate/deactivate/upgrade and migration run/rollback
+- Elementor One feedback endpoint accepts parameters without auth (returns 400 with required params: product, subject, title, description instead of 401)
+- Elementor AI permissions endpoint exists
+- WordPress Abilities API exposes ability run endpoint with all HTTP methods (GET/POST/PUT/PATCH/DELETE)
+- Impact: MEDIUM - Extensive API surface provides detailed information about installed plugins and their versions. The Elementor One plugin management endpoints could be critical if admin access is obtained.
+
 ### F794 [HIGH] Recovery Service CSP Exposes Solana Infrastructure and Permissions Policy
 - Target: recovery.deblock.com
 - Full security header analysis reveals:
