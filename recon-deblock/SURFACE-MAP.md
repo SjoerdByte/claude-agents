@@ -1749,8 +1749,12 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 194 | INFO | Prelude edge SDK endpoint with CORS wildcard (*) | - | CWE-200 | YES | ACAO: * on edge.prelude.dev (third-party, not Deblock's) |
 | 195 | HIGH | Google OAuth localhost redirect_uri in production | - | CWE-601 | YES | http://localhost:3000 accepted as redirect_uri, dev URI in prod config |
 | 196 | HIGH | Alchemy API key works on 10 blockchain networks | - | CWE-798 | YES | 5 mainnets + 5 testnets, multiplied billing abuse surface |
+| 197 | HIGH | Analytics PII injection via arbitrary fields | - | CWE-20 | YES | userId, email, SSN, creditCard accepted, stored with success:true |
+| 198 | MEDIUM | FaceTec gateway device key parameter leak | - | CWE-209 | YES | "Device key identifier is required" without auth on UAT |
+| 199 | LOW | Alchemy getTokenMetadata works across 10 chains | - | CWE-798 | YES | Token name/symbol/decimals for any contract on any chain |
+| 200 | MEDIUM | Business app full API route map from JS chunks | - | CWE-200 | YES | 30+ endpoints including cashbacks, crypto-business, pricing, SCA |
 
-Total: 196 findings (12 critical, 42 high, 62 medium, 44 low, 36 info)
+Total: 200 findings (12 critical, 43 high, 64 medium, 45 low, 36 info)
 
 ## 15. Session Notes
 
@@ -1769,7 +1773,7 @@ Total: 196 findings (12 critical, 42 high, 62 medium, 44 low, 36 info)
 - No open redirect vulnerabilities found on tested endpoints.
 - Session 8: Extended unauthenticated testing. XMLRPC multicall brute force confirmed (68 pw/sec, admin-deblock valid). Analytics stored injection (XSS/SQLi/NoSQLi all accepted). WordPress REST API user enumeration. BackWPup/Elementor Pro/site-health route enumeration. Firebase only used for phone auth (no Firestore/RTDB/Storage). Google Maps key restricted to JS API. OneSignal requires API key. CDN S3 properly secured. api.deblock.com still down. All WebSockets returning 502. Production endpoints returning 410 Gone.
 - Session 8 (continued): Added findings 179-184 (TRACE 500, text/plain CSRF bypass, prototype pollution, OPTIONS disclosure, no JSON depth limit, inconsistent auth error format).
-- Session 9: RSC state tree crash confirmed on ALL environments including production (DoS vector). Analytics dashboard poisoning with fake events confirmed. WordPress batch API validates params before auth. UpdraftPlus backup directory exists. Password reset user enumeration confirmed. 126 more XMLRPC passwords tested (none matched). No cache poisoning, no SSRF, no subdomain takeover. Google OAuth localhost redirect_uri accepted in production. Alchemy API key confirmed on 10 chains (5 mainnets + 5 testnets). Total 196 findings.
+- Session 9: RSC state tree crash confirmed on ALL environments including production (DoS vector). Analytics dashboard poisoning with fake events confirmed. WordPress batch API validates params before auth. UpdraftPlus backup directory exists. Password reset user enumeration confirmed. 126 more XMLRPC passwords tested (none matched). No cache poisoning, no SSRF, no subdomain takeover. Google OAuth localhost redirect_uri accepted in production. Alchemy API key confirmed on 10 chains (5 mainnets + 5 testnets). Analytics PII injection via arbitrary fields (userId/email/SSN/creditCard stored). FaceTec gateway leaks device key parameter name without auth. Business app 30+ new API endpoints mapped from 38 JS chunks. Total 200 findings.
 - ActionMailbox ingress endpoints return 404 on production with proper email format (all providers tested).
 - Ambassador auto-signup sends OTP on staging (confirmed email delivery).
 - Session 5: UAT environment deep dive (app-uat-01, business-uat-01). Sentry event injection confirmed on both DSNs. XMLRPC multicall confirmed at 20+ attempts per request. WordPress deep enumeration. JS bundle API route extraction (14 routes from 85 chunks). WebSocket endpoints confirmed. Multiple app-uat-01 API endpoints reach backend without user auth.
@@ -2891,6 +2895,34 @@ Additional testing results (no new findings):
 - No subdomain takeover (no dangling CNAMEs)
 - Third-party APIs (Sardine, Regula, StakeKit) properly secured
 - 126 additional password guesses via XMLRPC multicall (admin-deblock): no match
+
+## 12ac. Analytics PII Injection, FaceTec Parameter Leak, and Business API Expansion (Session 9 continued)
+
+F197 - Analytics PII injection via arbitrary fields (HIGH):
+POST /api/auth/analytics accepts arbitrary additional JSON fields beyond the required schema (eventId, eventType, flowId, screenId). Tested injecting fabricated PII fields: userId, email, SSN, creditCard - all returned success:true. The analytics system stores this arbitrary data without validation. Combined with text/plain CSRF bypass (F180), this enables: (1) GDPR compliance issues if analytics data is processed/stored with fabricated PII, (2) data poisoning of analytics databases with arbitrary field injection, (3) cross-site exploitation via text/plain Content-Type without CORS preflight. The required field schema also changed from previous versions (was eventName/eventId, now eventId/eventType/flowId/screenId), but the injection vulnerability persists.
+
+F198 - FaceTec gateway device key parameter leak (MEDIUM):
+POST /api/facetec-gateway/process-request on app-uat-01 returns "Device key identifier is required" without any authentication. This reveals: (1) the exact parameter name needed for the FaceTec integration, (2) that the gateway processes requests at the proxy layer before session validation, (3) the biometric verification can be targeted once a valid device key identifier is obtained. On business.deblock.com, the same endpoint returns "FaceTec 2FA session not found" suggesting it checks for 2FA session before device key.
+
+F199 - Alchemy getTokenMetadata works across chains (LOW):
+alchemy_getTokenMetadata endpoint works on all 10 chains with the exposed API key. Returns token name, symbol, decimals, and logo URL for any ERC-20 contract address. Combined with getTransactionReceipts (207 receipts per call on Ethereum mainnet), the surveillance and billing abuse surface is broader than initially reported.
+
+F200 - Business app full API route map from JS (MEDIUM):
+Complete business app API route map extracted from 38 JS chunks (business.deblock.com). New endpoints discovered beyond session 7: /api/cashbacks/lifetime, /api/crypto-business, /api/frontdesk/transactions/acknowledgements, /api/frontdesk/features, /api/frontdesk/accounts, /api/pricing/plans, /api/crypto-simulation/, /api/crypto-transactions/, /api/crypto-messages/messages/, /api/crypto-business-socket, /api/crypto-commands-socket, /api/sca, /api/users/user, /api/users/browsers/, /api/websocket. All require authentication. The passkeys endpoints (/api/passkeys, /api/passkeys/auth, /api/passkeys/register) confirm WebAuthn implementation. CSRF token structure confirmed: timestamp.expiry.nonce.hmac format.
+
+Additional testing results (no new findings):
+- Next.js image proxy returns 400 for SSRF attempts (169.254.169.254, metadata.google.internal, file://)
+- No GraphQL endpoints on UAT or business
+- WordPress wp-config.php backup variants blocked by LiteSpeed (403)
+- WordPress database dumps not found
+- WordPress block-patterns and block-types require auth
+- UpdraftPlus backup file names not guessable with date-based patterns
+- Business login goes through Apigee (returns 404 on POST even with valid CSRF)
+- No HTTP request smuggling on business.deblock.com
+- No Host header injection on WordPress password reset
+- WebSocket endpoints still 404 (were 502 before, now 404)
+- 2FA mobile session changed from 403 to "FaceTec 2FA session not found"
+- QR login endpoints still 403
 
 ## 16. Next Steps for Continued Testing
 
