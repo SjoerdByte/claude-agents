@@ -8088,3 +8088,60 @@ Priority 3 (Enumeration/escalation):
 - Does NOT serve apple-app-site-association or assetlinks.json (returns HTML 404 instead of JSON)
 - Impact: LOW - Exposes marketing site technology stack details. The older architecture (pages router + webpack) compared to business app (app router + Turbopack) suggests the marketing site is maintained separately.
 
+### F697 [HIGH] Wallet Recovery Tool Behind Brute-Forceable Basic Auth
+- Target: recovery.deblock.com
+- Returns 401 "Authentication required" with `www-authenticate: Basic realm="Secure Area"`
+- CSP reveals Solana blockchain RPC endpoints in connect-src:
+  - `https://solana-rpc.publicnode.com`
+  - `https://api.mainnet-beta.solana.com`
+  - `https://solana.drpc.org`
+- Security headers: COOP (same-origin), COEP (credentialless), CORP (cross-origin), strict Permissions-Policy (all features disabled)
+- CSP script-src includes `'unsafe-eval'` and `'unsafe-inline'`
+- No rate limiting on authentication attempts - 8 rapid failed attempts all returned 401 instantly
+- Hosted on Vercel (x-vercel-id header present)
+- Impact: HIGH - A wallet recovery tool connecting to Solana mainnet RPC endpoints is protected only by HTTP Basic auth with no rate limiting. Basic auth credentials are:
+  1. Sent in cleartext (base64 encoded, not encrypted at the HTTP level, though HTTPS protects in transit)
+  2. Brute-forceable without lockout
+  3. Susceptible to credential stuffing
+  If compromised, this tool could potentially allow recovery/extraction of user wallet keys.
+
+### F698 [MEDIUM] Staging Site Exposes Developer Paths and A/B Testing
+- Target: staging.deblock.com
+- robots.txt reveals developer-related paths:
+  - `/Resume` - Developer resume/CV page
+  - `/WphYZ/` - Unknown short path
+  - `/Jordan` - Developer name
+  - `/miggy` - Developer name
+  - `/vercel/path0/public/locales` - Internal Vercel path structure
+  - `/choose-your-country` - Country selection page
+- A/B testing cookie: `header_variant=B` (Max-Age=2592000, 30 days)
+- Geolocation cookie: `geo_country=US` (Max-Age=7776000, 90 days)
+- Different buildId from production: `jiQWozk8dR12Q2EFM5KOi` vs `uTbOab3l7kZLJXtCgveTr`
+- `x-robots-tag: noindex, nofollow` header present
+- All developer paths return 404 (content removed but robots.txt not updated)
+- Impact: MEDIUM - Exposes developer names (potential social engineering targets), confirms A/B testing framework, reveals staging is ahead of production (different build).
+
+### F699 [MEDIUM] Marketing Build Manifest Exposes Full Route Structure
+- Target: deblock.com/_next/static/uTbOab3l7kZLJXtCgveTr/_buildManifest.js
+- Publicly accessible without authentication
+- Full sorted pages list reveals 70+ routes including:
+  - Business pages: /business/bitcoin-treasury, /business/cards, /business/plans, /business/pro-account, /business/self-custody, /business/stablecoin-transfers, /business/treasury-yield
+  - Landing/campaign pages: /landing/500-euros-welcome-bonus, /landing/a-little-bitcoin-on-us, /landing/earn-4-percent-current-account, /landing/get-gta-vi-for-free, /landing/the-visa-card-that-changes-everything, /landing/turn-spare-change-into-bitcoin
+  - Dynamic routes: /d/[hash] (deeplinks), /exchange/[coin], /crypto-market/[coin]
+  - Products: /precious-metals, /buy-gold, /buy-silver, /buy-bitcoin, /buy-ethereum, /pockets-vaults, /cards, /crypto
+  - Internal: /tum (unknown), /white-page, /deeplink-qr, /beta/survey, /activate, /verify
+  - 18 sitemap files for EUR/GBP/USD across 6 languages
+- French locale rewrite rules map all French paths to English equivalents
+- Confirms multi-currency support (EUR, GBP, USD) and precious metals trading
+- Impact: MEDIUM - Exposes complete marketing site architecture, all product pages, campaign landing pages, and the deeplink hash format. Campaign pages reveal pricing strategy and promotional offers.
+
+### F700 [INFO] Next.js Image Optimizer Restricted to Same-Origin
+- Target: business.deblock.com/_next/image
+- External URLs: Returns 400 `"url" parameter is not allowed`
+- Protocol-relative URLs: Returns 400 `"url" parameter cannot be a protocol-relative URL (//)`
+- Internal paths: Works correctly (e.g., /pwa/icons/icon-72x72.png returns 200)
+- Path traversal: Returns 400 for all encoded traversal attempts
+- Response CSP: `script-src 'none'; frame-src 'none'; sandbox;` (restrictive)
+- Cache: 4-hour public cache with revalidation
+- Impact: INFO - Negative finding. The image optimizer is properly restricted to same-origin paths only.
+
