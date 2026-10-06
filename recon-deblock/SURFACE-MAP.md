@@ -10029,6 +10029,99 @@ Priority 3 (Enumeration/escalation):
   - Route exists on staging but not accessible via GET
 - Impact: MEDIUM - SEPA upload endpoint reveals banking file processing pipeline. If a valid upload token is obtained, arbitrary SEPA files could be uploaded to the S3 bucket, potentially manipulating transaction records.
 
+### F814 [CRITICAL] Company Onboarding Phone Verification Completely Bypassed on Production
+- Target: web-api.deblock.com (PRODUCTION)
+- POST /v1/company/country with {"country_code":"FR"} creates unauthenticated onboarding session
+  - Returns full session object with UUID: {"uuid":"5ecaf4e6-cb33-4a3c-84bb-e214e8daa1d1","country_code":"FR","email":null,"email_verified":false,"phone":null,"phone_verified":false,...}
+- POST /v1/company/phone with {"uuid":"<uuid>","phone":"+33612345678"} sets phone and INSTANTLY marks phone_verified:true
+  - No OTP sent, no OTP verification required
+  - No /v1/company/phone/otp endpoint exists at all
+  - Confirmed on both production (web-api.deblock.com) and staging (web-api-staging.deblock.com)
+- POST /v1/company/email with {"uuid":"<uuid>","email":"any@example.com"} sets email (email_verified remains false)
+  - Email OTP verification at /v1/company/email/otp exists but has 5-attempt lockout (1 hour)
+- POST /v1/company/website with {"uuid":"<uuid>","url":"https://example.com"} sets website/domain
+- Full unauthenticated company onboarding flow: country -> email -> phone (auto-verified) -> website -> type -> validate
+- GET /v1/company/types?uuid=<uuid> returns company types for the country
+- GET /v1/company/countries returns 41 countries with flag CDN URLs (no auth required)
+- Impact: CRITICAL - Business onboarding phone verification is completely missing. Any attacker can create a company onboarding session, set any phone number as verified, and use this to progress through the company KYB flow. Combined with the 5-attempt email OTP brute force window, this creates a viable path to fraudulent business account creation.
+
+### F815 [HIGH] Company Onboarding Session IDOR via UUID - No Session Binding
+- Target: web-api.deblock.com (PRODUCTION)
+- Company onboarding sessions are identified solely by UUID (no session cookie, no IP binding, no auth)
+- Anyone who knows a UUID can read and modify the session data:
+  - Read: GET /v1/company/types?uuid=<uuid> (returns session state)
+  - Write email: POST /v1/company/email with uuid
+  - Write phone: POST /v1/company/phone with uuid (auto-verifies)
+  - Write website: POST /v1/company/website with uuid
+- Session responses include all PII: email, phone, first_name, last_name, company_name, website, country, turnover
+- UUIDs are v4 random (not sequential), so mass enumeration is impractical
+- However, UUIDs leaked via logs, error messages, network interception, or Sentry events would allow session hijacking
+- Impact: HIGH - No authentication or session binding on company onboarding sessions means leaked UUIDs enable full session takeover. PII (email, phone, company details) can be read and modified by any party with the UUID.
+
+### F816 [HIGH] SEPA Upload Endpoint Accepts Any Token Without Validation
+- Target: web-api.deblock.com (PRODUCTION)
+- POST /v1/upload/anthony/<any-token> returns {"status":"ok"} for ANY token value
+  - Tested with "test-token", "random-token-123", "anything" - all return 200 OK
+  - Only requires the /anthony/ prefix (other names return 404)
+  - Accepts application/json content type
+  - Multipart file upload gets 301 redirect to Forbidden
+- The endpoint likely validates tokens against S3 presigned URLs or similar, failing silently on upload
+- However, the route handler itself accepts and processes the request regardless of token validity
+- Impact: HIGH - The SEPA upload endpoint's token validation is weak. While actual file uploads may fail, the endpoint processes requests from any source without rate limiting, potentially enabling abuse of the S3 upload pipeline or causing resource exhaustion.
+
+### F817 [MEDIUM] Staging Environment Running in Rails Development Mode with Full Debug Exceptions
+- Target: web-api-staging.deblock.com
+- /rails/info/properties accessible without authentication, reveals:
+  - Rails version: 7.0.10
+  - Ruby version: ruby 3.3.9 (2025-07-24 revision f5c772fc7c) [x86_64-linux]
+  - RubyGems version: 3.5.22
+  - Rack version: 2.2.23
+  - Environment: development (NOT staging/production)
+  - Database adapter: postgresql
+  - Database schema version: 20260923100000
+  - Application root: /app (Heroku container path)
+  - Full middleware chain (23 components including Airbrake 13.0.3)
+- Every 404 error returns full stack traces with gem paths and internal class names
+- ActionController::RoutingError exceptions include framework trace, application trace, and full trace
+- Impact: MEDIUM - Running staging in development mode exposes internal application details, gem versions, file paths, and error handling patterns. Combined with the route table exposure (F810), this gives attackers a complete map of the application internals.
+
+### F818 [MEDIUM] gRPC Health and Reflection Endpoints Accessible on Internal Microservices
+- Target: Multiple internal production and dev microservices
+- gRPC Health Check (grpc.health.v1.Health/Check) returns HTTP 200 on:
+  - onboarding.prod.deblock.com
+  - auth.prod.deblock.com
+  - transfers.dev.deblock.com
+  - users.dev.deblock.com
+- gRPC Server Reflection (grpc.reflection.v1alpha.ServerReflection/ServerReflectionInfo) returns HTTP 200 on all four
+- Actual gRPC method calls are blocked by Envoy fault filter ("fault filter abort" / UNIMPLEMENTED)
+- The health check pass confirms these are live gRPC services behind the Envoy service mesh
+- Service names suggest internal microservice architecture: onboarding, auth, transfers, users
+- Impact: MEDIUM - While the Envoy fault filter prevents direct gRPC method invocation, the exposed health and reflection endpoints confirm service existence and could be used for service discovery. If the fault filter is misconfigured or bypassed, the reflection endpoint would expose all gRPC service definitions.
+
+### F819 [LOW] Multiple Internal Microservice Subdomains Expose Envoy/GKE Infrastructure
+- Target: Multiple *.prod.deblock.com and *.dev.deblock.com subdomains
+- Envoy fault filter abort (HTTP 404, body: "fault filter abort") on:
+  - onboarding.prod.deblock.com
+  - auth.prod.deblock.com
+  - transfers.dev.deblock.com
+  - users.dev.deblock.com
+- HTTP 502 Bad Gateway (backend unavailable) on:
+  - proof.prod.deblock.com
+  - auth.dev.deblock.com
+  - marqeta-sandbox.onb.deblock.com
+  - api-eval.onb.deblock.com
+  - blue.onb.deblock.com
+  - retool.onb.deblock.com
+  - onboarding-testing.onb.deblock.com
+  - web-app-uat-01.prod.deblock.com / web-app-uat-02.prod.deblock.com
+  - web-business-uat-01.prod.deblock.com / web-business-uat-02.prod.deblock.com
+- Connection timeout (HTTP 000) on:
+  - web-business.dev.deblock.com
+  - web-app-test.dev.deblock.com
+  - web-app.dev.deblock.com
+  - payments.prod.deblock.com
+- Impact: LOW - DNS entries and ingress rules persist for decommissioned or internal-only services. The subdomain names reveal the microservice architecture (onboarding, auth, transfers, users, payments) and infrastructure tools (Retool, Marqeta sandbox, API evaluation).
+
 ### F808 [LOW] Build Manifest Exposes Sentry Monitoring Tunnel Rewrite Configuration
 - Target: business.deblock.com
 - _buildManifest.js accessible at /_next/static/26tbWezWroJnCCGBceFD9/_buildManifest.js
