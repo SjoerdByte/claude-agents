@@ -1965,7 +1965,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 402 | LOW | UAT-02 auth/refresh token mechanism disclosure | app-uat-02.deblock.com | CWE-200 | YES | "No token or refresh token found" reveals dual-token auth mechanism. |
 | 403 | MEDIUM | UAT-02 onboarding endpoints reached with empty body + e2e | app-uat-02.deblock.com | CWE-287 | YES | resend-onboarding-otp, signature/resend-signature-otp, signature/complete all reach business logic without auth. |
 
-Total: 403 findings (14 critical, 90 high, 158 medium, 98 low, 53 info)
+Total: 411 findings (14 critical, 93 high, 161 medium, 98 low, 55 info)
 
 ## 15. Session Notes
 
@@ -4789,6 +4789,75 @@ F403 - UAT-02 onboarding endpoints business logic reached with empty body + e2e 
 - POST /api/onboarding/signature/complete: 400 with empty error string
 - All three reach business logic without authentication using e2e cookies + empty body
 - Impact: Onboarding OTP and signature flows accessible without auth
+
+## 12ao. CSRF Token Bypass, Production Crypto-Simulation Auth Bypass, Race Conditions, Endpoint Re-enumeration (Session 26)
+
+F404 - Production CSRF endpoint accessible without authentication (MEDIUM):
+- GET /api/csrf returns valid CSRF token to any anonymous request
+- Token format: unix_created.unix_expires(+1800s).base64url_nonce(16bytes).base64url_hmac(32bytes)
+- No rate limiting on token generation (tested 3 requests in rapid succession)
+- Tokens are not bound to any session or user identity
+- Impact: Enables CSRF token reuse across sessions, any attacker can obtain valid tokens
+
+F405 - Production CSRF token bypasses Forbidden on multiple endpoints (HIGH):
+- Without CSRF: POST /api/sca returns {"error":"Forbidden"} (403)
+- With CSRF token in x-csrf-token header + __Host-csrf cookie:
+  - POST /api/sca: {"error":"Step-up failed"} (400) - reaches business logic
+  - POST /api/passkeys/auth: {"error":"Passkey authentication failed"} (401) - reaches passkey validation
+  - POST /api/passkeys/register: {"error":"Unauthorized"} (401) - reaches registration logic
+  - POST /api/auth/refresh: {"error":"Failed to refresh session"} (401) - reaches token refresh
+  - POST /api/auth/create-2fa-mobile-session: {"error":"FaceTec 2FA session not found"} (401) - reaches FaceTec
+  - POST /api/bank-details: {"error":"Unauthorized","status":401} - reaches banking logic
+  - POST /api/cards: {"error":"Unauthorized","status":401} - reaches card creation
+- CSRF token only requirement is the double-submit pattern (header + cookie match)
+- Impact: CSRF protection is the only barrier for POST endpoints; once bypassed, authentication is the sole remaining layer
+
+F406 - Production auth/logout succeeds without authentication (HIGH):
+- POST /api/auth/logout with CSRF token returns {"message":"Logged out"} (200)
+- No auth-token cookie required
+- Can be exploited to invalidate any active session if session binding is weak
+- Combined with predictable session IDs, could enable targeted session invalidation (DoS)
+- Impact: Session destruction without authentication, potential denial of service against specific users
+
+F407 - Production crypto-simulation reaches backend without authentication (HIGH):
+- POST /api/crypto-simulation/{asset} with CSRF token returns 422 "No simulation node for {asset}"
+- Tested assets: BTC, ETH, SOL, USDC, USDT, MATIC, AVAX, DOT, LINK, UNI, AAVE
+- All return same error indicating the simulation backend node is not configured
+- User input in {asset} parameter reflected verbatim in error message (tested with SQL injection payload "BTC'OR'1'='1")
+- No input validation or sanitization on asset parameter
+- Impact: Infrastructure disclosure (simulation node architecture), input reflection, potential for injection if simulation nodes become active
+
+F408 - UAT-02 endpoints no rate limiting on auth-bypassed endpoints (HIGH):
+- Race condition test: 10 concurrent requests to bank-details all return HTTP 200 (no rate limiting)
+- Race condition test: 10 concurrent requests to cards all return HTTP 500 (all reach card creation logic)
+- Race condition test: 10 concurrent requests to auth/analytics all return HTTP 200 (all accepted)
+- No per-IP, per-session, or per-endpoint rate limiting observed
+- Impact: Enables mass automated exploitation of auth bypass, unlimited data injection via analytics, unlimited card creation attempts
+
+F409 - Production business-onboarding endpoint removed (NOTE):
+- POST /api/business-onboarding now returns 404 for all emails (was 200/400 in earlier sessions)
+- POST /api/auth/login now returns 404 (was proxied to backend in earlier sessions)
+- POST /api/auth/login-2fa now returns 404
+- The Next.js routing on business.deblock.com has been updated to remove these API proxies
+- Indicates active remediation by development team between sessions
+- Still active endpoints: auth/check-session, auth/logout, auth/refresh, auth/create-2fa-mobile-session, facetec-gateway/process-request, sca, passkeys/auth, passkeys/register, crypto-simulation/{asset}, bank-details, cards, users/info, frontdesk/features, frontdesk/accounts
+
+F410 - CSRF token predictability analysis (MEDIUM):
+- Timestamps are Unix epoch seconds, fully predictable
+- Nonce is 16 bytes (22 chars base64url), appears random
+- HMAC is 32 bytes (43 chars base64url), HMAC-SHA256
+- Validity window is exactly 1800 seconds (30 minutes)
+- New token every request, nonce changes even within same second
+- If HMAC key is leaked or weak, tokens become fully forgeable
+- CSRF tokens are not bound to any user or session context
+- Impact: CSRF token forgery possible if server-side HMAC key is compromised
+
+F411 - Production SCA endpoint accepts any action type without validation (MEDIUM):
+- Tested action types: card_payment, crypto_transfer, crypto_withdrawal, wallet_creation, card_activation, card_pin_change, sepa_transfer, swift_transfer, beneficiary_creation
+- All return identical {"error":"Step-up failed"} (400)
+- No validation of action type parameter (any string accepted)
+- Reaches business logic without authentication (only CSRF required)
+- Impact: SCA step-up mechanism can be probed for all financial operations, action type enumeration
 
 ## 16. Next Steps for Continued Testing
 
