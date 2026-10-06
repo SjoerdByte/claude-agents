@@ -1711,7 +1711,21 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 123 | INFO | Elementor Pro v1 license routes exposed | - | - | YES | /license/tier-features, /license/get-license-status (401) |
 | 124 | INFO | WordPress site-health REST namespace exposed | - | - | YES | wp-site-health/v1 (401) |
 
-Total: 124 findings (8 critical, 25 high, 34 medium, 26 low, 31 info)
+| 125 | CRITICAL | QR login session creation unauthenticated, no rate limit | - | - | YES | POST /api/qr-login returns UUID+payload, 5 in 2s, no limit |
+| 126 | CRITICAL | QR login pairing code brute-forceable (no rate limit) | - | - | YES | 20+ /api/qr-login/exchange attempts, 0 blocking, 707K combos in 10min window |
+| 127 | HIGH | Auth analytics injection without authentication | - | - | YES | POST /api/auth/analytics returns success:true, 10 rapid injections no limit |
+| 128 | HIGH | 110+ API endpoints mapped from UAT JS (full route map) | - | - | YES | crypto-trading, sepa-transfer, key-management, crypto-wallets/keys |
+| 129 | MEDIUM | Marketing widgets data leaked without auth | - | - | YES | /api/marketing-widgets returns CDN URLs, deeplinks, titles |
+| 130 | MEDIUM | Legal document CDN URLs without auth | - | - | YES | privacy-policy, crypto-wallet-import-terms, order-execution-policy |
+| 131 | MEDIUM | Analytics parameter schema leaked via validation | - | - | YES | organisms: 7 fields, auth: 4 fields, entry: entrySource values |
+| 132 | MEDIUM | Auth status 400 instead of 401 for unauthenticated | - | - | YES | Inconsistent HTTP status codes across endpoints |
+| 133 | LOW | /api/auth/check-session returns valid:false without auth | - | - | YES | Session validity oracle |
+| 134 | LOW | /api/client-region returns region without auth | - | - | YES | GeoIP leak (returns "US") |
+| 135 | LOW | /api/auth/health returns 200 empty without auth | - | - | YES | Internal health check exposed |
+| 136 | INFO | QR login abandon works without auth (204) | - | - | YES | /api/qr-login/abandon POST returns 204 |
+| 137 | INFO | FaceTec 2FA mobile session error oracle | - | - | YES | "FaceTec 2FA session not found" on create-2fa-mobile-session |
+
+Total: 137 findings (10 critical, 27 high, 38 medium, 29 low, 33 info)
 
 ## 15. Session Notes
 
@@ -1952,6 +1966,180 @@ Google Maps Embed (AIzaSyD7n7VD-9gy534lf__8x9QyR76OTXYLtq4):
 - Maps JavaScript API: ACTIVE (returns JS code, billable)
 - Geocoding, Directions, Static Maps, Elevation: disabled/referer-blocked
 - GCP Project: 449958774220
+
+### 12j. QR Login Session Hijack Chain (CRITICAL)
+
+The QR login flow on app-uat-01.deblock.com is completely unauthenticated:
+
+Step 1 - Session creation: POST /api/qr-login (no auth required)
+Returns: {"qrPayload":"https://app.deblock.com/qr-login/<UUID>","expiresAt":"<~10min>"}
+Rate limit: NONE (5 sessions created in 2 seconds, no blocking)
+
+Step 2 - Pairing code exchange: POST /api/qr-login/exchange with {"code":"XXXX"}
+Returns: {"outcome":"SECURITY_ERROR"} for invalid code (not 401, oracle behavior)
+Rate limit: NONE (20+ rapid attempts, zero blocking)
+
+Step 3 - Session abandon: POST /api/qr-login/abandon
+Returns: 204 (no auth required)
+
+Attack scenario: When a legitimate user displays a QR code to scan from their phone,
+the QR payload contains a UUID. The pairing code is 4 chars from alphabet
+ABCDEFGHJKMNPQRSTUVWXYZ23456789 (29 chars) = 29^4 = 707,281 combinations.
+With 10-minute expiry and no rate limiting, an attacker needs ~1,200 req/s
+to exhaust all combinations. The exchange endpoint's SECURITY_ERROR response
+differs from a successful pair, making brute force trivially detectable.
+A successful pair would grant the attacker the user's session token.
+
+This is a P1/Critical session hijacking vulnerability in a financial application.
+
+### 12k. Unauthenticated Analytics Injection
+
+Three analytics endpoints accept data without authentication:
+
+1. POST /api/auth/analytics (CONFIRMED INJECTABLE)
+   Required fields: eventId, eventType, flowId, screenId
+   Returns: {"success":true} - 10 rapid injections with ZERO rate limiting
+   Impact: Analytics data pollution, fake login attempt metrics, audit log tampering
+
+2. POST /api/analytics/organisms (validates against event catalog)
+   Required fields: eventName, eventId, timestamp, domain, action, sourceOrganism, type
+   Validates: eventName against catalog, sourceOrganism values, type values
+   Impact: Schema disclosure, potential injection with valid catalog values
+
+3. POST /api/analytics/entry (validates entrySource)
+   Required fields: entrySource, entryTarget, referrer
+   Impact: Schema disclosure
+
+### 12l. Full Personal App API Route Map (110+ endpoints from UAT JS)
+
+Complete API surface extracted from ${t.API_URL}/ prefix in JS bundles:
+
+Authentication & Sessions:
+- /auth (POST=login, PATCH=2fa)
+- /auth/2fa-mobile-session-socket (WebSocket)
+- /auth/analytics (POST, no auth)
+- /auth/check-session (GET, no auth, returns valid:false)
+- /auth/complete-2fa-mobile-session (POST)
+- /auth/create-2fa-mobile-session (POST, returns error without session)
+- /auth/facetec-keys (GET)
+- /auth/health (GET, no auth)
+- /auth/logout (POST)
+- /auth/refresh (POST)
+- /auth/subscribe-2fa-mobile-session (GET with mobileSessionKey param)
+- /qr-login (POST, no auth, creates session)
+- /qr-login/abandon (POST, no auth)
+- /qr-login/exchange (POST, no auth, no rate limit)
+
+Financial Operations:
+- /accounts (GET)
+- /bank-details (GET/POST)
+- /cards (GET)
+- /cashbacks (GET)
+- /dca/standing-orders (Dollar Cost Averaging)
+- /pots (Savings pots)
+- /pricing (GET)
+- /roundups/settings (GET/POST)
+- /roundups/settings/options (GET)
+- /self-transfer (GET)
+- /self-transfer/create (POST)
+- /sepa-transfer/create (POST)
+- /sepa-transfer/create/schedule (POST)
+- /sepa-transfer/get-bank-details (POST)
+- /sepa-transfer/upcoming (GET)
+- /sepa-transfer/upcoming/overview (GET)
+- /stakes (GET)
+- /statements (GET)
+- /statements/:id (GET)
+- /statements/crypto/request (POST)
+- /top-up/create-card-token (POST)
+- /top-up/create-topup (POST)
+- /top-up/delete-card-token/:id (DELETE)
+- /top-up/get-card-token/:id (GET)
+- /top-up/get-card-tokens (GET)
+- /top-up/get-topup-fees (GET)
+- /top-up/get-topup-limits (GET)
+- /top-up/get-topup-status/:id (GET)
+- /transactions/categories (GET)
+- /transactions/crypto (GET)
+- /transactions/direct-debits (GET)
+- /transactions/fiat (GET)
+- /transactions/generate-request (POST)
+- /transactions/stakes/estimate (GET)
+- /transactions/submit (POST)
+
+Crypto Operations:
+- /crypto-commands-socket (WebSocket)
+- /crypto-contacts (GET)
+- /crypto-currencies/currencies (GET)
+- /crypto-currencies/receivables (GET)
+- /crypto-messages/messages/:id (GET)
+- /crypto-portfolio-chart/wallets/:id (GET)
+- /crypto-portfolio-item-chart (GET)
+- /crypto-socket (WebSocket)
+- /crypto-stocks/account (GET)
+- /crypto-stocks/accounts/:id (GET)
+- /crypto-stocks/movements/:id (GET)
+- /crypto-stocks/orders/:id (GET/POST)
+- /crypto-stocks/quote/:id (GET)
+- /crypto-trading/account (GET)
+- /crypto-trading/accounts/:id (GET)
+- /crypto-trading/orders/:id (GET/POST)
+- /crypto-trading/quote/:id (GET)
+- /crypto-transactions/:id (GET)
+- /crypto-transactions/build-crypto-transaction (POST)
+- /crypto-transactions/get-crypto-transaction/:id (GET)
+- /crypto-transactions/get-crypto-transaction/by-reference-id/:id (GET)
+- /crypto-transactions/get-transaction-details/:id (GET)
+- /crypto-transactions/init-crypto-transaction (POST)
+- /crypto-transactions/sign-crypto-transaction (POST)
+- /crypto-v3-socket (WebSocket)
+- /crypto-vaults/accounts (GET)
+- /crypto-vaults/approvals/:id (GET)
+- /crypto-vaults/vaults (GET)
+- /crypto-wallets/icons (GET)
+- /crypto-wallets/wallets (GET)
+- /crypto-wallets/wallets/:id (GET)
+- /crypto-wallets/wallets/accounts (GET)
+- /crypto-wallets/wallets/import (POST)
+- /crypto-wallets/wallets/keys (POST)
+
+Security & Identity:
+- /key-management/:id (GET)
+- /passkeys (GET)
+- /passkeys/auth (POST)
+- /passkeys/register (POST)
+- /sca (GET)
+- /sca/clear-sca (POST)
+
+User & Settings:
+- /blocks (GET, block users)
+- /buddies/contacts (GET)
+- /buddies/referrals/current (GET)
+- /buddies/referrals/redeem/:code (POST)
+- /buddies/referrals/referees (GET)
+- /client-region (GET, no auth)
+- /frontdesk (GET)
+- /frontdesk/transactions (GET)
+- /marketing-widgets (GET, no auth)
+- /nfts (GET)
+- /nfts/:id (GET)
+- /users/browsers (GET/POST)
+- /users/change-phone (POST)
+- /users/info (GET)
+- /users/user (GET)
+- /vaults/groups (GET)
+- /vaults/snapshot (GET)
+
+Legal & System:
+- /app-version (GET)
+- /csrf (GET, no auth)
+- /health (GET, no auth)
+- /legal/crypto-wallet-import-terms (GET, no auth)
+- /legal/order-execution-policy (GET, no auth)
+- /legal/privacy-policy (GET, no auth)
+- /analytics/entry (POST, no auth)
+- /analytics/organisms (POST, no auth)
+- /websocket (WebSocket)
 
 ## 16. Next Steps for Continued Testing
 
