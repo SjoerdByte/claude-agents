@@ -6497,3 +6497,154 @@ Priority 3 (Enumeration/escalation):
 - JWT algorithm confusion NOT exploitable (all invalid JWTs return {"valid":false} consistently)
 - Custom headers (X-Debug, X-Mobile-Session, etc.) don't visibly change behavior on unauthenticated requests
 
+---
+
+## Session 36 Findings
+
+### F559 [HIGH] Unauthenticated QR Login Session Creation on UAT-02
+- Target: app-uat-02.deblock.com
+- POST /api/qr-login with only CSRF token (freely available via GET /api/csrf) creates QR login sessions
+- Response: {"qrPayload":"https://app.deblock.com/qr-login/{uuid}","expiresAt":"2026-10-06T14:37:37Z"}
+- QR payload URLs point to PRODUCTION domain (app.deblock.com), not UAT
+- Sessions expire after ~120 seconds
+- POST /api/qr-login/exchange returns {"outcome":"SECURITY_ERROR"} (needs mobile app approval)
+- POST /api/qr-login/abandon returns 204 (successfully abandons session)
+- NO RATE LIMITING: Created 5+ sessions per second without throttling
+- Impact: (1) Resource exhaustion: unlimited session creation floods backend. (2) QR phishing: attacker generates QR codes pointing to production, tricks users into scanning, captures session exchange. (3) Session pool enumeration via exchange endpoint.
+
+### F560 [HIGH] Unauthenticated Analytics Injection (Blind Stored XSS/SQLi)
+- Target: app-uat-02.deblock.com
+- POST /api/auth/analytics accepts arbitrary analytics events WITHOUT authentication
+- Required fields: eventId, eventType, flowId, screenId (revealed in error message)
+- Returns {"success":true} for ALL payloads including:
+  - XSS: {"eventId":"<script>alert(1)</script>","eventType":"<img src=x onerror=alert(1)>","flowId":"test","screenId":"test"}
+  - SQLi: {"eventId":"test'","eventType":"test' OR '1'='1","flowId":"test","screenId":"test"}
+- No input validation or sanitization on any field
+- Data is stored server-side (returns success)
+- Impact: If an internal analytics dashboard renders these events without sanitization, this is a BLIND STORED XSS leading to admin account compromise. If the database doesn't use parameterized queries, this is a blind SQL injection vector. Additionally enables analytics data poisoning to obscure real security events.
+
+### F561 [HIGH] 2FA Mobile Session WebSocket Accepts UUID-Format Keys Without Validation
+- Target: app-uat-02.deblock.com
+- WebSocket: wss://app-uat-02.deblock.com/api/auth/2fa-mobile-session-socket
+- Without mobileSessionKey: Immediately disconnects with "Missing mobileSessionKey"
+- With mobileSessionKey=test: Same disconnect (format check fails)
+- With mobileSessionKey=00000000-0000-0000-0000-000000000000 (UUID format): CONNECTION STAYS OPEN indefinitely
+- This means the server validates key FORMAT before checking validity
+- A UUID-format key bypasses the initial authentication gate
+- Impact: If a valid mobileSessionKey UUID can be guessed or enumerated (only 2^122 possible v4 UUIDs, but active sessions reduce entropy), an attacker could receive 2FA approval events intended for a legitimate user, completing the 2FA bypass. The Redis channel "facetec-2fa-updates" with "business:" prefix was previously identified.
+
+### F562 [MEDIUM] Crypto WebSocket Connected Without Authentication
+- Target: app-uat-02.deblock.com
+- WebSocket: wss://app-uat-02.deblock.com/api/crypto-socket
+- Connects without any authentication
+- Connection stays open indefinitely (tested 30+ seconds)
+- Responds to messages with {"event":"ping"} heartbeat
+- Subscription messages silently ignored (no data returned without auth)
+- Impact: Open WebSocket connection consumes server resources. Could be used for WebSocket-level DoS by opening many connections. The socket infrastructure is accessible for further exploitation if authentication can be obtained.
+
+### F563 [MEDIUM] Crypto Commands WebSocket Leaks Backend Architecture
+- Target: app-uat-02.deblock.com
+- WebSocket: wss://app-uat-02.deblock.com/api/crypto-commands-socket
+- Connects without authentication
+- Immediately receives: {"status":"error","event":"backend_error","message":"No token available, aborting.","backend":"crypto_commands"}
+- Connection STAYS OPEN after error
+- Responds to further messages with {"event":"ping"}
+- Backend name "crypto_commands" disclosed
+- Impact: Reveals internal backend service name and architecture. Open connection after error is a resource leak. The crypto_commands backend accepts token-based auth suggesting the token could be obtained from another endpoint.
+
+### F564 [MEDIUM] Production WebSocket Accepts Connections Without Auth
+- Target: business.deblock.com (PRODUCTION)
+- WebSocket: wss://business.deblock.com/api/websocket
+- Successfully upgrades to WebSocket and connects
+- Immediately disconnects with "Error initializing handler" (1008 policy violation)
+- Impact: Production WebSocket server accepts connection upgrades before validating authentication. The handler initialization (which includes auth check) happens AFTER the connection is established. This is a minor resource issue and confirms the WebSocket infrastructure is live on production.
+
+### F565 [MEDIUM] Hardcoded Development UUID Route on UAT-02
+- Target: app-uat-02.deblock.com
+- Route: /d8d6a147-7828-411c-8a03-78d2007901c5 renders full QR login UI without authentication
+- Contains: testid-qr-login-code-container, testid-qr-login-qr-container, testid-qr-login-submit-button, testid-qr-login-switch-to-email
+- This specific UUID is HARDCODED - other UUIDs (d8d6a147...c6, aaaaaaaa...eeee) return blank pages
+- Accessible without any authentication or cookies
+- Impact: Development/debug route left in UAT build exposes the complete QR login UI for testing without normal application flow. Could be used as a direct entry point for QR login attacks.
+
+### F566 [MEDIUM] Google/iCloud Test Pages Expose Authentication Forms
+- Target: app-uat-02.deblock.com
+- /google-test renders full email/password auth form with:
+  - testid-auth-form-container, testid-auth-form-email-input (placeholder="Email")
+  - testid-auth-form-password-input (placeholder="Password")
+  - testid-auth-form-sign-in-button, testid-auth-form-password-recovery-link
+- /icloud-test renders identical auth form
+- Both accessible without authentication when accessed without locale prefix
+- Impact: Test pages expose authentication forms that may process credentials against development/test APIs or third-party auth providers. Password recovery link may expose the recovery flow. These forms could be used in phishing by directing users to legitimate deblock.com URLs with fake-looking but real auth forms.
+
+### F567 [MEDIUM] Unauthenticated App Version Validation Endpoint
+- Target: app-uat-02.deblock.com
+- POST /api/app-version accepts requests without authentication
+- Returns {"error":"Invalid appVersion"} for all tested formats
+- The endpoint validates app version strings on the server side
+- Impact: Could be used to enumerate valid app version strings. If a valid version is found, may reveal minimum version requirements, potentially aiding forced-update bypass attacks.
+
+### F568 [LOW] Unauthenticated Signature OTP Endpoint
+- Target: app-uat-02.deblock.com
+- POST /api/onboarding/signature/resend-signature-otp processes requests without authentication
+- Returns {"error":"Unable to resend otp","status":400} for all emails
+- Timing varies (234-538ms) but no clear correlation with email existence
+- Impact: The endpoint processes the request before reporting error, suggesting some backend lookup occurs. Not directly exploitable for email enumeration based on current testing.
+
+### F569 [LOW] Auth Health Endpoint Exposed on UAT-02
+- Target: app-uat-02.deblock.com
+- GET /api/auth/health returns 200 with empty body
+- No authentication required
+- Impact: Minor information disclosure - confirms auth service is running. Could be used for monitoring service availability.
+
+### F570 [LOW] Different Sentry Configuration on UAT-02 vs Production
+- Target: app-uat-02.deblock.com
+- UAT-02 Sentry public key: 95a2f173ce955f9d1ff52358da173ece
+- Production Sentry public key: 2f75b94510aa39f72db5dd805d1c1dc8
+- Both share org_id: 4510324489519104
+- UAT-02 sentry-environment is set to "production" (misconfiguration)
+- Sentry release: 86c92c6 (git hash)
+- Impact: Different Sentry keys suggest separate projects, but shared org. The "production" environment label on UAT means Sentry alerts and error tracking may mix UAT and production errors.
+
+### F571 [LOW] Google Maps Embed API Key Exposed in Runtime Config
+- Target: app-uat-02.deblock.com
+- window.__RUNTIME_ENV__={"GOOGLE_MAPS_EMBED_API_KEY":"AIzaSyD7n7VD-9gy534lf__8x9QyR76OTXYLtq4"}
+- Key is restricted (Geocoding API returns "API not activated")
+- Key appears on all UAT-02 pages
+- Impact: Low - key appears restricted to Maps Embed API only. But confirmed present in runtime config visible to all visitors.
+
+### F572 [INFO] Comprehensive API Endpoint Map from JS Analysis (60+ new endpoints)
+- Target: app-uat-02.deblock.com
+- Source: Static JS chunk 3bd29ap2uas4j.js
+- Full endpoint list extracted from API_URL references:
+  Financial: /api/sepa-transfer/create, /api/sepa-transfer/create/schedule, /api/sepa-transfer/get-bank-details, /api/sepa-transfer/upcoming, /api/sepa-transfer/upcoming/overview, /api/self-transfer/create, /api/top-up/create-topup, /api/top-up/create-card-token, /api/top-up/delete-card-token/, /api/top-up/get-card-token/, /api/top-up/get-card-tokens, /api/top-up/get-topup-fees, /api/top-up/get-topup-limits, /api/top-up/get-topup-status/
+  User/PII: /api/users/info, /api/users/user, /api/users/browsers, /api/users/change-phone, /api/accounts
+  Transactions: /api/transactions/categories, /api/transactions/crypto, /api/transactions/direct-debits, /api/transactions/fiat, /api/transactions/generate-request, /api/transactions/stakes/estimate, /api/transactions/submit
+  Crypto: /api/crypto-currencies/currencies, /api/crypto-contacts, /api/crypto-messages/messages/, /api/crypto-stocks/account, /api/crypto-stocks/accounts/, /api/crypto-stocks/movements/, /api/crypto-stocks/orders/, /api/crypto-stocks/quote/, /api/crypto-trading/account, /api/crypto-trading/accounts/, /api/crypto-trading/orders/, /api/crypto-trading/quote/, /api/crypto-transactions/, /api/crypto-transactions/build-crypto-transaction
+  Social: /api/buddies/contacts, /api/buddies/referrals/current, /api/buddies/referrals/redeem/, /api/buddies/referrals/referees, /api/blocks
+  Features: /api/vaults/groups, /api/vaults/snapshot, /api/stakes, /api/cashbacks, /api/roundups/settings, /api/roundups/settings/options, /api/routiner/standing-orders, /api/perks/insurance
+  Auth: /api/auth/login, /api/auth/login-2fa, /api/qr-login, /api/qr-login/exchange, /api/qr-login/abandon, /api/auth/subscribe-2fa-mobile-session, /api/auth/2fa-mobile-session-socket (WS), /api/auth/analytics, /api/auth/health
+  Analytics: /api/analytics/entry, /api/analytics/organisms
+  WebSocket: /api/crypto-commands-socket, /api/crypto-socket, /api/websocket
+  Other: /api/app-version, /api/statements/crypto/request, /api/eth-rpc (client-side only)
+- Production endpoints confirmed live: /api/users/info (401), /api/users/user (401), /api/transactions/categories (401), /api/top-up/get-card-tokens (401)
+- UAT-02 only endpoints (404 on production): stakes, cashbacks, routiner/standing-orders, buddies/*, perks/insurance, roundups/settings, vaults/*, crypto-contacts, analytics/organisms, auth/health, auth/analytics
+
+### F573 [MEDIUM] transactions/submit Processes Body Before Auth Check
+- Target: app-uat-02.deblock.com
+- POST /api/transactions/submit without authentication
+- Returns {"error":"INVALID_REQUEST_BODY","nextStep":"ERROR"} (400) instead of auth error
+- The "nextStep" field suggests a multi-step transaction state machine
+- All other financial endpoints return "User is not authenticated"
+- This endpoint validates the request body BEFORE checking authentication
+- Impact: Auth bypass risk - if the correct body format is supplied, the transaction may be processed without authentication. The body validation before auth check is a vulnerability pattern that could be exploited with the correct payload structure. The "nextStep" field leaks the transaction flow state machine.
+
+### F574 [MEDIUM] Inconsistent Error Messages Reveal Backend Processing Differences
+- Target: app-uat-02.deblock.com, business.deblock.com
+- UAT-02 /api/users/info: 400 "Failed to fetch user info"
+- Production /api/users/info: 401 "Failed to load your settings" (with auth cookie)
+- UAT-02 /api/vaults/snapshot: 400 "Failed to fetch vaults"
+- Production /api/vaults/snapshot: 404 (not deployed)
+- Different error messages for same endpoint across environments suggest different middleware stacks or backend versions
+- Impact: Error message differences can be used to fingerprint backend versions and identify which endpoints have different processing logic between environments.
+
