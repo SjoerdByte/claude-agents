@@ -1965,7 +1965,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 402 | LOW | UAT-02 auth/refresh token mechanism disclosure | app-uat-02.deblock.com | CWE-200 | YES | "No token or refresh token found" reveals dual-token auth mechanism. |
 | 403 | MEDIUM | UAT-02 onboarding endpoints reached with empty body + e2e | app-uat-02.deblock.com | CWE-287 | YES | resend-onboarding-otp, signature/resend-signature-otp, signature/complete all reach business logic without auth. |
 
-Total: 442 findings (15 critical, 100 high, 172 medium, 102 low, 60 info)
+Total: 451 findings (15 critical, 105 high, 175 medium, 102 low, 61 info)
 
 ## 15. Session Notes
 
@@ -2006,7 +2006,7 @@ Total: 442 findings (15 critical, 100 high, 172 medium, 102 low, 60 info)
 - Session 24: Idempotency key mechanism fully reverse-engineered: UUID v4 in JSON body as "idempotencyKey" field (header and cookie NOT read by Rails). Production business-onboarding POST auth bypass with email enumeration (F386): 404 vs 400 differential reveals whether email exists, endpoint excluded from rate limiting. Production crypto-simulation unauthenticated infrastructure disclosure (F387): "No simulation node" without params, "Forbidden" with params (two validation layers). UAT-02 e2e cookies + body idempotency key bypass TWO middleware layers (F389): idempotency middleware AND first auth layer bypassed, blocked at third layer "User is not authenticated". Production auth/logout confirmed working without auth (F390). Business-onboarding rate-limit exclusion confirmed (F391). Crypto-simulation inconsistent validation order (F392). Production users/info distinct business logic error without auth (F393). Multiple endpoints reach Apigee via 405 without auth (F394). Updated proxy domain accessibility map (F395). Total findings: 395.
 - Session 25: CRITICAL: UAT-02 bank-details empty body + e2e cookies returns HTTP 200 (F397) -- deepest penetration on any endpoint, full auth bypass reaching bank details business logic with incorrect 200 status code. UAT-02 cards empty body + e2e cookies = 500 "Failed to create card" -- server attempts card creation (F396). Three production WebSocket endpoints /api/websocket, /api/crypto-commands-socket, /api/crypto-business-socket return 426 without auth (F398). New production endpoints: frontdesk/features, frontdesk/accounts, users/user, users/browsers all reach Rails backend (F399). UAT-02 auth/analytics injection via e2e cookies confirmed: {"success":true} with arbitrary data including PII fields (F400). UAT-02 facetec deeper validation "Device key identifier is required" with e2e cookies (F401). Auth/refresh reveals dual-token mechanism (F402). Onboarding OTP and signature endpoints reached via empty body + e2e (F403). JS bundle analysis: new API routes discovered including crypto-business, frontdesk/features, frontdesk/accounts, pricing/plans, users/user, users/browsers. Production auth/analytics not proxied (404). Recovery.deblock.com: /api/health bypasses Basic Auth returning full 404 page with JS chunk refs, deployment hash 5E8rtjZA7HwmI0gYYO_WP, CSP with Solana RPC endpoints. Staging.deblock.com: pure Vercel marketing site, no API proxy. Total findings: 403.
 - Session 28: CSRF tokens confirmed NOT invalidated on logout (F427): same token works for SCA clear after session logout, tokens are purely time-based not session-bound. SCA clear accepts arbitrary input types without validation (F428): wildcard, arrays, integers, extra params all accepted. Production passkeys endpoint surface mapped (F429): 9 sub-routes discovered via 502/401 error differentials, DELETE is correct method for list/delete. Passkeys/auth processes WebAuthn without session (F430). Rails _method parameter confirmed as second method override vector (F431). CDN1 S3 bucket recon (F432): eu-west-3, directories /terms/, /assets/, /documents/, /legal/, /privacy/, /kyc/, /onboarding/ confirmed. Fixed rate yield terms PDFs publicly accessible (F433). UAT-02 vaults endpoint reaches backend (F434). New UAT-02 endpoints: features, perks/insurance, promo-codes, referrals (F435). Fireblocks custodian integration fully exposed in client JS (F436). Complete wallet key export escrow system implementation revealed (F437): AES decryption, Ed25519 PKCS8 seed extraction, deriveMissingChainKeys, Fireblocks key handling. PGP handling in client (F438). Separate crypto microservice detected behind Apigee on UAT-02 (F439): /api/crypto/keys causes Unexpected EOF from live service. Recovery tool architecture disclosed (F440). 8+ blockchain network configs exposed (F441). Downloaded and analyzed 48 new UAT-02 JS chunks (3.8MB total). IP-based auth bypass tested (not vulnerable). Host header injection tested (not vulnerable). CORS confirmed restrictive (no ACAO headers). Total findings: 441.
-- Session 29: Production auth cookie presence bypass (F442): __Host-auth-token cookie with ANY value (even "x") bypasses first auth middleware on 8+ production endpoints. Without cookie: generic "Unauthorized". With cookie: business-logic errors like "Failed to load your profile", "Failed to load bank details", "Failed to create card". Affected: users/user, users/browsers, bank-details, frontdesk/accounts, frontdesk/features, cashbacks/lifetime, cards, passkeys/register. JWT verification in Rails catches invalid token at second layer, but first middleware bypass reveals internal service names and error paths. Parameter fuzzing with auth cookie bypass tested on bank-details, cards, users/browsers, passkeys/register - no data leak from params. JWT alg:none partially processed. Total findings: 442.
+- Session 29: Production auth cookie presence bypass (F442): __Host-auth-token cookie with ANY value (even "x") bypasses first auth middleware on 8+ production endpoints. Without cookie: generic "Unauthorized". With cookie: business-logic errors like "Failed to load your profile", "Failed to load bank details", "Failed to create card". Affected: users/user, users/browsers, bank-details, frontdesk/accounts, frontdesk/features, cashbacks/lifetime, cards, passkeys/register. JWT verification in Rails catches invalid token at second layer, but first middleware bypass reveals internal service names and error paths. Parameter fuzzing with auth cookie bypass tested on bank-details, cards, users/browsers, passkeys/register - no data leak from params. JWT alg:none partially processed. Full API endpoint map extracted from UAT-02 JS (120+ routes). Key-management escrow resend endpoint reaches wallet recovery system via auth cookie bypass on production (F443). Top-up card tokens endpoint auth bypass (F444). All 10 production card sub-routes reach backend (F445). UAT client-region returns region data without auth (F446). UAT-02 transactions/submit (F447) and transactions/generate-request (F448) bypass auth. Analytics organisms leaks 6 field names (F449). 120+ API routes extracted from JS (F450). 20+ UAT-02 endpoints reach backend (F451). Total findings: 451.
 - Session 21: Production auth bypass confirmation + CSRF double-submit exploitation + expanded endpoint enumeration. CRITICAL: Production /api/auth/create-2fa-mobile-session confirmed auth bypassed (returns FaceTec business logic error with CSRF double-submit). Production /api/auth/logout confirmed no auth check (CSRF logout attack, returns 200 "Logged out"). UAT new auth bypasses: onboarding/signature/resend-signature-otp (F348), onboarding/signature/complete (F349). CSRF double-submit technique confirmed: freely obtain token from /api/csrf, set both x-csrf-token header and __Host-csrf cookie to bypass all 403 Forbidden on POST endpoints. All 11 production /api/cards/* sub-routes reach Rails backend (list, create, freeze, unfreeze, details, pin, limits, activate, deactivate, order, virtual). Production 2fa-mobile-session-socket exists (426 Upgrade Required without auth). UAT /api/health exposes buildId + timestamp. UAT .well-known files expose Android signing certs + iOS app config + QR login deep links. app.deblock.com returns 410 Gone (decommissioned). Total findings: 360.
 - Session 20: UAT auth bypass pattern expansion + JS deep analysis + production comparison. Downloaded and analyzed all 52 UAT JS chunks. Discovered auth cookie name "auth-token" with support cookies "idempotency-key" and "reference-id", plus E2E test cookies "e2e-mock-browser-id" and "e2e-user-type-override". Extracted 45 internal application flows including create-virtual-card-flow, create-physical-card-flow, export-wallet-keys-flow. Mapped 100+ API endpoint URL constructions from JS. Found 5 additional UAT auth bypass endpoints beyond cards: create-2fa-mobile-session returns "FaceTec 2FA session not found" (F331), users/info returns "Failed to fetch user info" (F332), subscribe-2fa-mobile-session returns "Missing mobileSessionKey" (F333), 2fa-mobile-session-socket returns 426 without auth (F334), onboarding/resend-onboarding-otp returns "Unable to resend otp" (F335). Production comparison: auth/check-session returns {"valid":false} (session oracle, F336), CSRF endpoint returns token without auth (F337), most API routes return Next.js 404 (not proxied). Next.js version 16.2.11 in Turbopack bootstrap (F344). CSRF token format confirmed: timestamp.expiry.nonce.hmac, __Host-csrf cookie, 30-min validity. Total findings: 345.
 - Session 19: UAT API deep exploitation. CRITICAL finding: /api/cards auth bypass via empty body. POST with no body (Content-Length: 0 or missing) returns 500 "Failed to create card" (business logic) instead of 400 "User is not authenticated". Auth middleware requires valid JSON body >= 2 bytes to activate. 100% reproducible (5/5 consistent). Cards-specific, NOT on production (403 Forbidden regardless). auth/analytics confirmed as blind injection sink: XSS, SQLi, SSTI, mass assignment (userId/role extra fields) all accepted with {"success":true}, zero rate limiting (20/20), 10KB+ payloads. CSP violation /api/csp-violation accepts arbitrary reports (204 No Content, log poisoning). Path traversal via %2e%2e encoding: /api/auth/%2e%2e/%2e%2e/admin redirects to /admin (Apigee normalizes then redirects). UAT health endpoint exposes buildId+timestamp unauthenticated. New live backend endpoints: passkeys/register, sepa-transfer/create, self-transfer/create, roundups/settings. UAT CSP reveals Prelude (phone verify), Ledger (hardware wallet), Adjust (marketing), StakeKit. Marketing-widgets leaks deeplink names (iban, wallet, exchange_btc, referrals). Google Drive appdata scope in JS for wallet recovery. Robots.txt hides /Resume, /WphYZ/, /Jordan, /miggy developer paths. auth/facetec-2fa 307 redirect leaks full CSP service map. Production company endpoints no longer routed through business.deblock.com frontend (404). Total findings: 330.
@@ -5208,6 +5208,107 @@ F442. HIGH - Production Auth Cookie Presence Bypass on 8+ Endpoints
 - CWE: CWE-287 (Improper Authentication), CWE-863 (Incorrect Authorization)
 - CVSS: 6.5 (Medium-High) - auth middleware bypass on production, mitigated by second JWT layer
 - Reproducible: YES (100%, tested with multiple cookie values)
+
+F443. HIGH - Production Key-Management Escrow Resend Endpoint Auth Bypass
+- POST /api/key-management/{userId}/resend on business.deblock.com (production)
+- With __Host-auth-token=x cookie: returns {"error":"Failed to send the recovery key","status":401}
+- Without auth cookie: returns {"error":"Unauthorized","status":401}
+- The auth cookie bypass reaches the wallet key escrow recovery system
+- On UAT-02 without any auth: returns {"error":"Failed to retrieve escrow token"} (deeper penetration)
+- On UAT-02 with invalid UUID format: returns {"error":"Invalid user ID"} (format validation before auth)
+- UUID format validated before authentication on UAT-02 (UUID vs non-UUID gives different error)
+- Same error for all valid UUIDs (no user enumeration differential)
+- This endpoint triggers the escrow token retrieval for wallet key recovery
+- If escrow token retrieval succeeds, wallet private keys could be re-sent to the user's email
+- CWE: CWE-287 (Improper Authentication), CWE-306 (Missing Authentication for Critical Function)
+- Reproducible: YES
+
+F444. HIGH - Production Top-Up Card Tokens Endpoint Auth Bypass
+- GET /api/top-up/get-card-tokens on business.deblock.com (production)
+- With __Host-auth-token=x: returns {"error":"Failed to load your cards","status":401}
+- Without auth cookie: returns {"error":"Unauthorized","status":401}
+- Auth cookie bypass reaches the card token loading business logic
+- Card tokens are used for top-up operations (adding money via saved cards)
+- CWE: CWE-287 (Improper Authentication)
+- Reproducible: YES
+
+F445. HIGH - Production Card Sub-Routes All Reach Backend via Auth Cookie Bypass
+- All 10 card sub-routes on business.deblock.com respond with business-logic errors using auth cookie bypass:
+- GET /api/cards/list, /api/cards/freeze, /api/cards/unfreeze, /api/cards/details,
+  /api/cards/pin, /api/cards/limits, /api/cards/activate, /api/cards/deactivate,
+  /api/cards/order, /api/cards/virtual: all return {"error":"Failed to load card","status":401}
+- These reach card management business logic (freeze, activate, PIN, limits)
+- CWE: CWE-287 (Improper Authentication)
+- Reproducible: YES
+
+F446. MEDIUM - UAT Client-Region Endpoint Returns Data Without Auth
+- GET /api/client-region on app-uat-02.deblock.com and app-uat-01.deblock.com
+- Returns {"region":"US"} without any authentication
+- Same response regardless of Accept-Language header
+- Not proxied on production business.deblock.com (returns 404)
+- Reveals server geolocation/region configuration
+- CWE: CWE-200 (Exposure of Sensitive Information)
+- Reproducible: YES
+
+F447. HIGH - UAT-02 Transaction Submit Auth Bypass
+- POST /api/transactions/submit on app-uat-02.deblock.com
+- Empty body: returns {"error":"FAILED_TO_ACCEPT_TRANSACTION","nextStep":"ERROR"}
+- With JSON body: returns {"error":"INVALID_REQUEST_BODY","nextStep":"ERROR"}
+- Works with or without e2e cookies (auth bypassed via empty body)
+- Reaches transaction acceptance business logic without authentication
+- Different error format than other endpoints (nextStep field suggests state machine)
+- CWE: CWE-306 (Missing Authentication for Critical Function)
+- Reproducible: YES
+
+F448. HIGH - UAT-02 Transaction Generate-Request Auth Bypass
+- POST /api/transactions/generate-request on app-uat-02.deblock.com
+- Empty body: returns {"error":"INTERNAL_SERVER_ERROR"}
+- With JSON body: returns {"error":"INVALID_REQUEST_BODY"}
+- Reaches transaction request generation without authentication
+- 500 error on empty body suggests exception in business logic processing
+- CWE: CWE-306 (Missing Authentication for Critical Function)
+- Reproducible: YES
+
+F449. MEDIUM - UAT-02 Analytics Organisms Verbose Validation Leak
+- POST /api/analytics/organisms on app-uat-02.deblock.com with CSRF
+- Returns detailed validation: {"error":"Invalid payload","details":["eventName is required","eventId is required","timestamp is required","domain is required","action is required","sourceOrganism is required"]}
+- Six required field names leaked without authentication
+- Reveals internal analytics event schema
+- analytics/entry returns {"error":"Invalid entrySource"} (validates before auth)
+- CWE: CWE-200 (Exposure of Sensitive Information)
+- Reproducible: YES
+
+F450. INFO - Complete API Endpoint Map Extracted from Client JS (120+ Routes)
+- Full API endpoint map extracted from UAT-02 JS chunks using ${t.API_URL}/ pattern
+- 120+ unique API routes discovered including:
+  - Crypto: crypto-wallets/wallets/{id}/keys, crypto-wallets/wallets/{id}/manage, crypto-wallets/wallets/import, crypto-wallets/wallets/accounts, crypto-wallets/icons
+  - Trading: crypto-trading/accounts/{id}/buy, crypto-trading/accounts/{id}/sell, crypto-trading/orders/{id}/cancel, crypto-trading/quote/{id}/accept
+  - Stocks: crypto-stocks/accounts/{id}/buy/sell/deposits/withdrawals, crypto-stocks/orders/{id}/cancel, crypto-stocks/quote/{id}/accept, crypto-stocks/movements/{id}/accept
+  - Transactions: crypto-transactions/init-crypto-transaction, build-crypto-transaction, sign-crypto-transaction, get-transaction-details/{id}, {txId}/browser-keys/{browserId}
+  - Vaults: crypto-vaults/vaults, crypto-vaults/accounts, crypto-vaults/approvals/{id}/submit
+  - Messaging: crypto-messages/messages/{id}, crypto-messages/messages/{id}/submit
+  - Banking: sepa-transfer/create, sepa-transfer/create/schedule, sepa-transfer/get-bank-details, sepa-transfer/upcoming, self-transfer/create
+  - Top-up: top-up/create-topup, create-card-token, get-card-tokens, get-topup-fees, get-topup-limits, get-topup-status/{id}, delete-card-token/{id}
+  - Key mgmt: key-management/{id}/resend
+  - DCA: dca/standing-orders, routiner/standing-orders
+  - Social: buddies/contacts, buddies/referrals/current, buddies/referrals/redeem/{id}, buddies/referrals/referees
+  - NFTs: nfts, nfts/{id}/estimate
+  - Misc: due-gateway, legal/crypto-wallet-import-terms, legal/order-execution-policy, legal/privacy-policy, qr-login, qr-login/abandon, qr-login/exchange, marketing-widgets, app-version
+  - Statements: statements, statements/{id}, statements/crypto/request
+  - Categories: transactions/categories, transactions/crypto, transactions/fiat, transactions/direct-debits, transactions/stakes/estimate, transactions/generate-request, transactions/submit
+  - Vaults: vaults/groups, vaults/snapshot
+  - Round-ups: roundups/settings, roundups/settings/options
+  - WebSockets: websocket, crypto-socket, crypto-v3-socket, crypto-commands-socket
+- CWE: CWE-200
+- Reproducible: YES (JS analysis)
+
+F451. MEDIUM - 20+ UAT-02 Endpoints Reach Apigee Backend Without Auth
+- Multiple new endpoints confirmed routing through Apigee to Rails backend on UAT-02:
+- GET endpoints returning 400 "User is not authenticated": crypto-wallets/wallets, crypto-wallets/icons, crypto-vaults/accounts, crypto-vaults/vaults, pots, stakes, buddies/contacts, buddies/referrals/current, top-up/get-card-tokens, top-up/get-topup-limits, crypto-wallets/wallets/import
+- GET endpoints returning Apigee 405: crypto-wallets/wallets/keys, crypto-wallets/wallets/accounts, crypto-trading/account, crypto-stocks/account, dca/standing-orders, sepa-transfer/upcoming, frontdesk/transactions, top-up/get-topup-fees, analytics/organisms
+- POST endpoints returning 400 with e2e+CSRF: top-up/create-topup, top-up/create-card-token, self-transfer/create, sepa-transfer/create, crypto-transactions/init-crypto-transaction
+- CWE: CWE-200 (Backend Architecture Disclosure)
+- Reproducible: YES
 
 ## 16. Next Steps for Continued Testing
 
