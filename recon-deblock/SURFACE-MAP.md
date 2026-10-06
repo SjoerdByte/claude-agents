@@ -5958,6 +5958,54 @@ F504. MEDIUM - Apigee Fault Response Disclosure With Full Error Codes
 - Impact: API gateway error handling disclosure; internal architecture revelation; error code enumeration
 - Reproducible: YES
 
+F505. CRITICAL - Alchemy API Key Exposed in Client-Side JS Works on 6+ Production Blockchain Mainnets
+- Key: PxkB3B-1-0bFVQHY4Gy5e9V_-FwVj7Pt
+- Confirmed working chains:
+  - Ethereum mainnet: eth_blockNumber returns current block
+  - Base mainnet: eth_blockNumber returns current block
+  - Polygon mainnet: eth_blockNumber returns current block
+  - Arbitrum mainnet: eth_blockNumber returns current block
+  - Optimism mainnet: eth_blockNumber returns current block
+  - Solana mainnet: getBlockHeight returns current height
+- Enhanced APIs confirmed working:
+  - NFT API (v3): getContractMetadata returns full NFT collection data
+  - alchemy_getTokenBalances: Returns token holdings for any address
+  - alchemy_getAssetTransfers: Returns full transaction history for any address
+- Key is hardcoded in production client-side JavaScript bundles
+- Impact: Full blockchain read access across 6 production chains; monitor Deblock user wallet transactions; enumerate token balances for any address; query NFT ownership; exhaust API quota causing billing impact; track Deblock operational wallets
+- Severity: CRITICAL (production API key with full blockchain read access, financial data exposure)
+- Reproducible: YES
+
+F506. HIGH - Sentry Event Injection via Exposed Public DSN Keys on Both Production and UAT Projects
+- Production DSN key: 2f75b94510aa39f72db5dd805d1c1dc8 (accepts events via ingest.us.sentry.io)
+- UAT DSN key: 95a2f173ce955f9d1ff52358da173ece (accepts events via ingest.us.sentry.io)
+- Both accept events at Sentry org 4510324489519104
+- Events accepted at multiple project IDs (0, 1, 2, 3, 4, 5, 7, 10, 100, 1000)
+- EU ingest endpoint (ingest.de.sentry.io) also accepts events
+- Tested: POST to /api/{project_id}/envelope/ with public key returns 200 {"id":"..."}
+- Impact: Inject fake error events into production Sentry monitoring; flood with noise during real attacks; create false alerts; potentially inject XSS payloads rendered in Sentry dashboard; pollute error analytics and release health metrics
+- Reproducible: YES
+
+F507. MEDIUM - Firebase Project Information Disclosure via API Key
+- Firebase API key: AIzaSyCLIgRdnsXP6OnH7_qQNdGEZuzdyKMCa94
+- Firebase project ID: 248017251601
+- Firebase project name: deblock-ltd
+- Authorized domains: localhost, deblock-ltd.firebaseapp.com, deblock-ltd.web.app
+- Firebase Auth: Account creation is ADMIN_ONLY_OPERATION (properly restricted)
+- Password login: DISABLED (PASSWORD_LOGIN_DISABLED)
+- Firestore: Not configured (project names deblock, deblock-production, deblock-app all return 404)
+- Impact: Firebase project name and authorized domains disclosed; confirms Firebase is used for specific auth flows (not primary auth); localhost in authorized domains is a development artifact
+- Reproducible: YES
+
+F508. LOW - UAT-02 /monitoring Path Processed as i18n Locale Instead of Sentry Tunnel
+- POST /monitoring on app-uat-02.deblock.com returns 200 with HTML body
+- HTML response contains: <html lang="monitoring"> (treated as locale by i18n middleware)
+- Production /monitoring returns 404 (path not matched)
+- The Sentry tunnel configured in client-side JS (sentryTunnel: "/monitoring") is not functional
+- On UAT-02 the path is caught by the Next.js catch-all page route instead
+- Impact: Sentry errors from UAT-02 clients may fail to report through tunnel; i18n middleware accepts arbitrary path segments as locale codes
+- Reproducible: YES
+
 ## 16. Next Steps for Continued Testing
 
 Priority 1 (Critical - requires second test account):
