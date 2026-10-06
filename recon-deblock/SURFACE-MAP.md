@@ -1782,8 +1782,14 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 226 | MEDIUM | business.deblock.com CSP reveals fraud/KYC infrastructure | - | CWE-200 | YES | Regula, Sardine (incl sandbox), Dotfile |
 | 227 | MEDIUM | business.deblock.com Sentry trace metadata in HTML reveals release hash | - | CWE-200 | YES | sentry-release=54029c4, trace IDs |
 | 228 | INFO | app.deblock.com returns HTTP 410 Gone | - | CWE-200 | YES | Service decommissioned, x-request-id exposed |
+| 229 | HIGH | Alchemy API enables enumeration of 718 NFT holder wallet addresses | - | CWE-200 | YES | Full wallet addresses, transaction graph mapping |
+| 230 | HIGH | Alchemy API key active on 6 blockchain networks including Solana | - | CWE-798 | YES | Cross-chain surveillance and billing abuse |
+| 231 | MEDIUM | WordPress WAF identified as MalCare bot protection | - | CWE-693 | YES | XMLRPC brute force bypasses WAF entirely |
+| 232 | MEDIUM | Firebase authorizedDomains includes localhost | - | CWE-16 | YES | Auth flows accept localhost as valid origin |
+| 233 | LOW | Elementor CSS serves custom fonts over HTTP (mixed content) | - | CWE-319 | YES | MITM font replacement on HTTPS pages |
+| 234 | LOW | Elementor preview mode accessible without authentication | - | CWE-284 | YES | Draft content and theme config exposed |
 
-Total: 228 findings (12 critical, 46 high, 80 medium, 53 low, 39 info)
+Total: 234 findings (12 critical, 48 high, 82 medium, 55 low, 39 info)
 
 ## 15. Session Notes
 
@@ -1812,7 +1818,7 @@ Total: 228 findings (12 critical, 46 high, 80 medium, 53 low, 39 info)
 - Session 10: WordPress REST API 14-namespace deep dive. Confirmed BackWPup v1/v2 full route structure (chatbot-context, startbackup, authenticate_cloud, storagelistcompact, getjobslist). Elementor v1 35+ routes including form-submissions, form-submissions/export, send-event, user-data/current-user. Elementor Pro refresh-loop/refresh-search don't check auth before param validation. CSP violation endpoint (/api/csp-violation) accepts arbitrary POST data with zero rate limiting (50 rapid requests all 204). UpdraftPlus backup directory confirmed (403, not 404). staging.deblock.com back online with CORS wildcard (Access-Control-Allow-Origin: *). Apple AASA and Android assetlinks expose app config and signing certs. Status page wildcard CSP. Alchemy key confirmed getTokenBalances for NFT contract (holds HEX token). No source maps, no debug endpoints, no open redirects on QR login. Total findings: 207.
 - Session 11: recovery.deblock.com deep dive. Downloaded 8 JS chunks without auth (static assets bypass Basic Auth). i18n files reveal complete wallet recovery architecture: AES decryption of email-delivered backup files, private key + seed phrase output, Solana transaction signing and broadcasting. RSC flight data leaks route tree, component IDs, Vercel deployment ID. WordPress wp-cron.php publicly accessible (can trigger scheduled tasks including backups). WordPress version confirmed 7.1.2 via wp-links-opml.php OPML generator. XMLRPC pingback SSRF returns consistent faultCode 0 (no differential exploitation). Total findings: 211.
 - Session 11 continued: Sentry DSN PII injection confirmed on both endpoints (F213). Health endpoint build ID + CSP map (F212). bursted-bubbles.deblock.com NFT site shares API keys (F214). WordPress heartbeat (F215), BackWPup dir (F216), Elementor form (F217), support subdomain (F218). Total findings: 218.
-- Session 12: WordPress REST API full enumeration. Users endpoint open without auth exposing admin-deblock profile, Gravatar SHA256 hash, Elementor metadata (F219). 197 media files enumerable including brand photos, videos, ZIP archives, Elementor screenshots (F220-221). REST API root discovery exposes 14 namespaces including backwpup, elementor-ai, elementor-one (F222). BackWPup REST API route disclosure reveals 20 backup infrastructure endpoints with DB schema parameters and cloud auth flow (F223). Elementor One route disclosure reveals plugin management surface with 7 plugin slugs, activate/deactivate/upgrade paths, theme management, connect flow (F224). business.deblock.com leaks CSP nonce in X-Nonce header (F225), reveals fraud/KYC infrastructure (Regula, Sardine, Dotfile) in CSP (F226), and exposes Sentry release hash 54029c4 in HTML trace metadata (F227). app.deblock.com returns HTTP 410 Gone confirming service decommissioning (F228). All BackWPup/Elementor data endpoints require auth. No hardcoded secrets in business.deblock.com Turbopack bundles. Total findings: 228.
+- Session 12: WordPress REST API full enumeration. Users endpoint open without auth exposing admin-deblock profile, Gravatar SHA256 hash, Elementor metadata (F219). 197 media files enumerable including brand photos, videos, ZIP archives, Elementor screenshots (F220-221). REST API root discovery exposes 14 namespaces including backwpup, elementor-ai, elementor-one (F222). BackWPup REST API route disclosure reveals 20 backup infrastructure endpoints with DB schema parameters and cloud auth flow (F223). Elementor One route disclosure reveals plugin management surface with 7 plugin slugs, activate/deactivate/upgrade paths, theme management, connect flow (F224). business.deblock.com leaks CSP nonce in X-Nonce header (F225), reveals fraud/KYC infrastructure (Regula, Sardine, Dotfile) in CSP (F226), and exposes Sentry release hash 54029c4 in HTML trace metadata (F227). app.deblock.com returns HTTP 410 Gone confirming service decommissioning (F228). All BackWPup/Elementor data endpoints require auth. No hardcoded secrets in business.deblock.com Turbopack bundles. Alchemy API NFT holder enumeration returns 718 wallet addresses (F229). Alchemy key confirmed on 6 chains including Solana mainnet (F230). WAF identified as MalCare, XMLRPC brute force bypasses it (F231). Firebase authorizedDomains includes localhost (F232). Elementor mixed content HTTP fonts (F233). Elementor preview mode without auth (F234). Total findings: 234.
 
 ### 12e. Business App API Route Map (from JS bundle analysis)
 
@@ -3170,6 +3176,52 @@ Session 12 negative results:
 - debug.log returns 403, error_log returns 404, phpinfo files all 404
 - Elementor media import endpoint requires auth (no SSRF)
 - Business app JS bundles (Turbopack) contain no hardcoded secrets (server-side env injection)
+
+## 12ah. Alchemy Cross-Chain Enumeration, WAF ID, Firebase Config, Elementor Mixed Content (Session 12 continued)
+
+F229 - Alchemy API enables enumeration of 718 NFT holder wallet addresses (HIGH):
+- getOwnersForContract on contract 0x52dbdc20FD57b339aFf65Ac8e07c43aa680b690a returns 718 unique wallet addresses
+- Each holder's full wallet address is exposed, enabling: balance lookups, transaction history analysis, cross-chain tracking
+- Combined with getAssetTransfers, an attacker can map the complete transaction graph of all Deblock NFT holders
+- Minting wallet identified: 0xcf54505400f8aa58901c8a75b21d38e7d67be816 (0.002446 ETH balance, no ERC-20 tokens)
+- This is a privacy violation for 718 Deblock customers whose wallet activity can be surveilled
+
+F230 - Alchemy API key confirmed active on 6 blockchain networks including Solana mainnet (HIGH):
+- Key PxkB3B-1-0bFVQHY4Gy5e9V_-FwVj7Pt works on: Ethereum, Polygon, Arbitrum, Optimism, Base (EVM chains) and Solana mainnet
+- Enhanced API methods confirmed working: getTokenBalances, getNFTs, getAssetTransfers, getOwnersForContract, getTokenMetadata
+- Solana access via solana-mainnet.g.alchemy.com confirmed active
+- Cross-chain surveillance capability: an attacker can track any wallet across all 6 networks using a single key
+- Billing abuse potential multiplied across 6 networks (enhanced API calls consume more compute units)
+- Previously reported as Ethereum-only (F97/F161), then 10 networks (F196); Solana confirmation adds non-EVM chain
+
+F231 - WordPress WAF identified as MalCare bot protection (MEDIUM):
+- WAF blocking write operations returns HTML with mnx-page, mnx-app CSS classes and CAPTCHA
+- Identified as MalCare/BlogVault WAF (malcare.com/blogvault.com products)
+- WAF intercepts: POST/PUT/DELETE with write payloads, form submissions, suspicious user agents
+- WAF does NOT intercept: GET requests to REST API, XMLRPC POST requests, admin-ajax POST without suspicious payloads
+- XMLRPC multicall brute force bypasses WAF entirely (confirmed 349+ password attempts without blocking)
+- REST API enumeration (users, media, pages) bypasses WAF
+- Knowing the WAF product allows targeted bypass research
+
+F232 - Firebase project config exposes authorizedDomains including localhost (MEDIUM):
+- Firebase project deblock-ltd (ID 248017251601) config returns authorizedDomains: localhost, deblock-ltd.firebaseapp.com, deblock-ltd.web.app
+- localhost in authorizedDomains means Firebase auth flows (OAuth redirects, sign-in callbacks) accept localhost as a valid origin
+- An attacker on the same network can intercept Firebase auth tokens by redirecting through localhost
+- Firebase auth configuration: PASSWORD_LOGIN_DISABLED, phone auth OPERATION_NOT_ALLOWED
+- Project API Key: AIzaSyCLIgRdnsXP6OnH7_qQNdGEZuzdyKMCa94
+
+F233 - Elementor CSS serves custom font files over HTTP causing mixed content (LOW):
+- post-6.css on brand.deblock.com references Geist font files via HTTP URLs (not HTTPS)
+- Font URLs: http://brand.deblock.com/wp-content/uploads/elementor/custom-icons/... (HTTP, not HTTPS)
+- On HTTPS pages, browsers block or warn about mixed content (HTTP resources on HTTPS page)
+- Mixed content fonts can be intercepted/replaced by MITM attacker on the network
+- Indicates Elementor's custom font upload saved HTTP URLs in the database
+
+F234 - Elementor preview mode accessible without authentication (LOW):
+- /?elementor-preview=56 on brand.deblock.com returns full page rendering without authentication
+- CSS files for all known post IDs serve without auth: post-6, 17, 56, 105, 216, 223, 570, 572
+- Preview mode may expose draft content or unpublished page revisions
+- Elementor global CSS (global.css, frontend-lite.min.css, post-6.css) reveals theme configuration including colors, fonts, breakpoints
 
 ## 16. Next Steps for Continued Testing
 
