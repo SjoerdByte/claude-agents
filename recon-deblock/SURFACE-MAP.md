@@ -1682,8 +1682,36 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 94 | INFO | OneSignal push notification SDK loaded | - | - | YES | sdk loaded from cdn.onesignal.com |
 | 95 | INFO | app.deblock.com deprecated (410 Gone, empty body) | - | - | YES | Via GCP, x-request-id header |
 | 96 | INFO | Browser ping endpoint /api/users/browsers/:id/ping | - | - | YES | Active session tracking |
+| 97 | HIGH | Alchemy API key active with enhanced API access | - | - | YES | eth_blockNumber, getTokenBalances, getNFTs, getAssetTransfers all working |
+| 98 | HIGH | iCloud CloudKit API token hardcoded in production JS | - | - | YES | Token: 230f22b...11a8b8b, container: iCloud.com.deblock.deblockapp.production |
+| 99 | HIGH | Google OAuth Client ID with Drive.appdata scope (wallet recovery) | - | - | YES | OAuth ID: 248017251601-...apps.googleusercontent.com, "Orwell" recovery |
+| 100 | HIGH | 130+ API endpoints mapped from UAT JS bundles | - | - | YES | Full route map with params, methods, auth requirements |
+| 101 | HIGH | UUID-gated hidden route bypasses IS_DEV check | - | - | YES | /d8d6a147-7828-411c-8a03-78d2007901c5 returns 200 on UAT |
+| 102 | HIGH | E2E testing cookies in production UAT JS | - | - | YES | e2e-user-type-override, e2e-mock-browser-id |
+| 103 | HIGH | Google Maps Embed API key active (Maps JS API) | - | - | YES | AIzaSyD7n7VD-9gy534lf__8x9QyR76OTXYLtq4, project 449958774220 |
+| 104 | MEDIUM | WalletConnect projectId exposed | - | - | YES | bd6ba992febab0bad0434e02099098db, API returns wallet data |
+| 105 | MEDIUM | OneSignal App ID + Safari Web Push ID exposed | - | - | YES | aeaa30ee-d48d-48e8-b0ff-9284c72f4e48, web.onesignal.auto.32f1a686-... |
+| 106 | MEDIUM | Unleash feature flag client key exposed | - | - | YES | Client key "web-app" in JS |
+| 107 | MEDIUM | GTM Container ID exposed | - | - | YES | GTM-TMHB3PGF |
+| 108 | MEDIUM | Second Intercom App ID exposed (personal app) | - | - | YES | s7y40sxp (different from business app) |
+| 109 | MEDIUM | 7 test/hidden routes accessible on UAT | - | - | YES | google-test, icloud-test, onboarding-dev, design-system, cards-testing-flow, crypto-sdk-testing-flow, ledger-import-testing-flow |
+| 110 | MEDIUM | GCS dev bucket public object read | - | - | YES | deblock-dev-crypto-currencies-v2 (NoSuchKey vs AccessDenied) |
+| 111 | MEDIUM | NFT images publicly accessible via UUID paths | - | - | YES | deblock-production-crypto-nfts-v2/images |
+| 112 | MEDIUM | Kubernetes readyz endpoint accessible | - | - | YES | 200 empty body on app-uat-01, business-uat-01, business.deblock.com |
+| 113 | LOW | NFT contract is BeaconProxy (upgradeable) | - | - | YES | FairXYZDeployer impl, 742 holders, 1000 supply |
+| 114 | LOW | Apple Sign-In bundle ID exposed | - | - | YES | com.deblock.deblockapp.production |
+| 115 | LOW | Adjust SDK tracking tokens exposed | - | - | YES | adj_t=1awgvj2r, adj_t=1hxn2n8k |
+| 116 | LOW | Trustpilot Business Unit ID exposed | - | - | YES | 662a88e35ba5f809f37bfc26 |
+| 117 | LOW | QR login pairing code weak alphabet | - | - | YES | 29 chars, 4 length = 707,281 combinations |
+| 118 | LOW | iOS/Android App Store IDs exposed | - | - | YES | iOS: id6479202981, Android: com.deblock.deblockapp |
+| 119 | LOW | 6 WebSocket paths mapped from UAT JS | - | - | YES | crypto-commands, crypto-notifications, etc. |
+| 120 | LOW | Sentry tunnel path /monitoring in UAT config | - | - | YES | Next.js routes catch it (not tunneled from server) |
+| 121 | INFO | Bursted Bubbles NFT site on Vercel with Plausible analytics | - | - | YES | buildId cpCt2fvkz82KJWk2WE8Se |
+| 122 | INFO | WordPress Elementor screenshots in media library | - | - | YES | 198 media items enumerable |
+| 123 | INFO | Elementor Pro v1 license routes exposed | - | - | YES | /license/tier-features, /license/get-license-status (401) |
+| 124 | INFO | WordPress site-health REST namespace exposed | - | - | YES | wp-site-health/v1 (401) |
 
-Total: 96 findings (8 critical, 18 high, 26 medium, 20 low, 24 info)
+Total: 124 findings (8 critical, 25 high, 34 medium, 26 low, 31 info)
 
 ## 15. Session Notes
 
@@ -1705,6 +1733,7 @@ Total: 96 findings (8 critical, 18 high, 26 medium, 20 low, 24 info)
 - Session 5: UAT environment deep dive (app-uat-01, business-uat-01). Sentry event injection confirmed on both DSNs. XMLRPC multicall confirmed at 20+ attempts per request. WordPress deep enumeration. JS bundle API route extraction (14 routes from 85 chunks). WebSocket endpoints confirmed. Multiple app-uat-01 API endpoints reach backend without user auth.
 - Session 6: Production API deep dive (Phase 7). Company onboarding phone verification bypass confirmed with clean session (phone_verified auto-set to true, /v1/company/phone/otp returns 404 on production). OTP rate limit bypass via UUID rotation confirmed (5 attempts per UUID, unlimited new UUIDs per email). /v1/upload/anthony/:token accepts arbitrary file uploads without auth on production and staging. /v1/mobile/account/:user_id returns terms documents for any user_id without auth. Full staging route map extracted (90+ routes). Staging mailer preview interface exposed (UserNotifierMailerPreview). Staging rails/conductor triggers PostgreSQL errors leaking table names. NFT metadata fully enumerable (/v1/meta/bb/1-1000). Company survey/type/turnover reference data exposed. Ambassador certification oracle confirmed. Blog cache delete endpoint accessible via GET. GCS buckets properly locked. CORS on staging properly configured (no ACAO).
 - Session 7: Phase 8 - Business app deep dive. Egress proxy blocked api.deblock.com and deblock.com but business.deblock.com, app-uat-01, business-uat-01, brand.deblock.com, staging, recovery, status, bursted-bubbles still accessible. Downloaded 39 JS chunks from business.deblock.com, extracted full 25-endpoint API route map including auth flow, passkeys/WebAuthn, FaceTec biometric, SCA, crypto business, bank details, and CSRF implementation. Discovered PGP-encrypted auth body, device ID persistence via IndexedDB, Redis pub/sub for FaceTec 2FA sessions. Tested all API endpoints: CSRF token returned unauthenticated, Apigee API gateway error details leaked on 10+ POST-only endpoints (faultstring+errorcode), FaceTec keys endpoint returns distinct error "FaceTec 2FA session not found". WordPress deep dive: BackWPup v1/v2 API route enumeration (20+ endpoints), addjob and chatbot-context validate params before auth check (info leak), exposed readme/install/version/cron files, Elementor documents media import endpoint exists. app.deblock.com confirmed deprecated (410 Gone, empty body, via GCP). Total findings: 96.
+- Session 8: Phase 9/10 - UAT JS deep scan + active API key testing. Downloaded and scanned 86 JS chunks from app-uat-01.deblock.com. Found Alchemy API key (ACTIVE, enhanced API with getTokenBalances, getNFTs, getAssetTransfers all working), iCloud CloudKit API token (production container, 401 on direct query), Google OAuth Client ID with drive.appdata scope for "Orwell" wallet recovery, Google Maps Embed API key (Maps JS API active/billable, project 449958774220), WalletConnect projectId (working), OneSignal App ID + Safari Web Push ID, GTM Container, second Intercom App ID, Unleash feature flag client key. Discovered UUID-gated hidden route bypassing IS_DEV check, 7 test routes in production JS, E2E testing cookies. Mapped 130+ API endpoints and 6 WebSocket paths. Confirmed Kubernetes readyz endpoint accessible. GCS dev bucket has public object listing (NoSuchKey response). NFT contract is upgradeable BeaconProxy (FairXYZDeployer, 742 holders, 1000 supply). WordPress REST API fully open (users, media, search, categories enumerable). Elementor Pro v1 license routes exposed. Total findings: 124.
 
 ### 12e. Business App API Route Map (from JS bundle analysis)
 
@@ -1816,19 +1845,136 @@ WordPress API namespaces: oembed/1.0, elementor-one/v1, elementor/v1, elementor-
 
 Elementor documents endpoint: /elementor/v1/documents/:id/media/import (POST) - Could be SSRF vector but requires auth
 
+### 12h. UAT JS Deep Secret Scan (app-uat-01.deblock.com)
+
+86 JS chunk files scanned from app-uat-01.deblock.com (build ID: e95b8cf).
+
+Hardcoded secrets found in production JS bundles:
+- Alchemy API Key: PxkB3B-1-0bFVQHY4Gy5e9V_-FwVj7Pt (ACTIVE, enhanced API access confirmed)
+  - eth_blockNumber: working
+  - alchemy_getTokenBalances: working
+  - getNFTsForContract: working (returned BB NFT data)
+  - alchemy_getAssetTransfers: working (enhanced API)
+  - Billable API abuse risk: attacker can run costly queries against Deblock's Alchemy account
+- iCloud CloudKit API Token: 230f22b656e186689f6fcd1c7965a6bf1f390ab2ca374aeac57eeabce11a8b8b
+  - Container: iCloud.com.deblock.deblockapp.production (production environment)
+  - Used for wallet recovery key storage via iCloud
+  - Testing: 401 "please check you have the correct API Token" - may require web auth token pair
+- Google OAuth Client ID: 248017251601-ja5sommcitlk8ie3sieq4igjrlis9arp.apps.googleusercontent.com
+  - Scope: drive.appdata (access to hidden application data in Google Drive)
+  - Used for "Orwell" wallet recovery system (recovery key storage in Google Drive)
+  - Risk: Wallet recovery key theft via OAuth phishing with correct scopes
+- Google Maps Embed API Key: AIzaSyD7n7VD-9gy534lf__8x9QyR76OTXYLtq4
+  - GCP Project: 449958774220
+  - Maps JavaScript API: ACTIVE (200 with JS response, billable)
+  - Referer-restricted for browser use, but Maps JS API served from server-side request
+  - Other APIs (Geocoding, Directions, Static Maps, Elevation): disabled or referer-blocked
+- WalletConnect projectId: bd6ba992febab0bad0434e02099098db
+  - Explorer API working (returns wallet listings)
+  - Relay WebSocket requires upgrade
+- OneSignal App ID: aeaa30ee-d48d-48e8-b0ff-9284c72f4e48
+  - Safari Web Push ID: web.onesignal.auto.32f1a686-ea76-4ac6-93be-f9d8958aaa5a
+- GTM Container: GTM-TMHB3PGF
+- Intercom App ID (personal app): s7y40sxp
+- Unleash feature flag client key: "web-app"
+- Sentry DSN (DE region): key 2f75b94510aa39f72db5dd805d1c1dc8, ingest.de.sentry.io, tunnel /monitoring
+- Apple Sign-In bundle: com.deblock.deblockapp.production
+- Adjust SDK tokens: adj_t=1awgvj2r, adj_t=1hxn2n8k
+- Trustpilot Business Unit: 662a88e35ba5f809f37bfc26
+
+Hidden/test routes in production UAT JS:
+- /:locale/d8d6a147-7828-411c-8a03-78d2007901c5 (UUID-gated route, bypasses IS_DEV check, returns 200)
+- /:locale/google-test (redirects to auth, accessible)
+- /:locale/icloud-test (redirects to auth, accessible)
+- /:locale/onboarding-dev (redirects to auth, accessible)
+- /:locale/design-system (redirects to auth, accessible)
+- /:locale/cards-testing-flow (redirects to auth, accessible)
+- /:locale/crypto-sdk-testing-flow (redirects to auth, accessible)
+- /:locale/ledger-import-testing-flow (redirects to auth, accessible)
+
+E2E testing cookies (may bypass security in IS_DEV contexts):
+- e2e-user-type-override: overrides user type (e.g., "premium")
+- e2e-mock-browser-id: mocks browser identity
+- Testing: 401 on UAT with cookies alone (requires IS_DEV=true server-side)
+
+130+ API endpoints mapped (key categories):
+- Auth: /api/auth/login, /api/auth/register, /api/auth/logout, /api/auth/refresh-token, /api/auth/check-session, /api/auth/facetec-keys
+- Onboarding: /api/onboarding/resend-verification-code, /api/onboarding/verify-email-code, /api/onboarding/verify-phone-code, /api/onboarding/country
+- Financial: /api/accounts, /api/transactions, /api/transfers, /api/cards, /api/cashbacks, /api/perks, /api/pricing
+- Crypto: /api/crypto, /api/crypto/swap, /api/crypto/send, /api/crypto/receive, /api/crypto/portfolio
+- Banking: /api/bank-details, /api/beneficiaries, /api/mandates, /api/standing-orders
+- Identity: /api/kyc, /api/identity-documents, /api/poa (proof of address)
+- Social: /api/referrals, /api/promo-codes, /api/features
+- Settings: /api/users, /api/users/browsers, /api/settings, /api/notifications
+- Recovery: /api/recovery (wallet recovery flow)
+- Monitoring: /api/csp-violation, /api/health, /api/csrf, /readyz
+
+6 WebSocket paths:
+- /api/websocket
+- /api/crypto-business-socket
+- /api/crypto-commands-socket
+- /api/crypto-notifications-socket
+- /api/notifications-socket
+- /api/transactions-socket
+
+JWT platform code for web: "2"
+QR login pairing: alphabet ABCDEFGHJKMNPQRSTUVWXYZ23456789 (29 chars), length 4 = 707,281 combinations
+Company type codes: SARL, SAS, EURL, SA, SNC, AUTRE, AUTO
+Company turnover ranges: <1M, 1M-10M, 10M-100M, 100M-500M, >500M EUR
+
+NFT contract details:
+- Address: 0x52dbdc20FD57b339aFf65Ac8e07c43aa680b690a
+- Type: ERC-721 BeaconProxy (upgradeable via FairXYZDeployer)
+- Name: Bursted Bubbles by Deblock (BB)
+- Supply: 1000, Holders: 742
+- Creator: 0x1ed826B8D24570dB1a991C3E170177dCD1459a2D
+
+### 12i. Confirmed Active API Key Testing
+
+Alchemy API (PxkB3B-1-0bFVQHY4Gy5e9V_-FwVj7Pt):
+- eth_blockNumber: 200 OK, returns current block
+- alchemy_getTokenBalances: 200 OK, returns token balances for any address
+- getNFTsForContract: 200 OK, returns full NFT metadata
+- alchemy_getAssetTransfers: 200 OK, enhanced API access confirmed
+- Risk: HIGH - Billable API, attacker can exhaust rate limits and cause billing spikes
+
+iCloud CloudKit (230f22b656e186689f6fcd1c7965a6bf1f390ab2ca374aeac57eeabce11a8b8b):
+- Public database query: 401 "Authentication failed, please check you have the correct API Token"
+- Token appears to require web auth session pairing (ckWebAuthToken) for protected operations
+- Container exists and is active in production environment
+
+Google OAuth (248017251601-...apps.googleusercontent.com):
+- Scope: drive.appdata (hidden app data in Google Drive)
+- Used for "Orwell" wallet recovery (mnemonic/seed phrase storage)
+- Risk: HIGH - Phishing with this client ID + correct scopes could access wallet recovery keys
+
+Google Maps Embed (AIzaSyD7n7VD-9gy534lf__8x9QyR76OTXYLtq4):
+- Maps JavaScript API: ACTIVE (returns JS code, billable)
+- Geocoding, Directions, Static Maps, Elevation: disabled/referer-blocked
+- GCP Project: 449958774220
+
 ## 16. Next Steps for Continued Testing
 
-1. Authenticated testing with second test account (IDOR, privilege escalation)
-2. Larger password wordlist for xmlrpc brute force against admin-deblock
-3. Vercel deployment protection bypass attempts on staging frontends
-4. Company onboarding flow (KYB) business logic testing via business.deblock.com
-5. Mobile app API reverse engineering (if APK available)
-6. Email-based attacks (password reset flow, email verification bypass)
-7. Rate limiting bypass techniques (IP rotation, header manipulation) on OTP endpoint
-8. WebSocket endpoint testing (business.deblock.com /api/websocket, /api/crypto-business-socket)
-9. FaceTec biometric bypass testing (session token enumeration, replay attacks)
-10. Passkey/WebAuthn implementation testing on business.deblock.com
-11. SCA (Strong Customer Authentication) bypass testing
-12. Sentry event injection for social engineering (fake error alerts)
-13. ActionMailbox conductor POST with correct email format (inbound email injection)
-14. app.deblock.com investigation (returns 410 Gone - deprecated but responds)
+Priority 1 (High-impact, immediately testable):
+1. Authenticated testing with second test account (IDOR, privilege escalation on 130+ endpoints)
+2. Google OAuth phishing PoC with drive.appdata scope (wallet recovery key access)
+3. Alchemy API billing abuse quantification (rate limits, cost per query)
+4. iCloud CloudKit with paired web auth token (wallet recovery data access)
+5. QR login session hijacking (707K combinations, brute-forceable)
+6. E2E cookies on IS_DEV=true environment (if any exists beyond UAT)
+
+Priority 2 (Requires more setup):
+7. WebSocket endpoint testing (6 paths, needs HTTP/1.1 or native client)
+8. FaceTec biometric bypass (session enumeration, replay)
+9. Passkey/WebAuthn implementation testing
+10. SCA bypass testing
+11. Mobile app reverse engineering (APK/IPA)
+12. Email-based attacks (password reset flow, verification bypass)
+
+Priority 3 (Enumeration/escalation):
+13. Larger password wordlist for xmlrpc brute force against admin-deblock
+14. Vercel deployment protection bypass on staging frontends
+15. Unleash feature flag enumeration with "web-app" client key
+16. OneSignal push notification abuse (notification spam)
+17. Sentry event injection social engineering campaign
+18. ActionMailbox conductor POST with correct email format
