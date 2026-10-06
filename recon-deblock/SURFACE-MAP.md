@@ -8823,3 +8823,66 @@ Priority 3 (Enumeration/escalation):
 - All 1000 NFT images are directly accessible on cdn1.deblock.com without authentication
 - NFT contract: 0x52dbdc20fd57b339aff65ac8e07c43aa680b690a (Ethereum mainnet)
 - Impact: LOW - Public NFT metadata as expected for blockchain-based assets. The bonus tracking attributes reveal internal reward program structure. The sequential ID pattern allows trivial enumeration of the entire collection.
+
+### F742 [CRITICAL] Company Onboarding Flow Accessible Without Authentication on Production with Phone Auto-Verification
+- Target: web-api.deblock.com
+- The entire company onboarding flow is accessible without any authentication on PRODUCTION:
+  1. POST /v1/company/country `{"uuid":"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa","country_code":"FR"}` -> Creates session with new UUID
+  2. POST /v1/company/email `{"uuid":"<new_uuid>","email":"any@email.com"}` -> Sets email, sends OTP
+  3. POST /v1/company/type `{"uuid":"<new_uuid>","type_code":"SAS"}` -> Sets company type
+  4. POST /v1/company/phone `{"uuid":"<new_uuid>","phone":"+33600000000"}` -> Sets phone AND AUTO-VERIFIES (phone_verified: true)
+  5. POST /v1/company/name `{"uuid":"<new_uuid>","name":"Any Company Name"}` -> Sets company name
+  6. POST /v1/company/website `{"uuid":"<new_uuid>","url":"https://example.com"}` -> Sets website, extracts domain
+  7. POST /v1/company/turnover `{"uuid":"<new_uuid>","max_value":1000000}` -> Sets financial turnover
+  8. GET /v1/company/countries -> Returns 41+ supported countries (French territories + EU)
+  9. GET /v1/company/types?uuid=<uuid> -> Returns company type options (SARL, SAS, EURL, SA, SNC, AUTO, AUTRE)
+  10. GET /v1/company/turnovers?uuid=<uuid> -> Returns turnover brackets (up to >500M EUR)
+  11. GET /v1/company/surveys?uuid=<uuid> -> Returns survey options (CARD, CRYPTO, PAYMENT, NO_SOLUTION, SELF_CUSTODY)
+- CRITICAL ISSUE: Phone number is automatically set to phone_verified:true without any OTP verification
+  - The phone endpoint took ~3 seconds (vs ~350ms for other fields) suggesting backend processing
+  - But the phone/otp endpoint returns 404 on production (route removed or never deployed)
+  - Any phone number is accepted and auto-verified
+- Session data returned after each step reveals full PII schema:
+  ```
+  {uuid, country_code, lang, type, email, email_verified, phone, phone_verified,
+   first_name, last_name, company_name, raw_url, domain_name, fiat_turnover, survey_answers}
+  ```
+- The UUID format is UUIDv4, generated server-side (not predictable, but session hijacking is possible if UUID leaks)
+- Unlimited sessions can be created (no rate limiting on session creation)
+- Impact: CRITICAL - An attacker can create unlimited company onboarding sessions on production without any authentication. The phone auto-verification bypasses a critical security control. Combined with F738 (ambassador OTP brute-force), this could enable:
+  1. Mass creation of fake company onboarding applications (DoS on compliance team)
+  2. Email bombing via OTP sends to arbitrary email addresses
+  3. Data harvesting of the full onboarding schema and business logic
+  4. If email OTP is brute-forced (see F743), potentially completing the full company account creation flow
+  5. The phone auto-verification means one of the two verification factors is already bypassed
+
+### F743 [HIGH] Company Email OTP Brute-Force with Weak Lockout on Production
+- Target: web-api.deblock.com/v1/company/email/otp
+- The company email OTP verification has a lockout, but it is weak:
+  - 5 failed attempts allowed before lockout
+  - Lockout duration: 1 hour ("Please wait 1 hour before trying again!")
+  - After 1 hour, 5 more attempts are allowed
+  - Clear oracle: "The code provided is incorrect!" for wrong codes
+- Comparison with ambassador OTP (F738):
+  - Ambassador OTP: NO lockout at all (25+ attempts tested, all processed)
+  - Company OTP: 5 attempt lockout with 1 hour cooldown
+- The lockout is likely per UUID/email combination, meaning:
+  - An attacker can create a new session for the same email to reset the counter
+  - With unlimited sessions (F742), effective rate limiting is 5 * unlimited sessions = unlimited attempts
+  - Even with per-email tracking, 120 attempts per day (5 per hour) could crack a 4-digit OTP in under 1 day
+- If OTP is 6 digits: 1,000,000 / 5 = 200,000 sessions needed (impractical per-email, but possible with session rotation)
+- If OTP is 4 digits: 10,000 / 5 = 2,000 sessions (feasible in hours)
+- Impact: HIGH - The weak lockout combined with unlimited session creation (F742) significantly reduces brute-force protection. An attacker could potentially verify any email address in the company onboarding flow.
+
+### F744 [MEDIUM] Staging Source Code Path Disclosure via Application Stack Traces
+- Target: web-api-staging.deblock.com
+- The staging development mode exposes application source code paths in stack traces:
+  - `app/controllers/application_controller.rb:51` in `return_fail` method
+  - `app/controllers/v1/company_controller.rb:260` in `check_type` method
+  - Error: `NoMethodError: undefined method 'to_i' for an instance of Hash`
+- The `check_type` method at line 260 reveals:
+  - The company type validation converts input to integer via `to_i`
+  - When a Hash is passed instead of a string/integer, it triggers a NoMethodError
+  - This reveals the expected input type (integer for type codes)
+- The return_fail method at line 51 reveals error handling logic
+- Impact: MEDIUM - Application code paths and method names are exposed. Combined with the full route table (F714), an attacker has a detailed map of the controller structure, method names, and input expectations, significantly reducing the effort needed for targeted exploitation.
