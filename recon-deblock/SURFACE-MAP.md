@@ -1802,7 +1802,13 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 245 | LOW | Sardine sandbox API accessible from production environment | - | CWE-200 | YES | Kubernetes default backend 404, HTTPS to HTTP redirect |
 | 246 | LOW | UAT CSP has insecure object-src data: directive | - | CWE-16 | YES | Allows data: URI objects, script-src unsafe-eval |
 
-Total: 246 findings (12 critical, 48 high, 85 medium, 61 low, 42 info)
+| 247 | MEDIUM | GCS production bucket contains enumerable crypto icon images | - | CWE-284 | YES | images/{symbol}.png readable, S3+CloudFront, AES256 |
+| 248 | MEDIUM | Intercom messenger API exposes app config and WebSocket endpoints | - | CWE-200 | YES | App name, help center, RTM token, visitor tracking |
+| 249 | MEDIUM | waitlist-api.deblock.com shares routes with staging backend | - | CWE-200 | YES | check/callback unauthenticated OK, 12 terms docs, blog slugs |
+| 250 | LOW | CDN terms documents publicly accessible via S3 | - | CWE-200 | YES | Privacy, fees, personal terms in EN/FR downloadable |
+| 251 | INFO | XMLRPC XXE blocked by WAF, entity expansion blocked by PHP 8.3 | - | CWE-611 | YES | WAF catches DOCTYPE, PHP libxml protection active |
+
+Total: 251 findings (12 critical, 48 high, 88 medium, 62 low, 43 info)
 
 ## 15. Session Notes
 
@@ -3335,6 +3341,53 @@ F246 - UAT CSP has insecure object-src data: directive (LOW):
 - Modern browsers ignore this for script execution (strict-dynamic overrides)
 - Also includes script-src 'unsafe-eval' which strict-dynamic overrides in modern browsers
 - Impact: Potential exploit vector in older browsers that don't support strict-dynamic, PDF/object injection
+
+## 12aj. CDN Object Enumeration, Intercom Config Leak, GCS Bucket Anonymous Reads (Session 13 continued)
+
+F247 - GCS production crypto bucket contains enumerable cryptocurrency icon images (MEDIUM):
+- Bucket deblock-production-crypto-currencies-v2 stores cryptocurrency icons at images/{symbol}.png
+- Confirmed accessible without authentication: eth.png, btc.png, usdt.png, usdc.png, eur.png, sol.png
+- Bucket is AWS S3 behind CloudFront (server: AmazonS3, via: cloudfront.net)
+- S3 bucket uses server-side encryption (AES256)
+- Directory listing properly blocked (AccessDenied), but individual objects readable anonymously
+- Object key etag for empty directories: d41d8cd98f00b204e9800998ecf8427e (empty MD5)
+- Impact: Object enumeration if naming pattern discovered, confirms anonymous read access, bucket region/encryption info
+
+F248 - Intercom messenger API exposes app configuration, WebSocket endpoints, and visitor tracking (MEDIUM):
+- GET https://api-iam.intercom.io/messenger/web/ping with app_id=s7y40sxp returns full Deblock app config
+- Exposed data: app name "Deblock", help center URL https://intercom.help/deblock, expected response delay (under 30 minutes)
+- Real-time messaging WebSocket endpoint with auth token exposed: nexus-websocket-a.intercom.io/pubsub/{token}
+- Visitor session automatically created: ID, anonymous_id, country_code, locale assigned without auth
+- Spaces configured: home, messages, tickets, tasks
+- Brand theme: color #0aa89a, secondary_color #0aa89a, alignment right, messenger_layout widget
+- messenger_security_enabled: true (identity verification required for user-level data)
+- inbound_conversations_disabled: true (visitors cannot initiate conversations)
+- Business app ID (6a71f4ca27877d0fb99ab6d1) returns "App Not Found" on both global and EU APIs
+- Impact: Customer support infrastructure mapping, WebSocket interception if auth token reusable
+
+F249 - waitlist-api.deblock.com shares routes with staging backend (MEDIUM):
+- Routes confirmed on waitlist-api that match staging backend: /v1/sitemap/blog/{locale}, /v1/update/ios/{token}, /v1/update/android/{token}, /v1/check/callback, /v1/mobile/account/{user_id}, /v1/company/types, /v1/company/turnovers
+- /v1/check/callback returns {"status":"ok"} on GET and POST without authentication (same as staging)
+- /v1/sitemap/blog/{en,fr,es} returns blog slugs without auth
+- /v1/mobile/account/{any} returns 12 terms documents with UUIDs, PDF URLs on cdn1.deblock.com, and label types (TERMS_PRE_KYC, TERMS_PRE_KYC_V2, TERMS_SIGNATURE, TERMS_SIGNATURE_V2, TERMS_QES, TERMS_QES_V2, TERMS_KYC_2_PRIVACY)
+- Terms versions reveal product evolution: v12.3 (Feb 2026), v13.1 (Mar 2026), v3_1-Techblock (Sep 2026), merged-terms (Sep 2026)
+- Ambassador endpoints return 403 (properly auth-gated on production)
+- Company email/phone OTP routes return 404 (not deployed on waitlist API)
+- Impact: Shadow API with unauthenticated endpoints, terms document enumeration, product version timeline
+
+F250 - CDN terms documents publicly accessible without authentication via S3 (LOW):
+- All terms PDFs referenced by the waitlist-api are directly downloadable from cdn1.deblock.com
+- EN and FR versions both accessible for: privacy policy, personal terms, fees document, user identity declaration
+- CDN is AWS CloudFront + S3 with AES256 server-side encryption
+- S3 directory objects return 200 with content-length: 0 and content-type: application/x-directory
+- S3 listing operations return AccessDenied (proper access control for listing)
+- Impact: Public legal documents as expected, but confirms S3 object-level anonymous read access pattern
+
+F251 - XMLRPC XXE blocked by MalCare WAF, entity expansion blocked by PHP 8.3 (INFO):
+- DOCTYPE with SYSTEM entity in XMLRPC POST triggers MalCare WAF 403 response
+- Billion Laughs entity expansion test: PHP returns "parse error. not well formed" (libxml entity expansion disabled since PHP 8.0)
+- Confirms: WAF catches XXE payloads, PHP's built-in XML protection active
+- However: WAF does NOT intercept XMLRPC multicall brute force (still bypassed after 487+ attempts)
 
 ## 16. Next Steps for Continued Testing
 
