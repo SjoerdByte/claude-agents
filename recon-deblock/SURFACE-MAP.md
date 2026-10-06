@@ -1789,7 +1789,20 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 233 | LOW | Elementor CSS serves custom fonts over HTTP (mixed content) | - | CWE-319 | YES | MITM font replacement on HTTPS pages |
 | 234 | LOW | Elementor preview mode accessible without authentication | - | CWE-284 | YES | Draft content and theme config exposed |
 
-Total: 234 findings (12 critical, 48 high, 82 medium, 55 low, 39 info)
+| 235 | MEDIUM | waitlist-api.deblock.com live Heroku Rails backend discovered | - | CWE-200 | YES | NFT metadata, terms docs, company routes, shadow API |
+| 236 | LOW | NFT metadata reveals CDN paths and game-trait attributes | - | CWE-200 | YES | Research Level, bonus claims, 1000 image URLs |
+| 237 | INFO | WebSocket endpoints changed from 502 to 426 Upgrade Required | - | CWE-200 | YES | Backend coming online, WebSocket testing now possible |
+| 238 | INFO | api.deblock.com changed from 000 to 502 Bad Gateway | - | CWE-200 | YES | Backend partially returning via GCP |
+| 239 | MEDIUM | WordPress XMLRPC exposes 80 methods including full CMS management | - | CWE-200 | YES | wp.editPost, wp.uploadFile, wp.setOptions, 44 wp.* methods |
+| 240 | LOW | WordPress login timing differential confirms username enumeration | - | CWE-203 | YES | ~140ms delta valid vs invalid, third independent vector |
+| 241 | LOW | WordPress Application Passwords success_url preserves external URLs | - | CWE-601 | YES | Social engineering via legitimate auth flow |
+| 242 | INFO | NFT contract owner wallet identified (0xd5ade...357d) | - | CWE-200 | YES | FairXYZ deployer, 0.067822 ETH |
+| 243 | MEDIUM | GCS production crypto bucket anonymous object reads if key known | - | CWE-284 | YES | NoSuchKey vs AccessDenied differential |
+| 244 | LOW | Kubernetes readyz probe accessible on UAT | - | CWE-200 | YES | 200 empty body on app-uat-01, business-uat-01, business |
+| 245 | LOW | Sardine sandbox API accessible from production environment | - | CWE-200 | YES | Kubernetes default backend 404, HTTPS to HTTP redirect |
+| 246 | LOW | UAT CSP has insecure object-src data: directive | - | CWE-16 | YES | Allows data: URI objects, script-src unsafe-eval |
+
+Total: 246 findings (12 critical, 48 high, 85 medium, 61 low, 42 info)
 
 ## 15. Session Notes
 
@@ -1819,6 +1832,8 @@ Total: 234 findings (12 critical, 48 high, 82 medium, 55 low, 39 info)
 - Session 11: recovery.deblock.com deep dive. Downloaded 8 JS chunks without auth (static assets bypass Basic Auth). i18n files reveal complete wallet recovery architecture: AES decryption of email-delivered backup files, private key + seed phrase output, Solana transaction signing and broadcasting. RSC flight data leaks route tree, component IDs, Vercel deployment ID. WordPress wp-cron.php publicly accessible (can trigger scheduled tasks including backups). WordPress version confirmed 7.1.2 via wp-links-opml.php OPML generator. XMLRPC pingback SSRF returns consistent faultCode 0 (no differential exploitation). Total findings: 211.
 - Session 11 continued: Sentry DSN PII injection confirmed on both endpoints (F213). Health endpoint build ID + CSP map (F212). bursted-bubbles.deblock.com NFT site shares API keys (F214). WordPress heartbeat (F215), BackWPup dir (F216), Elementor form (F217), support subdomain (F218). Total findings: 218.
 - Session 12: WordPress REST API full enumeration. Users endpoint open without auth exposing admin-deblock profile, Gravatar SHA256 hash, Elementor metadata (F219). 197 media files enumerable including brand photos, videos, ZIP archives, Elementor screenshots (F220-221). REST API root discovery exposes 14 namespaces including backwpup, elementor-ai, elementor-one (F222). BackWPup REST API route disclosure reveals 20 backup infrastructure endpoints with DB schema parameters and cloud auth flow (F223). Elementor One route disclosure reveals plugin management surface with 7 plugin slugs, activate/deactivate/upgrade paths, theme management, connect flow (F224). business.deblock.com leaks CSP nonce in X-Nonce header (F225), reveals fraud/KYC infrastructure (Regula, Sardine, Dotfile) in CSP (F226), and exposes Sentry release hash 54029c4 in HTML trace metadata (F227). app.deblock.com returns HTTP 410 Gone confirming service decommissioning (F228). All BackWPup/Elementor data endpoints require auth. No hardcoded secrets in business.deblock.com Turbopack bundles. Alchemy API NFT holder enumeration returns 718 wallet addresses (F229). Alchemy key confirmed on 6 chains including Solana mainnet (F230). WAF identified as MalCare, XMLRPC brute force bypasses it (F231). Firebase authorizedDomains includes localhost (F232). Elementor mixed content HTTP fonts (F233). Elementor preview mode without auth (F234). Total findings: 234.
+
+- Session 13: waitlist-api.deblock.com discovered as live Heroku Rails backend via Alchemy NFT metadata tokenUri (F235). Full endpoint enumeration: /v1/meta/bb/{1-1000} NFT metadata with game traits (F236), /v1/mobile/account/{any} terms docs, /v1/company/types and /v1/company/turnovers (UUID required), /v1/ambassador/certification (403), /v1/waitlist/status (403). CDN image paths cdn1.deblock.com/bbfinal/{1-1000}.png. WebSocket endpoints changed 502 to 426 (F237). api.deblock.com changed 000 to 502 (F238). WordPress XMLRPC 80 methods enumerated (F239). Login timing ~140ms differential for username enumeration (F240). Application Passwords success_url social engineering vector (F241). NFT contract owner wallet 0xd5ade...357d identified via eth_call (F242). GCS production bucket NoSuchKey vs AccessDenied differential (F243). Kubernetes readyz accessible (F244). Sardine sandbox API reachable (F245). UAT CSP object-src data: (F246). CORS testing all endpoints properly configured. WordPress batch API comment creation blocked. 20 more XMLRPC passwords tested (total 369+). Business RSC flight data build ID 26tbWezWroJnCCGBceFD9. X-Nonce header still leaking CSP nonce on business.deblock.com. Total findings: 246.
 
 ### 12e. Business App API Route Map (from JS bundle analysis)
 
@@ -3222,6 +3237,104 @@ F234 - Elementor preview mode accessible without authentication (LOW):
 - CSS files for all known post IDs serve without auth: post-6, 17, 56, 105, 216, 223, 570, 572
 - Preview mode may expose draft content or unpublished page revisions
 - Elementor global CSS (global.css, frontend-lite.min.css, post-6.css) reveals theme configuration including colors, fonts, breakpoints
+
+## 12ai. Waitlist API Discovery, WebSocket Status Change, WordPress Enumeration Extensions (Session 13)
+
+F235 - waitlist-api.deblock.com is a live undiscovered Heroku Rails backend (MEDIUM):
+- Discovered via Alchemy NFT metadata: tokenUri points to https://waitlist-api.deblock.com/v1/meta/bb/1
+- Not in the original 72-subdomain target list, previously unknown production backend
+- Running on Heroku (X-Runtime header, Heroku session ID c4c9725f-1ab0-44d8-820f-430df2718e11)
+- Ruby on Rails backend (X-Runtime, error format, route structure matches staging)
+- Confirmed endpoints: /v1/meta/bb/{1-1000} (NFT metadata, no auth), /v1/mobile/account/{any} (terms docs, no auth), /v1/company/types (needs UUID), /v1/company/turnovers (needs UUID), /v1/ambassador/certification (403), /v1/waitlist/status (403)
+- No CORS headers, proper security headers (X-Frame-Options, X-Content-Type-Options, X-XSS-Protection)
+- CDN image paths revealed: https://cdn1.deblock.com/bbfinal/{1-1000}.png
+- Impact: Shadow API surface, potential for additional route discovery, legacy infrastructure exposure
+
+F236 - NFT metadata reveals CDN image paths and game-trait attributes (LOW):
+- GET /v1/meta/bb/{1-1000} on waitlist-api.deblock.com returns full NFT attribute structure
+- Attributes include game-related traits: Research Level (integer), Welcome Bonus Claimed (boolean), Blocks Bonus Claimed (boolean)
+- Each NFT links to https://cdn1.deblock.com/bbfinal/{id}.png (1000 images, all publicly accessible)
+- External URL field points to https://bursted-bubbles.deblock.com
+- OpenSea collection slug: bursted-bubbles-by-deblock
+- Impact: Game mechanics disclosure, CDN path enumeration, metadata for social engineering
+
+F237 - WebSocket endpoints changed from 502 to 426 Upgrade Required (INFO):
+- Previously returning 502 Bad Gateway (backend down)
+- Now returning 426 Upgrade Required on app-uat-01.deblock.com WebSocket paths
+- Indicates backend WebSocket service is coming online
+- Paths: /api/websocket, /api/crypto-commands-socket, /api/crypto-notifications-socket
+- Impact: WebSocket testing now possible with proper upgrade headers and auth tokens
+
+F238 - api.deblock.com changed from 000 to 502 Bad Gateway (INFO):
+- Previously returning HTTP 000 (connection refused/timeout)
+- Now returning 502 Bad Gateway (upstream server contacted but returning error)
+- Via: 1.1 google header confirms GCP load balancer routing
+- Impact: Backend is partially returning, may become fully accessible for bearer token testing
+
+F239 - WordPress XMLRPC exposes 80 methods including full CMS management API (MEDIUM):
+- system.listMethods returns 80 callable methods on brand.deblock.com
+- Categories: wp.* (44 methods), blogger.* (6 methods), metaWeblog.* (7 methods), system.* (3 methods), pingback.* (2 methods), demo.* (2 methods), mt.* (5 methods), other (11 methods)
+- Full CMS management: wp.editPost, wp.deletePost, wp.newPost, wp.uploadFile, wp.getOptions, wp.setOptions
+- User management: wp.getProfile, wp.editProfile, wp.getUsers, wp.getUser
+- Content management: wp.getRevisions, wp.restoreRevision, wp.getPostTypes, wp.getPostFormats
+- Media management: wp.getMediaItem, wp.getMediaLibrary
+- Comment management: wp.getComments, wp.editComment, wp.deleteComment, wp.newComment
+- All methods require authentication but the full method list aids targeted brute force
+- Combined with F172 (XMLRPC multicall at 68 pw/sec bypassing WAF), successful auth grants full CMS control
+- Impact: Complete attack surface enumeration for post-authentication exploitation
+
+F240 - WordPress login timing differential confirms username enumeration (LOW):
+- Valid username admin-deblock: ~670ms average response time
+- Non-existent username testuser12345: ~530ms average response time
+- ~140ms timing differential (26% slower for valid usernames)
+- Caused by bcrypt password hash comparison for valid users (CPU-intensive) vs early rejection for invalid users
+- Third independent username enumeration vector (also confirmed via REST API F219 and password reset F189)
+- Impact: Timing side-channel confirms valid usernames even if other enumeration vectors are patched
+
+F241 - WordPress Application Passwords success_url preserves external URLs through login flow (LOW):
+- /wp-admin/authorize-application.php?app_name=Test&success_url=https://evil.com accepts GET
+- Redirects to wp-login.php with redirect_to parameter containing the full authorize-application URL
+- After successful login, user would be redirected to authorize-application.php with the external success_url
+- Clicking Authorize would send credentials to success_url (external attacker domain)
+- Requires social engineering (user must click link, log in, and click Authorize)
+- Not a direct open redirect: requires the full WordPress Application Passwords authorization flow
+- Impact: Social engineering vector for credential phishing via legitimate WordPress auth flow
+
+F242 - NFT contract owner wallet identified with low balance (INFO):
+- NFT contract owner: 0xd5ade4a03015fd96d766f9c038907e2c4fed357d (via Alchemy eth_call on owner() function)
+- Balance: 0.067822 ETH, no ERC-20 tokens
+- Identified as FairXYZ deployer address (used for NFT minting infrastructure)
+- Minting wallet: 0xcf54505400f8aa58901c8a75b21d38e7d67be816 (0.002446 ETH, 1 outbound transfer of 0.44 ETH)
+- Impact: Wallet tracking, potential social engineering of contract admin
+
+F243 - GCS production crypto bucket allows anonymous object reads if key is known (MEDIUM):
+- Bucket: deblock-production-crypto-currencies-v2 (storage.googleapis.com)
+- Returns NoSuchKey for non-existent objects instead of AccessDenied
+- AccessDenied is returned for listing operations
+- Differential response (NoSuchKey vs AccessDenied) confirms anonymous READ access is enabled at the object level
+- If an attacker guesses a valid object key, the object data is returned without authentication
+- Tested patterns (all 404): eth.json, btc.json, bitcoin.json, currencies.json, crypto.json, manifest.json
+- Impact: Data exposure if naming convention is discovered, bucket misconfiguration
+
+F244 - Kubernetes readyz probe accessible on UAT without authentication (LOW):
+- GET /readyz on app-uat-01.deblock.com returns HTTP 200 with empty body
+- Also accessible on business-uat-01.deblock.com and business.deblock.com
+- Standard Kubernetes health check endpoint exposed through the load balancer
+- Impact: Infrastructure health monitoring, service availability detection
+
+F245 - Sardine sandbox API accessible from production environment (LOW):
+- api.sandbox.eu.sardine.ai reachable from production (listed in CSP connect-src)
+- Returns Kubernetes default backend 404 (not a proper API response)
+- Sessions endpoint redirects from HTTPS to HTTP (protocol downgrade)
+- Sandbox environment accessible alongside production (api.production.eu.sardine.ai)
+- Impact: Potential for sandbox API abuse if authentication tokens are shared between environments
+
+F246 - UAT CSP has insecure object-src data: directive (LOW):
+- Content-Security-Policy on app-uat-01.deblock.com includes object-src data:
+- The data: source allows embedding arbitrary data URIs as objects (Flash, Java, PDF)
+- Modern browsers ignore this for script execution (strict-dynamic overrides)
+- Also includes script-src 'unsafe-eval' which strict-dynamic overrides in modern browsers
+- Impact: Potential exploit vector in older browsers that don't support strict-dynamic, PDF/object injection
 
 ## 16. Next Steps for Continued Testing
 
