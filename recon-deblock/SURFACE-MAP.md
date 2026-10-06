@@ -7306,3 +7306,146 @@ Priority 3 (Enumeration/escalation):
 - Part of the bank-account-details-share-data locale string for generating bank detail exports
 - Impact: LOW - Physical bank address is publicly available in client-side JS. While likely public information, it reveals the operational location.
 
+### F633 [MEDIUM] CDN Directory Enumeration Reveals S3 Bucket Structure and Access Controls
+- Target: cdn1.deblock.com (CloudFront -> S3 eu-west-3)
+- Directory-level GET requests reveal the S3 bucket's access control structure:
+  Accessible (200): /terms/, /terms/personal-terms/, /terms/vaults/, /terms/privacy/, /webassets/, /images/
+  Blocked (403): /terms/business-terms/, /terms/crypto-terms/, /terms/card-terms/, /terms/aml/, /docs/
+- Root listing (GET /) returns S3 AccessDenied XML with internal identifiers:
+  RequestId and HostId values exposed in the XML error response
+- The 200 vs 403 pattern reveals per-directory ACLs on the S3 bucket
+- Blocked directories (business-terms, crypto-terms, card-terms, aml) likely contain sensitive regulatory and compliance documents
+- Impact: MEDIUM - S3 bucket structure disclosure. The directory enumeration reveals which document categories exist and their access controls. The blocked directories confirm the existence of business terms, crypto terms, card terms, and AML documentation that is intentionally restricted.
+
+### F634 [MEDIUM] Full CSP Header Extraction from UAT-02 Reveals Third-Party Service Inventory
+- Target: app-uat-02.deblock.com
+- The Content-Security-Policy header is massive and lists all third-party service integrations:
+  - Sardine (sardine-ai.com) - Fraud detection
+  - Intercom (intercomcdn.com, intercom.io) - Customer support
+  - Regula (regulaforensics.com) - KYC/document verification
+  - FaceTec (facetec.com) - Biometric verification
+  - Ledger (ledger.com) - Hardware wallet integration
+  - Prelude (prelude.so, prelude.dev) - Phone verification/OTP
+  - OneSignal (onesignal.com) - Push notifications
+  - Google (googleapis.com, gstatic.com) - Multiple services
+  - Apple (apple.com, apple-mapkit.com) - Sign-in and MapKit
+  - Alchemy (alchemy.com) - Blockchain RPC
+  - WalletConnect (walletconnect.com, walletconnect.org) - Wallet connections
+  - Sentry (sentry.io) - Error monitoring
+  - Veriff (veriff.me, veriff.com) - Identity verification
+  - Datadog (datadoghq.com) - Monitoring
+  - GTM (googletagmanager.com) - Tag management (UAT only)
+- The CSP also includes unsafe-eval in script-src (required for Next.js)
+- connect-src includes ws:// and wss:// for WebSocket connections
+- Impact: MEDIUM - Complete third-party service inventory disclosure. Enables targeted attacks against individual integrations. The CSP reveals the full supply chain of services used for KYC, fraud detection, biometrics, and blockchain operations.
+
+### F635 [LOW] HTTP Request Smuggling Mitigated by Infrastructure
+- Target: business.deblock.com (PRODUCTION)
+- CL.TE smuggling attempt (mismatched Content-Length and Transfer-Encoding headers): Returns 400 Bad Request immediately
+- TE.CL smuggling attempt: Returns 502 Bad Gateway (backend rejects malformed request)
+- TE.TE with obfuscation (Transfer-Encoding: chunked with extra space/newline): Also blocked
+- The GCP load balancer + Apigee gateway combination properly handles header conflicts
+- Impact: LOW - HTTP request smuggling is not viable. Infrastructure properly rejects conflicting transfer encoding headers. Documented as a negative finding.
+
+### F636 [LOW] Duplicate Host Header Reveals DNS Resolution Error Details
+- Target: business.deblock.com (PRODUCTION)
+- Sending two Host headers via raw socket (Host: business.deblock.com + Host: evil.com) returns:
+  "Host resolves to a private/reserved IP: resolve_no_records"
+- This error message reveals:
+  1. The backend performs DNS resolution on the Host header value
+  2. The resolution result is checked against private/reserved IP ranges
+  3. The error category "resolve_no_records" is exposed (internal error taxonomy)
+- Single evil Host header returns standard 404
+- Impact: LOW - Error message information disclosure. The DNS resolution check and error taxonomy reveal backend request processing logic. The private IP check suggests SSRF protections are in place.
+
+### F637 [LOW] Rate Limiting Cannot Be Bypassed via IP Spoofing Headers
+- Target: business.deblock.com (PRODUCTION)
+- Tested header-based IP spoofing to bypass rate limiting on 403-blocked endpoints:
+  - X-Forwarded-For: 1.2.3.4 - No effect, still 403
+  - X-Real-IP: 1.2.3.4 - No effect, still 403
+  - Forwarded: for=1.2.3.4 - No effect, still 403
+  - All three combined - No effect, still 403
+- Rate limiting is enforced at the GCP infrastructure level (load balancer or Cloud Armor)
+- The application-layer headers are stripped or ignored by the infrastructure before rate limit evaluation
+- Impact: LOW - Negative finding. Rate limiting is properly implemented at infrastructure level and cannot be bypassed through header injection. This is good security practice.
+
+### F638 [LOW] CORS Properly Configured Across All Environments
+- Target: business.deblock.com, app-uat-02.deblock.com
+- Tested with Origin: https://evil.com on multiple endpoints
+- Production: No Access-Control-Allow-Origin header returned for evil origins
+- UAT-02: No Access-Control-Allow-Origin header returned for evil origins
+- Preflight OPTIONS requests also properly handled
+- No wildcard ACAO, no origin reflection, no null origin acceptance
+- Impact: LOW - Negative finding. CORS is correctly configured and does not allow cross-origin requests from unauthorized domains.
+
+### F639 [LOW] No Source Maps Exposed on Any Environment
+- Target: business.deblock.com, app-uat-02.deblock.com, app-uat-01.deblock.com
+- Tested /_next/static/chunks/*.js.map for multiple known chunk filenames
+- All return 404 or redirect to application root
+- sourceMappingURL comments not present in served JavaScript files
+- Production, UAT-01, and UAT-02 all properly strip source maps
+- Impact: LOW - Negative finding. Source maps are not exposed, preventing easy reverse engineering of the full application source code.
+
+### F640 [LOW] No GraphQL Endpoints Found
+- Target: business.deblock.com, app-uat-02.deblock.com
+- Tested standard GraphQL paths: /graphql, /api/graphql, /graphiql, /api/graphiql, /playground
+- All return 404 or standard application responses
+- No GraphQL-related strings found in client-side JavaScript bundles
+- The application uses exclusively REST API endpoints
+- Impact: LOW - Negative finding. No GraphQL attack surface exists.
+
+### F641 [MEDIUM] Production JavaScript Reveals Complete API Endpoint Inventory
+- Target: business.deblock.com (production JS bundles)
+- Extracted 24 static API paths and 6 dynamic API paths from production JavaScript:
+  Static: /api/auth, /api/auth/check-session, /api/auth/login, /api/auth/login-2fa, /api/auth/refresh, /api/bank-details, /api/business-onboarding, /api/cards, /api/cashbacks/lifetime, /api/crypto-business, /api/crypto-business-socket, /api/crypto-commands-socket, /api/csrf, /api/facetec-gateway/process-request, /api/frontdesk/accounts, /api/frontdesk/features, /api/passkeys, /api/passkeys/auth, /api/passkeys/register, /api/pricing/plans, /api/sca, /api/transactions, /api/users/user, /api/websocket
+  Dynamic: /api/crypto-messages/messages/{id}/reject, /api/crypto-messages/messages/{id}/submit, /api/crypto-messages/messages/{id}, /api/crypto-simulation/{currency}, /api/crypto-transactions/{id}/browser-keys/{browserId}, /api/users/browsers/{id}/ping
+- The production bundle is smaller than UAT, confirming feature-gated deployment
+- Impact: MEDIUM - Complete API surface enumeration from client-side code. Reveals all endpoints including those not discoverable through crawling. The dynamic paths confirm IDOR-testable endpoints for crypto messages, transactions, and browser sessions.
+
+### F642 [MEDIUM] /api/users/browsers/{id}/ping Endpoint Confirms Browser Session Tracking
+- Target: business.deblock.com (PRODUCTION)
+- GET /api/users/browsers/{browserId}/ping exists on production
+- With dummy auth cookie (__Host-auth-token=x): Returns 401 "Failed to check this browser"
+- Without auth cookie: Returns 401 (standard auth required)
+- The endpoint is used for browser session activity tracking (keep-alive pings)
+- The browserId parameter is a UUID, suggesting individual browser sessions are trackable
+- Found in production JS with pattern: /api/users/browsers/${browserId}/ping
+- Impact: MEDIUM - Browser session tracking endpoint. With a valid auth token, this could be used for IDOR to check/ping other users' browser sessions. The error message "Failed to check this browser" confirms backend processing of the browserId parameter.
+
+### F643 [MEDIUM] /api/crypto-messages/messages/{id}/reject Endpoint for Transaction Rejection
+- Target: business.deblock.com (PRODUCTION)
+- Found in production JS: endpoints for crypto message lifecycle management:
+  - GET /api/crypto-messages/messages/{id} - View a crypto message
+  - POST /api/crypto-messages/messages/{id}/submit - Submit/approve a crypto transaction
+  - POST /api/crypto-messages/messages/{id}/reject - Reject a crypto transaction
+- These endpoints handle multi-party crypto transaction approval workflows
+- The message ID parameter is likely a UUID
+- With valid auth, the reject endpoint could potentially be used to reject other users' pending transactions (IDOR)
+- Impact: MEDIUM - Transaction rejection endpoint. IDOR on this endpoint would allow unauthorized rejection of other users' pending crypto transactions, causing denial of service for financial operations. Requires authenticated testing to verify access controls.
+
+### F644 [LOW] Onboarding Signature OTP Resend Returns Descriptive Error
+- Target: app-uat-02.deblock.com
+- POST /api/onboarding/signature/resend-signature-otp returns {"error":"Unable to resend otp","status":400}
+- The endpoint exists on UAT-02 and processes requests without authentication
+- Unlike the regular onboarding OTP resend (F628) which returns an empty error string, this endpoint returns a descriptive error
+- The "signature" variant is used during the document signing phase of business onboarding
+- Not found on production (404)
+- Impact: LOW - Endpoint existence and error message disclosure on UAT. Confirms the multi-step onboarding flow includes a separate signature OTP verification phase.
+
+### F645 [LOW] auth/create-2fa-mobile-session Returns 403 on UAT-02
+- Target: app-uat-02.deblock.com
+- POST /api/auth/create-2fa-mobile-session returns 403 Forbidden on UAT-02
+- This is the same rate-limiting behavior seen on production for this endpoint
+- The endpoint is used to initiate mobile-based 2FA sessions (FaceTec biometric verification)
+- Related Redis channel: "facetec-2fa-updates" with "business:" prefix (from client-side JS)
+- The 403 across both environments suggests this endpoint has stricter rate limiting or IP-based restrictions
+- Impact: LOW - Consistent rate limiting across environments. The endpoint's restricted access reduces the attack surface for 2FA bypass attempts.
+
+### F646 [LOW] Sentry Error Monitoring Store Requires Authentication
+- Target: o4510324489519104.ingest.de.sentry.io
+- POST to Sentry store endpoint (/api/4510324496859216/store/) returns 401
+- The DSN public key (2f75b94510aa39f72db5dd805d1c1dc8) alone is insufficient for submitting events
+- Despite the shared Sentry DSN between production and UAT (same project), the store is properly secured
+- UAT-02 uses a different public key (95a2f173ce955f9d1ff52358da173ece) but incorrectly sets sentry-environment to "production"
+- Impact: LOW - Sentry event submission requires additional authentication beyond the DSN public key. However, the shared project between prod and UAT means a UAT compromise could inject events that appear to come from production.
+
