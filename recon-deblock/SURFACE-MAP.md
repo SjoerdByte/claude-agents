@@ -8705,3 +8705,121 @@ Priority 3 (Enumeration/escalation):
 - Methods allowed: GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD
 - Same configuration on both staging and production
 - Impact: INFO - Negative finding. CORS is properly configured with an explicit origin allowlist. No cross-origin exploitation possible from attacker-controlled domains.
+
+### F734 [MEDIUM] waitlist-staging.deblock.com is Same Development-Mode Rails App as web-api-staging
+- Target: waitlist-staging.deblock.com
+- This subdomain serves the SAME Rails application as web-api-staging.deblock.com:
+  - Identical route table (100+ routes via /rails/info/routes)
+  - Identical system properties via /rails/info/properties (Rails 7.0.10, Ruby 3.3.9, development mode)
+  - Same database schema version: 20260923100000
+  - Same Heroku NEL session ID: 812dcc77-0bd0-43b1-a5f1-b25750382959
+  - Same middleware chain (8x Rack::Cors, Airbrake 13.0.3, 30 layers total)
+  - Same full stack trace disclosure on errors
+- Both subdomains resolve to the same Heroku instance
+- All F714-F718 findings apply equally to waitlist-staging.deblock.com
+- The waitlist-staging name suggests this was originally a separate waitlist service that was merged into the main API but the subdomain was never decommissioned
+- Impact: MEDIUM - Duplicated attack surface. An attacker who discovers either subdomain has access to the same development-mode Rails app with full debug disclosure. The waitlist-staging name is less likely to be monitored than web-api-staging, making it a stealthier entry point.
+
+### F735 [INFO] auth.prod.deblock.com Envoy Proxy Infrastructure Mapping
+- Target: auth.prod.deblock.com
+- Behind Envoy proxy (GKE/Istio service mesh) on GCP
+- Returns "fault filter abort" error on all tested paths:
+  - /oauth/token -> 404 with "fault filter abort"
+  - /authorize -> 404 with "fault filter abort"
+  - /api -> 404 with "fault filter abort"
+  - /health -> 404 with "fault filter abort"
+  - /readyz -> 404 with "fault filter abort"
+  - /.well-known/jwks.json -> 404 with "fault filter abort"
+  - /.well-known/openid-configuration -> 404 with "fault filter abort"
+- The "fault filter abort" is an Envoy-specific error indicating the fault injection filter is configured to reject all requests
+- This confirms the auth service is deployed in the same Kubernetes/Istio mesh as the main application
+- The service appears intentionally disabled or in maintenance mode with a catch-all fault filter
+- Response headers confirm Envoy proxy with standard GKE configuration
+- Impact: INFO - Infrastructure mapping. The auth service is deliberately blocking all traffic. The Envoy fault filter configuration suggests a controlled shutdown rather than misconfiguration.
+
+### F736 [INFO] auth.dev.deblock.com and All .onb. Subdomains Down (502)
+- Targets: auth.dev.deblock.com, retool.onb.deblock.com, api-eval.onb.deblock.com, blue.onb.deblock.com, onboarding-testing.onb.deblock.com, marqeta-sandbox.onb.deblock.com
+- All return 502 Bad Gateway
+- auth.dev.deblock.com: Development auth service, not running
+- The .onb. (onboarding) subdomain cluster includes:
+  - retool.onb: Internal Retool admin dashboard for onboarding
+  - api-eval.onb: API evaluation/testing environment
+  - blue.onb: Possibly blue/green deployment slot
+  - onboarding-testing.onb: Onboarding flow test environment
+  - marqeta-sandbox.onb: Marqeta card issuing sandbox
+- All .onb. subdomains share GCP infrastructure (same 502 response pattern)
+- The presence of marqeta-sandbox.onb confirms Marqeta as the card issuing partner
+- Impact: INFO - Infrastructure mapping. These services are offline but their DNS records reveal internal tooling choices (Retool for admin, Marqeta for cards) and deployment patterns.
+
+### F737 [INFO] ambassadors-staging.deblock.com Next.js Deployment Details
+- Target: ambassadors-staging.deblock.com
+- Next.js application deployed on Vercel
+- Build ID: DhzZ2MG_j8ELYy2KlCccy
+- Deployment ID: dpl_4iKDdCJeG9E2uNYsMz81ZvcLLwrY (from x-vercel-id header pattern)
+- Supports EN/FR locales (redirects / to /en by default)
+- Standard Next.js 404 responses on all tested paths
+- No exposed API endpoints or debug information
+- Separate from the main ambassador portal at ambassadors.deblock.com
+- Impact: INFO - Staging environment mapping. The build ID and deployment ID are exposed but present minimal risk for a staging environment.
+
+### F738 [HIGH] Ambassador OTP Brute-Force: No Rate Limiting or Lockout on Production
+- Target: web-api.deblock.com
+- The ambassador signup flow is accessible without authentication:
+  1. POST /v1/ambassador/email with `{"ambassador":{"email":"victim@example.com"}}` -> `{"status":"ok"}` (sends OTP email)
+  2. POST /v1/ambassador/email/otp with `{"ambassador":{"email":"victim@example.com","otp":"123456"}}` -> validates OTP
+  3. POST /v1/ambassador/new -> creates ambassador account
+- OTP brute-force findings:
+  - 25 consecutive failed OTP attempts with NO lockout or rate limiting
+  - Consistent response time: ~350ms per request
+  - Clear oracle response: `{"status":"fail","error":"The code provided is incorrect!"}`
+  - No CAPTCHA, no exponential backoff, no IP-based throttling observed
+  - At 3 requests/second, 108,000 codes can be tried in 10 minutes
+  - If OTP is 6 digits (1,000,000 combinations), full brute-force takes ~93 minutes worst case
+  - If OTP is 4 digits (10,000 combinations), brute-force takes under 1 minute
+- The ambassador email endpoint also accepts requests on staging (web-api-staging.deblock.com)
+- Impact: HIGH - An attacker can trigger OTP emails to any address and brute-force the verification code without lockout. This enables unauthorized ambassador account creation, which provides access to the ambassador portal (tracking, revenues, payments, referral system). Ambassador accounts receive financial data including payment history, revenue shares, and referral rewards. The lack of rate limiting makes automated brute-force trivially feasible.
+
+### F739 [MEDIUM] Cache Invalidation Endpoints Accessible on Production (Auth-Gated)
+- Target: web-api.deblock.com
+- Four cache invalidation endpoints exist and accept requests:
+  - GET /v1/blog/cache/delete/:key -> `{"status":"fail","error":"Forbidden!","result":{}}` (HTTP 200)
+  - GET /v1/legals/cache/delete/:key -> same response (HTTP 200)
+  - GET /v1/faq/cache/delete/:key -> same response (HTTP 200)
+  - GET /v1/home/cache/delete/:key -> same response (HTTP 200)
+- The endpoints return HTTP 200 with "Forbidden" in the body (not HTTP 403)
+- DELETE method returns 404 (GET-only routes)
+- The routes are auth-gated (require valid session) but the HTTP 200 status code suggests auth is checked at the application layer, not at the framework level
+- If auth is bypassed (e.g., via the __Host-auth-token cookie presence bypass from earlier findings), these could enable cache poisoning/invalidation attacks
+- Impact: MEDIUM - Cache invalidation endpoints on production could be abused if authentication is bypassed. The GET method (not DELETE/POST) makes CSRF possible if the same-origin check is weak, as image tags or link prefetch could trigger cache invalidation.
+
+### F740 [MEDIUM] Action Mailbox Conductor Leaks PostgreSQL Schema via Database Error on Staging
+- Target: web-api-staging.deblock.com/rails/conductor/action_mailbox/inbound_emails
+- The conductor page returns HTTP 500 with a full PostgreSQL error:
+  - `PG::UndefinedTable: ERROR: relation "action_mailbox_inbound_emails" does not exist`
+  - Reveals the expected table name: action_mailbox_inbound_emails
+  - Confirms PostgreSQL as the database engine
+  - The error occurs on GET (listing page), meaning the migration was never run
+  - Action Mailbox gem is included in the Gemfile but database tables were not created
+- The /new endpoint for the conductor also returns the same PG error (not a form)
+- No CSRF tokens or session cookies are set by the error page
+- No Action Mailbox ingresses are active on staging (postmark, relay, sendgrid, mandrill, mailgun all 404)
+- Impact: MEDIUM - Confirms database engine and reveals expected schema. The unmigrated table indicates Action Mailbox was added to the Gemfile but never properly configured, suggesting hasty or incomplete deployment practices.
+
+### F741 [LOW] NFT Metadata Endpoint Enumerates All 1000 Bursted Bubbles NFTs
+- Target: web-api.deblock.com/v1/meta/bb/:id
+- The endpoint serves OpenSea-compatible NFT metadata without authentication
+- Enumeration results:
+  - IDs 1-1000: Valid NFTs with full metadata (name, description, image URL, attributes)
+  - ID 0: Empty response (HTTP 200)
+  - IDs 1001+: Empty response (HTTP 200)
+- Each NFT metadata includes:
+  - Name: "BB#[id]"
+  - Description: Full collection description mentioning Oscar-nominated director "Pierone"
+  - Image URL: https://cdn1.deblock.com/bbfinal/[id].png
+  - Animation URL: Same as image
+  - Attributes: Background, Shape, Substance, Eyes, Mouth, Hat, Research level, Name, Can Research?, Welcome Bonus Claimed?, Blocks Bonus Claimed?
+  - Properties: File URI, category (PFP), creators
+- The "Welcome Bonus Claimed?" and "Blocks Bonus Claimed?" attributes reveal financial incentive tracking
+- All 1000 NFT images are directly accessible on cdn1.deblock.com without authentication
+- NFT contract: 0x52dbdc20fd57b339aff65ac8e07c43aa680b690a (Ethereum mainnet)
+- Impact: LOW - Public NFT metadata as expected for blockchain-based assets. The bonus tracking attributes reveal internal reward program structure. The sequential ID pattern allows trivial enumeration of the entire collection.
