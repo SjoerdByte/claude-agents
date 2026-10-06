@@ -1761,7 +1761,29 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 206 | MEDIUM | UpdraftPlus backup directory exists on server | - | CWE-538 | YES | /wp-content/updraft/ 403, /wp-content/backup-db/ 403 |
 | 207 | LOW | Elementor Pro/AI REST API route structure exposure | - | CWE-200 | YES | 35+ routes including form-submissions, send-event, user-data |
 
-Total: 207 findings (12 critical, 43 high, 68 medium, 48 low, 36 info)
+| 208 | MEDIUM | recovery.deblock.com static JS bypass Basic Auth revealing wallet recovery architecture | - | CWE-200 | YES | AES key + backup.txt client decryption, Solana tx signing |
+| 209 | MEDIUM | recovery.deblock.com RSC flight data leak exposes route tree and deployment ID | - | CWE-200 | YES | Component IDs, Vercel deployment dpl_mAs9M7NnoB1oNqhMS685n2kDmngD |
+| 210 | MEDIUM | WordPress wp-cron.php publicly accessible | - | CWE-284 | YES | Can trigger scheduled tasks including backups |
+| 211 | LOW | WordPress version 7.1.2 confirmed via OPML generator | - | CWE-200 | YES | /wp-links-opml.php OPML output |
+| 212 | MEDIUM | Health endpoint leaks build ID and full CSP third-party service map | - | CWE-200 | YES | buildId e95b8cf, 20+ third-party domains |
+| 213 | HIGH | Sentry DSN event injection with arbitrary PII data on both endpoints | - | CWE-284 | YES | Both personal and business DSNs accept fabricated events |
+| 214 | MEDIUM | bursted-bubbles.deblock.com shares Alchemy key and WalletConnect ID | - | CWE-200 | YES | Same API keys as main app in NFT site |
+| 215 | LOW | WordPress heartbeat leaks server Unix timestamp | - | CWE-200 | YES | server_time 1791257733 |
+| 216 | LOW | BackWPup uploads directory confirmed | - | CWE-538 | YES | /wp-content/uploads/backwpup/ returns 403 |
+| 217 | MEDIUM | Elementor Pro form submission endpoint accessible without auth | - | CWE-284 | YES | Returns form validation error, not 401 |
+| 218 | INFO | support.deblock.com CNAME to Intercom returns 404 | - | CWE-200 | YES | Unconfigured help center |
+| 219 | MEDIUM | WordPress REST API user enumeration with Gravatar hash and metadata | - | CWE-200 | YES | /wp-json/wp/v2/users open, SHA256 hash, Elementor meta |
+| 220 | MEDIUM | WordPress REST API exposes 197 media files with download URLs | - | CWE-200 | YES | Brand photos, videos, SVGs, ZIP archive, Elementor screenshots |
+| 221 | LOW | Downloadable ZIP archive with brand assets via REST API | - | CWE-200 | YES | Deblock-logo-svg.zip |
+| 222 | MEDIUM | WordPress REST API root discovery exposes full namespace and route map | - | CWE-200 | YES | backwpup, elementor-ai, elementor-one, 14 namespaces |
+| 223 | HIGH | BackWPup REST API route disclosure reveals backup infrastructure | - | CWE-200 | YES | 20 routes, DB schema params, backup targets, cloud auth |
+| 224 | HIGH | Elementor One REST API route disclosure reveals plugin management surface | - | CWE-200 | YES | Plugin slugs, activate/deactivate/upgrade, theme management |
+| 225 | MEDIUM | business.deblock.com CSP nonce leaked in X-Nonce response header | - | CWE-200 | YES | Full nonce exposed, enables CSP bypass with header injection |
+| 226 | MEDIUM | business.deblock.com CSP reveals fraud/KYC infrastructure | - | CWE-200 | YES | Regula, Sardine (incl sandbox), Dotfile |
+| 227 | MEDIUM | business.deblock.com Sentry trace metadata in HTML reveals release hash | - | CWE-200 | YES | sentry-release=54029c4, trace IDs |
+| 228 | INFO | app.deblock.com returns HTTP 410 Gone | - | CWE-200 | YES | Service decommissioned, x-request-id exposed |
+
+Total: 228 findings (12 critical, 46 high, 80 medium, 53 low, 39 info)
 
 ## 15. Session Notes
 
@@ -1789,6 +1811,8 @@ Total: 207 findings (12 critical, 43 high, 68 medium, 48 low, 36 info)
 - Session 8: Phase 9/10 - UAT JS deep scan + active API key testing. Downloaded and scanned 86 JS chunks from app-uat-01.deblock.com. Found Alchemy API key (ACTIVE, enhanced API with getTokenBalances, getNFTs, getAssetTransfers all working), iCloud CloudKit API token (production container, 401 on direct query), Google OAuth Client ID with drive.appdata scope for "Orwell" wallet recovery, Google Maps Embed API key (Maps JS API active/billable, project 449958774220), WalletConnect projectId (working), OneSignal App ID + Safari Web Push ID, GTM Container, second Intercom App ID, Unleash feature flag client key. Discovered UUID-gated hidden route bypassing IS_DEV check, 7 test routes in production JS, E2E testing cookies. Mapped 130+ API endpoints and 6 WebSocket paths. Confirmed Kubernetes readyz endpoint accessible. GCS dev bucket has public object listing (NoSuchKey response). NFT contract is upgradeable BeaconProxy (FairXYZDeployer, 742 holders, 1000 supply). WordPress REST API fully open (users, media, search, categories enumerable). Elementor Pro v1 license routes exposed. Total findings: 124.
 - Session 10: WordPress REST API 14-namespace deep dive. Confirmed BackWPup v1/v2 full route structure (chatbot-context, startbackup, authenticate_cloud, storagelistcompact, getjobslist). Elementor v1 35+ routes including form-submissions, form-submissions/export, send-event, user-data/current-user. Elementor Pro refresh-loop/refresh-search don't check auth before param validation. CSP violation endpoint (/api/csp-violation) accepts arbitrary POST data with zero rate limiting (50 rapid requests all 204). UpdraftPlus backup directory confirmed (403, not 404). staging.deblock.com back online with CORS wildcard (Access-Control-Allow-Origin: *). Apple AASA and Android assetlinks expose app config and signing certs. Status page wildcard CSP. Alchemy key confirmed getTokenBalances for NFT contract (holds HEX token). No source maps, no debug endpoints, no open redirects on QR login. Total findings: 207.
 - Session 11: recovery.deblock.com deep dive. Downloaded 8 JS chunks without auth (static assets bypass Basic Auth). i18n files reveal complete wallet recovery architecture: AES decryption of email-delivered backup files, private key + seed phrase output, Solana transaction signing and broadcasting. RSC flight data leaks route tree, component IDs, Vercel deployment ID. WordPress wp-cron.php publicly accessible (can trigger scheduled tasks including backups). WordPress version confirmed 7.1.2 via wp-links-opml.php OPML generator. XMLRPC pingback SSRF returns consistent faultCode 0 (no differential exploitation). Total findings: 211.
+- Session 11 continued: Sentry DSN PII injection confirmed on both endpoints (F213). Health endpoint build ID + CSP map (F212). bursted-bubbles.deblock.com NFT site shares API keys (F214). WordPress heartbeat (F215), BackWPup dir (F216), Elementor form (F217), support subdomain (F218). Total findings: 218.
+- Session 12: WordPress REST API full enumeration. Users endpoint open without auth exposing admin-deblock profile, Gravatar SHA256 hash, Elementor metadata (F219). 197 media files enumerable including brand photos, videos, ZIP archives, Elementor screenshots (F220-221). REST API root discovery exposes 14 namespaces including backwpup, elementor-ai, elementor-one (F222). BackWPup REST API route disclosure reveals 20 backup infrastructure endpoints with DB schema parameters and cloud auth flow (F223). Elementor One route disclosure reveals plugin management surface with 7 plugin slugs, activate/deactivate/upgrade paths, theme management, connect flow (F224). business.deblock.com leaks CSP nonce in X-Nonce header (F225), reveals fraud/KYC infrastructure (Regula, Sardine, Dotfile) in CSP (F226), and exposes Sentry release hash 54029c4 in HTML trace metadata (F227). app.deblock.com returns HTTP 410 Gone confirming service decommissioning (F228). All BackWPup/Elementor data endpoints require auth. No hardcoded secrets in business.deblock.com Turbopack bundles. Total findings: 228.
 
 ### 12e. Business App API Route Map (from JS bundle analysis)
 
@@ -3061,6 +3085,91 @@ Additional testing results (no new findings):
 - NFT site uses same contract addresses as already documented (0x52dbdc20FD57b339aFf65Ac8e07c43aa680b690a)
 - No Infura API key found in NFT site (uses Alchemy instead)
 - No private keys in NFT site JS (only library references)
+
+## 12ag. WordPress REST API Full Exposure, BackWPup Route Discovery, Business CSP Nonce Leak (Session 12)
+
+F219 - WordPress REST API user enumeration exposes admin profile with Gravatar hash (MEDIUM):
+- GET /wp-json/wp/v2/users returns full user list without authentication
+- User ID 1: admin-deblock, Gravatar SHA256: 44f51df94ecb1454d3e064107d59a8a4606564f21ace0b536097f9f7a185e5f3
+- Elementor introduction metadata exposed (ai-get-started-announcement, globals_introduction, etc.)
+- Author URL and avatar URLs at multiple sizes
+- Traditional ?author=N enumeration also works (author=1 redirects to /author/admin-deblock/)
+- Only one user exists (authors 2-10 return 404)
+
+F220 - WordPress REST API exposes 197 media files with full download URLs (MEDIUM):
+- GET /wp-json/wp/v2/media?per_page=100 returns all media without auth
+- 197 files across 2 pages: images (JPG, PNG, SVG), videos (MP4, MOV), ZIP archives
+- Includes brand photos, marketing materials, 3D renders, motion graphics, logos
+- Elementor page screenshots exposed (reveal admin dashboard layout)
+- All files directly downloadable at source_url paths
+
+F221 - Downloadable ZIP archive with brand assets via REST API (LOW):
+- /wp-content/uploads/2026/02/Deblock-logo-svg.zip accessible (rate-limited at test time)
+- Contains SVG logo files for the brand
+- Listed via unauthenticated media API endpoint
+
+F222 - WordPress REST API root discovery exposes full namespace and route map (MEDIUM):
+- GET /wp-json/ returns complete API discovery document without auth
+- Namespaces exposed: backwpup/v1, backwpup/v2, elementor-ai/v1, elementor-one/v1, elementor/v1/documents, elementor/v1/feedback, elementor-hello-elementor/v1, wp-abilities/v1
+- Application Passwords authentication enabled with authorization endpoint at /wp-admin/authorize-application.php
+- Timezone: Europe/Paris, GMT offset: 2
+- BackWPup route listing reveals complete backup infrastructure API surface
+
+F223 - BackWPup REST API route disclosure reveals backup infrastructure details (HIGH):
+- GET /wp-json/backwpup/v1/ returns 20 API routes with full parameter schemas
+- Exposed routes include: storagelistcompact, cloud_is_authenticated, authenticate_cloud, chatbot-context, getjobslist, startbackup, backups, addjob, updatejob, delete_job, save_job_settings, save_files_exclusions, save_excluded_tables, process_bulk_actions, pagination
+- save_files_exclusions parameters reveal backup targets: backuproot, backupplugins, backupthemes, backupuploads, backupcontent, fileexclude
+- save_excluded_tables parameters reveal DB schema access: tabledb, dbdumpfile, dbdumpwpdbsettings, dbdumpfilecompression
+- chatbot-context endpoint accepts GET with context_id and context_token parameters
+- All data endpoints require auth (return 401), but route disclosure provides complete attack surface map
+- BackWPup v2 also exposed: storages, messages, save_job_format, backups/{id}/type
+
+F224 - Elementor One REST API route disclosure reveals plugin management surface (HIGH):
+- GET /wp-json/elementor-one/v1/ returns plugin/theme management routes with parameter schemas
+- Plugin slugs enumerated: angie, manage, elementor, elementor-pro, site-mailer, image-optimization, pojo-accessibility
+- Routes exposed: plugins (list/install), plugins/{slug}/activate, plugins/{slug}/deactivate, plugins/{slug}/upgrade, plugins/{slug}/migration/run, plugins/{slug}/migration/rollback
+- Theme management: themes (install), themes/{slug}/activate
+- Connect flow: connect/authorize (with clearSession param), connect/disconnect, connect/switch-domain, connect/deactivate
+- Settings endpoint: GET/POST/PUT/PATCH (full CRUD)
+- All endpoints require auth (401), but route disclosure maps the complete admin surface
+
+F225 - business.deblock.com CSP nonce leaked in X-Nonce response header (MEDIUM):
+- HTTP response includes X-Nonce header with full CSP nonce value (e.g., d5d9f632-2b4b-474b-afb2-af1f69258dad)
+- Nonce used in script-src CSP directive with strict-dynamic
+- While nonce changes per request, header exposure means any proxy, CDN, or middleware that logs response headers captures the nonce
+- Combined with a header injection vulnerability, this could enable script injection bypassing CSP
+
+F226 - business.deblock.com CSP reveals third-party fraud and KYC infrastructure (MEDIUM):
+- connect-src reveals: regulaforensics.com (wasm, lic, api subdomains) for document verification
+- connect-src reveals: sardine.ai (api.eu, api.production.eu, api.sandbox.eu) for fraud detection
+- frame-src reveals: dotfile.com (client-portal) for KYC/KYB compliance
+- Sandbox endpoint (api.sandbox.eu.sardine.ai) accessible from production CSP
+- Full infrastructure map: OneSignal (push), Google Cloud Storage, CDN1, Regula Forensics (ID verification), Sardine (fraud), Dotfile (compliance)
+
+F227 - business.deblock.com Sentry trace metadata in HTML source (MEDIUM):
+- meta name="sentry-trace" exposes trace ID: 52634691e765561046d70be7e5452089
+- meta name="baggage" exposes: sentry-environment=production, sentry-release=54029c4 (git commit hash)
+- sentry-public_key=2f75b94510aa39f72db5dd805d1c1dc8, sentry-org_id=4510324489519104
+- Release hash 54029c4 enables targeted source code identification
+- Combined with DSN injection (F213), attacker can correlate injected events with specific releases
+
+F228 - app.deblock.com returns HTTP 410 Gone (INFO):
+- Personal banking app endpoint returns 410 with x-request-id header
+- Via: 1.1 google (GCP load balancer)
+- Previously returned normal content; suggests service decommissioning or migration
+- x-request-id: 76bc907e-b942-43af-b76e-92343c2e2287 exposed in headers
+
+Session 12 negative results:
+- BackWPup endpoints all require authentication (storagelistcompact, cloud_is_authenticated, getjobslist, backups, messages all return 401)
+- Elementor One endpoints all require authentication (settings, plugins, notifications, admin-settings)
+- Chatbot-context with guessable context_id/token combinations all returned 401
+- No open redirect found on deblock.com (all redirect parameters preserved in query string, not followed)
+- Gravatar hash not reversible with 58 tested email patterns
+- recovery.deblock.com Basic Auth resists all 13 tested credential combinations (all 401)
+- wp-config.php backup variants all return 403 (LiteSpeed protection)
+- debug.log returns 403, error_log returns 404, phpinfo files all 404
+- Elementor media import endpoint requires auth (no SSRF)
+- Business app JS bundles (Turbopack) contain no hardcoded secrets (server-side env injection)
 
 ## 16. Next Steps for Continued Testing
 
