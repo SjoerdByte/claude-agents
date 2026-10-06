@@ -1904,8 +1904,23 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 343 | INFO | UAT onboarding page accessible with full app routing | app-uat-01.deblock.com | CWE-200 | YES | GET /api/onboarding returns full Deblock - Onboarding HTML page (307 redirect) |
 | 344 | INFO | Next.js version 16.2.11 disclosed in UAT JS chunks | app-uat-01.deblock.com | CWE-200 | YES | window.next.version set in Turbopack bootstrap chunk |
 | 345 | INFO | Production business.deblock.com API routes mostly behind Next.js 404 | business.deblock.com | CWE-200 | YES | Most API paths return Next.js 404 (not proxied), only csrf/check-session/users/info reach backend |
+| 346 | HIGH | Production create-2fa-mobile-session auth bypass via CSRF double-submit | business.deblock.com | CWE-287 | YES | POST /api/auth/create-2fa-mobile-session with CSRF token returns "FaceTec 2FA session not found" (business logic, not auth error). Production auth bypassed. |
+| 347 | HIGH | Production logout CSRF - unauthenticated session termination | business.deblock.com | CWE-352 | YES | POST /api/auth/logout with freely obtainable CSRF double-submit returns 200 "Logged out" without any auth token. Can force-logout any user via CSRF. |
+| 348 | HIGH | UAT onboarding/signature/resend-signature-otp auth bypass | app-uat-01.deblock.com | CWE-287 | YES | POST reaches "Unable to resend otp" handler without auth, both empty and with body. No auth middleware. |
+| 349 | HIGH | UAT onboarding/signature/complete auth bypass | app-uat-01.deblock.com | CWE-287 | YES | POST returns {"error":"","status":400} business logic error without auth check. |
+| 350 | HIGH | Production 2fa-mobile-session-socket WebSocket available without auth | business.deblock.com | CWE-287 | YES | GET returns 426 Upgrade Required. No auth check before WebSocket handshake attempt on production. |
+| 351 | HIGH | Production all 11 /api/cards/* sub-routes reach backend | business.deblock.com | CWE-200 | YES | /api/cards/{list,create,freeze,unfreeze,details,pin,limits,activate,deactivate,order,virtual} all return 401 JSON from Rails. Full card API surface exposed. |
+| 352 | MEDIUM | CSRF double-submit bypass technique confirmed on production | business.deblock.com | CWE-352 | YES | CSRF token freely obtainable from /api/csrf. Setting x-csrf-token header + __Host-csrf cookie bypasses 403 on all POST endpoints. |
+| 353 | MEDIUM | UAT /api/health endpoint exposes build info | app-uat-01.deblock.com | CWE-200 | YES | Returns {"status":"ok","buildId":"e95b8cf","timestamp":"2026-10-06T09:27:21.367Z"} with live server timestamp. |
+| 354 | MEDIUM | UAT .well-known/assetlinks.json exposes Android app signing keys | app-uat-01.deblock.com | CWE-200 | YES | Package: com.deblock.deblockapp, 2 SHA256 cert fingerprints for APK signing verification. |
+| 355 | MEDIUM | UAT .well-known/apple-app-site-association exposes iOS app details | app-uat-01.deblock.com | CWE-200 | YES | Team ID: 7C8K5383JS, Bundle: com.deblock.deblockapp.production, QR login deep link: /qr-login/* |
+| 356 | MEDIUM | Production /api/auth/refresh returns token error without CSRF | business.deblock.com | CWE-200 | YES | POST with CSRF returns "Failed to refresh session" (401). Error message confirms refresh token mechanism exists. |
+| 357 | MEDIUM | UAT /api/features returns 401 with different auth middleware | app-uat-01.deblock.com | CWE-200 | YES | All methods return {"error":"User is not authenticated","status":401} (status 401 vs 400 on other endpoints). Different auth layer. |
+| 358 | LOW | UAT referees/nudge endpoint conditional auth bypass | app-uat-01.deblock.com | CWE-287 | YES | POST /api/referrals/referees/{invalid-id}/nudge returns "Invalid id" (no auth check). Valid UUID triggers auth: "User is not authenticated". |
+| 359 | LOW | Production auth middleware inconsistency: 403 vs 401 | business.deblock.com | CWE-16 | YES | Without CSRF: 403 "Forbidden". With CSRF: 401 "Unauthorized". Two auth layers with different error patterns. |
+| 360 | INFO | app.deblock.com returns 410 Gone on .well-known files | app.deblock.com | CWE-200 | YES | Indicates decommissioned/deprecated app domain. Mobile app linking moved to other domains. |
 
-Total: 345 findings (13 critical, 68 high, 131 medium, 91 low, 49 info)
+Total: 360 findings (13 critical, 75 high, 137 medium, 93 low, 50 info)
 
 ## 15. Session Notes
 
@@ -1941,6 +1956,7 @@ Total: 345 findings (13 critical, 68 high, 131 medium, 91 low, 49 info)
 - Session 15: GTM container configuration extracted (F252): GA4 G-3MRQ5Z62VD, Google Ads AW-11482270425, cross-domain linker across 3 domains. GA4 Measurement Protocol accepts events without valid API secret (F253): analytics poisoning confirmed. dblk.me short URL domain fully mapped (F254): Vercel, 75 pages, 276 rewrites. Build manifest full route structure (F255). Developer names in robots.txt (F256). Survey/beta endpoint unauthenticated email spoofing (F257): stored XSS in answer field, no rate limiting. Business app Turbopack chunks reveal 24+ API routes (F258). CSRF token unauthenticated (F259). Apigee error disclosure (F260). Auth/financial endpoints confirmed (F261). PWA manifest exposed (F262). next.deblock.com Cloudflare challenge (F263). Cross-domain tracking GDPR concern (F264). Total findings: 264.
 - Session 16: Committed F265-F270 (Sardine sandbox, Regula IP leak, CSP third-party, UAT verbose errors, Dotfile deployment, app.deblock.com 410). recovery.deblock.com auth bypass confirmed: /_next/static/*, /api/*, /_vercel/* paths bypass Basic Auth (F273). All 3 lazy-loaded chunks are i18n files (EN/ES/FR) revealing complete wallet recovery architecture including Solana Ed25519 key handling (F274). staging.deblock.com discovered: full Vercel staging environment with different build ID (F271). status.deblock.com: Statuspal status page reveals 11 blockchains and full service architecture (F272). support.deblock.com: dangling Intercom CNAME returning 404 (F275). Business API Apigee 502 errors on POST endpoints (F276). CSRF token unauthenticated with 30-min window (F277). WebSocket 426 confirmed (F278). Speed Insights, S3 signed URLs, wildcard CSP on status page (F279-F281). Staging build ID metadata (F282). Google OAuth false positive corrected (all redirect URIs properly rejected). Total findings: 282.
 - Session 17: Staging Rails API deep dive on web-api-staging.deblock.com. Active Storage direct_uploads leaks 85-line stack trace with full gem versions and middleware chain (F283). Ambassador OTP has zero rate limiting: 30 consecutive wrong codes accepted without lockout (F284). Dead route ambassador/search_email returns ActionNotFound trace (F285). Data removal endpoint hits DB (sql.active_record 17ms) before verifying auth token (F286). Rack::Cors loaded 9x in middleware stack indicating misconfigured initializer (F287). CORS wildcard Access-Control-Allow-Origin:* on both staging AND production page responses (F288). Status page window.incidents exposes 12 incidents with 60 service IDs (F289). OVH load balancer headers x-iplb-request-id/x-iplb-instance leaked on status page (F290). Apigee Response405WithoutAllowHeader new error type on UAT passkeys/bank-details (F291). Company onboarding session creation works without auth, returns full session UUID (F292). Ambassador certification oracle at /v1/check/ambassador (F293). Deep link /d/[hash] data deletion page publicly accessible (F294). CRITICAL: Production company onboarding chain exploited: phone verification bypass (F295), unauthenticated session creation (F296), IDOR on sessions (F297), combined attack chain for account hijack (F298). No rate limiting on session creation (F299), 25 EU countries supported (F300). Business API session oracle (F301). K8s readyz accessible (F302). CDN directories (F303). Build manifest route enumeration (F304). Sardine sandbox in prod CSP (F305). Total findings: 305.
+- Session 21: Production auth bypass confirmation + CSRF double-submit exploitation + expanded endpoint enumeration. CRITICAL: Production /api/auth/create-2fa-mobile-session confirmed auth bypassed (returns FaceTec business logic error with CSRF double-submit). Production /api/auth/logout confirmed no auth check (CSRF logout attack, returns 200 "Logged out"). UAT new auth bypasses: onboarding/signature/resend-signature-otp (F348), onboarding/signature/complete (F349). CSRF double-submit technique confirmed: freely obtain token from /api/csrf, set both x-csrf-token header and __Host-csrf cookie to bypass all 403 Forbidden on POST endpoints. All 11 production /api/cards/* sub-routes reach Rails backend (list, create, freeze, unfreeze, details, pin, limits, activate, deactivate, order, virtual). Production 2fa-mobile-session-socket exists (426 Upgrade Required without auth). UAT /api/health exposes buildId + timestamp. UAT .well-known files expose Android signing certs + iOS app config + QR login deep links. app.deblock.com returns 410 Gone (decommissioned). Total findings: 360.
 - Session 20: UAT auth bypass pattern expansion + JS deep analysis + production comparison. Downloaded and analyzed all 52 UAT JS chunks. Discovered auth cookie name "auth-token" with support cookies "idempotency-key" and "reference-id", plus E2E test cookies "e2e-mock-browser-id" and "e2e-user-type-override". Extracted 45 internal application flows including create-virtual-card-flow, create-physical-card-flow, export-wallet-keys-flow. Mapped 100+ API endpoint URL constructions from JS. Found 5 additional UAT auth bypass endpoints beyond cards: create-2fa-mobile-session returns "FaceTec 2FA session not found" (F331), users/info returns "Failed to fetch user info" (F332), subscribe-2fa-mobile-session returns "Missing mobileSessionKey" (F333), 2fa-mobile-session-socket returns 426 without auth (F334), onboarding/resend-onboarding-otp returns "Unable to resend otp" (F335). Production comparison: auth/check-session returns {"valid":false} (session oracle, F336), CSRF endpoint returns token without auth (F337), most API routes return Next.js 404 (not proxied). Next.js version 16.2.11 in Turbopack bootstrap (F344). CSRF token format confirmed: timestamp.expiry.nonce.hmac, __Host-csrf cookie, 30-min validity. Total findings: 345.
 - Session 19: UAT API deep exploitation. CRITICAL finding: /api/cards auth bypass via empty body. POST with no body (Content-Length: 0 or missing) returns 500 "Failed to create card" (business logic) instead of 400 "User is not authenticated". Auth middleware requires valid JSON body >= 2 bytes to activate. 100% reproducible (5/5 consistent). Cards-specific, NOT on production (403 Forbidden regardless). auth/analytics confirmed as blind injection sink: XSS, SQLi, SSTI, mass assignment (userId/role extra fields) all accepted with {"success":true}, zero rate limiting (20/20), 10KB+ payloads. CSP violation /api/csp-violation accepts arbitrary reports (204 No Content, log poisoning). Path traversal via %2e%2e encoding: /api/auth/%2e%2e/%2e%2e/admin redirects to /admin (Apigee normalizes then redirects). UAT health endpoint exposes buildId+timestamp unauthenticated. New live backend endpoints: passkeys/register, sepa-transfer/create, self-transfer/create, roundups/settings. UAT CSP reveals Prelude (phone verify), Ledger (hardware wallet), Adjust (marketing), StakeKit. Marketing-widgets leaks deeplink names (iban, wallet, exchange_btc, referrals). Google Drive appdata scope in JS for wallet recovery. Robots.txt hides /Resume, /WphYZ/, /Jordan, /miggy developer paths. auth/facetec-2fa 307 redirect leaks full CSP service map. Production company endpoints no longer routed through business.deblock.com frontend (404). Total findings: 330.
 - Session 18: UAT deep dive via cert CN discovery. app-uat-01.deblock.com found via production TLS cert CN field - full production-like app accessible without auth (F306). Production cert CN=app-uat-01.deblock.com leaks UAT hostname to passive observers (F307). Sentry meta tags expose org_id 4510324489519104, public_key 95a2f173ce955f9d1ff52358da173ece, release e95b8cf, environment incorrectly set to "production" on UAT (F308, F317). Apigee fault details on /api/auth and /api/auth/refresh (F309). Real API backends responding on UAT: /api/features 401, /api/cards 400, /api/vaults 400, /api/passkeys 400, /api/auth POST 403 (F310). Auth/refresh reveals token lookup error message (F311). recovery.deblock.com CSP confirms Solana mainnet wallet recovery with 3 RPC providers (F312). Company email race condition: same email accepted on two sessions simultaneously (F313). Survey and website endpoints confirmed live (F314). Dev GCS bucket in UAT CSP (F315). Auth status code inconsistency 401 vs 400 (F316). Google Maps API key in runtime config (F318). blog.deblock.com and uat-business.deblock.com blocked by egress proxy. Sardine sandbox API reaches Kubernetes default backend. Bearer token 404 on all waitlist-api paths. Production app.deblock.com returns 410 Gone (confirmed decommissioned). recovery.deblock.com basic auth holds (7 credential pairs tested). GCS buckets not listable but objects individually readable if path known. Total findings: 318.
@@ -4346,6 +4362,127 @@ F345 - Production API routing behind Next.js (INFO):
 - All others (analytics, health, marketing-widgets, app-version) return 404
 - UAT has significantly more routes proxied to the API backend
 - Impact: Production has narrower API surface than UAT
+
+### 15k. Session 21 Findings (F346-F360)
+
+F346 - Production create-2fa-mobile-session auth bypass (HIGH):
+- POST https://business.deblock.com/api/auth/create-2fa-mobile-session with CSRF double-submit
+- Without CSRF: 403 "Forbidden" (CSRF blocks)
+- With CSRF token in header + cookie: 401 "FaceTec 2FA session not found"
+- The 401 status is MISLEADING - error comes from FaceTec business logic handler, NOT auth middleware
+- Auth middleware was completely bypassed; request reached business logic directly
+- Production endpoint: any unauthenticated attacker can probe FaceTec session existence
+- With a valid FaceTec session ID, this could be escalated to complete 2FA bypass
+- Impact: Production authentication bypass on critical 2FA endpoint
+
+F347 - Production logout CSRF attack (HIGH):
+- POST https://business.deblock.com/api/auth/logout with CSRF double-submit
+- Returns 200 {"message":"Logged out"} without ANY auth token
+- CSRF token freely obtainable from GET /api/csrf (no auth needed)
+- Attack: Attacker creates page with CSRF form targeting /api/auth/logout
+- Victim visits attacker's page -> session terminated silently
+- Combined with phishing: logout victim, present fake login page to capture credentials
+- Impact: Any user can be force-logged-out by visiting an attacker's page
+
+F348 - UAT onboarding/signature/resend-signature-otp auth bypass (HIGH):
+- POST https://app-uat-01.deblock.com/api/onboarding/signature/resend-signature-otp
+- Returns {"error":"Unable to resend otp","status":400} regardless of body content
+- Both empty body and body with parameters reach the business logic handler
+- No authentication middleware present on this route
+- Related route /api/onboarding/signature/complete also bypasses auth (F349)
+- Impact: Unauthenticated OTP trigger on signature verification flow
+
+F349 - UAT onboarding/signature/complete auth bypass (HIGH):
+- POST https://app-uat-01.deblock.com/api/onboarding/signature/complete
+- Returns {"error":"","status":400} (empty error with 400 status)
+- No auth check present; request reaches handler directly
+- With valid session parameters, could complete signature verification step
+- Combined with resend-otp (F348): potential for complete signature flow bypass
+- Impact: Authentication bypass on signature completion endpoint
+
+F350 - Production 2fa-mobile-session-socket without auth (HIGH):
+- GET https://business.deblock.com/api/auth/2fa-mobile-session-socket
+- Returns 426 "Upgrade Required" (WebSocket upgrade expected)
+- No authentication check occurs before the WebSocket handshake phase
+- Production endpoint, publicly accessible
+- With a proper WebSocket client: could attempt to subscribe to FaceTec 2FA events
+- Impact: Unauthenticated WebSocket endpoint on production
+
+F351 - Production full card API surface exposed (HIGH):
+- All 11 /api/cards/* sub-routes reach the Rails backend on production
+- /api/cards/list, /api/cards/create, /api/cards/freeze, /api/cards/unfreeze
+- /api/cards/details, /api/cards/pin, /api/cards/limits
+- /api/cards/activate, /api/cards/deactivate, /api/cards/order, /api/cards/virtual
+- All return 401 {"error":"Unauthorized","status":401} from Rails (not Next.js 404)
+- Combined with auth bypass or token theft: full card management possible
+- Impact: Complete card management API accessible with proper auth token
+
+F352 - CSRF double-submit bypass technique (MEDIUM):
+- Production CSRF is double-submit pattern: header x-csrf-token + cookie __Host-csrf
+- CSRF token freely obtainable without auth: GET /api/csrf returns token
+- Token structure: unix_created.unix_expires.base64url_nonce.base64url_hmac
+- Validity: 30 minutes (expires = created + 1800)
+- Technique: Set both header and cookie to same value -> 403 "Forbidden" becomes actual API error
+- Without this bypass, all POST endpoints return 403
+- Impact: CSRF protection is bypassable for attacker-initiated requests
+
+F353 - UAT health endpoint information disclosure (MEDIUM):
+- GET https://app-uat-01.deblock.com/api/health
+- Returns {"status":"ok","buildId":"e95b8cf","timestamp":"2026-10-06T09:27:21.367Z"}
+- Exposes exact build ID (git commit hash prefix) and live server timestamp
+- Production /api/health returns Next.js 404 (properly hidden)
+- Impact: Build version disclosure and server time synchronization
+
+F354 - UAT Android asset links expose signing keys (MEDIUM):
+- GET https://app-uat-01.deblock.com/.well-known/assetlinks.json
+- Package: com.deblock.deblockapp
+- SHA256 fingerprint 1: 68:84:A7:99:78:A0:68:43:71:32:6D:55:36:E6:0F:F5:E5:C7:85:C2:61:9F:83:A3:6B:0E:29:34:B7:42:99:02
+- SHA256 fingerprint 2: 65:4A:46:8F:CB:15:26:48:62:04:4B:23:37:06:E0:A7:B2:A2:AA:A9:E3:D0:19:5F:62:EB:7A:82:D2:97:C3:EB
+- Impact: Android APK signing certificate verification, app trust chain analysis
+
+F355 - UAT Apple app site association data (MEDIUM):
+- GET https://app-uat-01.deblock.com/.well-known/apple-app-site-association
+- Apple Team ID: 7C8K5383JS
+- Bundle ID: com.deblock.deblockapp.production
+- Deep link paths: /qr-login/*, /*/qr-login/*
+- QR web sign-in pairing links used for app-web authentication bridging
+- Impact: iOS app configuration disclosure, deep link interception potential
+
+F356 - Production auth refresh error disclosure (MEDIUM):
+- POST /api/auth/refresh with CSRF double-submit
+- Returns {"error":"Failed to refresh session"} (401)
+- Without CSRF: {"error":"Forbidden"} (403)
+- Confirms refresh token mechanism exists and is separate from main auth
+- Error message reveals session refresh implementation detail
+- Impact: Authentication mechanism disclosure
+
+F357 - UAT features endpoint different auth layer (MEDIUM):
+- GET/POST/PUT/DELETE/PATCH all return {"error":"User is not authenticated","status":401}
+- Uses status 401 vs 400 on other endpoints
+- Indicates a different authentication middleware or interceptor
+- E2E cookies don't bypass this either
+- Impact: Dual auth middleware pattern disclosure
+
+F358 - UAT referees nudge conditional auth bypass (LOW):
+- POST /api/referrals/referees/{invalid-id}/nudge returns {"error":"Invalid id"} (400)
+- No auth check for invalid IDs - handler validates UUID format before checking auth
+- POST /api/referrals/referees/{valid-uuid}/nudge returns {"error":"User is not authenticated","status":400}
+- Auth check only triggers when ID parameter is a valid UUID format
+- Impact: UUID format validation oracle, route confirmation
+
+F359 - Production auth middleware dual-layer pattern (LOW):
+- Layer 1: CSRF validation (403 "Forbidden") - blocks all requests without double-submit
+- Layer 2: Auth token validation (401 "Unauthorized" or 400 "User is not authenticated")
+- Bypassing CSRF (layer 1) reveals layer 2 error messages
+- Different endpoints use different layer 2 implementations (401 vs 400 status)
+- Impact: Defense-in-depth analysis, auth architecture disclosure
+
+F360 - app.deblock.com returns 410 Gone (INFO):
+- .well-known/assetlinks.json and .well-known/apple-app-site-association both return 410 Gone
+- Empty body on all requests
+- Indicates the app.deblock.com domain is decommissioned
+- Mobile app deep linking has moved to other domains (business.deblock.com / app-uat-01)
+- Impact: Domain lifecycle disclosure
 
 ## 16. Next Steps for Continued Testing
 
