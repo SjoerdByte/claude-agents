@@ -7547,3 +7547,181 @@ Priority 3 (Enumeration/escalation):
 - No server-side proxy for Solana RPC or blockchain interactions
 - Impact: LOW - Negative finding. The recovery portal's client-side-only architecture means there is no server-side attack surface for wallet recovery operations.
 
+### F655 [MEDIUM] X-Request-Id Header Reflected from Client Input (Log Injection)
+- Target: business.deblock.com (PRODUCTION)
+- The X-Request-Id response header reflects the value sent by the client in the request
+- Tested payloads that are reflected verbatim in the response header:
+  - XSS: `<script>alert(1)</script>` reflected as X-Request-Id value
+  - SQL: `' OR 1=1 --` reflected as X-Request-Id value
+  - Long strings: 500+ character values accepted and reflected
+  - CRLF injection: `\r\n` characters tested (URL-encoded)
+- The reflection occurs on all endpoints including /api/csrf (unauthenticated)
+- While XSS via response headers is not directly exploitable in modern browsers, the reflected value may be:
+  - Written to server-side log files (log injection / log poisoning)
+  - Displayed in admin dashboards or monitoring tools
+  - Used in log-based SIEM alerts, enabling alert fatigue attacks
+  - Stored in request tracing systems (distributed tracing)
+- Via header: `1.1 google` confirms Google Apigee gateway
+- Impact: MEDIUM - Arbitrary client-controlled content reflected in response headers and likely logged server-side. Enables log injection attacks that could poison monitoring, create false audit trails, or inject malicious content into log analysis tools.
+
+### F656 [LOW] Marketing Site Server Path Disclosure
+- Target: deblock.com (marketing site on Vercel)
+- The __NEXT_DATA__ JSON in server-rendered pages leaks: `/var/task/public/locales`
+- This reveals the Vercel serverless function filesystem layout
+- Vercel functions run in `/var/task/` which is the AWS Lambda runtime convention
+- Locale files stored at `/var/task/public/locales/{locale}/common.json`
+- Supported locales: default, fr, en, es, de, pt, it, pf (Polynesia), nc (New Caledonia)
+- Marketing site buildId: uTbOab3l7kZLJXtCgveTr
+- Impact: LOW - Server filesystem path disclosure. The path confirms Vercel/Lambda runtime but does not directly enable further exploitation.
+
+### F657 [LOW] Staging Site A/B Testing Cookie
+- Target: staging.deblock.com
+- A `header_variant=B` cookie is set via Set-Cookie header
+- This controls A/B testing of the site header
+- Staging returns 307 redirect to the main site with the cookie set
+- The cookie reveals internal A/B testing mechanism and variant naming
+- Impact: LOW - Information disclosure about internal A/B testing system.
+
+### F658 [INFO] CSRF Token Structure Analysis
+- Target: business.deblock.com (PRODUCTION)
+- CSRF token format: `{unix_created}.{unix_expires}.{base64url_nonce_22chars}.{base64url_hmac_43chars}`
+- Token validity: 1800 seconds (30 minutes) confirmed from timestamp analysis
+- Each request to GET /api/csrf generates a unique nonce
+- The HMAC signature (43 chars, base64url) likely uses a server-side secret key
+- Double-submit pattern: x-csrf-token header + __Host-csrf cookie
+- CSRF endpoint is unauthenticated (GET /api/csrf returns token without session)
+- No token reuse issues detected - tokens are single-use per nonce
+- Impact: INFO - Token structure documented for reference. The implementation appears cryptographically sound with unique nonces and HMAC validation.
+
+### F659 [HIGH] Hardcoded Bearer Token for Waitlist API in Client-Side JavaScript
+- Target: bursted-bubbles.deblock.com, waitlist-api.deblock.com
+- A static API bearer token is embedded in the client-side JavaScript at:
+  `/_next/static/chunks/pages/bb/[bbid]-60a34e690d9805bd.js`
+- Token value: `64726720888b45b06e7f8f22ac2cbb4ece5cefe6016cf31986b80ad47fece262de9bb18db4225f728816d611eb28487fddf9`
+- The token is used as: `Authorization: Bearer {token}` to authenticate against waitlist-api.deblock.com
+- Without the token, all /v1/bb/ endpoints return 403 Forbidden
+- With the token, full read access to all 1000 NFT records including owner wallet addresses
+- The waitlist API is hosted on Heroku: `triangular-nori-mturdfu2pnyuzlr1knxqprkr.herokudns.com`
+- Heroku session ID leaked in NEL headers: `c4c9725f-1ab0-44d8-820f-430df2718e11`
+- Backend is Ruby on Rails (x-runtime response header pattern)
+- Write operations (POST/PUT/PATCH/DELETE) return empty responses (not routed)
+- Impact: HIGH - Hardcoded API credential in client-side JS. While this token is technically "public" since the NFT site uses it client-side, it provides unauthenticated access to all NFT owner data. The single static token means it cannot be revoked without breaking the frontend. If additional write endpoints are added to the API, this token would grant immediate access. The token should be replaced with a per-request or per-session mechanism.
+
+### F660 [HIGH] Waitlist API Exposes All 1000 NFT Owner Wallet Addresses
+- Target: waitlist-api.deblock.com/v1/bb/{1-1000}
+- Using the hardcoded bearer token (F659), all 1000 Bursted Bubbles NFT records are enumerable
+- Each record exposes:
+  1. Full owner wallet address (e.g., `0xa586fa52be32702625be5537c1da76958ca41d39`)
+  2. Truncated owner address (`0xa586...1d39`)
+  3. Last transfer timestamp (Unix epoch)
+  4. Research/gamification status (level, progress percentage, start timestamp)
+  5. NFT properties with exact rarity percentages and supply counts
+  6. High-resolution image URLs: `cdn1.deblock.com/bbfinal/{id}.png` (2.3MB each)
+  7. Thumbnail URLs: `cdn1.deblock.com/bbmini/{id}.png` (247KB each)
+- Privacy concern: Deblock is a KYC-regulated crypto bank (AMF CASP license A2025-001, ACPR CIB 17748)
+- NFT owners who used Deblock to purchase these NFTs have undergone KYC verification
+- Wallet addresses from this API can be cross-referenced with on-chain transactions to link to Deblock user accounts
+- Combined with the Alchemy API key (F650), an attacker can:
+  1. Enumerate all 1000 NFT owner wallets from this API
+  2. Query each wallet's full transaction history via Alchemy's getAssetTransfers
+  3. Identify which wallets interact with Deblock's known contract addresses
+  4. Build a profile linking NFT ownership, on-chain activity, and Deblock KYC status
+- Impact: HIGH - Mass enumeration of NFT owner wallet addresses from a KYC-regulated platform. Combined with on-chain analysis capabilities from F650, this enables deanonymization of Deblock users and monitoring of their crypto activity.
+
+### F661 [MEDIUM] bursted-bubbles.deblock.com - Vercel NFT Site with Permissive CORS
+- Target: bursted-bubbles.deblock.com
+- Technology: Next.js (Pages Router) on Vercel, static export (autoExport: true)
+- BuildId: cpCt2fvkz82KJWk2WE8Se
+- CORS: `access-control-allow-origin: *` on all responses
+- Routes discovered from build manifest:
+  - `/` - Home page
+  - `/plan` - Native Plan pricing page
+  - `/bb/[bbid]` - Individual NFT detail page (client-side rendered)
+- External services:
+  - Plausible analytics: `data-domain="bursted-bubbles.deblock.com"`
+  - OpenSea collection: `opensea.io/collection/bursted-bubbles-by-deblock`
+  - CDN videos: `cdn1.deblock.com/videos/pierre-hand.mp4`
+  - Twitter: `twitter.com/DeblockApp`
+  - Pricing page link: `deblock.com/en-GB/pricing-plans`
+- Uses styled-components 5.3.9
+- Wallet connection via wagmi/RainbowKit (MetaMask, Coinbase Wallet, Rainbow)
+- Support email disclosed: `support@deblock.com` (available 24/7, ~12h response time)
+- NFT contract address: `0x52dbdc20fd57b339aff65ac8e07c43aa680b690a` (Ethereum mainnet)
+- Impact: MEDIUM - Wildcard CORS allows any origin to read responses via JavaScript. The site contains no sensitive per-user data (NFT data is public), but the CORS misconfiguration is a finding if the API is extended.
+
+### F662 [MEDIUM] status.deblock.com - Extremely Permissive CSP on Status Page
+- Target: status.deblock.com
+- Technology: Statuspal (statuspal.eu) hosted on OVH infrastructure
+- Server: nginx
+- CSP policy is extremely permissive:
+  `default-src * data: blob: filesystem: about: ws: wss: 'unsafe-inline' 'unsafe-eval'`
+  - Allows loading resources from ANY origin
+  - Allows inline scripts and eval()
+  - Allows WebSocket connections to any host
+  - Allows data: and blob: URIs
+- This CSP effectively provides NO protection against XSS or content injection
+- Statuspal page ID: 5212
+- Internal service IDs exposed in HTML:
+  - 35981 (Cryptocurrency parent), 35982 (Buy/onramp), 23239 (various services)
+  - 23240, 35983, 28758, 23245 (more service IDs)
+- Services monitored (reveals internal service architecture):
+  - Cryptocurrency: Buy (onramp), Sell (offramp), Crypto swaps, Crypto transfers
+  - Per-chain monitoring: Bitcoin, Ethereum/ERC-20, Solana, Base, Hyperliquid Core, Polygon, Arbitrum, XRP Ledger, Cardano, BNB Smart Chain
+  - Vaults & sub-accounts: Pockets, Fiat vaults, Crypto vaults
+  - SEPA bank transfers: Receiving, Sending, Transfers between Deblock users
+  - Commodities, Card payments, Card top-ups, Card order, Card management
+  - App access, Account creation, Live chat support
+- Incident data exposed: ID 242380 ("Degraded performance on SEPA transfers and crypto transactions")
+- Favicon and logo hosted on OVH S3: `statushq-eu-container.s3.eu-west-par.io.cloud.ovh.net`
+- Signed S3 URLs with AWS4-HMAC-SHA256 credentials visible in HTML source
+- Uses hCaptcha for notification subscription
+- Impact: MEDIUM - The status page reveals the complete internal service architecture including individual blockchain monitoring, payment rails, and infrastructure components. The extremely permissive CSP on a Deblock-branded page could be leveraged for phishing if combined with a subdomain takeover or content injection.
+
+### F663 [LOW] next.deblock.com - FeatureUpvote Feature Suggestion Platform
+- Target: next.deblock.com
+- DNS CNAME: `pr_bcat1tyxta9pdmq.customers.featureupvote.net` -> Cloudflare (104.26.2.196, 172.67.75.29, 104.26.3.196)
+- Currently returns 403 with Cloudflare managed challenge
+- This is a FeatureUpvote instance for collecting user feature suggestions/votes
+- The Cloudflare challenge blocks automated access but may be accessible via browser
+- The CNAME reveals the FeatureUpvote customer ID: `pr_bcat1tyxta9pdmq`
+- Impact: LOW - Protected by Cloudflare challenge. If accessible via browser, feature suggestions may reveal internal product roadmap and user-requested features.
+
+### F664 [LOW] CDN Paths for Full-Resolution NFT Images Publicly Accessible
+- Target: cdn1.deblock.com
+- Two CDN paths discovered for NFT images:
+  - Full resolution: `cdn1.deblock.com/bbfinal/{id}.png` (2.3MB per image, 1000 images)
+  - Thumbnails: `cdn1.deblock.com/bbmini/{id}.png` (247KB per image, 1000 images)
+- Both paths are publicly accessible without authentication
+- Total enumerable content: ~2.5GB of NFT imagery (1000 x 2.3MB + 1000 x 247KB)
+- CDN also hosts video content: `cdn1.deblock.com/videos/pierre-hand.mp4`
+- Impact: LOW - NFT images are inherently public (on-chain metadata). The CDN paths enable bulk downloading of all 1000 high-resolution images without rate limiting.
+
+### F665 [INFO] Marketing Site Additional Disclosures
+- Target: deblock.com
+- AMF CASP license number: A2025-001
+- ACPR CIB license number: 17748
+- Legal entity: Techblock/Deblock SAS
+- Application login redirect URL disclosed in marketing content: `https://app.deblock.com/fr?entry_source=landing_header_login`
+- Entry source tracking parameter: `entry_source=landing_header_login`
+- Marketing i18n locales reveal geographic expansion:
+  - pf: French Polynesia
+  - nc: New Caledonia
+  - Standard: fr, en, es, de, pt, it
+- DeblockPay: Merchant crypto payment solution with demo request forms
+  - Placeholder email in form: `jean@deblock.com` (CEO contact)
+  - Demo request likely goes to sales/BD team
+- Impact: INFO - Public business information and marketing details documented for reference.
+
+### F666 [INFO] waitlist-api.deblock.com Infrastructure Details
+- Target: waitlist-api.deblock.com
+- DNS CNAME: `triangular-nori-mturdfu2pnyuzlr1knxqprkr.herokudns.com`
+- Infrastructure: Heroku with AWS Global Accelerator (75.2.43.161, 99.83.217.1, 15.197.129.158, 76.223.11.49)
+- Backend: Ruby on Rails (confirmed by x-runtime response header)
+- Heroku NEL session: `c4c9725f-1ab0-44d8-820f-430df2718e11`
+- CORS: `vary: Origin` header (origin-dependent CORS, not wildcard)
+- API structure: `/v1/bb/{id}` for NFT data
+- Additional 403 endpoint: `/v1/waitlist/status` (exists but requires different auth level)
+- All other tested paths return 404
+- Write operations (POST/PUT/PATCH/DELETE) not routed for bb endpoints
+- Impact: INFO - Infrastructure details for the legacy Heroku-hosted waitlist/NFT API.
+
