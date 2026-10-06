@@ -5874,6 +5874,90 @@ F497. LOW - crypto-transactions browser-keys Reveals Lock Status Error With Arbi
 - Impact: Backend processes arbitrary transaction and browser IDs; enumeration surface with valid auth tokens
 - Reproducible: YES
 
+F498. HIGH - CRLF/Null Byte Injection in __Host-auth-token Cookie Causes Backend 502 Crash
+- Cookie value containing URL-encoded CRLF (%0d%0a) or null byte (%00) causes 502 Bad Gateway
+- Normal cookie value: 401 "Failed to load your profile" (expected)
+- Cookie with %0d%0a: 502 "Failed to load your profile" with status 502
+- Cookie with %00: 502 (same crash)
+- Cookie with %0a only: 502 (LF alone crashes)
+- Cookie with %0d only: 502 (CR alone crashes)
+- Unicode CRLF (%e5%98%8a%e5%98%8d): 502 (Unicode normalization before parsing)
+- Tab character (%09): Normal 401 (no crash, only control chars cause issue)
+- Crash is endpoint-specific: Only endpoints that parse __Host-auth-token JWT are affected
+- /api/csrf with CRLF cookie: Normal 200 (doesn't parse auth cookie)
+- /api/auth/check-session with CRLF: Normal 200 (doesn't parse auth cookie)
+- /api/facetec-gateway with CRLF: Normal 401 (different auth handling)
+- Backend (Rails/Puma) JWT parsing crashes on control characters
+- x-request-id present in 502 response: request reaches backend before crash
+- Impact: Server-side DoS on any authenticated endpoint; potential header injection in backend-to-backend communications; JWT parser does not sanitize input
+- Severity: HIGH (backend crash with arbitrary input, affects all auth-requiring endpoints)
+- Reproducible: YES
+
+F499. MEDIUM - Three Active WebSocket Endpoints Return 426 Upgrade Required
+- GET /api/websocket: 426 "Upgrade Required" with x-request-id (reaches backend)
+- GET /api/crypto-business-socket: 426 "Upgrade Required"
+- GET /api/crypto-commands-socket: 426 "Upgrade Required"
+- All three endpoints are actively listening and responding from the backend
+- WebSocket upgrade headers (Connection: Upgrade, Upgrade: websocket, Sec-WebSocket-*) still return 426
+- GCP HTTP/2 proxy strips Upgrade headers before reaching backend
+- /cable (ActionCable) returns Next.js 404 with full CSP header (not proxied to Rails)
+- Impact: Three live WebSocket endpoints accessible; successful upgrade would enable real-time communication interception
+- Reproducible: YES
+
+F500. MEDIUM - Production CSP on /cable Path Reveals Undisclosed Third-Party Services
+- /cable path returns Next.js 404 with full Content-Security-Policy header
+- New services discovered in CSP connect-src:
+  - wasm.regulaforensics.com, lic.regulaforensics.com, api.regulaforensics.com (Regula Forensics - document verification/KYC)
+  - api.eu.sardine.ai, api.production.eu.sardine.ai, api.sandbox.eu.sardine.ai (Sardine - fraud detection)
+- New services in CSP frame-src:
+  - client-portal.dotfile.com (Dotfile - KYC/KYB onboarding portal, confirmed accessible)
+- New services in CSP script-src:
+  - smp-device-content.apple.com (Apple Merchant Payment / Apple Pay integration)
+- CSP includes both production AND sandbox Sardine AI endpoints
+- Also: wasm-unsafe-eval and unsafe-eval in script-src
+- Impact: Full third-party service stack disclosure; sandbox endpoint in production CSP indicates testing artifacts; unsafe-eval in script-src weakens CSP
+- Reproducible: YES
+
+F501. HIGH - UAT-02 Sentry Environment Reports "production" Instead of UAT/Staging
+- app-uat-02.deblock.com Sentry metadata: sentry-environment=production
+- business.deblock.com (actual production): sentry-environment=production
+- Both environments report identical environment label to Sentry
+- UAT-02 sentry-public_key: 95a2f173ce955f9d1ff52358da173ece (different project)
+- Production sentry-public_key: 2f75b94510aa39f72db5dd805d1c1dc8 (different project)
+- Same sentry-org_id: 4510324489519104
+- UAT-02 release: 86c92c6 vs Production release: 54029c4
+- Impact: Error reports from UAT are tagged as "production" in Sentry, polluting production error monitoring; different Sentry projects but same environment label prevents distinguishing errors by origin; reduces incident response effectiveness
+- Reproducible: YES
+
+F502. LOW - Sentry Metadata Disclosure in HTML Meta Tags on Both Environments
+- Production: sentry-public_key=2f75b94510aa39f72db5dd805d1c1dc8, release=54029c4
+- UAT-02: sentry-public_key=95a2f173ce955f9d1ff52358da173ece, release=86c92c6
+- Both: sentry-org_id=4510324489519104, sentry-sample_rate=0 (tracing disabled)
+- Release hashes reveal git commit SHAs (7-char short form)
+- Public keys allow constructing DSN for sending arbitrary error events
+- Impact: Error monitoring project enumeration; release version tracking; potential Sentry project pollution with crafted events
+- Reproducible: YES
+
+F503. LOW - i18n Middleware Locale Routing Exposes 307 Redirect Behavior
+- GET /en/api/users/user: Returns 307 redirect to /api/users/user
+- GET /fr/api/users/user: Returns 404 HTML (French locale not configured for business portal)
+- i18n middleware processes API routes before API handler
+- x-middleware-rewrite header exposes internal rewrite rules (e.g., /en/cable -> cable)
+- x-next-i18n-router-locale: en header reveals locale detection
+- Only "en" locale configured for business portal
+- Impact: Middleware processing order disclosure; locale-based route enumeration
+- Reproducible: YES
+
+F504. MEDIUM - Apigee Fault Response Disclosure With Full Error Codes
+- GET /api/auth?redirect_to=https://evil.com returns 502 with Apigee fault body
+- Response body: {"fault":{"faultstring":"Received 405 Response without Allow Header","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}
+- Reveals: Apigee API gateway version/behavior, internal error codes, HTTP protocol handling details
+- Request passes through Next.js to Apigee to backend Rails
+- Backend returns 405 without Allow header, Apigee wraps in fault response
+- x-request-id present: request reaches full backend chain
+- Impact: API gateway error handling disclosure; internal architecture revelation; error code enumeration
+- Reproducible: YES
+
 ## 16. Next Steps for Continued Testing
 
 Priority 1 (Critical - requires second test account):
