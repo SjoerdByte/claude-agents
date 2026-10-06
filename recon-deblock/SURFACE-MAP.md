@@ -7449,3 +7449,101 @@ Priority 3 (Enumeration/escalation):
 - UAT-02 uses a different public key (95a2f173ce955f9d1ff52358da173ece) but incorrectly sets sentry-environment to "production"
 - Impact: LOW - Sentry event submission requires additional authentication beyond the DSN public key. However, the shared project between prod and UAT means a UAT compromise could inject events that appear to come from production.
 
+### F647 [HIGH] Production WebSocket Processes Messages from Unauthenticated Connections
+- Target: business.deblock.com (PRODUCTION)
+- The /api/crypto-commands-socket WebSocket not only accepts unauthenticated connections (F626) but actively PROCESSES messages after the initial auth error:
+  - Sending `{"event":"ping"}` returns `{"event":"ping"}` (ping/pong)
+  - Sending `{"event":"connect"}` returns `{"event":"ping"}`
+  - Sending `{"command":"list"}` returns `{"event":"ping"}`
+  - Messages with `command` + `payload` (e.g., sign_message, derive_stocks_wallet, store_stocks_keys) are silently dropped
+  - The connection persists indefinitely after the initial error
+- Client-side JS reveals three WebSocket command types: sign_message, derive_stocks_wallet, store_stocks_keys
+- Command format: {"command":"sign_message","payload":{"userId":"...","browserId":"...","walletId":"...","signableMessageJson":"..."}}
+- The connection is NOT closed after the auth error, allowing persistent resource consumption
+- UAT-02 backend name is "crypto_commands" (vs production "business-crypto-commands"), and UAT-02 does NOT process messages after auth error (stricter)
+- Impact: HIGH - Production WebSocket is more permissive than UAT. The server processes and responds to messages from unauthenticated clients. While commands requiring auth context are dropped, the persistent connection with message processing enables: 1) Connection exhaustion DoS, 2) Message format discovery through trial and error, 3) Potential for discovering commands that don't require auth context.
+
+### F648 [MEDIUM] Crypto-Simulation Backend Returns 405 Without Allow Header via Apigee
+- Target: business.deblock.com (PRODUCTION)
+- GET/PUT/PATCH /api/crypto-simulation/{currency} returns Apigee 502 error:
+  {"fault":{"faultstring":"Received 405 Response without Allow Header","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}
+- POST /api/crypto-simulation/{currency} returns 403 (rate limited)
+- The backend service is running and processing requests but returns HTTP 405 without the required Allow header
+- This Apigee error is specific: the backend IS deployed and responsive, it just rejects the HTTP method
+- The proper method is POST (rate limited before reaching backend)
+- Impact: MEDIUM - Backend misconfiguration. The 405 without Allow header violates HTTP spec (RFC 9110 Section 15.5.6) and the Apigee error exposes internal gateway architecture. The endpoint processes unauthenticated requests to the point of method validation.
+
+### F649 [MEDIUM] Firebase Auth Configuration Weaknesses
+- Target: Firebase project deblock-ltd (API key: AIzaSyCLIgRdnsXP6OnH7_qQNdGEZuzdyKMCa94)
+- Configuration findings:
+  1. Anonymous sign-up disabled ("ADMIN_ONLY_OPERATION") - good
+  2. Password login disabled ("PASSWORD_LOGIN_DISABLED") - uses social/phone only
+  3. Password reset accepts ANY email without rate limiting (5 parallel requests all 200, returns same response)
+  4. Apple Sign-in IS enabled as IDP (returns "INVALID_IDP_RESPONSE" error, not "provider not supported")
+  5. User enumeration protection is ON (createAuthUri returns no signinMethods)
+- Firebase authorized domains are RESTRICTED: only localhost, deblock-ltd.firebaseapp.com, deblock-ltd.web.app
+  - deblock.com is NOT listed
+  - business.deblock.com is NOT listed
+  - This means Firebase OAuth redirects should only work for Firebase hosting domains
+- Project ID exposed: 248017251601
+- Impact: MEDIUM - While most settings are secure, the unrestricted password reset endpoint can be used for email flooding. The restrictive authorized domains list may cause OAuth flow issues if Firebase auth is used from deblock.com domains. The password reset with disabled password login is security noise that could confuse users.
+
+### F650 [MEDIUM] Alchemy API Key Allows Enhanced Methods Across 6+ Chains Without Restriction
+- Target: Alchemy RPC (key: PxkB3B-1-0bFVQHY4Gy5e9V_-FwVj7Pt, exposed in client-side JS)
+- The key works on all tested chains: Ethereum, Polygon, Arbitrum, Optimism, Base, Solana
+- Enhanced Alchemy methods available without restriction:
+  - alchemy_getTokenBalances: Returns all ERC-20 token balances for ANY address (with pagination)
+  - alchemy_getAssetTransfers: Returns full transfer history for ANY address
+  - Standard JSON-RPC: eth_blockNumber, getBlockHeight (Solana), etc.
+- No visible rate limiting on the key (multiple rapid requests all succeed)
+- No IP-based restrictions detected
+- Previously documented key exposure in F-series (earlier sessions), but capability testing now confirms:
+  - Enhanced methods allow querying ANY wallet's balance and transaction history
+  - This enables monitoring of Deblock users' on-chain activity
+  - API quota consumption at Deblock's expense
+- Impact: MEDIUM - Exposed Alchemy key with unrestricted enhanced API access. While read-only (no transaction signing), it enables querying any address's token balances and transfer history across all supported chains. An attacker knowing a user's wallet address can monitor their on-chain activity using Deblock's Alchemy quota.
+
+### F651 [MEDIUM] Production Endpoints Reveal Internal Error Messages with Dummy Auth Token
+- Target: business.deblock.com (PRODUCTION)
+- With __Host-auth-token=x (bypasses cookie-presence middleware), several endpoints reveal descriptive internal errors:
+  1. GET /api/crypto-messages/messages/{uuid}: "Failed to load the signing request" (401) - reveals messages are internally called "signing requests"
+  2. GET /api/crypto-transactions/{id}/browser-keys/{browserId}: "Failed to unlock this browser's keys" (401) - reveals browser key decryption function name
+  3. GET /api/users/user: "Failed to load your profile" (401) - confirms user profile endpoint
+  4. GET /api/frontdesk/accounts: "Failed to load your accounts" (401) - confirms account loading
+  5. GET /api/cards: "Failed to load cards" (401) - confirms cards endpoint
+  6. GET /api/frontdesk/features: "Failed to load feature flags" (401) - confirms feature flag endpoint
+- These errors occur because the dummy token passes the first middleware (cookie presence check) but fails JWT verification in the second middleware
+- The error messages reveal:
+  - Internal function names and data models
+  - How the backend processes requests (cookie check -> JWT verification -> data fetch)
+  - Which endpoints are deployed on production vs development
+- Impact: MEDIUM - Internal error message disclosure through first-middleware bypass. Reveals backend function naming conventions and data model terminology. Combined with the cookie-presence bypass, allows mapping production API surface without a valid account.
+
+### F652 [HIGH] Browser Keys Endpoint May Allow Unauthorized Key Extraction (IDOR Candidate)
+- Target: business.deblock.com (PRODUCTION)
+- GET /api/crypto-transactions/{transactionId}/browser-keys/{browserId} returns "Failed to unlock this browser's keys" with dummy auth
+- This endpoint is designed to return encryption keys specific to a browser session for a given transaction
+- The endpoint accepts two UUIDs as path parameters, both potentially enumerable
+- With a valid auth token, this endpoint likely returns AES-GCM encryption keys used for client-side wallet operations
+- Client-side JS shows: AES-GCM with 12-byte random IV, HMAC-SHA256 key import
+- If authorization only checks the auth token's user and not whether the user owns the transaction/browser, this would be a critical IDOR allowing extraction of other users' browser encryption keys
+- Requires authenticated testing to verify (needs valid auth token with second test account)
+- Impact: HIGH (potential CRITICAL) - If IDOR is confirmed, an authenticated user could extract encryption keys for any transaction/browser combination, potentially decrypting other users' wallet operations. The two-UUID structure (transactionId + browserId) creates a large attack surface for cross-user key access.
+
+### F653 [LOW] No Open Redirect Vulnerabilities Found
+- Target: business.deblock.com, app-uat-02.deblock.com
+- Tested redirect parameters on auth endpoints: returnUrl, redirect_uri, redirectUrl, next, callbackUrl, return_to
+- All return 200 with standard API response, no redirection behavior
+- The application does not use server-side redirects in its API layer
+- Redirect logic is handled entirely client-side in the Next.js router
+- Impact: LOW - Negative finding. No open redirect attack surface exists in the API layer.
+
+### F654 [LOW] Recovery Portal Has No Server-Side API
+- Target: recovery.deblock.com
+- Tested paths: /api/recover, /api/wallet, /api/solana, /api/keys, /api/escrow, /api/restore
+- All return 404
+- The recovery portal is a purely client-side application (Next.js Pages Router)
+- Wallet recovery operations happen entirely in the browser using Google Drive API (drive.appdata scope) and Apple CloudKit
+- No server-side proxy for Solana RPC or blockchain interactions
+- Impact: LOW - Negative finding. The recovery portal's client-side-only architecture means there is no server-side attack surface for wallet recovery operations.
+
