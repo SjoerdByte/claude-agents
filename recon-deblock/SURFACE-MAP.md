@@ -6648,3 +6648,141 @@ Priority 3 (Enumeration/escalation):
 - Different error messages for same endpoint across environments suggest different middleware stacks or backend versions
 - Impact: Error message differences can be used to fingerprint backend versions and identify which endpoints have different processing logic between environments.
 
+### F575 [HIGH] Blind SSRF via frontdesk/users/avatar/upload Without Authentication (UAT-02)
+- Target: app-uat-02.deblock.com
+- POST /api/frontdesk/users/avatar/upload?uploadUrl=<URL> - NO AUTHENTICATION REQUIRED
+- The endpoint accepts a URL via query parameter and makes server-side HTTP requests to it
+- URL validation allows only storage.googleapis.com domain (rejects other hosts with "Invalid uploadUrl parameter")
+- Server makes real requests to GCS URLs:
+  - storage.googleapis.com/test => 400 "Failed to upload file" (server attempted fetch)
+  - storage.googleapis.com/deblock-production-crypto-currencies-v2/test => 403 "Failed to upload file"
+  - storage.googleapis.com/deblock-production-crypto-currencies-v2/btc.png => 403 "Failed to upload file"
+  - storage.googleapis.com/storage/v1/b/deblock-production-crypto-currencies-v2/o => 404 "Failed to upload file" (JSON API)
+  - storage.googleapis.com/deblock-production-crypto-currencies-v2/../../../computeMetadata/v1/ => 400 (path traversal passes validation!)
+  - storage%2Egoogleapis%2Ecom/test => 400 (URL-encoded dots pass validation)
+- Different HTTP status codes per target (400/403/404) confirm server is making real outbound requests
+- 403 on existing bucket files vs 400 on non-existent suggests server may use GCP service account credentials
+- Path traversal accepted: /../../../ passes URL validation (stays within GCS domain check)
+- URL-encoded hostname passes: %2E works for dots in domain
+- NOT present on production (business.deblock.com returns 404 for this endpoint)
+- Impact: P2-P1 SSRF. Unauthenticated server-side request forgery to GCS. If the server's GCP service account has read access to private buckets, an attacker could read customer data (KYC documents, bank statements, crypto wallet backups) from GCS without any authentication. The path traversal acceptance may allow reaching beyond storage.googleapis.com. Even blind, this confirms the server processes arbitrary URLs.
+
+### F576 [MEDIUM] frontdesk/users/avatar/upload Missing Auth Check (Body Validation Before Auth)
+- Target: app-uat-02.deblock.com
+- POST /api/frontdesk/users/avatar/upload with JSON body
+- Returns {"error":"uploadUrl parameter is required"} instead of "User is not authenticated"
+- The endpoint processes the request and validates parameters BEFORE checking authentication
+- Same pattern as transactions/submit (F573) and statements/crypto/request (F578)
+- Impact: Input validation before auth check exposes the endpoint's expected parameter format to unauthenticated users and may allow further exploitation if authentication can be bypassed.
+
+### F577 [MEDIUM] key-management/{id}/resend Unauthenticated Access to Key Escrow System
+- Target: app-uat-02.deblock.com
+- POST /api/key-management/{id}/resend without authentication
+- Numeric IDs return: {"error":"Invalid user ID"} (validates ID format, not auth)
+- UUID format IDs (e.g., 00000000-0000-0000-0000-000000000001) return: {"error":"Failed to retrieve escrow token"}
+- UUID format accepted means the endpoint validates user IDs as UUIDs
+- "Failed to retrieve escrow token" means the server attempted to look up the user's escrow token in the "Orwell" key management system WITHOUT checking authentication
+- All tested UUIDs return the same "Failed to retrieve escrow token" (no user enumeration via timing)
+- Production (business.deblock.com): Returns 403 "Forbidden" (rate-limited)
+- Impact: Unauthenticated access to the wallet key escrow system. The endpoint accepts UUID-format user IDs and attempts to retrieve wallet encryption key escrow tokens without authentication. If a valid user UUID is known, the escrow token could potentially be retrieved. The "Orwell" system manages wallet key backup/recovery - compromise here could lead to wallet key theft.
+
+### F578 [MEDIUM] statements/crypto/request Multi-Step Body Validation Before Auth
+- Target: app-uat-02.deblock.com
+- POST /api/statements/crypto/request without authentication
+- Sequential body validation before auth check:
+  1. {} => {"error":"Missing fileId"} (validates body first)
+  2. {"fileId":"1"} => {"error":"Missing year"} (continues validation)
+  3. {"fileId":"1","year":"2026"} => {"error":"User is not authenticated"} (auth check finally)
+- The endpoint validates at least 2 body parameters (fileId, year) before checking authentication
+- Same pattern as transactions/submit (F573)
+- Impact: Reveals expected request format for crypto statement generation. Combined with a valid auth token, this would allow downloading other users' crypto transaction statements (IDOR via fileId).
+
+### F579 [INFO] /api/health Endpoint Exposes Build Information Without Authentication
+- Target: app-uat-02.deblock.com, app-uat-01.deblock.com
+- GET /api/health returns JSON without auth:
+  - UAT-02: {"status":"ok","buildId":"86c92c6","timestamp":"2026-10-06T14:53:24.559Z"}
+  - UAT-01: {"status":"ok","buildId":"e95b8cf","timestamp":"2026-10-06T14:53:38.203Z"}
+- Different buildId values confirm UAT-01 and UAT-02 run different deployments
+- buildId is a git commit hash - can be used to identify exact code version
+- Production business.deblock.com: /api/health returns 404 (not exposed)
+- GET /readyz returns 200 with empty body on all instances (Kubernetes probe)
+- GET /api/auth/health returns 200 with empty body on UAT-02
+- Impact: Build information disclosure allows attackers to correlate code versions with known vulnerabilities and track deployment cadence.
+
+### F580 [LOW] Legal Document CDN URLs Accessible Without Authentication (UAT-02)
+- Target: app-uat-02.deblock.com
+- GET /api/legal/order-execution-policy => 200 {"url":"https://cdn1.deblock.com/terms/order-execution-policy/20241028-1.4-order+execution+policy.pdf"}
+- GET /api/legal/privacy-policy => 200 {"url":"https://cdn1.deblock.com/terms/privacy/FR/20230726-2-Privacy_Policy.pdf"}
+- GET /api/legal/crypto-wallet-import-terms => 200 {"url":"https://cdn1.deblock.com/terms/crypto-wallet-import-terms/20260107_crypto_wallet_import_terms_v0_EN.pdf"}
+- All return signed CDN URLs without authentication
+- Legal documents include version dates in filenames revealing document update history
+- Impact: Low - legal documents are semi-public by nature, but the CDN URL structure reveals internal document versioning scheme and organization.
+
+### F581 [LOW] marketing-widgets Endpoint Returns Internal Content Data Without Authentication (UAT-02)
+- Target: app-uat-02.deblock.com
+- GET /api/marketing-widgets => 200
+- Returns full marketing widget configuration including deeplink targets:
+  {"status":"ok","result":[{"title":"Your Account Details","subtitle":"Discover your IBAN","link":"Your Details","image_url":"https://cdn1.deblock.com/webassets/details.png","deeplink":"iban"},{"title":"Your Crypto Wallet",...}]}
+- Exposes internal deeplink scheme and CDN asset URLs
+- Impact: Low - reveals internal navigation deeplink scheme (iban, crypto wallet, etc.) and CDN asset structure.
+
+### F582 [MEDIUM] UAT-01 Running Different Build Than UAT-02
+- Target: app-uat-01.deblock.com vs app-uat-02.deblock.com
+- UAT-01 buildId: e95b8cf (from /api/health)
+- UAT-02 buildId: 86c92c6 (from /api/health and Sentry release)
+- Both are running Next.js with Turbopack but different code versions
+- UAT-01 was the original test target with JS chunks analyzed in earlier sessions
+- Different builds may mean different security patches applied, different feature flags, different vulnerabilities
+- Impact: Running different builds in UAT environments means security patches may be inconsistent. Vulnerabilities fixed in one build may still be exploitable on the other.
+
+### F583 [MEDIUM] Unauthenticated API Endpoint Surface Comparison (UAT-02 vs Production)
+- Target: app-uat-02.deblock.com, business.deblock.com
+- Endpoints accessible without authentication on UAT-02 but 404 on production:
+  - /api/legal/* (order-execution-policy, privacy-policy, crypto-wallet-import-terms)
+  - /api/marketing-widgets
+  - /api/health
+  - /api/auth/health
+  - /api/client-region
+  - /api/csp-violation (204, accepts arbitrary reports)
+  - /api/onboarding/resend-onboarding-otp
+  - /api/onboarding/signature/resend-signature-otp
+  - /api/app-version
+  - /api/auth/analytics
+  - /api/qr-login (creates sessions)
+  - /api/key-management/{id}/resend
+  - /api/frontdesk/users/avatar/upload (SSRF)
+- Endpoints accessible without authentication on BOTH environments:
+  - /api/csrf (returns CSRF token)
+  - /api/auth/check-session (returns {"valid":false})
+  - /readyz (Kubernetes probe)
+- The UAT-02 environment exposes a significantly larger unauthenticated attack surface
+- Impact: 14+ endpoints accessible without auth on UAT-02 that are not available on production. If UAT-02 shares any backend database or service with production (common in fintech staging), these endpoints could be used to affect production data.
+
+### F584 [INFO] crypto-business-socket WebSocket Present But Properly Gated
+- Target: business.deblock.com, app-uat-02.deblock.com
+- Production: GET returns 426 (Upgrade Required), WebSocket connects but immediately closes with 1008 "Error initializing handler" (same as main websocket)
+- UAT-02: HTTP returns 502 (backend not running)
+- Unlike crypto-socket (which stays connected indefinitely on UAT-02), this socket requires auth
+- Impact: Informational - socket endpoint exists on production but properly validates authentication before allowing the connection to persist.
+
+### F585 [INFO] Multiple 502 Errors Reveal Apigee Gateway Method Restrictions
+- Target: app-uat-02.deblock.com
+- Several endpoints return 502 with Apigee error: {"fault":{"faultstring":"Received 405 Response without Allow Header","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}
+- Affected endpoints: frontdesk/users/handle (POST), frontdesk/users/avatar (POST), frontdesk/transactions (GET), dca/standing-orders (POST), due-gateway/agreements (POST), due-gateway/account (POST), due-gateway/tos (GET), top-up/get-topup-fees (GET), analytics/entry (GET), sepa-transfer/upcoming (GET), sepa-transfer/upcoming/overview (GET), subscribe-2fa-mobile-session (POST)
+- The backend returns 405 (Method Not Allowed) but without the Allow header, causing Apigee to convert it to 502
+- This reveals which endpoints exist but only accept specific HTTP methods (different from what was tried)
+- Impact: Informational - reveals endpoint existence and that the backend is behind Google Apigee API gateway. The 502 pattern can be used to map valid endpoints even when the correct HTTP method is unknown.
+
+### F586 [MEDIUM] Confirmed Unauthenticated Endpoint Inventory (All Pre-Auth Body Validation)
+- Target: app-uat-02.deblock.com
+- Endpoints that validate request body BEFORE checking authentication:
+  1. POST /api/transactions/submit => "INVALID_REQUEST_BODY" (F573)
+  2. POST /api/transactions/generate-request => "INVALID_REQUEST_BODY"
+  3. POST /api/statements/crypto/request => "Missing fileId" -> "Missing year" (F578)
+  4. POST /api/frontdesk/users/avatar/upload => "uploadUrl parameter is required" (F576)
+  5. POST /api/key-management/{id}/resend => "Invalid user ID" / "Failed to retrieve escrow token" (F577)
+  6. POST /api/onboarding/signature/resend-signature-otp => "Unable to resend otp"
+  7. POST /api/onboarding/resend-onboarding-otp => {"error":"","status":400} (empty error)
+- All these endpoints process input before authenticating the user, which is a systematic middleware ordering vulnerability
+- Impact: P3 systematic vulnerability. The middleware ordering issue (body parsing before auth) across 7+ endpoints suggests a framework-level configuration problem rather than individual endpoint bugs. This pattern could lead to auth bypass if any endpoint processes business logic during body validation.
+
