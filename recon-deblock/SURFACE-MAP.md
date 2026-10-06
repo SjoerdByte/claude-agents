@@ -8171,3 +8171,186 @@ Priority 3 (Enumeration/escalation):
 - Cache: 4-hour public cache with revalidation
 - Impact: INFO - Negative finding. The image optimizer is properly restricted to same-origin paths only.
 
+### F702 [HIGH] WordPress XMLRPC Brute-Force Amplification via system.multicall
+- Target: brand.deblock.com/xmlrpc.php
+- GET returns 405 Method Not Allowed (partially restricted)
+- POST with system.listMethods returns full method listing (80+ methods enabled)
+- system.multicall is enabled, allowing multiple credential checks in a single HTTP request
+- CONFIRMED: system.multicall with wp.getUsersBlogs processes each credential pair independently
+- Each sub-call returns its own faultCode/faultString, not a single response
+- No rate limiting observed across multiple multicall requests
+- Known admin username: admin-deblock (from F703 REST API user enumeration)
+- Error messages in French: "Identifiant ou mot de passe incorrect" (confirms French locale)
+- Available XMLRPC methods include: wp.getUsersBlogs, wp.getUsers, wp.getOptions, wp.uploadFile, wp.newPost, wp.editPost, wp.deletePost, wp.getMediaLibrary, metaWeblog.newPost, blogger.newPost, pingback.ping, and 70+ more
+- Attack: An attacker can try thousands of passwords per HTTP request using system.multicall with wp.getUsersBlogs, bypassing any IP-based rate limiting
+- Impact: HIGH - Single admin user "admin-deblock" with amplified brute-force capability via XMLRPC multicall. No rate limiting, no account lockout, no 2FA visible. Successful compromise gives full WordPress admin access to brand assets.
+
+### F703 [MEDIUM] WordPress REST API User Enumeration and Full Information Disclosure
+- Target: brand.deblock.com/wp-json/wp/v2/users
+- Single user exposed: ID 1, username "admin-deblock", slug "admin-deblock"
+- Author page redirect confirmed: /?author=1 -> /author/admin-deblock/
+- Gravatar hash: 44f51df94ecb1454d3e064107d59a8a4606564f21ace0b536097f9f7a185e5f3
+- User meta: Elementor introduction flag set (elementor_introduction)
+- Author archive page accessible at /author/admin-deblock/
+- WP REST API fully accessible without authentication for public endpoints
+- Site info via /wp-json/: Name "Deblock", timezone "Europe/Paris", GMT offset 2
+- Impact: MEDIUM - Single admin account confirmed. Username valuable for brute-force attacks via F702. Gravatar hash can be reversed to recover email address.
+
+### F704 [MEDIUM] WordPress Backup Plugin (BackWPup 5.6.7) Route Map Disclosure
+- Target: brand.deblock.com/wp-json/backwpup/v1/ and /v2/
+- BackWPup 5.6.7 installed (version from /wp-content/plugins/backwpup/readme.txt)
+- Full REST API route map publicly visible without authentication
+- Exposed endpoint routes (all return 401 when accessed):
+  - /backwpup/v1/startbackup (POST) - trigger backup
+  - /backwpup/v1/backups (POST) - list backups with pagination
+  - /backwpup/v1/getjobslist (GET) - list backup jobs
+  - /backwpup/v1/addjob (POST) - create backup job
+  - /backwpup/v1/delete_job (DELETE) - delete backup job
+  - /backwpup/v1/save_job_settings (POST) - modify job settings
+  - /backwpup/v1/save_files_exclusions (POST) - configure file exclusions (accepts backuproot, backupplugins, backupthemes, backupuploads, backupcontent params)
+  - /backwpup/v1/save_excluded_tables (POST) - configure DB table exclusions (accepts tabledb, dbdumpfile params)
+  - /backwpup/v1/cloud_is_authenticated (GET) - check cloud storage auth
+  - /backwpup/v1/authenticate_cloud (POST) - authenticate to cloud storage
+  - /backwpup/v1/chatbot-context (GET/POST) - chatbot with context_id and context_token params
+  - /backwpup/v1/process_bulk_actions (POST) - bulk operations on backups
+  - /backwpup/v2/storages (POST) - storage backends
+  - /backwpup/v2/messages (GET) - backup messages/logs
+- Backup uploads directory exists: /wp-content/uploads/backwpup/ returns 403 (directory exists but access blocked)
+- Impact: MEDIUM - Route map reveals full backup management API structure. Combined with F702 brute-force, a compromised admin account gains full backup management including cloud storage access, database dumps, and file system backups containing credentials.
+
+### F705 [MEDIUM] WordPress Plugin and Theme Version Disclosure
+- Target: brand.deblock.com
+- Elementor 4.0.1 (from CSS/JS version parameters and /wp-content/plugins/elementor/readme.txt)
+- Elementor Pro 4.0.1 (from CSS version parameters)
+- Hello Elementor theme 3.4.7 (from stylesheet version)
+- BackWPup 5.6.7 (from plugin readme.txt)
+- Safe SVG plugin (from CSS source comment)
+- Elementor AI feature enabled (/wp-json/elementor-ai/v1/permissions endpoint exists)
+- WordPress REST API namespaces: oembed/1.0, elementor-one/v1, elementor/v1, elementor-pro/v1, backwpup/v1, backwpup/v2, elementor-hello-elementor/v1, elementor/v1/documents, elementor-ai/v1, elementor/v1/feedback, wp/v2, wp-site-health/v1, wp-block-editor/v1, wp-abilities/v1
+- PHP 8.3.33 (from server header, confirmed in F698)
+- LiteSpeed server on Hostinger platform
+- readme.html accessible at root (200) - default WordPress readme
+- wp-login.php accessible (200)
+- wp-config.php returns 200 (PHP-rendered, source not exposed)
+- wp-content/debug.log returns 403 (exists but blocked)
+- .env returns 403 (exists but blocked)
+- Impact: MEDIUM - Precise version information for all plugins and themes enables targeted CVE exploitation. Elementor Pro and BackWPup are known for periodic vulnerabilities. Version pinpointing reduces attacker effort significantly.
+
+### F706 [LOW] WordPress Media Library Publicly Enumerable via REST API
+- Target: brand.deblock.com/wp-json/wp/v2/media
+- 150+ media items accessible without authentication across 3+ pages
+- Media types include: JPEG images, PNG images, SVG files, MP4 videos, MOV videos (QuickTime)
+- Contains brand assets: product screenshots, marketing photos, motion graphics, app screenshots
+- Contains custom font files (Geist family: Thin, ExtraLight, Light, Regular, Medium, SemiBold, Bold, ExtraBold, Black)
+- Elementor screenshots exposed: Elementor-post-screenshot_105_2026-02-20-14-10-47_2c01a55.jpg
+- All media URLs directly accessible without authentication
+- Upload dates reveal activity timeline: January-April 2026
+- Impact: LOW - Pre-release brand assets and internal design files accessible. Font files downloadable. While these are intended brand assets for a brand guidelines site, the complete enumeration exposes the full design asset library.
+
+### F707 [MEDIUM] Mixed Content: Font Files Loaded via HTTP on HTTPS Site
+- Target: brand.deblock.com
+- Custom Geist font family loaded via HTTP (not HTTPS) in CSS:
+  - http://brand.deblock.com/wp-content/uploads/2026/01/Geist-Thin.ttf
+  - http://brand.deblock.com/wp-content/uploads/2026/01/Geist-ExtraLight.ttf
+  - http://brand.deblock.com/wp-content/uploads/2026/01/Geist-Light.ttf
+  - http://brand.deblock.com/wp-content/uploads/2026/01/Geist-Regular.ttf
+  - (and 5 more variants: Medium, SemiBold, Bold, ExtraBold, Black)
+- Site is served over HTTPS but font @font-face declarations use http:// URLs
+- Modern browsers block mixed content by default, potentially breaking font rendering
+- On networks without HSTS preload, a MITM attacker could intercept and replace font files
+- Impact: MEDIUM - Mixed content vulnerability. While modern browsers may auto-upgrade or block these requests, this indicates misconfiguration in the Elementor page builder CSS and could enable font file substitution attacks on non-HSTS networks.
+
+### F708 [MEDIUM] WordPress Pages Publicly Enumerable - Brand Guidelines Structure Exposed
+- Target: brand.deblock.com/wp-json/wp/v2/pages
+- 9 published pages enumerated without authentication:
+  - ID 572: "Brand voice" (modified 2026-01-29)
+  - ID 570: "Motion" (modified 2026-04-07)
+  - ID 223: "3d" (modified 2026-01-15)
+  - ID 216: "Asset Usage" (modified 2026-04-07)
+  - ID 56: "Photography" (modified 2026-04-07)
+  - ID 54: "Typography" (modified 2026-04-07)
+  - ID 52: "Colors" (modified 2026-02-11)
+  - ID 50: "Logo" (modified 2026-04-07)
+  - ID 25: "Overview" (modified 2026-02-11)
+- No blog posts published (wp/v2/posts returns empty)
+- Single category: "Non classe" (French default - uncategorized)
+- Last modification dates reveal active maintenance through April 2026
+- Impact: MEDIUM - Complete brand guidelines site structure exposed. While the content is brand-related, the full site structure and modification history is information useful for social engineering.
+
+### F709 [MEDIUM] Elementor Pro REST API Endpoints Exposed
+- Target: brand.deblock.com/wp-json/elementor-pro/v1/
+- Elementor Pro endpoints publicly discoverable:
+  - /license/tier-features (GET) - license tier info
+  - /license/get-license-status (GET) - license status (returns 401)
+  - /posts-widget (GET) - post widget data
+  - /get-post-type-taxonomies (POST) - accepts post_type parameter
+  - /refresh-loop (POST) - accepts post_id, widget_id, widget_filters, widget_model params
+  - /refresh-search (POST) - accepts post_id, widget_id, widget_model params
+- The refresh-loop and refresh-search endpoints accept post_id and widget_id parameters
+- These endpoints could potentially be used for SSRF or data exfiltration if authentication is weak
+- widget_model parameter accepts arbitrary object type (potential for injection)
+- Impact: MEDIUM - Elementor Pro API surface exposed. The widget refresh endpoints with arbitrary post_id and widget_model parameters are potential attack vectors for authenticated exploitation after credential compromise via F702.
+
+### F710 [INFO] Season1 Token Claim Portal - Full UI and Tokenomics Disclosure
+- Target: season1.deblock.com
+- Vercel deployment: dpl_4iKDdCJeG9E2uNYsMz81ZvcLLwrY
+- Build ID: dnXXrsOO3qZDiibEfWn3N
+- Next.js App Router (not Pages Router)
+- Full i18n strings embedded in RSC payload reveal complete claim portal functionality:
+  - Email verification flow: enter email -> verify OTP code -> account linked
+  - Wallet connection: Deblock wallet + external wallets via WalletConnect
+  - X/Twitter account connection for bonus points
+  - Referral system: +100 points per referee with >1 point
+  - NFT boost: Bursted Bubbles and Moving Blocks NFT holders get separate allocation
+  - Hyperliquid volume checking for wallet eligibility
+  - Dashboard with airdrop info, wallet connection, referral links
+- Token distribution revealed in full:
+  - Team: 15% (36-month vesting, 1-year cliff)
+  - Initial Liquidity: 18% (50% for airdrop, rest for DEX liquidity)
+  - Rewards: 60% (10% cashback, referral bonuses, community marketing)
+  - Treasury: 7% (future development, ecosystem expansion)
+- Token features: up to 10% cashback via staking, buyback and burn from interchange, 60% fee discount, 50% premium plan discount, additional referral bonus
+- Chain: Arbitrum (with plans to evolve into own chain)
+- TGE Status: CANCELLED per open letter dated March 11, 2026
+- Letter cites: community sentiment, market volatility, focus on product
+- Promises new compensation and rewards structure
+- FAQ reveals: airdrop was planned for H1 2026, listings at major exchanges and in Deblock app
+- The "Coming soon" modal still references signup flow
+- Impact: INFO - Full token economics and claim portal architecture disclosed. While the TGE was cancelled, the portal code remains live with all claim flow logic intact. Points system still referenced, which may indicate a future rewards mechanism.
+
+### F711 [INFO] Privacy Policy Hosted on Public Google Doc
+- Target: privacy.deblock.com
+- 301 redirect to: https://docs.google.com/document/d/e/2PACX-1vTG-0GcT1BSbPQk-fyQxj6w1h5CpWqzXBOVhovanXkGTcDTArXe07Fav2tvlz7NN2F5i2SMy_HVIv0Y/pub
+- Published Google Doc (publicly accessible without authentication)
+- Document ID: 2PACX-1vTG-0GcT1BSbPQk-fyQxj6w1h5CpWqzXBOVhovanXkGTcDTArXe07Fav2tvlz7NN2F5i2SMy_HVIv0Y
+- Hosted on Google Docs infrastructure, not on Deblock's own domain
+- Impact: INFO - Privacy policy hosted externally. The Google Doc ID is a published document, not editable by outsiders. However, hosting the privacy policy on a third-party domain (docs.google.com) means Deblock has no control over its availability and the document could be taken down by Google.
+
+### F712 [INFO] Subdomain Infrastructure Mapping - 502 and Redirect Subdomains
+- yield.deblock.com: Returns 502 Bad Gateway (Vercel) - backend not running
+- cashback.deblock.com: Returns 502 Bad Gateway (Vercel) - backend not running
+- vibe.deblock.com: Returns 502 Bad Gateway (Vercel) - backend not running
+- dl.deblock.com: 307 redirect to deblock.com (Vercel) - download redirect
+- ambassadors.deblock.com: 307 redirect to /en (Vercel, Next.js, EN/FR locales)
+- lk.deblock.com: 404 (SparkPost email tracking, msys-et server via CloudFront)
+- support.deblock.com: 404 (Intercom help center, x-intercom-version: a8bdd970178c2ffa09a089a86f7761ee60aa682b)
+- The 502 subdomains (yield, cashback, vibe) indicate planned/in-development features with DNS already configured but backends not deployed
+- yield.deblock.com: likely DeFi yield product
+- cashback.deblock.com: likely the cashback rewards feature mentioned in season1 tokenomics
+- vibe.deblock.com: purpose unclear
+- Impact: INFO - Infrastructure enumeration revealing upcoming product features. The 502 subdomains confirm pre-configured DNS for features not yet launched.
+
+### F713 [LOW] Staging A/B Testing and Developer Paths Disclosure
+- Target: staging.deblock.com
+- A/B testing cookies: header_variant (values include "B"), geo_country
+- Robots.txt disallows developer paths:
+  - /Resume - appears to be a developer's personal page
+  - /WphYZ/ - encoded/random path
+  - /Jordan - developer name
+  - /miggy - developer name
+  - /vercel/path0/public/locales - Vercel path configuration
+  - /choose-your-country - geo-routing page
+- These paths in robots.txt confirm developer staging resources exist on the subdomain
+- Staging uses Vercel with same deployment infrastructure as marketing site
+- 307 redirect to /en/ (locale-based routing)
+- Impact: LOW - Developer names and staging paths disclosed. The developer personal pages could be used for social engineering. A/B testing implementation details revealed.
