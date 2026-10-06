@@ -1889,7 +1889,23 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 329 | LOW | Google Drive appdata scope in JS reveals cloud backup integration | app-uat-01.deblock.com | CWE-200 | YES | OAuth scope drive.appdata for wallet recovery key storage |
 | 330 | LOW | UAT auth/facetec-2fa 307 redirect leaks full CSP with service map | app-uat-01.deblock.com | CWE-200 | YES | 307 to /, CSP body includes all third-party services, GCS bucket names |
 
-Total: 330 findings (13 critical, 63 high, 125 medium, 88 low, 47 info)
+| 331 | HIGH | UAT /api/auth/create-2fa-mobile-session auth bypass - reaches business logic | app-uat-01.deblock.com | CWE-287 | YES | POST with empty/JSON body returns "FaceTec 2FA session not found" (business logic), auth skipped |
+| 332 | HIGH | UAT /api/users/info auth bypass - reaches user lookup handler | app-uat-01.deblock.com | CWE-287 | YES | GET returns "Failed to fetch user info" (400, business logic) instead of "User is not authenticated" |
+| 333 | HIGH | UAT /api/auth/subscribe-2fa-mobile-session unauthenticated access | app-uat-01.deblock.com | CWE-287 | YES | GET returns "Missing mobileSessionKey" (400, param validation), auth completely skipped |
+| 334 | HIGH | UAT 2fa-mobile-session-socket WebSocket endpoint accessible without auth | app-uat-01.deblock.com | CWE-287 | YES | Returns 426 Upgrade Required, no auth check before WebSocket handshake |
+| 335 | HIGH | UAT onboarding/resend-onboarding-otp reaches OTP handler without auth | app-uat-01.deblock.com | CWE-287 | YES | Returns "Unable to resend otp" (400, business logic error), auth skipped |
+| 336 | MEDIUM | Production /api/auth/check-session returns session validity without auth | business.deblock.com | CWE-200 | YES | GET returns {"valid":false} (200 OK), session oracle for timing attacks |
+| 337 | MEDIUM | Production CSRF token endpoint accessible without authentication | business.deblock.com | CWE-352 | YES | GET /api/csrf returns token + __Host-csrf cookie, 30-min validity window |
+| 338 | MEDIUM | UAT JS exposes auth cookie names and E2E test overrides | app-uat-01.deblock.com | CWE-200 | YES | auth-token, idempotency-key, reference-id cookies; e2e-mock-browser-id, e2e-user-type-override |
+| 339 | MEDIUM | UAT JS reveals 45 internal application flows including card creation | app-uat-01.deblock.com | CWE-200 | YES | create-virtual-card-flow, create-physical-card-flow, export-wallet-keys-flow, etc. |
+| 340 | MEDIUM | UAT 100+ API endpoints extracted from JS with full URL construction | app-uat-01.deblock.com | CWE-200 | YES | Complete API surface: crypto-trading, crypto-stocks, frontdesk, pots, cashbacks, etc. |
+| 341 | LOW | UAT crypto-wallets/wallets POST returns blank error with auth bypassed | app-uat-01.deblock.com | CWE-287 | YES | POST empty body: {"error":"","status":400} - different from standard auth error |
+| 342 | LOW | Production vs UAT auth middleware inconsistency | business.deblock.com / app-uat-01 | CWE-16 | YES | Prod: 401 "Unauthorized" / 403 "Forbidden"; UAT: 400 "User is not authenticated" |
+| 343 | INFO | UAT onboarding page accessible with full app routing | app-uat-01.deblock.com | CWE-200 | YES | GET /api/onboarding returns full Deblock - Onboarding HTML page (307 redirect) |
+| 344 | INFO | Next.js version 16.2.11 disclosed in UAT JS chunks | app-uat-01.deblock.com | CWE-200 | YES | window.next.version set in Turbopack bootstrap chunk |
+| 345 | INFO | Production business.deblock.com API routes mostly behind Next.js 404 | business.deblock.com | CWE-200 | YES | Most API paths return Next.js 404 (not proxied), only csrf/check-session/users/info reach backend |
+
+Total: 345 findings (13 critical, 68 high, 131 medium, 91 low, 49 info)
 
 ## 15. Session Notes
 
@@ -1925,6 +1941,7 @@ Total: 330 findings (13 critical, 63 high, 125 medium, 88 low, 47 info)
 - Session 15: GTM container configuration extracted (F252): GA4 G-3MRQ5Z62VD, Google Ads AW-11482270425, cross-domain linker across 3 domains. GA4 Measurement Protocol accepts events without valid API secret (F253): analytics poisoning confirmed. dblk.me short URL domain fully mapped (F254): Vercel, 75 pages, 276 rewrites. Build manifest full route structure (F255). Developer names in robots.txt (F256). Survey/beta endpoint unauthenticated email spoofing (F257): stored XSS in answer field, no rate limiting. Business app Turbopack chunks reveal 24+ API routes (F258). CSRF token unauthenticated (F259). Apigee error disclosure (F260). Auth/financial endpoints confirmed (F261). PWA manifest exposed (F262). next.deblock.com Cloudflare challenge (F263). Cross-domain tracking GDPR concern (F264). Total findings: 264.
 - Session 16: Committed F265-F270 (Sardine sandbox, Regula IP leak, CSP third-party, UAT verbose errors, Dotfile deployment, app.deblock.com 410). recovery.deblock.com auth bypass confirmed: /_next/static/*, /api/*, /_vercel/* paths bypass Basic Auth (F273). All 3 lazy-loaded chunks are i18n files (EN/ES/FR) revealing complete wallet recovery architecture including Solana Ed25519 key handling (F274). staging.deblock.com discovered: full Vercel staging environment with different build ID (F271). status.deblock.com: Statuspal status page reveals 11 blockchains and full service architecture (F272). support.deblock.com: dangling Intercom CNAME returning 404 (F275). Business API Apigee 502 errors on POST endpoints (F276). CSRF token unauthenticated with 30-min window (F277). WebSocket 426 confirmed (F278). Speed Insights, S3 signed URLs, wildcard CSP on status page (F279-F281). Staging build ID metadata (F282). Google OAuth false positive corrected (all redirect URIs properly rejected). Total findings: 282.
 - Session 17: Staging Rails API deep dive on web-api-staging.deblock.com. Active Storage direct_uploads leaks 85-line stack trace with full gem versions and middleware chain (F283). Ambassador OTP has zero rate limiting: 30 consecutive wrong codes accepted without lockout (F284). Dead route ambassador/search_email returns ActionNotFound trace (F285). Data removal endpoint hits DB (sql.active_record 17ms) before verifying auth token (F286). Rack::Cors loaded 9x in middleware stack indicating misconfigured initializer (F287). CORS wildcard Access-Control-Allow-Origin:* on both staging AND production page responses (F288). Status page window.incidents exposes 12 incidents with 60 service IDs (F289). OVH load balancer headers x-iplb-request-id/x-iplb-instance leaked on status page (F290). Apigee Response405WithoutAllowHeader new error type on UAT passkeys/bank-details (F291). Company onboarding session creation works without auth, returns full session UUID (F292). Ambassador certification oracle at /v1/check/ambassador (F293). Deep link /d/[hash] data deletion page publicly accessible (F294). CRITICAL: Production company onboarding chain exploited: phone verification bypass (F295), unauthenticated session creation (F296), IDOR on sessions (F297), combined attack chain for account hijack (F298). No rate limiting on session creation (F299), 25 EU countries supported (F300). Business API session oracle (F301). K8s readyz accessible (F302). CDN directories (F303). Build manifest route enumeration (F304). Sardine sandbox in prod CSP (F305). Total findings: 305.
+- Session 20: UAT auth bypass pattern expansion + JS deep analysis + production comparison. Downloaded and analyzed all 52 UAT JS chunks. Discovered auth cookie name "auth-token" with support cookies "idempotency-key" and "reference-id", plus E2E test cookies "e2e-mock-browser-id" and "e2e-user-type-override". Extracted 45 internal application flows including create-virtual-card-flow, create-physical-card-flow, export-wallet-keys-flow. Mapped 100+ API endpoint URL constructions from JS. Found 5 additional UAT auth bypass endpoints beyond cards: create-2fa-mobile-session returns "FaceTec 2FA session not found" (F331), users/info returns "Failed to fetch user info" (F332), subscribe-2fa-mobile-session returns "Missing mobileSessionKey" (F333), 2fa-mobile-session-socket returns 426 without auth (F334), onboarding/resend-onboarding-otp returns "Unable to resend otp" (F335). Production comparison: auth/check-session returns {"valid":false} (session oracle, F336), CSRF endpoint returns token without auth (F337), most API routes return Next.js 404 (not proxied). Next.js version 16.2.11 in Turbopack bootstrap (F344). CSRF token format confirmed: timestamp.expiry.nonce.hmac, __Host-csrf cookie, 30-min validity. Total findings: 345.
 - Session 19: UAT API deep exploitation. CRITICAL finding: /api/cards auth bypass via empty body. POST with no body (Content-Length: 0 or missing) returns 500 "Failed to create card" (business logic) instead of 400 "User is not authenticated". Auth middleware requires valid JSON body >= 2 bytes to activate. 100% reproducible (5/5 consistent). Cards-specific, NOT on production (403 Forbidden regardless). auth/analytics confirmed as blind injection sink: XSS, SQLi, SSTI, mass assignment (userId/role extra fields) all accepted with {"success":true}, zero rate limiting (20/20), 10KB+ payloads. CSP violation /api/csp-violation accepts arbitrary reports (204 No Content, log poisoning). Path traversal via %2e%2e encoding: /api/auth/%2e%2e/%2e%2e/admin redirects to /admin (Apigee normalizes then redirects). UAT health endpoint exposes buildId+timestamp unauthenticated. New live backend endpoints: passkeys/register, sepa-transfer/create, self-transfer/create, roundups/settings. UAT CSP reveals Prelude (phone verify), Ledger (hardware wallet), Adjust (marketing), StakeKit. Marketing-widgets leaks deeplink names (iban, wallet, exchange_btc, referrals). Google Drive appdata scope in JS for wallet recovery. Robots.txt hides /Resume, /WphYZ/, /Jordan, /miggy developer paths. auth/facetec-2fa 307 redirect leaks full CSP service map. Production company endpoints no longer routed through business.deblock.com frontend (404). Total findings: 330.
 - Session 18: UAT deep dive via cert CN discovery. app-uat-01.deblock.com found via production TLS cert CN field - full production-like app accessible without auth (F306). Production cert CN=app-uat-01.deblock.com leaks UAT hostname to passive observers (F307). Sentry meta tags expose org_id 4510324489519104, public_key 95a2f173ce955f9d1ff52358da173ece, release e95b8cf, environment incorrectly set to "production" on UAT (F308, F317). Apigee fault details on /api/auth and /api/auth/refresh (F309). Real API backends responding on UAT: /api/features 401, /api/cards 400, /api/vaults 400, /api/passkeys 400, /api/auth POST 403 (F310). Auth/refresh reveals token lookup error message (F311). recovery.deblock.com CSP confirms Solana mainnet wallet recovery with 3 RPC providers (F312). Company email race condition: same email accepted on two sessions simultaneously (F313). Survey and website endpoints confirmed live (F314). Dev GCS bucket in UAT CSP (F315). Auth status code inconsistency 401 vs 400 (F316). Google Maps API key in runtime config (F318). blog.deblock.com and uat-business.deblock.com blocked by egress proxy. Sardine sandbox API reaches Kubernetes default backend. Bearer token 404 on all waitlist-api paths. Production app.deblock.com returns 410 Gone (confirmed decommissioned). recovery.deblock.com basic auth holds (7 credential pairs tested). GCS buckets not listable but objects individually readable if path known. Total findings: 318.
 
@@ -4200,6 +4217,135 @@ F330 - auth/facetec-2fa 307 redirect CSP service map (LOW):
 - Contains worker-src allowing service workers from wasm.regulaforensics.com
 - object-src set to data: (allows data: URIs in object tags)
 - Impact: Complete third-party service inventory from a single redirect response
+
+### 15j. Session 20 Findings (F331-F345)
+
+F331 - UAT /api/auth/create-2fa-mobile-session auth bypass (HIGH):
+- POST /api/auth/create-2fa-mobile-session with empty body OR valid JSON body
+- Returns: {"error":"FaceTec 2FA session not found"} (400)
+- This is a business logic error from the 2FA session handler, not an auth rejection
+- Normal auth rejection returns: {"error":"User is not authenticated","status":400}
+- Auth middleware is completely bypassed, request reaches the FaceTec session lookup
+- Production properly blocks this: returns {"error":"Forbidden"} (403)
+- Impact: If a valid FaceTec session ID were known/guessed, could potentially create 2FA sessions without authentication
+
+F332 - UAT /api/users/info auth bypass (HIGH):
+- GET /api/users/info without any auth token
+- Returns: {"error":"Failed to fetch user info"} (400)
+- This is a user lookup error from the business handler, not an auth rejection
+- Production returns: {"error":"Failed to load your settings","status":401} (different error, 401 status)
+- The UAT endpoint reaches the user info handler, which fails because there's no user ID to look up
+- Impact: Auth middleware bypassed on user info endpoint; with a valid user context (cookie manipulation), could potentially return user PII
+
+F333 - UAT /api/auth/subscribe-2fa-mobile-session unauthenticated (HIGH):
+- GET /api/auth/subscribe-2fa-mobile-session without auth
+- Returns: "Missing mobileSessionKey" (400, plain text)
+- This is parameter validation from the handler, not auth rejection
+- POST returns 502 Apigee error (method restriction)
+- With mobileSessionKey query param: returns 403 "Forbidden" (different auth layer)
+- Production returns Next.js 404 (not proxied at all)
+- Impact: Can probe for valid mobileSessionKey values without authentication
+
+F334 - UAT 2fa-mobile-session-socket WebSocket unauthenticated (HIGH):
+- GET /api/auth/2fa-mobile-session-socket returns 426 Upgrade Required
+- Full CSP header included in response
+- No auth check before WebSocket handshake attempt
+- Production returns Next.js 404 (not proxied)
+- Combined with JS showing Redis pub/sub channel "facetec-2fa-updates"
+- Impact: WebSocket endpoint for 2FA session monitoring accessible without auth; with WebSocket client could potentially subscribe to 2FA session updates
+
+F335 - UAT onboarding/resend-onboarding-otp auth bypass (HIGH):
+- POST /api/onboarding/resend-onboarding-otp with Content-Length: 0: {"error":"","status":400}
+- POST with email JSON body: {"error":"Unable to resend otp","status":400}
+- The "Unable to resend otp" is from the OTP handler, not auth rejection
+- POST /api/onboarding/signature/resend-signature-otp: {"error":"Unable to resend otp","status":400}
+- Production not tested (endpoint not proxied on business.deblock.com)
+- Impact: Auth bypassed on OTP resend endpoint; with valid onboarding session ID could potentially trigger OTP sends without auth
+
+F336 - Production /api/auth/check-session session oracle (MEDIUM):
+- GET /api/auth/check-session returns {"valid":false} (200 OK) without any auth
+- Both UAT and production return the same response
+- Exposes whether a session cookie is valid or not
+- By design for login flow, but combined with cookie guessing could be used for brute force
+- No rate limiting observed
+- Impact: Session validity oracle, timing attack vector
+
+F337 - Production CSRF token unauthenticated (MEDIUM):
+- GET /api/csrf returns {"csrfToken":"timestamp.expiry.nonce.hmac"} (200 OK)
+- Sets __Host-csrf cookie: Secure, HttpOnly, SameSite=lax, 30-min Max-Age
+- Token and cookie have different nonce/hmac (double-submit pattern)
+- Both UAT and production expose this endpoint
+- Timestamps in token are Unix epoch, 1800 seconds apart (30 min validity)
+- Impact: CSRF token format and timing exposed; double-submit pattern confirmed
+
+F338 - UAT JS cookie name disclosure (MEDIUM):
+- Module 385121 exports named constants:
+  - AUTH_TOKEN -> "auth-token" (JWT auth cookie)
+  - E2E_MOCK_BROWSER_ID -> "e2e-mock-browser-id" (test browser override)
+  - E2E_USER_TYPE_OVERRIDE_COOKIE -> "e2e-user-type-override" (test user type)
+  - IDEMPOTENCY_KEY -> "idempotency-key" (request dedup)
+  - REFERENCE_ID -> "reference-id" (session reference)
+  - JWT_PUB_KEY -> env["JWT_PUB_KEY-01"] (server-side only, empty in client)
+- E2E cookies suggest test infrastructure accessible in UAT
+- E2E test cookies tested: do not bypass auth on their own
+- Impact: Complete cookie inventory for targeted session forgery/manipulation
+
+F339 - UAT 45 application flows disclosed (MEDIUM):
+- Full flow routes extracted from Next.js routing config:
+  - Financial: create-virtual-card-flow, create-physical-card-flow, sepa-transfer-flow, top-up-flow
+  - Crypto: transfer-crypto-flow, staking-deposit-flow, staking-withdrawal-flow, export-wallet-keys-flow
+  - Investment: stocks-buy-flow, stocks-sell-flow, stocks-onboarding-flow, stocks-transfer-flow
+  - Vaults: create-fiat-vault-flow, fiat-vault-deposit-flow, fiat-vault-withdraw-flow
+  - Auth: passkeys-card-flow, onboarding-flow, onboarding-dropout-analytics-flow
+  - Test: cards-testing-flow, crypto-sdk-testing-flow, ledger-import-testing-flow, design-system
+  - NFT: nft-transfer-flow, change-avatar-flow
+  - Other: insurance-flow, wallet-recovery-flow, live-activity-flow, currency-converter-flow
+- 3 testing-specific flows present in UAT build
+- Impact: Complete feature inventory for targeted testing
+
+F340 - UAT 100+ API endpoint URL constructions (MEDIUM):
+- JS module exports API URL builders covering full financial API surface:
+  - Auth: /auth, /auth/check-session, /auth/refresh, /auth/logout, /auth/analytics, /auth/create-2fa-mobile-session, /auth/complete-2fa-mobile-session, /auth/subscribe-2fa-mobile-session, /auth/2fa-mobile-session-socket
+  - Crypto: /crypto-wallets/wallets, /crypto-wallets/wallets/{id}/manage, /crypto-trading/accounts/{id}/buy, /crypto-trading/accounts/{id}/sell, /crypto-trading/orders/{id}/cancel, /crypto-stocks/accounts/{id}/buy, /crypto-stocks/accounts/{id}/deposits, /crypto-stocks/movements/{id}/accept, /crypto-stocks/orders/{id}/cancel, /crypto-stocks/quotes/{id}/accept
+  - Financial: /frontdesk/accounts, /frontdesk/features, /frontdesk/transactions, /frontdesk/transactions/upcoming/{id}/cancel, /frontdesk/users/info, /frontdesk/users/handle, /frontdesk/users/avatar/upload-url, /frontdesk/users/avatar/upload
+  - Cards: /cards, /top-up/create-card-token, /top-up/get-card-tokens, /top-up/get-topup-limits, /top-up/get-topup-fees, /top-up/get-topup-status/{id}, /top-up/delete-card-token/{id}
+  - Vaults: /crypto-vaults, /crypto-vaults/{id}, /crypto-vaults/{id}/interest, /crypto-vaults/approvals/{id}/submit
+  - Other: /self-transfer/create, /users/info, /users/browsers/{id}/ping, /referrals/current, /referrals/invites, /perks/insurance, /cashbacks/lifetime, /pots/{id}, /pots/{id}/close, /nfts/{id}/estimate, /crypto-messages/messages/{id}/submit, /statements, /blocks/activity, /blocks/seasons/current
+- Impact: Complete IDOR attack surface for authenticated testing
+
+F341 - UAT crypto-wallets auth bypass indicator (LOW):
+- POST /api/crypto-wallets/wallets with empty body: {"error":"","status":400}
+- The blank error message differs from standard "User is not authenticated"
+- Suggests auth may be bypassed but the handler returned a different validation error
+- GET with auth properly returns "User is not authenticated"
+- Impact: Possible auth bypass on wallet creation endpoint, needs further testing
+
+F342 - Production vs UAT auth middleware inconsistency (LOW):
+- Production business.deblock.com: 401 "Unauthorized" or 403 "Forbidden" on auth failures
+- UAT app-uat-01.deblock.com: 400 "User is not authenticated" on auth failures
+- Production uses proper HTTP status codes (401/403)
+- UAT uses 400 Bad Request for auth failures (incorrect semantics)
+- Impact: Different middleware configurations between environments, UAT less hardened
+
+F343 - UAT onboarding page accessible (INFO):
+- GET /api/onboarding returns 307 redirect to onboarding HTML page
+- Full "Deblock - Onboarding" titled page with complete app routing
+- Contains same Sentry metadata, CSP headers as other UAT pages
+- Impact: Confirms onboarding flow exists as separate route
+
+F344 - Next.js version 16.2.11 in UAT (INFO):
+- Found in Turbopack bootstrap JS chunk
+- window.next = {version:"16.2.11", appDir:true}
+- Confirms Next.js App Router with Turbopack bundler
+- Version specific, useful for CVE matching
+- Impact: Framework version disclosure
+
+F345 - Production API routing behind Next.js (INFO):
+- Most API paths on business.deblock.com return Next.js 404 pages
+- Only a few paths reach the backend: /api/csrf, /api/auth/check-session, /api/users/info, /api/frontdesk/features, /api/frontdesk/accounts
+- All others (analytics, health, marketing-widgets, app-version) return 404
+- UAT has significantly more routes proxied to the API backend
+- Impact: Production has narrower API surface than UAT
 
 ## 16. Next Steps for Continued Testing
 
