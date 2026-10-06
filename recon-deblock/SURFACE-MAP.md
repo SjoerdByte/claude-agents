@@ -1965,7 +1965,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 402 | LOW | UAT-02 auth/refresh token mechanism disclosure | app-uat-02.deblock.com | CWE-200 | YES | "No token or refresh token found" reveals dual-token auth mechanism. |
 | 403 | MEDIUM | UAT-02 onboarding endpoints reached with empty body + e2e | app-uat-02.deblock.com | CWE-287 | YES | resend-onboarding-otp, signature/resend-signature-otp, signature/complete all reach business logic without auth. |
 
-Total: 470 findings (17 critical, 112 high, 182 medium, 104 low, 63 info)
+Total: 473 findings (17 critical, 113 high, 182 medium, 106 low, 63 info)
 
 ## 15. Session Notes
 
@@ -5555,6 +5555,40 @@ F469. INFO - Complete WebSocket Event Types Enumerated from JS Bundle
 - Reveals supported currencies: EUR, USD, GBP, XPF (Pacific Franc), BTC, ETH, SOL, USDC, USDT, EURC
 - Reveals real-time features: 3DS pending decisions, digital wallet decisions, exchange estimates
 - CWE: CWE-200 (Information Exposure)
+- Reproducible: YES
+
+F470. HIGH - SCA Clear Accepts Empty Body Without UserId (Production)
+- POST /api/sca/clear on business.deblock.com returns {"cleared":true} with EMPTY body {}
+- No userId field required at all (previously documented as accepting any userId)
+- No Content-Type header required
+- No auth cookie required
+- Only CSRF token (double-submit pattern) prevents cross-origin exploitation
+- Combined with X-HTTP-Method-Override:GET (F459), SCA clear via GET bypasses CSRF in browser contexts
+- 5 concurrent requests all succeed (no race condition protection)
+- SCA = Strong Customer Authentication (PSD2 regulatory requirement for financial transactions)
+- If this actually clears SCA state, any authenticated user's SCA could be bypassed
+- CWE: CWE-306 (Missing Authentication), CWE-862 (Missing Authorization)
+- CVSS: 8.1 (High) - unauthenticated SCA clearing without user identification
+- Reproducible: YES
+
+F471. LOW - TRACE Method Returns 500 on All Production API Endpoints
+- TRACE /api/* returns "Internal Server Error" (500) on all tested production endpoints
+- TRACE should be rejected at the edge proxy (Apigee) with 405, not forwarded to backend
+- Tested endpoints: csrf, auth/check-session, sca/clear, users/user, cards, frontdesk/accounts
+- All return 500 with "Internal Server Error" body
+- Indicates TRACE requests pass through Apigee to the Next.js backend which then errors
+- CWE: CWE-693 (Protection Mechanism Failure)
+- Reproducible: YES
+
+F472. LOW - GCS Buckets Have Publicly Readable Cryptocurrency Icon Objects
+- 5 cryptocurrency icons confirmed publicly accessible in both production and dev buckets:
+  storage.googleapis.com/deblock-production-crypto-currencies-v2/images/{btc,eth,sol,usdc,usdt}.png
+  storage.googleapis.com/deblock-dev-crypto-currencies-v2/images/{btc,eth,sol,usdc,usdt}.png
+- Object metadata leaks: last-modified dates, ETags, storage class, content hashes
+- Bucket listing remains denied (AccessDenied) - only direct object access works
+- NFT bucket (deblock-production-crypto-nfts-v2) has no accessible objects at tested paths
+- Objects are cryptocurrency icons (non-sensitive) but confirm the bucket naming/path convention
+- CWE: CWE-200 (Exposure of Sensitive Information)
 - Reproducible: YES
 
 ## 16. Next Steps for Continued Testing
