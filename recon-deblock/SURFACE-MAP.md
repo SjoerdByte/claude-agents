@@ -5828,6 +5828,52 @@ F492. INFO - UAT-02 auth/check-session and CSRF Endpoints Mirror Production
 - Impact: Configuration differences between environments create different attack surfaces
 - Reproducible: YES
 
+F493. MEDIUM - Production business-onboarding Endpoint Reaches Backend Without Authentication
+- POST /api/business-onboarding on business.deblock.com
+- No __Host-auth-token cookie required, no CSRF required
+- Empty body or empty email string: {"error":"Email is required"} (400) - backend validates
+- Any actual email value (test@test.com, etc.): Returns 404 empty body
+- Malformed email: Returns 404 empty body
+- GET /api/business-onboarding: Apigee 405 Method Not Allowed
+- Inconsistent behavior: Next.js route validates email presence, backend returns 404 for actual values
+- Impact: Unauthenticated access to business onboarding backend logic; potential account/email enumeration via timing or error differentiation
+- Reproducible: YES
+
+F494. LOW - Production /api/passkeys Base Route Returns Distinct Error With Auth Cookie
+- GET /api/passkeys with __Host-auth-token=x: {"error":"Failed to load passkeys","status":401}
+- Different error text from /api/passkeys/auth ("Failed to authenticate passkey")
+- Different error text from /api/passkeys/register/verify ("Failed to register passkey")
+- Base route reaches backend and returns passkey-specific error before auth validation
+- Impact: Backend route enumeration; distinct error messages reveal separate code paths for passkey management
+- Reproducible: YES
+
+F495. LOW - Apigee 405 Fault Disclosure on /api/auth and /api/business-onboarding GET
+- GET /api/auth: Returns Apigee 405 Method Not Allowed (no Allow header)
+- GET /api/business-onboarding: Returns Apigee 405 Method Not Allowed
+- Standard 405 should include Allow header listing valid methods (RFC 7231 Section 6.5.5)
+- Apigee gateway fault response reveals API gateway vendor without Allow header
+- Impact: API gateway vendor disclosure; missing Allow header violates HTTP spec
+- Reproducible: YES
+
+F496. MEDIUM - UAT-02 referrals/invites and promo-codes/claimability Reach Backend Without Auth
+- GET /api/referrals/invites on app-uat-02.deblock.com: {"error":"User is not authenticated","status":400}
+- GET /api/promo-codes/claimability: {"error":"User is not authenticated","status":400}
+- POST /api/promo-codes/use-code: {"error":"User is not authenticated","status":400} - works without auth cookie too
+- These endpoints proxy through to backend without requiring __Host-auth-token cookie
+- Backend validates auth at application layer (400) rather than middleware (401/403)
+- Different from production where these paths return 404 (not proxied)
+- Impact: UAT backend exposes referral and promo code logic to unauthenticated requests; application-layer auth instead of middleware
+- Reproducible: YES
+
+F497. LOW - crypto-transactions browser-keys Reveals Lock Status Error With Arbitrary IDs
+- GET /api/crypto-transactions/{id}/browser-keys/{browserId} with __Host-auth-token=x
+- Returns {"error":"Failed to unlock this browser's keys","status":401}
+- Accepts arbitrary UUID format for both transaction ID and browser ID parameters
+- GET /api/users/browsers/{id}/ping: {"error":"Failed to check this browser","status":401}
+- Both endpoints process path parameters before auth rejection
+- Impact: Backend processes arbitrary transaction and browser IDs; enumeration surface with valid auth tokens
+- Reproducible: YES
+
 ## 16. Next Steps for Continued Testing
 
 Priority 1 (Critical - requires second test account):
