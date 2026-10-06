@@ -1851,7 +1851,19 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 293 | LOW | Ambassador certification oracle reveals certified status | web-api-staging | CWE-204 | YES | /v1/check/ambassador differentiates certified vs not |
 | 294 | LOW | Deep link /d/[hash] data deletion page publicly accessible | staging.deblock.com | CWE-200 | YES | deleteData i18n strings, SSG page with hash param |
 
-Total: 294 findings (12 critical, 56 high, 107 medium, 78 low, 46 info)
+| 295 | HIGH | Company onboarding phone verification bypass on PRODUCTION | waitlist-api PROD | CWE-287 | YES | POST /v1/company/phone auto-sets phone_verified:true without OTP |
+| 296 | HIGH | Company onboarding session creation without auth on PRODUCTION | waitlist-api PROD | CWE-306 | YES | POST /v1/company/country creates writable session, no auth |
+| 297 | HIGH | IDOR on company onboarding sessions on PRODUCTION | waitlist-api PROD | CWE-639 | YES | Any UUID allows read/write to any session (email, phone, type, turnover) |
+| 298 | HIGH | Company session phone verification bypass enables IDOR account hijack | waitlist-api PROD | CWE-287 | YES | Write attacker phone to victim session, auto-verified, no OTP |
+| 299 | MEDIUM | No rate limiting on company session creation PRODUCTION | waitlist-api PROD | CWE-770 | YES | 30+ sessions created in seconds, no throttling |
+| 300 | MEDIUM | Company onboarding accepts 25 EU/EEA countries without auth | waitlist-api PROD | CWE-306 | YES | FR DE ES IT NL BE PT AT LU IE SE DK FI NO PL CZ HU RO BG HR SI SK EE LT LV MT CY |
+| 301 | MEDIUM | Business API session validity oracle at /api/auth/check-session | business.deblock.com | CWE-204 | YES | Returns {"valid":false} unauthenticated, confirms session check flow |
+| 302 | LOW | K8s readyz endpoint accessible on business.deblock.com | business.deblock.com | CWE-200 | YES | /readyz returns 200 empty body, confirms K8s health check |
+| 303 | LOW | CDN fee_info and privacy directories return 200 | cdn1.deblock.com | CWE-200 | YES | /terms/fee_info/ and /terms/privacy/ return 200, others 403 |
+| 304 | LOW | Staging build manifest exposes full page route structure | staging.deblock.com | CWE-200 | YES | deblockpay, stocks, buy-gold, buy-silver, bitcoin-treasury, pf/ locale |
+| 305 | INFO | Sardine production AND sandbox API in CSP connect-src | business.deblock.com | CWE-16 | YES | api.production.eu.sardine.ai + api.sandbox.eu.sardine.ai both allowed |
+
+Total: 305 findings (12 critical, 60 high, 112 medium, 81 low, 47 info)
 
 ## 15. Session Notes
 
@@ -1886,7 +1898,7 @@ Total: 294 findings (12 critical, 56 high, 107 medium, 78 low, 46 info)
 - Session 14: CDN object enumeration via S3 (F247). Intercom messenger API full config extraction (F248). waitlist-api staging route sharing (F249). CDN terms publicly accessible (F250). XMLRPC XXE/Billion Laughs blocked (F251). UpdraftPlus backup files all 403 (LiteSpeed blocks entire directory). BackWPup backups use random hash naming. CloudKit API returns AUTHENTICATION_FAILED. Trustpilot API empty response. Total findings: 251.
 - Session 15: GTM container configuration extracted (F252): GA4 G-3MRQ5Z62VD, Google Ads AW-11482270425, cross-domain linker across 3 domains. GA4 Measurement Protocol accepts events without valid API secret (F253): analytics poisoning confirmed. dblk.me short URL domain fully mapped (F254): Vercel, 75 pages, 276 rewrites. Build manifest full route structure (F255). Developer names in robots.txt (F256). Survey/beta endpoint unauthenticated email spoofing (F257): stored XSS in answer field, no rate limiting. Business app Turbopack chunks reveal 24+ API routes (F258). CSRF token unauthenticated (F259). Apigee error disclosure (F260). Auth/financial endpoints confirmed (F261). PWA manifest exposed (F262). next.deblock.com Cloudflare challenge (F263). Cross-domain tracking GDPR concern (F264). Total findings: 264.
 - Session 16: Committed F265-F270 (Sardine sandbox, Regula IP leak, CSP third-party, UAT verbose errors, Dotfile deployment, app.deblock.com 410). recovery.deblock.com auth bypass confirmed: /_next/static/*, /api/*, /_vercel/* paths bypass Basic Auth (F273). All 3 lazy-loaded chunks are i18n files (EN/ES/FR) revealing complete wallet recovery architecture including Solana Ed25519 key handling (F274). staging.deblock.com discovered: full Vercel staging environment with different build ID (F271). status.deblock.com: Statuspal status page reveals 11 blockchains and full service architecture (F272). support.deblock.com: dangling Intercom CNAME returning 404 (F275). Business API Apigee 502 errors on POST endpoints (F276). CSRF token unauthenticated with 30-min window (F277). WebSocket 426 confirmed (F278). Speed Insights, S3 signed URLs, wildcard CSP on status page (F279-F281). Staging build ID metadata (F282). Google OAuth false positive corrected (all redirect URIs properly rejected). Total findings: 282.
-- Session 17: Staging Rails API deep dive on web-api-staging.deblock.com. Active Storage direct_uploads leaks 85-line stack trace with full gem versions and middleware chain (F283). Ambassador OTP has zero rate limiting: 30 consecutive wrong codes accepted without lockout (F284). Dead route ambassador/search_email returns ActionNotFound trace (F285). Data removal endpoint hits DB (sql.active_record 17ms) before verifying auth token (F286). Rack::Cors loaded 9x in middleware stack indicating misconfigured initializer (F287). CORS wildcard Access-Control-Allow-Origin:* on both staging AND production page responses (F288). Status page window.incidents exposes 12 incidents with 60 service IDs (F289). OVH load balancer headers x-iplb-request-id/x-iplb-instance leaked on status page (F290). Apigee Response405WithoutAllowHeader new error type on UAT passkeys/bank-details (F291). Company onboarding session creation works without auth, returns full session UUID (F292). Ambassador certification oracle at /v1/check/ambassador (F293). Deep link /d/[hash] data deletion page publicly accessible (F294). Company session UUIDs obtained for further testing. Total findings: 294.
+- Session 17: Staging Rails API deep dive on web-api-staging.deblock.com. Active Storage direct_uploads leaks 85-line stack trace with full gem versions and middleware chain (F283). Ambassador OTP has zero rate limiting: 30 consecutive wrong codes accepted without lockout (F284). Dead route ambassador/search_email returns ActionNotFound trace (F285). Data removal endpoint hits DB (sql.active_record 17ms) before verifying auth token (F286). Rack::Cors loaded 9x in middleware stack indicating misconfigured initializer (F287). CORS wildcard Access-Control-Allow-Origin:* on both staging AND production page responses (F288). Status page window.incidents exposes 12 incidents with 60 service IDs (F289). OVH load balancer headers x-iplb-request-id/x-iplb-instance leaked on status page (F290). Apigee Response405WithoutAllowHeader new error type on UAT passkeys/bank-details (F291). Company onboarding session creation works without auth, returns full session UUID (F292). Ambassador certification oracle at /v1/check/ambassador (F293). Deep link /d/[hash] data deletion page publicly accessible (F294). CRITICAL: Production company onboarding chain exploited: phone verification bypass (F295), unauthenticated session creation (F296), IDOR on sessions (F297), combined attack chain for account hijack (F298). No rate limiting on session creation (F299), 25 EU countries supported (F300). Business API session oracle (F301). K8s readyz accessible (F302). CDN directories (F303). Build manifest route enumeration (F304). Sardine sandbox in prod CSP (F305). Total findings: 305.
 
 ### 12e. Business App API Route Map (from JS bundle analysis)
 
@@ -3817,6 +3829,95 @@ F294 - Deep link /d/[hash] data deletion page publicly accessible (LOW):
 - Part of GDPR data deletion deep link flow
 - Hash parameter format unknown, but page structure reveals deletion flow
 - Impact: Data deletion flow reconnaissance, potential hash brute force surface
+
+### 15g. Session 17 Continued Findings (F295-F305) - Production Company Onboarding Chain
+
+F295 - Company onboarding phone verification bypass on PRODUCTION (HIGH):
+- POST /v1/company/phone on waitlist-api.deblock.com (PRODUCTION)
+- Setting any valid phone number auto-sets phone_verified:true
+- No OTP challenge, no SMS verification, no confirmation step
+- Verified with FR (+33) and DE (+49) phone formats
+- Same behavior as staging (F292), but confirmed on PRODUCTION
+- Impact: Phone verification entirely bypassed in company onboarding, enabling account creation with unverified phone
+
+F296 - Company onboarding session creation without auth on PRODUCTION (HIGH):
+- POST /v1/company/country with {"country_code":"FR"} creates new session
+- Returns full session object with UUID, all fields writable
+- No authentication, no CSRF protection, no rate limiting
+- Session persists and accepts modifications from any IP
+- Production UUID example: eefacfcd-2325-4885-90a0-8f156252a750
+- Impact: Unlimited unauthenticated session creation, company onboarding abuse
+
+F297 - IDOR on company onboarding sessions on PRODUCTION (HIGH):
+- All company session endpoints use UUID as sole access control
+- No session binding to IP, cookie, or authentication token
+- Any UUID can be used to read AND write any session's data
+- Tested: wrote email "idor-test@attacker.com" to session b6eb338b using just UUID
+- All writable fields: email, phone (auto-verified), type_code, turnover
+- Read access: types, turnovers endpoint returns data for any valid UUID
+- Impact: Cross-session data manipulation, attacker can hijack any company onboarding
+
+F298 - Company session phone verification bypass enables IDOR account hijack (HIGH):
+- Combining F295 (phone bypass) + F297 (IDOR) creates full attack chain:
+  1. Obtain target's company session UUID (logged in front-end, URL parameter, etc.)
+  2. POST /v1/company/phone with attacker's phone + target UUID
+  3. Phone auto-verified as phone_verified:true
+  4. Attacker now controls target's company onboarding session with verified phone
+- No authentication required at any step
+- Impact: Company account hijack via phone swap + auto-verification
+
+F299 - No rate limiting on company session creation PRODUCTION (MEDIUM):
+- 30+ sessions created in rapid succession without any throttling
+- 5 concurrent requests all succeeded immediately
+- Country enumeration test created ~25 sessions with no block
+- No IP-based rate limiting, no CAPTCHA, no progressive delay
+- Each session consumes database resources (UUID, row)
+- Impact: Resource exhaustion, database pollution, DoS vector
+
+F300 - Company onboarding accepts 25 EU/EEA countries without auth (MEDIUM):
+- Valid country codes: FR DE ES IT NL BE PT AT LU IE SE DK FI NO PL CZ HU RO BG HR SI SK EE LT LV MT CY
+- Invalid/rejected: US CA GB JP AU CH
+- Each country returns localized company types (FR: SARL/SAS/EURL/SA/SNC/AUTO; DE: GmbH/UG/AG/EIN)
+- All accessible without authentication
+- Production has slightly different type list than staging (FR: SNC vs "SNC ou SCPI", added AUTRE type)
+- Impact: Full EU company type enumeration, business intelligence on supported markets
+
+F301 - Business API session validity oracle at /api/auth/check-session (MEDIUM):
+- GET /api/auth/check-session returns {"valid":false} without authentication
+- Confirms session validation endpoint exists and is externally accessible
+- POST to same endpoint returns Apigee 405 error (confirms Apigee routing)
+- No CSRF token required for GET
+- Impact: Session validity oracle, confirms auth architecture
+
+F302 - K8s readyz endpoint accessible on business.deblock.com (LOW):
+- GET /readyz returns HTTP 200 with empty body
+- Kubernetes readiness probe accessible externally
+- GET /healthz returns 404 but leaks CSP nonce and middleware rewrite headers
+- x-middleware-rewrite: /en/healthz reveals Next.js i18n routing
+- Impact: K8s health monitoring accessible, infrastructure reconnaissance
+
+F303 - CDN fee_info and privacy directories return 200 (LOW):
+- cdn1.deblock.com/terms/fee_info/ and /terms/privacy/ return HTTP 200
+- Other directories (general, cookie, crypto, card, sepa, kyc, aml, company) return 403
+- Listing not enabled, but 200 confirms directory existence
+- PDF files within fee_info accessible via direct URL
+- Impact: Document directory enumeration, publicly accessible financial terms
+
+F304 - Staging build manifest exposes full page route structure (LOW):
+- _buildManifest.js contains complete route map including unreleased features
+- New pages found: /deblockpay, /stocks, /buy-gold, /buy-silver
+- Business pages: /business/bitcoin-treasury, /business/stablecoin-transfers, /business/treasury-yield
+- Locale support: /pf/ (Pacific French), /de/ (German)
+- 75+ rewrites mapping localized URLs to English routes
+- Impact: Product roadmap reconnaissance, upcoming feature discovery
+
+F305 - Sardine production AND sandbox API in CSP connect-src (INFO):
+- Business.deblock.com CSP allows both production and sandbox Sardine APIs:
+  api.eu.sardine.ai, api.production.eu.sardine.ai, api.sandbox.eu.sardine.ai
+- Sandbox API should not be allowed in production CSP
+- Also includes: wasm.regulaforensics.com, lic.regulaforensics.com, api.regulaforensics.com
+- Dotfile client portal: client-portal.dotfile.com
+- Impact: Sandbox service reachable from production, potential for testing-mode bypass
 
 ## 16. Next Steps for Continued Testing
 
