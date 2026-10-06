@@ -6006,6 +6006,47 @@ F508. LOW - UAT-02 /monitoring Path Processed as i18n Locale Instead of Sentry T
 - Impact: Sentry errors from UAT-02 clients may fail to report through tunnel; i18n middleware accepts arbitrary path segments as locale codes
 - Reproducible: YES
 
+F509. MEDIUM - Content-Type Confusion Causes 500 Internal Server Error on business-onboarding
+- POST /api/business-onboarding with Content-Type: application/xml returns 500 empty body
+- POST /api/business-onboarding with multipart/form-data returns 500 empty body
+- POST with Content-Type: application/json returns normal 400/404
+- Backend does not handle non-JSON content types gracefully
+- 500 indicates unhandled exception in request parsing
+- Unauthenticated endpoint (no cookie required)
+- Impact: Server-side unhandled exception; potential for request smuggling via content-type confusion; crash-based DoS on unauthenticated endpoint
+- Reproducible: YES
+
+F510. MEDIUM - HTTP Method Override Headers Processed by Backend
+- GET /api/auth/logout with X-HTTP-Method-Override: POST returns 502 (Apigee fault)
+- GET /api/auth/logout?_method=POST returns 502 (Apigee fault)
+- Both Rails-style method override mechanisms (_method param and X-HTTP-Method-Override header) are active
+- Backend processes the overridden method, reaching Apigee which returns 405 fault
+- Impact: Method override could bypass method-based access controls; allows POST operations via GET requests (CSRF vector for state-changing operations)
+- Reproducible: YES
+
+F511. MEDIUM - Intercom Full Configuration Disclosure via Unauthenticated Ping Endpoint
+- POST https://api-iam.intercom.io/messenger/web/ping with app_id: s7y40sxp returns full config
+- Disclosed: App name "Deblock", help center URL, brand colors, launcher settings
+- Feature flags: All messenger feature states exposed (50+ flags)
+- RTM WebSocket endpoint with pubsub token exposed
+- Visitor tracking: Anonymous session IDs assigned
+- Google Analytics 4 integration confirmed enabled
+- Inbound conversations disabled (inbound_conversations_disabled: true)
+- Messenger security enabled: true
+- Expected response delay: 30 minutes
+- Full open_config with space definitions (home, messages, tickets, tasks, help)
+- Impact: Complete Intercom configuration and feature flag exposure; internal support workflow disclosure; RTM WebSocket with auth token
+- Reproducible: YES
+
+F512. LOW - WalletConnect Project ID Active and Querying Explorer API
+- Project ID: bd6ba992febab0bad0434e02099098db
+- Explorer API (wallets listing): 200 OK with full wallet data
+- Verify API: 404 (no verify configuration)
+- Cloud Analytics API: 403 Forbidden (properly restricted)
+- Relay: Requires WebSocket upgrade (proper behavior)
+- Impact: Project ID is active and queryable; wallet listings accessible
+- Reproducible: YES
+
 ## 16. Next Steps for Continued Testing
 
 Priority 1 (Critical - requires second test account):
