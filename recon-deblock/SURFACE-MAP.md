@@ -9793,3 +9793,141 @@ Priority 3 (Enumeration/escalation):
 - Three independent RPC providers suggests redundancy for critical recovery operations
 - This confirms Deblock uses Solana blockchain for wallet recovery in addition to the Ethereum/Polygon infrastructure used by the main app (Alchemy API - F783)
 - Impact: HIGH - Recovery infrastructure details expose multi-chain architecture. Combined with F791, the Solana recovery service represents a high-value target for sophisticated attacks against the wallet recovery mechanism.
+
+### F800 [MEDIUM] CORS Configuration Gap: business.deblock.com Uses Next.js API Proxy Instead of Direct CORS
+- Target: web-api.deblock.com, business.deblock.com
+- CORS allowlist on web-api.deblock.com permits only: https://deblock.com and https://staging.deblock.com
+- business.deblock.com is NOT in the CORS allowlist despite being a production frontend
+- business.deblock.com proxies API calls through its own Next.js server-side API routes (connect-src: 'self' in CSP)
+- This architectural pattern means the business frontend server has direct backend access without CORS restrictions
+- CORS preflight from business.deblock.com returns HTTP 200 with content-length: 0 and NO Access-Control-Allow-Origin header
+- Tested evil origins, null origin, and suffix attacks - all properly rejected
+- Impact: MEDIUM - The CORS configuration itself is secure. However, the Next.js proxy pattern means the business.deblock.com server acts as an intermediary with full API access, making SSRF on business.deblock.com equivalent to API access bypass.
+
+### F801 [CRITICAL] Ambassador OTP Endpoint Completely Unauthenticated With No Rate Limiting
+- Target: web-api.deblock.com (PRODUCTION)
+- POST /v1/ambassador/email with {"ambassador":{"email":"ANY_EMAIL"}} returns {"status":"ok"} at HTTP 200
+- NO bearer token required - endpoint is fully unauthenticated
+- NO rate limiting - 5 rapid sequential requests all succeeded (response times: 650ms, 612ms, 355ms, 370ms, 380ms)
+- No Rack::Attack middleware in the stack (confirmed from F768 middleware chain)
+- Controller: ambassador_auto_signup_controller.rb:100 (from staging stack traces)
+- Sends real OTP emails to arbitrary email addresses on production
+- Upgrade from F785 which used the waitlist bearer token - this finding confirms NO auth is needed at all
+- Attack scenarios:
+  - Email bombing: Unlimited OTP emails to any email address
+  - Reputation damage: Emails from Deblock domain, potential email blocklisting
+  - Social engineering: Legitimate OTP emails from a trusted fintech source
+  - SMS/email cost: Each OTP costs Deblock money (Twilio/SendGrid/email provider)
+  - User harassment: Continuous OTP spam to a victim's inbox
+- Impact: CRITICAL - Completely unauthenticated email trigger with no rate limiting on a production fintech API. This is a P1 vulnerability. An attacker can send unlimited emails from Deblock's infrastructure to any email address worldwide.
+
+### F802 [HIGH] Company Email OTP Endpoint Unauthenticated, Accepts UUID Parameter
+- Target: web-api.deblock.com (PRODUCTION)
+- POST /v1/company/email with {"email":"any@email"} returns {"status":"fail","error":"This uuid isn't valid!","result":{}} at HTTP 200
+- Endpoint processes request WITHOUT any authentication
+- Error message reveals the endpoint expects a valid UUID to trigger company email OTP
+- If a valid company UUID is obtained (e.g., through IDOR on other endpoints), this could trigger OTP emails for business onboarding
+- Tested with document UUIDs from /v1/mobile endpoint - these are document UUIDs, not company UUIDs
+- Combined with F801, this represents a second unauthenticated OTP trigger endpoint
+- Impact: HIGH - Unauthenticated endpoint that accepts company UUID for OTP trigger. UUID enumeration could enable targeted business account OTP spam.
+
+### F803 [MEDIUM] Business Frontend Sentry DSN Exposes Organization and Project IDs
+- Target: business.deblock.com
+- Full Sentry DSN extracted from JS bundle (chunk 40zds69s2oudj.js):
+  - DSN: https://2f75b94510aa39f72db5dd805d1c1dc8@o4510324489519104.ingest.de.sentry.io/4510324496859216
+  - Sentry public key: 2f75b94510aa39f72db5dd805d1c1dc8
+  - Sentry Organization ID: o4510324489519104
+  - Sentry Project ID: 4510324496859216
+  - Region: DE (EU data region - ingest.de.sentry.io)
+  - Environment: production
+  - Release: 54029c4 (same as consumer app - F778)
+  - App tag: business
+  - Turbopack: true
+  - Traces sample rate: 0 (disabled)
+  - Logs: disabled
+- Sentry tunnel at /monitoring (from build manifest rewrite rules)
+- Tunnel accepts requests (returns 500 on malformed input, confirming server-side processing)
+- Build manifest also reveals monitoring rewrite rules accepting orgid, projectid, region query parameters
+- Impact: MEDIUM - Sentry DSN exposure allows sending crafted error events to the project. While Sentry DSNs are considered semi-public, the org/project IDs enable targeted attacks against the Sentry dashboard and potential event injection.
+
+### F804 [HIGH] Business Frontend CSP Reveals Third-Party KYC/KYB/Fraud Detection Stack
+- Target: business.deblock.com
+- Content-Security-Policy header exposes full third-party service integration:
+  - Regula Forensics (ID verification):
+    - https://wasm.regulaforensics.com (WASM SDK for client-side document scanning)
+    - https://lic.regulaforensics.com (licensing server)
+    - https://api.regulaforensics.com (API endpoint, also in frame-src and img-src)
+  - Sardine AI (fraud detection):
+    - https://api.eu.sardine.ai (EU API)
+    - https://api.production.eu.sardine.ai (EU production API)
+    - https://api.sandbox.eu.sardine.ai (EU sandbox API - sandbox exposed in production CSP)
+  - Dotfile (KYB compliance):
+    - https://client-portal.dotfile.com (in frame-src - embedded KYB portal)
+  - Apple SMP Device Content:
+    - https://smp-device-content.apple.com (Apple Pay/Sign-in with Apple)
+- CSP also shows: 'unsafe-eval' in script-src (required for WASM), 'unsafe-inline' in style-src
+- Sardine sandbox endpoint in production CSP suggests development/testing artifacts not cleaned up
+- Permissions-policy not set on business frontend (set on recovery service - F794)
+- business-locale cookie: HttpOnly, Secure, SameSite=strict
+- Impact: HIGH - Full KYC/KYB/fraud stack exposure enables targeted attacks against the verification pipeline. The Sardine sandbox URL in production CSP could allow testing against the sandbox environment. Regula Forensics WASM integration means document processing happens client-side.
+
+### F805 [MEDIUM] CDN S3 Bucket With Predictable Document Paths and File Enumeration
+- Target: cdn1.deblock.com
+- Backend: AWS S3 behind CloudFront (IAD55-P10 POP)
+- S3 server-side encryption: AES256
+- Directory objects exist and return HTTP 200 with content-type: application/x-directory and content-length: 0
+- /terms/ directory created: 2023-03-16 (early Deblock history)
+- File enumeration possible: Known files return 200, non-existent return 403 (AccessDenied)
+- Root path returns S3 AccessDenied with RequestId and HostId
+- No directory listing (directory objects are empty)
+- Document path pattern: /terms/{category}/{country?}/{date}-{version}-{name}-{locale}.pdf
+- Known categories: fee_info, personal-terms, privacy
+- "Techblock" appears in filenames (20260918-v3_2-Techblock-FR.docx.pdf) - possible subsidiary or legal entity name
+- All documents served without authentication
+- Impact: MEDIUM - Predictable CDN paths allow enumeration of legal documents across versions and languages. While these are public documents, the naming convention reveals internal version tracking and entity names.
+
+### F806 [MEDIUM] Legal Docs API Exposes Document UUIDs, CDN URLs, and KYC Flow Stages
+- Target: web-api.deblock.com (PRODUCTION)
+- GET /v1/mobile/:locale/:country returns 12 legal documents without authentication
+- Tested 12 countries (FR, DE, ES, IT, NL, BE, AT, PT, IE, LU, US, GB) - all return identical document set
+- Each document includes:
+  - UUID (e.g., 3211429b-8de0-8011-974a-c98abd246d47)
+  - Title (Fee Information Document, Fees Document, Personal Terms, Privacy Policy, User Identity Declaration)
+  - Direct CDN PDF URL (https://cdn1.deblock.com/terms/...)
+  - label_type revealing KYC flow stages:
+    - TERMS_PRE_KYC (initial)
+    - TERMS_PRE_KYC_V2 (updated initial)
+    - TERMS_SIGNATURE (standard signature)
+    - TERMS_SIGNATURE_V2 (updated signature)
+    - TERMS_QES (Qualified Electronic Signature - EU eIDAS)
+    - TERMS_QES_V2 (updated QES)
+    - TERMS_KYC_2_PRIVACY (privacy during KYC step 2)
+- The label types reveal the complete KYC onboarding flow and that Deblock uses QES (Qualified Electronic Signatures) per eIDAS regulation
+- Multiple versions of Personal Terms (v12.3, v13.1, merged) show active terms evolution
+- Impact: MEDIUM - KYC flow stage exposure helps an attacker understand and potentially bypass the verification process. QES usage reveals regulatory compliance approach.
+
+### F807 [MEDIUM] WordPress Plugin Route Maps Fully Exposed via Namespace Indexes
+- Target: brand.deblock.com
+- All plugin namespaces return 200 with full route maps when accessed at their base path:
+  - elementor/v1: 87+ routes including site-editor templates CRUD, globals management, form-submissions (CRUD with export), template library, user-data/current-user, send-event, cache deletion, favorites, site-navigation, design-system-sync, checklist
+  - elementor-one/v1: 18 routes including connect authorize/disconnect/switch-domain/deactivate, plugins install/activate/deactivate/upgrade, migration run/rollback, settings, themes, top-bar notifications/feedback
+  - elementor-pro/v1: Standard Elementor Pro routes
+  - backwpup/v1: 20 routes including cloud auth management (authenticate_cloud, delete_auth_cloud, cloud_is_authenticated), job management (addjob, updatejob, delete_job), startbackup, save_job_settings, save_files_exclusions, save_excluded_tables, chatbot-context, getjobslist, process_bulk_actions, save_site_option
+  - backwpup/v2: 5 routes including storages, messages, save_job_format, backups/:id/type
+- Elementor feedback submit (POST /elementor/v1/feedback/submit) returns 200 without auth but feature is disabled ("In-Editor Feedback is not active")
+- Elementor One notifications endpoint validates params before auth (returns 400 with required params: app_name, app_version before 401)
+- BackWPup chatbot-context exists and requires auth (401)
+- All sensitive data endpoints require auth (401) - form-submissions, templates, user-data, etc.
+- Impact: MEDIUM - Complete API surface map of all WordPress plugins enables targeted exploitation if admin credentials are obtained. The deferred auth check on notifications reveals parameter validation logic.
+
+### F808 [LOW] Build Manifest Exposes Sentry Monitoring Tunnel Rewrite Configuration
+- Target: business.deblock.com
+- _buildManifest.js accessible at /_next/static/26tbWezWroJnCCGBceFD9/_buildManifest.js
+- Contains afterFiles rewrite rules for /monitoring endpoint:
+  - Rule 1: Requires query params o (orgid, numeric), p (projectid, numeric), r (region, 2 lowercase letters)
+  - Rule 2: Requires query params o (orgid, numeric), p (projectid, numeric)
+- sortedPages: only ["/_app", "/_error"] (SPA with client-side routing)
+- _ssgManifest.js: SSG manifest is empty (no static generation)
+- /monitoring endpoint processes requests server-side (returns 500 on malformed Sentry envelopes)
+- /monitoring/envelope/ returns 308 redirect
+- Impact: LOW - Confirms Sentry tunnel architecture and parameter requirements. The tunnel could potentially be used for event injection attacks against the Sentry project.
