@@ -1826,8 +1826,20 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 268 | MEDIUM | UAT returns verbose auth errors vs production | - | CWE-209 | YES | "User is not authenticated" vs generic 401 |
 | 269 | LOW | Dotfile KYB portal branch deployment system exposed | - | CWE-200 | YES | _branch param, preview envs, release.json validation |
 | 270 | INFO | app.deblock.com returns 410 Gone on all API routes | - | CWE-200 | YES | Personal app APIs deprecated/migrated |
+| 271 | MEDIUM | staging.deblock.com exposed Vercel staging environment | - | CWE-200 | YES | Build ID jiQWozk8dR12Q2EFM5KOi, noindex but public |
+| 272 | LOW | status.deblock.com full service architecture disclosure | - | CWE-200 | YES | 11 blockchains, vaults, SEPA, cards via Statuspal |
+| 273 | HIGH | recovery.deblock.com auth bypass on static assets | - | CWE-287 | YES | /_next/static/*, /api/*, /_vercel/* bypass Basic Auth |
+| 274 | HIGH | recovery.deblock.com wallet recovery architecture exposed via i18n | - | CWE-200 | YES | AES key, backup.txt, seed phrase, Solana Ed25519 formats |
+| 275 | LOW | support.deblock.com dangling Intercom CNAME | - | CWE-672 | YES | CNAME to custom.eu.intercom.help returns 404 |
+| 276 | MEDIUM | Business API Apigee 502 error disclosure on multiple endpoints | - | CWE-209 | YES | faultstring, errorcode leaked on POST endpoints |
+| 277 | MEDIUM | CSRF token accessible without authentication with 30-min window | - | CWE-352 | YES | Timestamp.expiry.random.HMAC format, 1800s validity |
+| 278 | LOW | WebSocket endpoints confirmed alive returning 426 Upgrade Required | - | CWE-200 | YES | /api/websocket, /api/crypto-*-socket |
+| 279 | LOW | Vercel Speed Insights accessible without auth on recovery | - | CWE-200 | YES | /_vercel/speed-insights/script.js loads analytics |
+| 280 | LOW | Status page OVH S3 signed URLs with credential IDs exposed | - | CWE-200 | YES | OVH access key IDs in signed asset URLs |
+| 281 | LOW | Status page wildcard CSP (default-src * data: blob:) | - | CWE-16 | YES | Permits loading resources from any origin |
+| 282 | INFO | Staging build ID and deployment metadata disclosure | - | CWE-200 | YES | Build ID jiQWozk8dR12Q2EFM5KOi, deployment timestamps |
 
-Total: 270 findings (12 critical, 53 high, 98 medium, 65 low, 45 info)
+Total: 282 findings (12 critical, 55 high, 101 medium, 71 low, 46 info)
 
 ## 15. Session Notes
 
@@ -1861,6 +1873,7 @@ Total: 270 findings (12 critical, 53 high, 98 medium, 65 low, 45 info)
 - Session 13: waitlist-api.deblock.com discovered as live Heroku Rails backend via Alchemy NFT metadata tokenUri (F235). Full endpoint enumeration: /v1/meta/bb/{1-1000} NFT metadata with game traits (F236), /v1/mobile/account/{any} terms docs, /v1/company/types and /v1/company/turnovers (UUID required), /v1/ambassador/certification (403), /v1/waitlist/status (403). CDN image paths cdn1.deblock.com/bbfinal/{1-1000}.png. WebSocket endpoints changed 502 to 426 (F237). api.deblock.com changed 000 to 502 (F238). WordPress XMLRPC 80 methods enumerated (F239). Login timing ~140ms differential for username enumeration (F240). Application Passwords success_url social engineering vector (F241). NFT contract owner wallet 0xd5ade...357d identified via eth_call (F242). GCS production bucket NoSuchKey vs AccessDenied differential (F243). Kubernetes readyz accessible (F244). Sardine sandbox API reachable (F245). UAT CSP object-src data: (F246). Total findings: 246.
 - Session 14: CDN object enumeration via S3 (F247). Intercom messenger API full config extraction (F248). waitlist-api staging route sharing (F249). CDN terms publicly accessible (F250). XMLRPC XXE/Billion Laughs blocked (F251). UpdraftPlus backup files all 403 (LiteSpeed blocks entire directory). BackWPup backups use random hash naming. CloudKit API returns AUTHENTICATION_FAILED. Trustpilot API empty response. Total findings: 251.
 - Session 15: GTM container configuration extracted (F252): GA4 G-3MRQ5Z62VD, Google Ads AW-11482270425, cross-domain linker across 3 domains. GA4 Measurement Protocol accepts events without valid API secret (F253): analytics poisoning confirmed. dblk.me short URL domain fully mapped (F254): Vercel, 75 pages, 276 rewrites. Build manifest full route structure (F255). Developer names in robots.txt (F256). Survey/beta endpoint unauthenticated email spoofing (F257): stored XSS in answer field, no rate limiting. Business app Turbopack chunks reveal 24+ API routes (F258). CSRF token unauthenticated (F259). Apigee error disclosure (F260). Auth/financial endpoints confirmed (F261). PWA manifest exposed (F262). next.deblock.com Cloudflare challenge (F263). Cross-domain tracking GDPR concern (F264). Total findings: 264.
+- Session 16: Committed F265-F270 (Sardine sandbox, Regula IP leak, CSP third-party, UAT verbose errors, Dotfile deployment, app.deblock.com 410). recovery.deblock.com auth bypass confirmed: /_next/static/*, /api/*, /_vercel/* paths bypass Basic Auth (F273). All 3 lazy-loaded chunks are i18n files (EN/ES/FR) revealing complete wallet recovery architecture including Solana Ed25519 key handling (F274). staging.deblock.com discovered: full Vercel staging environment with different build ID (F271). status.deblock.com: Statuspal status page reveals 11 blockchains and full service architecture (F272). support.deblock.com: dangling Intercom CNAME returning 404 (F275). Business API Apigee 502 errors on POST endpoints (F276). CSRF token unauthenticated with 30-min window (F277). WebSocket 426 confirmed (F278). Speed Insights, S3 signed URLs, wildcard CSP on status page (F279-F281). Staging build ID metadata (F282). Google OAuth false positive corrected (all redirect URIs properly rejected). Total findings: 282.
 
 ### 12e. Business App API Route Map (from JS bundle analysis)
 
@@ -3586,6 +3599,116 @@ F270 - app.deblock.com returns 410 Gone on all API routes (INFO):
 - Indicates personal app APIs were deprecated/moved
 - Same Turbopack chunk hashes as business.deblock.com (shared codebase)
 - API functionality likely migrated to business.deblock.com backend
+
+F271 - staging.deblock.com exposed Vercel staging environment (MEDIUM):
+- Full staging marketing site at staging.deblock.com on Vercel
+- Build ID: jiQWozk8dR12Q2EFM5KOi (different from production)
+- Has noindex/nofollow meta tag but publicly accessible without auth
+- Serves same marketing content as production (deblock.com)
+- CNAME to cname.vercel-dns.com
+- Staging environments may contain test data, debug features, or less strict security
+- Impact: Pre-production environment accessible to anyone, potential for staging-specific vulnerabilities
+
+F272 - status.deblock.com full service architecture disclosure via Statuspal (LOW):
+- Hosted on Statuspal (statuspal.eu) via OVH infrastructure
+- Monitors and exposes full operational status of:
+  Blockchain integrations: Bitcoin, Ethereum/ERC-20, Solana, Base, Hyperliquid Core, Polygon, Arbitrum, XRP Ledger, Cardano, BNB Smart Chain
+  Banking: Vaults (Pockets/Fiat/Crypto), SEPA Transfers, Commodities Trading, Card Payments
+  Support: Live Chat
+- Incident history reveals past outages and affected services
+- Historical incidents reveal maintenance windows and service dependencies
+- Impact: Complete service architecture enumeration enabling targeted attacks on individual services
+
+F273 - recovery.deblock.com auth bypass on static assets (HIGH):
+- recovery.deblock.com protected by HTTP Basic Auth on page routes
+- Three path prefixes bypass authentication entirely:
+  /_next/static/* - All Next.js static assets (JS chunks, CSS, manifests)
+  /api/* - API routes (e.g., /_next/data/* style routes)
+  /_vercel/* - Vercel platform endpoints (speed-insights, etc.)
+- All 3 lazy-loaded JS chunks downloadable without credentials
+- Build manifest, webpack runtime, and framework chunks all exposed
+- Impact: Client-side code, i18n strings, deployment metadata accessible without auth
+
+F274 - recovery.deblock.com wallet recovery architecture exposed via i18n (HIGH):
+- Three i18n locale chunks (EN/FR/ES) reveal complete wallet recovery flow:
+  Step 1: AES encryption key (received by email on sign up, search "Your encryption key")
+  Step 2: Upload backup.txt file (received by email, search "Your backup file")
+  Output: Private keys or seed phrase displayed in browser
+- Solana-specific recovery page documented in strings:
+  Accepts 64 hex character private keys
+  Three Ed25519 interpretation modes: raw scalar big-endian (legacy Deblock export), raw scalar little-endian, standard seed
+  Handles 64-byte keypair values (uses first 32 bytes)
+  Verifies key against expected Deblock Solana address
+  Full in-browser transaction signing and broadcasting to Solana network
+  Configurable RPC endpoint, balance checking, SOL transfers
+- Strings reveal email subjects used for key delivery (phishing template material)
+- All wallet operations claimed to be client-side (key never leaves browser)
+- Impact: Full understanding of wallet recovery mechanism enables targeted phishing attacks replicating exact UX
+
+F275 - support.deblock.com dangling Intercom CNAME (LOW):
+- DNS CNAME points to custom.eu.intercom.help
+- Returns HTTP 404 "Page not found"
+- Help center has been disabled or unconfigured on Intercom side
+- Intercom app ID s7y40sxp known from other endpoints
+- Not exploitable for subdomain takeover (Intercom does not allow claiming arbitrary CNAMEs)
+- Impact: Stale DNS record, help center unavailable to users
+
+F276 - Business API Apigee 502 error disclosure on multiple endpoints (MEDIUM):
+- POST requests to business.deblock.com API endpoints return Apigee gateway errors
+- Error responses include faultstring and errorcode fields:
+  faultstring: "Received 502 Bad Gateway from target server"
+  errorcode: "messaging.adaptors.http.flow.ErrorResponseCode"
+- Confirms Google Apigee as API gateway infrastructure
+- Tested on: /api/auth/login, /api/auth/login-2fa, /api/bank-details, /api/crypto-business/send
+- Error format reveals internal gateway architecture and error handling
+- Impact: Infrastructure fingerprinting, internal error classification exposed
+
+F277 - CSRF token accessible without authentication with 30-min window (MEDIUM):
+- GET /api/csrf returns valid CSRF token without any session or authentication
+- Token format: unix_timestamp.expiry_timestamp.random_base64.hmac_hash
+- Expiry timestamp is exactly 1800 seconds (30 minutes) after creation
+- Example: 1728230400.1728232200.randomB64.hmacHash
+- Tokens can be pre-generated and stockpiled for later use
+- No rate limiting on token generation endpoint
+- Impact: CSRF protection weakened by unauthenticated token issuance; tokens can be pre-harvested for attack windows
+
+F278 - WebSocket endpoints confirmed alive returning 426 Upgrade Required (LOW):
+- Three WebSocket endpoints respond with HTTP 426:
+  /api/websocket - Main real-time channel
+  /api/crypto-business-socket - Crypto trading updates
+  /api/crypto-commands-socket - Crypto command execution
+- Previously returned 502 (backend unavailable), now returning 426 (backend alive, needs WebSocket upgrade)
+- HTTP proxy strips Upgrade headers preventing WebSocket handshake from this environment
+- Endpoints likely require authenticated WebSocket connections
+- Impact: Real-time communication channels confirmed active, potential for session hijack with valid tokens
+
+F279 - Vercel Speed Insights accessible without auth on recovery.deblock.com (LOW):
+- /_vercel/speed-insights/script.js loads without Basic Auth
+- Vercel analytics/speed measurement code accessible
+- Part of the broader auth bypass on /_vercel/* paths (see F273)
+- Impact: Minor information disclosure, confirms Vercel platform features in use
+
+F280 - Status page OVH S3 signed URLs with credential IDs exposed (LOW):
+- Status page assets served via OVH S3 signed URLs
+- URLs contain OVH access key identifiers in signature parameters
+- Signed URLs have time-limited validity
+- OVH S3 bucket used for status page static assets (images, logos)
+- Impact: OVH credential identifiers exposed, though signed URLs are time-limited
+
+F281 - Status page wildcard CSP (default-src * data: blob:) (LOW):
+- status.deblock.com serves extremely permissive CSP:
+  default-src * data: blob:
+- Allows loading scripts, styles, images, frames from any origin
+- data: and blob: URIs permitted for all resource types
+- Hosted on Statuspal platform (third-party, limited control)
+- Impact: No meaningful content security policy; any injected content can load resources from anywhere
+
+F282 - Staging build ID and deployment metadata disclosure (INFO):
+- staging.deblock.com exposes Vercel build ID: jiQWozk8dR12Q2EFM5KOi
+- Build ID differs from production, confirming separate deployment pipeline
+- /_next/static/jiQWozk8dR12Q2EFM5KOi/ directory accessible
+- Deployment timestamps extractable from build artifacts
+- Impact: Build pipeline enumeration, deployment tracking
 
 ## 16. Next Steps for Continued Testing
 
