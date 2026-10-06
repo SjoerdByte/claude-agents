@@ -1965,7 +1965,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 402 | LOW | UAT-02 auth/refresh token mechanism disclosure | app-uat-02.deblock.com | CWE-200 | YES | "No token or refresh token found" reveals dual-token auth mechanism. |
 | 403 | MEDIUM | UAT-02 onboarding endpoints reached with empty body + e2e | app-uat-02.deblock.com | CWE-287 | YES | resend-onboarding-otp, signature/resend-signature-otp, signature/complete all reach business logic without auth. |
 
-Total: 460 findings (16 critical, 110 high, 178 medium, 103 low, 61 info)
+Total: 470 findings (17 critical, 112 high, 182 medium, 104 low, 63 info)
 
 ## 15. Session Notes
 
@@ -5415,6 +5415,146 @@ F459. MEDIUM - X-HTTP-Method-Override Processed by Apigee Gateway
 - sca/clear with Override:GET still returns {"cleared":true} (dangerous: GET requests bypass CSRF in some scenarios)
 - Impact: Allows accessing PUT/DELETE/PATCH methods on endpoints that only expose GET/POST, potential CSRF bypass via GET method override
 - CWE: CWE-436 (Interpretation Conflict), CWE-352 (CSRF via GET override)
+- Reproducible: YES
+
+## 12at. JS Analysis Findings, Analytics Data Poisoning, CloudKit Credentials (Session 31)
+
+F460. CRITICAL - Unauthenticated Analytics Event Injection on Both UATs (27/27 Events, No Rate Limit)
+- POST /api/analytics/organisms on app-uat-02.deblock.com AND app-uat-01.deblock.com
+- Requires only CSRF token (freely obtainable from /api/csrf without auth)
+- ALL 27 event types in the internal event catalog accepted without ANY user authentication
+- Complete event catalog extracted from JS bundle and verified:
+  card_order (cards/order), card_add_virtual (cards/add_virtual), top_up (top_up/submit),
+  crypto_transaction (crypto/transaction), vault_deposit (vaults/deposit),
+  vault_chain_picker (vaults/select_chain), premium_subscription (pricing/subscribe),
+  wallet_address_copy (wallet/copy_address), iban_copy (bank/copy_iban),
+  crypto_wallet_recovery (wallet_recovery/recover), wallet_import (wallet/import),
+  crypto_transfer (crypto/transfer), nft_transfer (nft/transfer),
+  staking_withdrawal (staking/withdraw), sepa_transfer (payments/transfer),
+  fiat_vault_create (vaults/create), fiat_vault_delete (vaults/delete),
+  fiat_vault_edit (vaults/edit), self_transfer (vaults/transfer),
+  self_transfer_recurring (vaults/schedule), auth_login (auth/login),
+  onboarding_password (onboarding/password), btc_roundup (roundup/btc_roundup),
+  stocks_trade (stocks/trade), stocks_onboarding (stocks/onboarding),
+  referral_share (referrals/share), referral_code_redeem (referrals/redeem_code)
+- Financial events accept status "succeeded": crypto_transaction, sepa_transfer, premium_subscription, stocks_trade, top_up
+- Arbitrary extra fields accepted without validation: amount, currency, userId, accountId, txHash, ip
+- NO rate limiting: 20/20 rapid-fire requests all succeeded
+- Format: {eventName, eventId, timestamp, domain, action, sourceOrganism, status?(started|submitted|succeeded|failed|skipped), type?(physical|virtual|buy|sell|etc)}
+- Validated sourceOrganism values: Cards, TopUp, TransactionCreatorV2, PricingPlan, CryptoAddress, BankAccountDetails, WalletRecovery, ExternalWalletImport, TransferCrypto, NftTransfer, StakingWithdrawal, VaultDetails, ScheduleDca, SepaTransfer, FiatVaultCreate, FiatVaultDelete, FiatVaultDeposit, FiatVaultWithdraw, FiatVaultRecurring, FiatVaultEdit, AuthForm, QrLogin, Onboarding, BtcRoundup, StocksBuy, StocksSell, StocksOnboarding, LoginKeyRecovery, ContinuousReferrals, ContinuousReferralsPromoCode
+- Impact: Analytics data poisoning - attacker can inject unlimited fake financial events, skew business metrics, pollute fraud detection models, plant false transaction evidence
+- Upgrades F455 with complete exploitation path
+- CWE: CWE-306 (Missing Authentication for Critical Function), CWE-20 (Improper Input Validation)
+- CVSS: 9.1 (Critical) - unauthenticated mass data injection into analytics pipeline
+- Reproducible: YES
+
+F461. HIGH - CloudKit/iCloud Production API Token and Container ID Hardcoded in JS Bundle
+- Found in UAT-02 JS chunk 081j6xt3ixwpe.js (CloudKit initialization code)
+- Container ID: iCloud.com.deblock.deblockapp.production
+- API Token: 230f22b656e186689f6fcd1c7965a6bf1f390ab2ca374aeac57eeabce11a8b8b
+- Environment: production
+- Apple CloudKit API confirms container exists (returns AUTHENTICATION_FAILED, not "container not found")
+- Token currently rejects queries (likely rotated), but container ID confirmed valid
+- Same JS reveals CloudKit e2e bypass: when __e2eMock is truthy, entire CloudKit auth initialization is skipped
+- Used for crypto wallet recovery backup/sync via iCloud
+- CWE: CWE-798 (Use of Hard-coded Credentials), CWE-200 (Exposure of Sensitive Information)
+- Reproducible: YES
+
+F462. HIGH - Google OAuth Client ID Exposed in JS Bundle
+- Client ID: 248017251601-ja5sommcitlk8ie3sieq4igjrlis9arp.apps.googleusercontent.com
+- Found in UAT-02 JS chunk 02lay84vygadd.js
+- Google confirms the OAuth client exists (returns redirect_uri_mismatch, not "unknown client")
+- Tested redirect URIs business.deblock.com, app.deblock.com, deblock.com all return mismatch
+- Real redirect URI is not among commonly guessed paths
+- Could be used in OAuth confusion attacks if combined with open redirect
+- Apple SSO also configured but client IDs loaded from runtime env (not hardcoded)
+- CWE: CWE-200 (Exposure of Sensitive Information)
+- Reproducible: YES
+
+F463. MEDIUM - CSP Header Infrastructure Disclosure from UAT-02 WebSocket Responses
+- GET /api/websocket on app-uat-02.deblock.com returns 426 with full CSP header
+- CSP reveals GCS bucket names:
+  deblock-dev-crypto-currencies-v2.storage.googleapis.com
+  deblock-production-crypto-currencies-v2.storage.googleapis.com
+  deblock-production-crypto-nfts-v2.storage.googleapis.com
+- CSP reveals 7+ service providers:
+  Sardine (fraud detection): cdn.sardine.ai, api.sandbox.sardine.ai
+  Regula (ID verification): api.regulaforensics.com
+  Prelude (verification): api.prelude.dev
+  StakeKit (staking): api.stakek.it
+  Ledger (hardware wallets): connect.ledger.com
+  Adjust (attribution): cdn.adjust.com, app.adjust.com
+  OneSignal (push notifications): onesignal.com
+- GCS buckets tested: All return AccessDenied for listing (properly secured for anonymous access)
+- CWE: CWE-200 (Exposure of Sensitive Information)
+- Reproducible: YES
+
+F464. LOW - CSP Violation Reporting Accepts Arbitrary Reports Without Auth on UAT-02
+- POST /api/csp-violation on app-uat-02.deblock.com returns empty 200 response
+- Accepts arbitrary JSON bodies as CSP violation reports without authentication
+- Same endpoint returns 404 on production (business.deblock.com)
+- Could potentially be used to inject fake violation reports or as a data exfiltration signal
+- CWE: CWE-306 (Missing Authentication for Critical Function)
+- Reproducible: YES
+
+F465. MEDIUM - Onboarding OTP Resend Reaches Backend on Both UATs Without Auth
+- POST /api/onboarding/resend-onboarding-otp on both app-uat-01 and app-uat-02
+- Returns {"error":"","status":400} (empty error string, reaches backend)
+- Endpoint reaches the Rails backend without any authentication
+- Empty error suggests the backend processes the request but finds no matching session
+- Could be used for OTP flooding if combined with a valid onboarding session token
+- Same endpoint returns 404 on production (not proxied)
+- CWE: CWE-306 (Missing Authentication for Critical Function)
+- Reproducible: YES
+
+F466. INFO - Production WebSocket Paths Confirmed Active
+- Three WebSocket paths return 426 Upgrade Required on business.deblock.com:
+  /api/websocket (main application socket)
+  /api/crypto-business-socket (business crypto operations)
+  /api/crypto-commands-socket (crypto command execution)
+- Confirms WebSocket infrastructure is running behind the proxy
+- Proxy strips Upgrade headers (502 with actual WebSocket client)
+- CWE: CWE-200 (Information Exposure)
+- Reproducible: YES
+
+F467. MEDIUM - UserTypeEnum Values for e2e-user-type-override Cookie Discovered
+- From JS analysis (3bd29ap2uas4j.js):
+  ACTIVE = "0" (normal user)
+  SUSPENDED = "1" (suspended user)
+  SANCTIONED = "2" (sanctioned user)
+- The e2e-user-type-override cookie accepts these values to change user restriction status
+- IS_DEV=false in production builds, but window.__RUNTIME_ENV__ is read at runtime
+- If __RUNTIME_ENV__ can be manipulated (XSS, prototype pollution), IS_DEV bypass could be activated
+- When IS_DEV=true: e2e-user-type-override cookie bypasses WebSocket restriction checks
+- When IS_DEV=true: e2e-mock-browser-id creates a mock browser connection with hasBrowserConnection=true
+- CloudKit e2e bypass: when __e2eMock truthy, skips CloudKit auth entirely
+- CWE: CWE-489 (Active Debug Code)
+- Reproducible: YES (values confirmed in JS, runtime exploitation requires IS_DEV=true)
+
+F468. MEDIUM - Additional Security Headers Discovered in JS Bundle
+- Headers found in 3bd29ap2uas4j.js:
+  X-Debug (purpose unknown, accepted by backend without error)
+  X-2fa-Context (2FA context passing)
+  X-Kyc-Encrypted (KYC data encryption flag)
+  X-Device-Key (device identification)
+  X-Mobile-Session (mobile session flag)
+  X-Encrypted (encryption flag)
+  deblock-dispatch-id (request dispatch tracking)
+- X-Debug header accepted by production endpoints without changing observable behavior
+- X-Kyc-Encrypted suggests client-side encryption of KYC data with server toggle
+- deblock-dispatch-id could be used for request tracing/correlation
+- CWE: CWE-200 (Exposure of Sensitive Information)
+- Reproducible: YES
+
+F469. INFO - Complete WebSocket Event Types Enumerated from JS Bundle
+- DbkRefreshEventType values (1zm6f7wfmspmy.js):
+  TX_EUR, TX_USD, TX_GBP, TX_XPF, TX_BTC, TX_ETH, TX_SOL, TX_USDC, TX_USDT, TX_EURC,
+  BALANCE_EUR, NFTS, FRONTDESK_PENDING_3DS, FRONTDESK_DIGITAL_WALLET_DECISION_YELLOW,
+  CARDS_CREATED, CARDS_REMOVED, AVATAR_UPDATED, PRICING, REFERRAL_INVITES,
+  NEW_BLOCKS_LEVEL_REACHED, BLOCKS_RECEIVED, ESTIMATE_EXCHANGE
+- Reveals supported currencies: EUR, USD, GBP, XPF (Pacific Franc), BTC, ETH, SOL, USDC, USDT, EURC
+- Reveals real-time features: 3DS pending decisions, digital wallet decisions, exchange estimates
+- CWE: CWE-200 (Information Exposure)
 - Reproducible: YES
 
 ## 16. Next Steps for Continued Testing
