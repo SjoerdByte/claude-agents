@@ -1965,7 +1965,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 402 | LOW | UAT-02 auth/refresh token mechanism disclosure | app-uat-02.deblock.com | CWE-200 | YES | "No token or refresh token found" reveals dual-token auth mechanism. |
 | 403 | MEDIUM | UAT-02 onboarding endpoints reached with empty body + e2e | app-uat-02.deblock.com | CWE-287 | YES | resend-onboarding-otp, signature/resend-signature-otp, signature/complete all reach business logic without auth. |
 
-Total: 473 findings (17 critical, 113 high, 182 medium, 106 low, 63 info)
+Total: 479 findings (17 critical, 113 high, 186 medium, 108 low, 65 info)
 
 ## 15. Session Notes
 
@@ -5580,7 +5580,7 @@ F471. LOW - TRACE Method Returns 500 on All Production API Endpoints
 - CWE: CWE-693 (Protection Mechanism Failure)
 - Reproducible: YES
 
-F472. LOW - GCS Buckets Have Publicly Readable Cryptocurrency Icon Objects
+F472. LOW - GCS Buckets Have Publicly Readable Cryptocurrency Icon Objects (Session 31 cont.)
 - 5 cryptocurrency icons confirmed publicly accessible in both production and dev buckets:
   storage.googleapis.com/deblock-production-crypto-currencies-v2/images/{btc,eth,sol,usdc,usdt}.png
   storage.googleapis.com/deblock-dev-crypto-currencies-v2/images/{btc,eth,sol,usdc,usdt}.png
@@ -5590,6 +5590,89 @@ F472. LOW - GCS Buckets Have Publicly Readable Cryptocurrency Icon Objects
 - Objects are cryptocurrency icons (non-sensitive) but confirm the bucket naming/path convention
 - CWE: CWE-200 (Exposure of Sensitive Information)
 - Reproducible: YES
+
+F473. MEDIUM - 15+ Card Sub-Endpoints Reach Production Backend Via Auth Cookie Bypass
+- All card sub-routes reach production Rails backend with __Host-auth-token=x:
+  GET /api/cards/list: "Failed to load card" (401)
+  GET /api/cards/virtual: "Failed to load card" (401)
+  GET /api/cards/physical: "Failed to load card" (401)
+  GET /api/cards/order: "Failed to load card" (401)
+  GET /api/cards/details: "Failed to load card" (401)
+  GET /api/cards/activate: "Failed to load card" (401)
+  GET /api/cards/freeze: "Failed to load card" (401)
+  GET /api/cards/unfreeze: "Failed to load card" (401)
+  GET /api/cards/pin: "Failed to load card" (401)
+  GET /api/cards/limits: "Failed to load card" (401)
+  GET /api/cards/transactions: "Failed to load card" (401)
+  GET /api/cards/3ds: "Failed to load card" (401)
+  GET /api/cards/{id}/pin: "Failed to load PIN" (401) - Different error, card ID processed
+  POST /api/cards: "Failed to create card" (401) - Card creation endpoint
+- POST on card sub-routes returns Apigee 405 (method restriction)
+- All card IDs return same "Failed to load PIN" (no IDOR enumeration via error differentiation)
+- Combined with SCA clear (F470), represents card management attack surface if auth bypass found
+- CWE: CWE-287 (Improper Authentication), CWE-306 (Missing Authentication)
+- Reproducible: YES
+
+F474. MEDIUM - Production crypto-wallets Endpoint Reaches Backend
+- GET /api/crypto-wallets on business.deblock.com returns {"error":"Failed to load crypto wallets","status":401}
+- Reaches Rails backend with only __Host-auth-token=x cookie
+- Exposes crypto wallet management as an accessible endpoint
+- CWE: CWE-287 (Improper Authentication)
+- Reproducible: YES
+
+F475. MEDIUM - Passkeys Auth Verify Returns "Login Session Expired" Without Auth
+- POST /api/passkeys/auth/verify on business.deblock.com returns {"error":"Login session expired"} (400)
+- Does NOT require __Host-auth-token cookie (works without any auth)
+- Different error from passkeys/auth ("Passkey authentication failed") and passkeys/register ("Passkey registration failed")
+- passkeys/register/verify returns "Passkey registration failed" (different code path)
+- The "Login session expired" error suggests this endpoint checks a separate session store
+- Could potentially be exploited with a valid passkey challenge response
+- CWE: CWE-287 (Improper Authentication)
+- Reproducible: YES
+
+F476. LOW - UAT Test Pages Accessible (8 Developer Testing Routes)
+- Both UAT-01 and UAT-02 expose developer testing page routes (307 redirect to auth):
+  /en/google-test (Google SSO testing)
+  /en/icloud-test (iCloud integration testing)
+  /en/onboarding-dev (onboarding development)
+  /en/d8d6a147-7828-411c-8a03-78d2007901c5 (UUID-named hidden route)
+  /en/flows/cards-testing-flow
+  /en/flows/crypto-sdk-testing-flow
+  /en/flows/ledger-import-testing-flow
+  /en/flows/components-preview
+- Production has different flow routes: crypto-signing, business-onboarding, pricing-plan, surface-navigation
+- All require authentication (307 redirect) but confirm dev tooling in UAT builds
+- CWE: CWE-489 (Active Debug Code)
+- Reproducible: YES
+
+F477. MEDIUM - Production JS Reveals Business Session Configuration
+- Session inactivity timeout: 300 seconds (5 minutes)
+- Session hold maximum: 900 seconds (15 minutes)
+- Token refresh: 30 seconds before expiry (BUSINESS_REFRESH_BEFORE_MS: 30000)
+- Expiry skew: 7 seconds (BUSINESS_EXPIRY_SKEW_MS: 7000)
+- Redis channel key prefix: "facetec-2fa-updates" with "business:" prefix
+- Grant JWT format: "dblk-grant+jwt" with EdDSA algorithm and Ed25519 curve
+- AES-GCM encryption for wallet records with format versioning (LegacyV0="0", EncryptedV1="1")
+- Client-side PGP encryption via OpenPGP.js 6.3.0 controlled by X-Encrypted header
+- Only one feature flag in production: CARD_CONTROLS ("cards.card-controls")
+- Shared Sentry DSN between prod and UAT (same Sentry project for error reporting)
+- CWE: CWE-200 (Exposure of Sensitive Information)
+- Reproducible: YES
+
+F478. INFO - Production vs UAT Architecture Confirmed as Separate Applications
+- Production (business.deblock.com): Business portal with limited feature set
+  Routes: crypto-lab (IS_DEV only), crypto-signing, business-onboarding, pricing-plan
+  Feature flags: Only CARD_CONTROLS
+  No analytics, Intercom, Google Analytics, or marketing integrations
+- UAT (app-uat-01/02): Consumer retail app with full feature set
+  Routes: google-test, icloud-test, onboarding-dev, 8+ testing flows
+  Feature flags: 17+ flags (protocols, wallet features, referrals, analytics)
+  Full marketing stack: GTM, GA4, Intercom, CloudKit, Google Drive
+  Has PayPal integration (return/cancel routes)
+  Has blockchain explorer integrations (Etherscan, Solana RPC, Polygon)
+- Prod JS: 38 chunks, ~4.1MB total
+- UAT JS: 48+ chunks, ~3.8MB total
+- Both share: Sentry DSN, crypto wallet library, passkey library
 
 ## 16. Next Steps for Continued Testing
 
