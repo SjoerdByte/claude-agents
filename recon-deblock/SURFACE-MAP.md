@@ -7136,3 +7136,103 @@ Priority 3 (Enumeration/escalation):
 - Sensitive error sanitization: privateKeysObject and base64 strings >100 chars are redacted before Sentry
 - Impact: MEDIUM - Four independent attack vectors for escrow key recovery. Compromising any ONE source gives full wallet decryption capability.
 
+### F615 [LOW] Unauthenticated Geolocation Disclosure via /api/client-region
+- Target: app-uat-02.deblock.com, app-uat-01.deblock.com
+- GET /api/client-region returns {"region":"US"} without any authentication
+- Reveals server-side geolocation classification of the requesting IP
+- Not present on production (business.deblock.com returns 404)
+- Impact: LOW - Information disclosure of geo-IP classification. Could be used to understand regional access controls or routing decisions.
+
+### F616 [LOW] Unauthenticated Build Info Disclosure via /api/health
+- Target: app-uat-02.deblock.com
+- GET /api/health returns: {"status":"ok","buildId":"86c92c6","timestamp":"2026-10-06T18:33:23.856Z"}
+- Exposes git commit hash (buildId), server timestamp with millisecond precision, and operational status
+- No authentication required
+- Not present on production (business.deblock.com returns 404 for /api/health)
+- Production /readyz still returns 200 with empty body
+- Impact: LOW - Build ID (git hash) aids targeted code analysis. Timestamp reveals server clock for replay attacks.
+
+### F617 [LOW] UAT Environment Version Divergence Confirmed
+- Target: app-uat-01.deblock.com vs app-uat-02.deblock.com
+- UAT-01 /api/health returns buildId "e95b8cf", UAT-02 returns "86c92c6"
+- Different git commits deployed to each UAT environment
+- Both expose the same endpoint format without authentication
+- Impact: LOW - Confirms UAT environments run different code versions, potentially with different security patches applied.
+
+### F618 [MEDIUM] Unauthenticated Marketing Widget Data Exposure
+- Target: app-uat-02.deblock.com, app-uat-01.deblock.com
+- GET /api/marketing-widgets returns full widget configuration without authentication on both UAT environments
+- Response: {"status":"ok","result":[...]} with 4 marketing widgets containing:
+  - Internal deeplink targets: "iban", "wallet", "exchange_btc", "referrals"
+  - CDN asset URLs: cdn1.deblock.com/webassets/{details,wallet,btc,referral}.png
+  - Marketing copy including referral bonus amount (up to 500 EUR)
+  - Widget structure (title, subtitle, link, image_url, deeplink)
+- Not present on production (business.deblock.com returns 404)
+- All referenced CDN webassets are publicly accessible (200)
+- Impact: MEDIUM - Exposes internal deeplink scheme, confirms active product features, and reveals promotional pricing without authentication.
+
+### F619 [HIGH] Unauthenticated Analytics Event Injection (Stored XSS Potential)
+- Target: app-uat-02.deblock.com
+- POST /api/auth/analytics accepts arbitrary analytics events without authentication
+- Required fields: eventId, eventType, flowId, screenId (revealed in error message)
+- Successfully injects events with arbitrary content including XSS payloads: {"success":true}
+- Tested with eventId containing script tags - accepted without sanitization
+- If analytics events are displayed in an internal admin dashboard without output encoding, this enables stored XSS against internal staff
+- Not present on production (business.deblock.com returns 404)
+- Impact: HIGH - Unauthenticated data injection into internal analytics. Potential stored XSS against admin dashboard users. Analytics data poisoning can corrupt business intelligence.
+
+### F620 [LOW] Unauthenticated CSP Violation Report Endpoint
+- Target: app-uat-02.deblock.com
+- POST /api/csp-violation accepts CSP violation reports without authentication (returns 204)
+- Accepts application/csp-report content type with arbitrary report data
+- Can be used for CSP report flooding or injecting false violation reports
+- Not present on production (returns 404)
+- Impact: LOW - CSP report injection could obscure real violations or flood logging systems.
+
+### F621 [LOW] Apigee Gateway Error Information Disclosure
+- Target: app-uat-02.deblock.com (multiple endpoints)
+- Several endpoints return Apigee-specific error format when accessed with wrong HTTP method:
+  {"fault":{"faultstring":"Received 405 Response without Allow Header","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}
+- Affected endpoints: /api/app-version, /api/csp-violation (GET), /api/auth/analytics (GET), /api/qr-login (GET), /api/facetec-gateway/session-token
+- Reveals Google Apigee API gateway is deployed in front of the backend
+- Error format confirms specific Apigee error code taxonomy
+- Impact: LOW - Infrastructure fingerprinting. Apigee-specific error format confirms the API gateway vendor and aids targeted exploitation.
+
+### F622 [MEDIUM] FaceTec Gateway Progressive Validation Without Authentication
+- Target: app-uat-02.deblock.com
+- POST /api/facetec-gateway/process-request validates fields progressively without requiring authentication:
+  1. Without body: "Device key identifier is required"
+  2. With deviceKeyIdentifier: "Request blob is required"
+  3. Any arbitrary deviceKeyIdentifier value is accepted (no validation)
+- The endpoint processes biometric verification requests and reveals its validation pipeline through sequential error messages
+- POST /api/facetec-gateway/session-token exists (Apigee 405 on GET)
+- Production returns "FaceTec 2FA session not found" (401) but still processes the request
+- Impact: MEDIUM - Unauthenticated access to biometric processing pipeline. Progressive validation reveals internal field requirements. Could be used to craft valid FaceTec bypass requests.
+
+### F623 [LOW] /api/features Endpoint Exists on UAT But Not Production
+- Target: app-uat-02.deblock.com
+- GET /api/features returns 401 "User is not authenticated" on UAT-02 (endpoint exists, requires auth)
+- GET /api/features returns 404 on production (not deployed)
+- Client-side JS hardcodes FEATURE_FLAGS_API_URL as "/api/features" (different from /api/frontdesk/features)
+- Production uses /api/frontdesk/features instead (also requires auth, returns 401)
+- Impact: LOW - Endpoint naming inconsistency between environments. The /api/features path may return different data than /api/frontdesk/features when authenticated.
+
+### F624 [LOW] UAT Route Collision: /api/settings Renders as Next.js Page
+- Target: app-uat-02.deblock.com, app-uat-01.deblock.com
+- GET /api/settings returns 200 with a full Next.js HTML page instead of API JSON
+- The HTML has lang="api" attribute, indicating the router matched "api" as a locale/segment
+- This is a route collision between the Next.js page router and the API namespace
+- Returns 404 on production (properly hidden)
+- Impact: LOW - Route misconfiguration exposes Next.js application shell. The lang="api" attribute reveals how the router handles the /api prefix internally.
+
+### F625 [MEDIUM] CDN Webassets Directory Publicly Accessible
+- Target: cdn1.deblock.com
+- Marketing widget assets accessible without authentication:
+  - /webassets/details.png (200) - Account details illustration
+  - /webassets/wallet.png (200) - Crypto wallet illustration
+  - /webassets/btc.png (200) - Bitcoin marketing image
+  - /webassets/referral.png (200) - Referral program image
+- Some paths return 403: /webassets/logo.png, /webassets/favicon.ico
+- CloudFront -> S3 eu-west-3 serving pipeline confirmed from earlier CDN analysis
+- Impact: MEDIUM - Publicly accessible asset directory. The 403 vs 200 pattern suggests per-file ACLs rather than directory-level protection, with some assets inadvertently exposed.
+
