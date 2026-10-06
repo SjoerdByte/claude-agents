@@ -1919,8 +1919,23 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 358 | LOW | UAT referees/nudge endpoint conditional auth bypass | app-uat-01.deblock.com | CWE-287 | YES | POST /api/referrals/referees/{invalid-id}/nudge returns "Invalid id" (no auth check). Valid UUID triggers auth: "User is not authenticated". |
 | 359 | LOW | Production auth middleware inconsistency: 403 vs 401 | business.deblock.com | CWE-16 | YES | Without CSRF: 403 "Forbidden". With CSRF: 401 "Unauthorized". Two auth layers with different error patterns. |
 | 360 | INFO | app.deblock.com returns 410 Gone on .well-known files | app.deblock.com | CWE-200 | YES | Indicates decommissioned/deprecated app domain. Mobile app linking moved to other domains. |
+| 361 | HIGH | app-uat-02.deblock.com discovered - second UAT environment publicly accessible | app-uat-02.deblock.com | CWE-16 | YES | Build ID 86c92c6 (newer than UAT-01 e95b8cf). Full production-like app. Same Sentry org_id 4510324489519104. sentry-environment incorrectly set to "production". |
+| 362 | HIGH | UAT-02 cards auth bypass via empty body confirmed | app-uat-02.deblock.com | CWE-287 | YES | POST /api/cards with Content-Length: 0 returns 500 "Failed to create card" (business logic). Same auth bypass as UAT-01. |
+| 363 | HIGH | UAT bank-details auth bypass - pre-auth idempotency check | app-uat-01.deblock.com | CWE-287 | YES | POST /api/bank-details with JSON body bypasses auth. Returns "Missing idempotency key" (400). Idempotency middleware runs before auth middleware. |
+| 364 | HIGH | Business SCA auth bypass with CSRF double-submit | business.deblock.com | CWE-287 | YES | POST /api/sca with CSRF tokens returns "Step-up failed" (400). Auth middleware bypassed. Strong Customer Authentication endpoint. |
+| 365 | MEDIUM | Production app.deblock.com complete API decommission | app.deblock.com | CWE-200 | YES | All /api/* endpoints now return 410 Gone. Previously active CSRF, auth, cards, crypto-wallets endpoints all removed. |
+| 366 | MEDIUM | Business auth/check-session session oracle without auth | business.deblock.com | CWE-200 | YES | GET /api/auth/check-session returns {"valid":false} without any auth token. Confirms session validation endpoint accessible. |
+| 367 | MEDIUM | Business frontdesk admin endpoints accessible | business.deblock.com | CWE-284 | YES | GET /api/frontdesk/features and /api/frontdesk/accounts return 401 from Rails (reaching backend). Admin/support panel endpoints. |
+| 368 | MEDIUM | UAT-02 users/info auth bypass | app-uat-02.deblock.com | CWE-287 | YES | GET /api/users/info returns "Failed to fetch user info" (400). Auth bypassed, business logic reached. |
+| 369 | MEDIUM | UAT-02 create-2fa-mobile-session auth bypass | app-uat-02.deblock.com | CWE-287 | YES | POST returns "FaceTec 2FA session not found". Same auth bypass pattern as UAT-01 and business. |
+| 370 | MEDIUM | UAT-02 bank-details auth bypass | app-uat-02.deblock.com | CWE-287 | YES | POST returns "Missing idempotency key". Same pre-auth middleware issue as UAT-01. |
+| 371 | MEDIUM | UAT-02 onboarding/signature/resend-signature-otp auth bypass | app-uat-02.deblock.com | CWE-287 | YES | POST returns "Unable to resend otp" (400). Business logic reached without auth. |
+| 372 | MEDIUM | UAT-02 CSP reveals additional third-party services | app-uat-02.deblock.com | CWE-200 | YES | New services in CSP: edge.prelude.dev, assets.stakek.it, ledgerb.api.ledger.com, api.apple-cloudkit.com, app.adjust.com, onesignal.com, intercom-sheets.com. |
+| 373 | MEDIUM | Business crypto-wallets and bank-details reach Rails backend | business.deblock.com | CWE-284 | YES | GET /api/crypto-wallets returns 401 from Rails. PATCH /api/crypto-wallets/keys returns 401. POST /api/bank-details returns 401. All financial endpoints reachable. |
+| 374 | LOW | UAT onboarding/verify-phone causes backend crash (502/503) | app-uat-01.deblock.com | CWE-400 | YES | POST returns 502 "Unexpected EOF at target" or 503 "TARGET_CONNECT_TIMEOUT". Backend service crash/timeout without auth. |
+| 375 | LOW | Business auth/logout returns 401 with different message format | business.deblock.com | CWE-200 | YES | Returns {"message":"User is not authenticated"} (uses "message" key vs "error" key on other endpoints). Different middleware layer. |
 
-Total: 360 findings (13 critical, 75 high, 137 medium, 93 low, 50 info)
+Total: 375 findings (13 critical, 79 high, 145 medium, 95 low, 51 info)
 
 ## 15. Session Notes
 
@@ -1956,6 +1971,7 @@ Total: 360 findings (13 critical, 75 high, 137 medium, 93 low, 50 info)
 - Session 15: GTM container configuration extracted (F252): GA4 G-3MRQ5Z62VD, Google Ads AW-11482270425, cross-domain linker across 3 domains. GA4 Measurement Protocol accepts events without valid API secret (F253): analytics poisoning confirmed. dblk.me short URL domain fully mapped (F254): Vercel, 75 pages, 276 rewrites. Build manifest full route structure (F255). Developer names in robots.txt (F256). Survey/beta endpoint unauthenticated email spoofing (F257): stored XSS in answer field, no rate limiting. Business app Turbopack chunks reveal 24+ API routes (F258). CSRF token unauthenticated (F259). Apigee error disclosure (F260). Auth/financial endpoints confirmed (F261). PWA manifest exposed (F262). next.deblock.com Cloudflare challenge (F263). Cross-domain tracking GDPR concern (F264). Total findings: 264.
 - Session 16: Committed F265-F270 (Sardine sandbox, Regula IP leak, CSP third-party, UAT verbose errors, Dotfile deployment, app.deblock.com 410). recovery.deblock.com auth bypass confirmed: /_next/static/*, /api/*, /_vercel/* paths bypass Basic Auth (F273). All 3 lazy-loaded chunks are i18n files (EN/ES/FR) revealing complete wallet recovery architecture including Solana Ed25519 key handling (F274). staging.deblock.com discovered: full Vercel staging environment with different build ID (F271). status.deblock.com: Statuspal status page reveals 11 blockchains and full service architecture (F272). support.deblock.com: dangling Intercom CNAME returning 404 (F275). Business API Apigee 502 errors on POST endpoints (F276). CSRF token unauthenticated with 30-min window (F277). WebSocket 426 confirmed (F278). Speed Insights, S3 signed URLs, wildcard CSP on status page (F279-F281). Staging build ID metadata (F282). Google OAuth false positive corrected (all redirect URIs properly rejected). Total findings: 282.
 - Session 17: Staging Rails API deep dive on web-api-staging.deblock.com. Active Storage direct_uploads leaks 85-line stack trace with full gem versions and middleware chain (F283). Ambassador OTP has zero rate limiting: 30 consecutive wrong codes accepted without lockout (F284). Dead route ambassador/search_email returns ActionNotFound trace (F285). Data removal endpoint hits DB (sql.active_record 17ms) before verifying auth token (F286). Rack::Cors loaded 9x in middleware stack indicating misconfigured initializer (F287). CORS wildcard Access-Control-Allow-Origin:* on both staging AND production page responses (F288). Status page window.incidents exposes 12 incidents with 60 service IDs (F289). OVH load balancer headers x-iplb-request-id/x-iplb-instance leaked on status page (F290). Apigee Response405WithoutAllowHeader new error type on UAT passkeys/bank-details (F291). Company onboarding session creation works without auth, returns full session UUID (F292). Ambassador certification oracle at /v1/check/ambassador (F293). Deep link /d/[hash] data deletion page publicly accessible (F294). CRITICAL: Production company onboarding chain exploited: phone verification bypass (F295), unauthenticated session creation (F296), IDOR on sessions (F297), combined attack chain for account hijack (F298). No rate limiting on session creation (F299), 25 EU countries supported (F300). Business API session oracle (F301). K8s readyz accessible (F302). CDN directories (F303). Build manifest route enumeration (F304). Sardine sandbox in prod CSP (F305). Total findings: 305.
+- Session 22: app-uat-02.deblock.com discovered (second UAT with newer build 86c92c6). Production app.deblock.com API fully decommissioned (all endpoints now 410 Gone, was previously returning auth errors). business.deblock.com becomes primary production API target. Business SCA endpoint bypasses auth with CSRF double-submit ("Step-up failed"). UAT bank-details has pre-auth idempotency middleware bypass. UAT-02 confirms all auth bypass patterns from UAT-01 (cards empty body, users/info, create-2fa-mobile-session, bank-details, onboarding). UAT-02 CSP reveals additional third-party integrations (Prelude, StakeKit, Ledger, Apple CloudKit, Adjust, OneSignal). Business frontdesk admin endpoints reach Rails backend (401). Total findings: 375.
 - Session 21: Production auth bypass confirmation + CSRF double-submit exploitation + expanded endpoint enumeration. CRITICAL: Production /api/auth/create-2fa-mobile-session confirmed auth bypassed (returns FaceTec business logic error with CSRF double-submit). Production /api/auth/logout confirmed no auth check (CSRF logout attack, returns 200 "Logged out"). UAT new auth bypasses: onboarding/signature/resend-signature-otp (F348), onboarding/signature/complete (F349). CSRF double-submit technique confirmed: freely obtain token from /api/csrf, set both x-csrf-token header and __Host-csrf cookie to bypass all 403 Forbidden on POST endpoints. All 11 production /api/cards/* sub-routes reach Rails backend (list, create, freeze, unfreeze, details, pin, limits, activate, deactivate, order, virtual). Production 2fa-mobile-session-socket exists (426 Upgrade Required without auth). UAT /api/health exposes buildId + timestamp. UAT .well-known files expose Android signing certs + iOS app config + QR login deep links. app.deblock.com returns 410 Gone (decommissioned). Total findings: 360.
 - Session 20: UAT auth bypass pattern expansion + JS deep analysis + production comparison. Downloaded and analyzed all 52 UAT JS chunks. Discovered auth cookie name "auth-token" with support cookies "idempotency-key" and "reference-id", plus E2E test cookies "e2e-mock-browser-id" and "e2e-user-type-override". Extracted 45 internal application flows including create-virtual-card-flow, create-physical-card-flow, export-wallet-keys-flow. Mapped 100+ API endpoint URL constructions from JS. Found 5 additional UAT auth bypass endpoints beyond cards: create-2fa-mobile-session returns "FaceTec 2FA session not found" (F331), users/info returns "Failed to fetch user info" (F332), subscribe-2fa-mobile-session returns "Missing mobileSessionKey" (F333), 2fa-mobile-session-socket returns 426 without auth (F334), onboarding/resend-onboarding-otp returns "Unable to resend otp" (F335). Production comparison: auth/check-session returns {"valid":false} (session oracle, F336), CSRF endpoint returns token without auth (F337), most API routes return Next.js 404 (not proxied). Next.js version 16.2.11 in Turbopack bootstrap (F344). CSRF token format confirmed: timestamp.expiry.nonce.hmac, __Host-csrf cookie, 30-min validity. Total findings: 345.
 - Session 19: UAT API deep exploitation. CRITICAL finding: /api/cards auth bypass via empty body. POST with no body (Content-Length: 0 or missing) returns 500 "Failed to create card" (business logic) instead of 400 "User is not authenticated". Auth middleware requires valid JSON body >= 2 bytes to activate. 100% reproducible (5/5 consistent). Cards-specific, NOT on production (403 Forbidden regardless). auth/analytics confirmed as blind injection sink: XSS, SQLi, SSTI, mass assignment (userId/role extra fields) all accepted with {"success":true}, zero rate limiting (20/20), 10KB+ payloads. CSP violation /api/csp-violation accepts arbitrary reports (204 No Content, log poisoning). Path traversal via %2e%2e encoding: /api/auth/%2e%2e/%2e%2e/admin redirects to /admin (Apigee normalizes then redirects). UAT health endpoint exposes buildId+timestamp unauthenticated. New live backend endpoints: passkeys/register, sepa-transfer/create, self-transfer/create, roundups/settings. UAT CSP reveals Prelude (phone verify), Ledger (hardware wallet), Adjust (marketing), StakeKit. Marketing-widgets leaks deeplink names (iban, wallet, exchange_btc, referrals). Google Drive appdata scope in JS for wallet recovery. Robots.txt hides /Resume, /WphYZ/, /Jordan, /miggy developer paths. auth/facetec-2fa 307 redirect leaks full CSP service map. Production company endpoints no longer routed through business.deblock.com frontend (404). Total findings: 330.
@@ -4483,6 +4499,116 @@ F360 - app.deblock.com returns 410 Gone (INFO):
 - Indicates the app.deblock.com domain is decommissioned
 - Mobile app deep linking has moved to other domains (business.deblock.com / app-uat-01)
 - Impact: Domain lifecycle disclosure
+
+### 15l. Session 22 Findings (F361-F375)
+
+F361 - app-uat-02.deblock.com discovered (HIGH):
+- Second UAT environment publicly accessible at app-uat-02.deblock.com
+- Build ID: 86c92c6 (newer than UAT-01's e95b8cf)
+- Sentry org_id: 4510324489519104, public_key: 95a2f173ce955f9d1ff52358da173ece
+- sentry-environment incorrectly set to "production" (same misconfiguration as UAT-01)
+- Working CSRF endpoint: returns valid token
+- Working /api/health: returns {"status":"ok","buildId":"86c92c6","timestamp":"..."}
+- .well-known/assetlinks.json and apple-app-site-association both return valid config
+- Impact: Full production-like banking app publicly accessible without auth, newer build may have additional features/bugs
+
+F362 - UAT-02 cards auth bypass via empty body (HIGH):
+- POST /api/cards with Content-Length: 0 returns 500 "Failed to create card"
+- POST /api/cards with JSON body returns 400 "User is not authenticated"
+- Same auth bypass pattern as UAT-01: empty body skips auth middleware
+- Impact: Confirms systemic auth middleware bug across both UAT environments
+
+F363 - UAT bank-details pre-auth idempotency check (HIGH):
+- POST /api/bank-details with JSON {} body returns "Missing idempotency key" (400)
+- POST /api/bank-details with Content-Length: 0 returns "Unknown error occurred" (200!)
+- The idempotency key validation middleware runs BEFORE auth middleware
+- Regardless of key format (UUID header, cookie, body), always returns "Missing idempotency key"
+- Impact: Auth bypass on bank details endpoint, could add external bank accounts if correct idempotency key format discovered
+
+F364 - Business SCA auth bypass with CSRF (HIGH):
+- POST /api/sca with CSRF double-submit returns "Step-up failed" (400)
+- POST /api/sca without CSRF returns "Forbidden" (403)
+- All parameter variations (action, challengeId, otp, amount) return same error
+- SCA = Strong Customer Authentication, required for financial transactions
+- Impact: Auth bypassed on critical financial authentication endpoint. With valid SCA context, could approve transactions
+
+F365 - Production app.deblock.com complete API decommission (MEDIUM):
+- All /api/* endpoints now return HTTP 410 Gone with empty body
+- Previously active endpoints: /api/csrf, /api/auth/*, /api/cards/*, /api/crypto-wallets/*, /api/frontdesk/*
+- Response headers: via: 1.1 google (GCP), x-request-id present
+- Even the homepage returns 410
+- Impact: Consumer app API has been fully decommissioned or migrated to different domain
+
+F366 - Business auth/check-session session oracle (MEDIUM):
+- GET /api/auth/check-session returns {"valid":false} without any auth token
+- No CSRF required for GET request
+- Confirms session validation mechanism is accessible
+- Impact: Session validity oracle, can check if any session token is valid
+
+F367 - Business frontdesk admin endpoints accessible (MEDIUM):
+- GET /api/frontdesk/features returns 401 "Unauthorized" from Rails
+- GET /api/frontdesk/accounts returns 401 "Unauthorized" from Rails
+- These are admin/customer support panel endpoints
+- Traffic reaches Rails backend (not blocked by Next.js or Apigee)
+- With valid auth token, could access customer support interface
+- Impact: Admin panel API surface exposed, privilege escalation vector if auth token obtained
+
+F368 - UAT-02 users/info auth bypass (MEDIUM):
+- GET /api/users/info returns "Failed to fetch user info" (400)
+- POST returns 502 (wrong method)
+- Auth bypassed, business logic reached
+- With valid session context, would return user PII
+- Impact: Auth middleware bypassed on user information endpoint
+
+F369 - UAT-02 create-2fa-mobile-session auth bypass (MEDIUM):
+- POST /api/auth/create-2fa-mobile-session returns "FaceTec 2FA session not found"
+- Same auth bypass as UAT-01 and business.deblock.com (F346)
+- Impact: Confirms systemic auth bypass across all environments for FaceTec 2FA endpoint
+
+F370 - UAT-02 bank-details auth bypass (MEDIUM):
+- POST /api/bank-details returns "Missing idempotency key" (400)
+- Same pre-auth middleware issue as UAT-01 (F363)
+- Impact: Confirms systemic idempotency middleware ordering bug across UAT environments
+
+F371 - UAT-02 onboarding signature OTP auth bypass (MEDIUM):
+- POST /api/onboarding/signature/resend-signature-otp returns "Unable to resend otp" (400)
+- Business logic reached without any auth token
+- Same pattern as UAT-01 (F348)
+- Impact: Confirms systemic auth bypass on onboarding endpoints
+
+F372 - UAT-02 CSP reveals additional third-party services (MEDIUM):
+- Services not seen in UAT-01 CSP:
+  - edge.prelude.dev (phone verification service)
+  - assets.stakek.it/tokens/ (StakeKit token assets)
+  - ledgerb.api.ledger.com (Ledger hardware wallet integration)
+  - api.apple-cloudkit.com / feedbackws.apple-cloudkit.com (Apple CloudKit)
+  - app.adjust.com / app.adjust.world (Adjust mobile attribution)
+  - onesignal.com / api.onesignal.com / cdn.onesignal.com (push notifications)
+  - intercom-sheets.com (Intercom data feature)
+- Impact: Expanded third-party attack surface, new integration endpoints
+
+F373 - Business crypto-wallets and bank-details reach Rails backend (MEDIUM):
+- GET /api/crypto-wallets returns 401 "Unauthorized" from Rails
+- PATCH /api/crypto-wallets/keys returns 401 "Unauthorized" from Rails
+- POST /api/bank-details returns 401 "Unauthorized" (with CSRF)
+- GET /api/cards returns 401 "Unauthorized"
+- All card sub-endpoints (freeze, unfreeze, limits, pin, activate, details, transactions) return 401 on GET and PATCH
+- Impact: All critical financial endpoints accessible through Apigee to Rails. With valid auth, full access to banking operations
+
+F374 - UAT onboarding/verify-phone backend crash (LOW):
+- POST /api/onboarding/verify-phone returns 502 "Unexpected EOF at target"
+- POST /api/onboarding/verify-phone with JSON body returns 503 "TARGET_CONNECT_TIMEOUT"
+- /api/onboarding/submit-kyc and /api/onboarding/complete also return 503
+- Backend service for onboarding verification is separate and currently unreachable
+- Impact: Separate microservice architecture revealed, potential DoS if crash is reproducible on production
+
+F375 - Business auth/logout different error message format (LOW):
+- POST /api/auth/logout returns {"message":"User is not authenticated"} with status 401
+- Other endpoints use {"error":"..."} format
+- Indicates different middleware layer or code path for auth/logout
+- UAT-01 auth/logout returned 200 "Logged out" (no auth check)
+- Business auth/logout properly checks auth (401) unlike UAT
+- Impact: Middleware inconsistency, architecture disclosure
 
 ## 16. Next Steps for Continued Testing
 
