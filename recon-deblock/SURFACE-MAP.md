@@ -7836,3 +7836,68 @@ Priority 3 (Enumeration/escalation):
   - No header injection possible on HTTP/2 connections
 - Impact: LOW - Negative finding. HTTP/2 binary framing prevents CRLF injection.
 
+### F676 [HIGH] Sentry Tunnel Allows Unauthenticated Event Injection into Production Monitoring
+- Target: business.deblock.com/monitoring (PRODUCTION)
+- The /monitoring endpoint is a Next.js Sentry tunnel that proxies error/performance data to Sentry's ingest API
+- The tunnel requires query parameters: `o` (orgId) and `p` (projectId) to activate the rewrite rule
+- URL: `POST /monitoring?o=4510324489519104&p=4510324496859216&r=de`
+- With the production DSN (`2f75b94510aa39f72db5dd805d1c1dc8@o4510324489519104.ingest.de.sentry.io/4510324496859216`):
+  - Fake session data: 200, accepted
+  - Fake transaction data: 200, returned Sentry event ID `8a460a97747241b0adb60c7df6b7fc51`
+  - Second fake transaction: 200, returned ID `e632885056d04f4a9d91b782fe47663c`
+- The tunnel also works with just `o` and `p` parameters (region `r` is optional)
+- Cross-project injection blocked: UAT DSN rejected with "ProjectId" error
+- No authentication required - any HTTP client can inject events
+- No rate limiting observed on the tunnel endpoint
+- Sentry trace sampling is set to 0% (`sentry-sample_rate=0`), but manual event injection bypasses client-side sampling
+- Impact: HIGH - Unauthenticated injection of arbitrary error events, performance transactions, and session data into Deblock's production Sentry project. Enables:
+  1. Monitoring data poisoning (fake errors, performance metrics)
+  2. Alert fatigue attacks (flood with fake critical errors)
+  3. Sentry quota exhaustion (event volume limits)
+  4. False audit trails (inject events with spoofed timestamps, user data, release versions)
+  5. Noise injection to mask real errors during an attack
+
+### F677 [MEDIUM] Production Sentry Release and Trace Metadata Exposed in HTML
+- Target: business.deblock.com
+- HTML meta tags on server-rendered pages expose Sentry trace context:
+  - `sentry-trace`: `{trace_id}-{span_id}-{sampled}` (e.g., 90ad33bea3d511d116abcc4b4b33d3fc-946978cfdbf91517-0)
+  - `baggage` header containing:
+    - `sentry-environment=production`
+    - `sentry-release=54029c4` (current production git commit hash)
+    - `sentry-public_key=2f75b94510aa39f72db5dd805d1c1dc8`
+    - `sentry-org_id=4510324489519104`
+    - `sentry-sample_rand=0.3670226337508453`
+    - `sentry-sample_rate=0`
+- Production release `54029c4` is different from UAT-02 release `86c92c6`, confirming separate deployments
+- The trace ID and span ID change per request (unique per server-rendered page)
+- Sentry sampling is disabled (rate=0) but error tracking is active
+- Impact: MEDIUM - Exposes the current production deployment version (git commit hash), organization structure, and the fact that performance tracing is disabled. The release hash can be used to track deployment frequency and correlate with public repository activity.
+
+### F678 [LOW] PWA Manifest Exposed on Production
+- Target: business.deblock.com/pwa/manifest.json
+- Also accessible at: business.deblock.com/monitoring/pwa/manifest.json
+- Manifest contents:
+  - App name: "Deblock Business"
+  - Short name: "Deblock Business"
+  - Description: "Deblock for businesses"
+  - Start URL: `/en`
+  - Display: standalone
+  - Theme: black (#000000) with white background (#ffffff)
+  - Orientation: any
+  - Scope: `/`
+  - Icons: 72x72 through 512x512 at `/pwa/icons/icon-{size}.png`
+- Confirms the business app is a Progressive Web App
+- Impact: LOW - Public PWA configuration. No sensitive data exposed.
+
+### F679 [MEDIUM] UAT-02 WebSocket Reveals Different Backend Service Name
+- Target: app-uat-02.deblock.com/api/crypto-commands-socket
+- WebSocket accepts unauthenticated connections (same as production)
+- Commands processed identically to production
+- Backend service name: "crypto_commands" (vs production's "business-crypto-commands")
+- Different naming convention reveals:
+  - Production uses prefixed service names (business-crypto-commands)
+  - UAT uses unprefixed names (crypto_commands)
+  - Underscore vs hyphen convention difference
+- This naming difference could help identify environment-specific service discovery or routing
+- Impact: MEDIUM - Internal service naming convention difference between environments exposed through unauthenticated WebSocket error messages.
+
