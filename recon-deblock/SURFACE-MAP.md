@@ -6951,3 +6951,188 @@ Priority 3 (Enumeration/escalation):
 - No rate limiting observed on session creation
 - Impact: Informational on UAT-02. Could enable resource exhaustion via mass session creation, but no direct data exposure without a mobile device to complete the QR flow.
 
+### F602 [HIGH] Recovery.deblock.com Build Manifest Bypasses Vercel Password Protection
+- Target: recovery.deblock.com
+- The recovery portal is protected by Vercel password protection (all pages return 401)
+- However, static assets under /_next/static/ bypass auth completely:
+  - GET /_next/static/5E8rtjZA7HwmI0gYYO_WP/_buildManifest.js => 200
+  - GET /_next/static/5E8rtjZA7HwmI0gYYO_WP/_ssgManifest.js => 200
+  - GET /_next/static/chunks/pages/_error-022e4ac7bbb9914f.js => 200
+  - GET /_next/static/chunks/webpack-cc59fc3a0dc5b7a2.js => 200
+- Build manifest reveals:
+  - Pages Router architecture (not App Router)
+  - Bloom filter with numItems=4, but sortedPages only lists ["/_app", "/_error"]
+  - Two hidden application pages exist behind the Bloom filter
+  - BuildId: 5E8rtjZA7HwmI0gYYO_WP
+  - Deployment: dpl_mAs9M7NnoB1oNqhMS685n2kDmngD
+- Impact: HIGH - Complete route structure and webpack configuration exposed despite password protection. The auth gate is purely cosmetic for static assets.
+
+### F603 [HIGH] Recovery.deblock.com Webpack Chunk Mapping Leaks Hidden Application Code
+- Target: recovery.deblock.com
+- The webpack runtime (webpack-cc59fc3a0dc5b7a2.js) contains a complete chunk ID to hash mapping:
+  - Chunk 470: hash 7092d2db8418fb20 (English locale)
+  - Chunk 527: hash 058f61b1e5fafa92 (Spanish locale)
+  - Chunk 847: hash d9d4135ac2919778 (French locale)
+- All three chunks accessible without auth:
+  - /_next/static/chunks/470.7092d2db8418fb20.js (6.6KB)
+  - /_next/static/chunks/527.058f61b1e5fafa92.js (7.4KB)
+  - /_next/static/chunks/847.d9d4135ac2919778.js (7.8KB)
+- Impact: HIGH - Application locale bundles fully exposed, revealing complete UI text including sensitive workflow descriptions.
+
+### F604 [CRITICAL] Recovery Tool Architecture Exposed - Email-Based Wallet Key Recovery
+- Target: recovery.deblock.com
+- The i18n locale bundles (EN/ES/FR) reveal the complete wallet recovery architecture:
+  - Step 1: User pastes an AES encryption key received by email on sign-up
+    - Email subject contains "Your encryption key" (searchable)
+  - Step 2: User uploads "backup.txt" file received by email
+    - Email subject contains "Your backup file" (searchable)
+  - Output: Recovered private keys AND seedphrase displayed in plaintext
+- The recovery tool is entirely client-side (browser-only decryption, no API calls)
+- Cannot be rate-limited, monitored, or revoked once emails are compromised
+- Impact: CRITICAL - Email compromise gives an attacker BOTH pieces needed to recover ALL wallet private keys across all chains. Single point of failure for entire crypto wallet security. The tool's client-side nature means Deblock has no ability to detect or prevent unauthorized recovery.
+
+### F605 [HIGH] Solana Direct Transfer Recovery Page with Ed25519 Key Handling
+- Target: recovery.deblock.com
+- A dedicated Solana recovery page exists (referenced in locale bundles as "solana-*" keys):
+  - Accepts 64-hex-character Solana private keys from the wallet recovery output
+  - Verifies key against user's Deblock Solana address
+  - Supports three Ed25519 key interpretation methods:
+    1. "raw Ed25519 scalar, big-endian (legacy Deblock export)" - non-standard format
+    2. "raw Ed25519 scalar, little-endian"
+    3. "standard Ed25519 seed (importable in any wallet)"
+  - Allows direct SOL transfer from browser: builds, signs, and broadcasts transactions
+  - Configurable Solana RPC endpoint (user can specify custom RPC)
+  - "Key never leaves this browser" claim - all signing is client-side
+  - Shows signed transaction in base64 for manual resubmission if broadcast fails
+- Impact: HIGH - Direct fund transfer capability from recovery tool. The "legacy Deblock export" format suggests historical key format changes that may have compatibility issues.
+
+### F606 [CRITICAL] Orwell Wallet Escrow - Google Drive Integration with Predictable Filenames
+- Target: app-uat-02.deblock.com (JS chunk 081j6xt3ixwpe.js)
+- Complete Google Drive escrow implementation found in client JS:
+  - Google OAuth implicit flow with scope: https://www.googleapis.com/auth/drive.appdata
+  - Files stored in Google Drive appDataFolder
+  - Filename pattern: {userId}_orwell_deblock.txt (predictable, based on userId)
+  - File contains the AES encryption key in plaintext
+  - API: https://www.googleapis.com/drive/v3/files and upload/drive/v3/files
+  - saveFile: creates/replaces the escrow key file
+  - getFile: retrieves the escrow key by filename lookup
+  - findFile: searches by exact filename in appDataFolder
+- The drive.appdata scope limits access to app-created files, but:
+  - Any app with the same scope AND the user's Google OAuth token can read the file
+  - The filename pattern is predictable (only needs userId)
+  - The userId could be enumerated via other endpoints
+- Impact: CRITICAL - AES escrow key stored in plaintext in Google Drive with predictable filename. OAuth token theft (via phishing, token leakage, or app impersonation) gives direct access to wallet decryption key.
+
+### F607 [HIGH] Orwell Wallet Escrow - iCloud CloudKit Integration Details
+- Target: app-uat-02.deblock.com (JS chunk 081j6xt3ixwpe.js)
+- Complete iCloud CloudKit escrow implementation:
+  - CloudKit container: iCloud.com.deblock.deblockapp.production
+  - API token: 230f22b656e186689f6fcd1c7965a6bf1f390ab2ca374aeac57eeabce11a8b8b (hardcoded)
+  - Environment: "production" (hardcoded via NEXT_PUBLIC_ICLOUD_ENV)
+  - CloudKit SDK: https://cdn.apple-cloudkit.com/ck/2/cloudkit.js
+  - Record type: "Wallet" in privateCloudDatabase
+  - Record fields: encryptionKey, userId, id
+  - Query filter: userId (EQUALS) and optionally walletId (EQUALS)
+  - Auth timeout: 30 seconds
+  - Query timeout: 15 seconds
+  - Results limit: 50 records per query
+  - Hidden auth buttons: #cloudkit-sign-in-button and #cloudkit-sign-out-button (positioned off-screen at -9999px)
+  - E2E mock bypass: if(e.__e2eMock) skips CloudKit configuration entirely
+- Error categorization: AUTH_ERROR, NETWORK_ERROR, QUOTA_EXCEEDED, KEY_NOT_FOUND, UNKNOWN_ERROR
+- Impact: HIGH - CloudKit API token confirmed hardcoded in client JS. The e2e mock bypass could be exploitable if IS_DEV is true. Wallet records in privateCloudDatabase queried by userId.
+
+### F608 [MEDIUM] Key Escrow Resend Endpoint Active on UAT-02
+- Target: app-uat-02.deblock.com
+- POST /api/key-management/{userId}/resend endpoint confirmed active:
+  - URL pattern: /api/key-management/${userId}/resend
+  - With non-UUID string: 400 "Invalid user ID"
+  - With valid UUID format (zero UUID): 400 "Failed to retrieve escrow token"
+  - With known hardcoded UUID: 400 "Failed to retrieve escrow token"
+  - No authentication required to call the endpoint
+  - Same error for valid-format but non-existent users (not useful for enumeration)
+- On production: 403 "Forbidden" (rate limited, endpoint exists but blocked)
+- The endpoint triggers re-sending the AES encryption key to the user's email
+- Impact: MEDIUM - Unauthenticated endpoint that can trigger email sending to any valid userId. While it cannot be used for enumeration (same error for all UUIDs), if a valid userId is known, it triggers an email containing the wallet encryption key.
+
+### F609 [MEDIUM] Encrypted Private Key API Endpoint Confirmed
+- Target: app-uat-02.deblock.com
+- GET /api/crypto-wallets/wallets/{walletId}/keys confirmed:
+  - Returns 400 "User is not authenticated" (requires auth)
+  - PATCH method returns 502 from Apigee (Response405WithoutAllowHeader)
+  - On production: 404 (endpoint not deployed on business.deblock.com)
+- This endpoint returns the AES-GCM encrypted private keys for a wallet
+- The client decrypts locally using the escrow key from iCloud/Google Drive/email
+- Impact: MEDIUM - The endpoint exists and would return encrypted wallet keys to any authenticated user. Combined with IDOR, could allow fetching other users' encrypted keys.
+
+### F610 [INFO] AES-GCM Wallet Encryption Implementation Details
+- Target: Client-side (UAT-02 JS chunk 3cp6yj5zsp2mj.js)
+- Complete wallet encryption implementation exposed:
+  - Algorithm: AES-GCM
+  - IV: 12 bytes from crypto.getRandomValues()
+  - Key wrapping: crypto.subtle.wrapKey/unwrapKey
+  - HMAC: SHA-256 for key import
+  - Escrow key generation: btoa(String.fromCharCode(...crypto.getRandomValues(...))) - random bytes base64 encoded
+  - Browser AES key: generateBrowserAesKey() - separate from escrow key
+  - Key operations: encryptTextWithAes, decryptTextWithAes, encryptEscrowWithAes
+  - Key cleanup: cleanupKeys() sets all key values to null
+  - Key export: exportCryptoKeyToHex for hex representation
+  - Storage: IndexedDB with INDEXED_DB_NAME and WALLET_STORE_NAME constants
+  - Solana keys: Special Fireblocks key detection and handling
+- Impact: Informational - Complete encryption implementation accessible for analysis. The separation of browser key and escrow key is good practice but complexity increases attack surface.
+
+### F611 [MEDIUM] HD Wallet Derivation Paths Leaked Including Non-Standard Cardano Path
+- Target: Client-side (UAT-02 JS chunk 3cp6yj5zsp2mj.js)
+- Complete set of HD wallet derivation paths:
+  - BTC: m/84'/0'/0' (BIP84 - Native SegWit/Bech32)
+  - ETH: m/44'/60'/0' and m/44'/60'/${index}
+  - Solana: m/44'/501'/0'/0'/${index}'
+  - XRP: m/44'/144'/0'/0/${index}
+  - Cardano: m/7466'/0'/0'/${index}' (NON-STANDARD - standard Cardano uses coin type 1815)
+- BTC address versions: P2PKH=0, P2SH=5
+- Cardano: CARDANO_ACCOUNT=0x80000000 (hardened), custom address prefix "addr"
+- Spark: address prefix "spark", BTC version bytes [5, 68]
+- XRP: custom alphabet "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz"
+- Impact: MEDIUM - Non-standard Cardano derivation path (7466 instead of 1815) reveals custom implementation. Combined with a leaked mnemonic, allows deterministic derivation of all wallet addresses and keys.
+
+### F612 [HIGH] Fireblocks Integration for Solana Key Management
+- Target: Client-side (UAT-02 JS chunk 3cp6yj5zsp2mj.js)
+- Fireblocks MPC key management integration confirmed:
+  - isFireblocksKey() and isFireblocksHex() detection functions
+  - Fireblocks keys: hex strings (0x prefix optional), specific length requirements
+  - Private scalar processing: BigInt modular arithmetic with Ed25519 curve order
+  - Two signing modes: "standard" and "fireblocks"
+  - getSignerForMode() switches between ed25519 and Fireblocks signing
+  - Legacy transaction signing support exists
+  - Fireblocks keys converted to ed25519 keypairs via scalar multiplication on curve base point
+  - Key format: 64-byte output (32-byte seed + 32-byte public key)
+- Impact: HIGH - Fireblocks MPC integration details fully exposed. Understanding the key conversion allows reconstructing full keypairs from Fireblocks scalar values.
+
+### F613 [MEDIUM] Wallet Recovery Flow Error Codes Reveal Internal Architecture
+- Target: Client-side (UAT-02 JS chunks)
+- Complete error code taxonomy for wallet recovery:
+  - FETCH_ENCRYPTED_PRIVATE_KEYS_FAILED: API call to get encrypted keys failed
+  - DECRYPT_PRIVATE_KEYS_FAILED: AES decryption with escrow key failed
+  - PARSE_PRIVATE_KEYS_FAILED: JSON.parse of decrypted private keys failed
+  - STORE_KEYS_FAILED: Storing keys in IndexedDB failed
+  - CONNECT_BROWSER_SERVICE_FAILED: Browser connection setup failed
+  - GET_BROWSER_CONNECTION_DATA_FAILED: Retrieving browser connection data failed
+  - CLEAR_SCA_FAILED: Clearing SCA state failed
+  - fetch_legacy_keys_failed: Legacy key format migration failed
+  - SCA_CANCELED: User cancelled Strong Customer Authentication
+- Recovery flow order: SCA -> fetch encrypted keys -> decrypt with AES -> parse JSON -> derive missing chains -> store in IndexedDB -> connect browser
+- XRP and CARDANO are derived from seed if not present in initial private keys (fallback derivation)
+- Seeds are zeroed after use: t.fill(0)
+- Impact: MEDIUM - Error taxonomy reveals the complete wallet recovery pipeline stages. Useful for targeting specific stages in attack chains.
+
+### F614 [MEDIUM] Recovery Method Enumeration: Four Escrow Key Sources
+- Target: Client-side (UAT-02 JS chunks)
+- Four distinct escrow key recovery methods confirmed:
+  1. Google Drive (drive.appdata scope) - automated key retrieval
+  2. iCloud CloudKit (privateCloudDatabase) - automated key retrieval
+  3. Manual key entry - user pastes the key from their sign-up email
+  4. Email resend (POST /api/key-management/{userId}/resend) - re-sends key email
+- Each method has distinct error handling and Sentry reporting
+- The EscrowRecoveryMethodSelectionView component presents all options to the user
+- Sensitive error sanitization: privateKeysObject and base64 strings >100 chars are redacted before Sentry
+- Impact: MEDIUM - Four independent attack vectors for escrow key recovery. Compromising any ONE source gives full wallet decryption capability.
+
