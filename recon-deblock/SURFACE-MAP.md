@@ -8354,3 +8354,281 @@ Priority 3 (Enumeration/escalation):
 - Staging uses Vercel with same deployment infrastructure as marketing site
 - 307 redirect to /en/ (locale-based routing)
 - Impact: LOW - Developer names and staging paths disclosed. The developer personal pages could be used for social engineering. A/B testing implementation details revealed.
+
+### F714 [CRITICAL] web-api-staging Full Route Table Disclosure via Rails Debug Endpoint
+- Target: web-api-staging.deblock.com/rails/info/routes
+- The Rails development debug endpoint is accessible without authentication and returns the COMPLETE route table (50,882 bytes)
+- 100+ routes exposed, including:
+  - Admin panel: `/v1/admin/ambassador/applicants` (GET), `/v1/admin/ambassador/validate` (POST), `/v1/admin/ambassador` (DELETE/PUT), `/v1/admin/ambassador/payment/csv` (GET), `/v1/admin/ambassador/mark/as/paid` (POST), `/v1/admin/ambassador/generate/invoices` (POST), `/v1/admin/ambassador/revshare/csv` (POST), `/v1/admin/ambassador/ranking/csv` (POST), `/v1/admin/ambassador/upgrade/approve` (GET), `/v1/admin/ambassador/dashboard` (POST/GET), `/v1/admin/ambassador/token` (PUT), `/v1/admin/ambassador/exist` (GET)
+  - Account deletion: `DELETE /v1/mobile/account/:user_id`
+  - Data removal: `GET /v1/remove/data/:token64`
+  - SEPA file upload to S3: `POST /v1/upload/anthony/:token` (webhook#upload_sepa_to_s3)
+  - Cache invalidation: `/v1/blog/cache/delete/:key`, `/v1/legals/cache/delete/:key`, `/v1/faq/cache/delete/:key`, `/v1/home/cache/delete/:key`
+  - Ambassador system (full CRUD): tracking, revenues, payments, search by email, check email, claim, address update, social update, referral rewards, ledger management
+  - Ambassador auto-signup: email, OTP validation, create
+  - Company onboarding multi-step: country, type, email, phone, contact names, company name, website, turnover, surveys, validate
+  - Waitlist: email/phone registration and verification, company waitlist, migration
+  - Blog/Legals/FAQ: content management with cache control
+  - Coins: list, chart, candles, detailed candles, AMF-filtered list
+  - NFT: bursted_bubbles endpoints, collection lookup, beta signup
+  - Mobile: widgets, offer, account deletion, contract token request, BTC risk-free sheet
+  - Web: widgets
+  - Acquiring: wallet list, store request, demo request
+  - Feature flags: show_sheet
+  - Download: send_download_link
+  - Twilio webhook: POST /v1/webhook/twilio/:hash (deprecated)
+  - Sidekiq web UI mount: /sidekiq
+  - Action Mailbox ingest: Postmark, Relay, SendGrid, Mandrill, Mailgun endpoints
+  - Action Mailbox Conductor: full CRUD for inbound email testing
+  - Active Storage: blob redirect/proxy, representations, disk service, direct uploads
+- Controller file paths exposed in stack traces:
+  - app/controllers/v1/ambassador_auto_signup_controller.rb
+  - app/controllers/v1/waitlist_controller.rb
+  - app/controllers/v1/webhook_controller.rb
+- Impact: CRITICAL - Complete API route table disclosure on a staging server that shares the same codebase and database schema as production. Reveals every endpoint, HTTP method, URL pattern, parameter names, and controller mappings. This is a full roadmap for attacking the production API. The admin panel routes, account deletion, SEPA upload, and data removal endpoints are particularly high-risk targets.
+
+### F715 [CRITICAL] web-api-staging System Properties Disclosure via Rails Debug Endpoint
+- Target: web-api-staging.deblock.com/rails/info/properties
+- Complete system properties accessible without authentication:
+  - Rails version: 7.0.10
+  - Ruby version: ruby 3.3.9 (2025-07-24 revision f5c772fc7c) [x86_64-linux]
+  - RubyGems version: 3.5.22
+  - Rack version: 2.2.23
+  - Application root: /app (Heroku container)
+  - Environment: development (CONFIRMED)
+  - Database adapter: postgresql
+  - Database schema version: 20260923100000 (September 23, 2026)
+  - Full middleware chain (30 middleware layers):
+    1-8. Rack::Cors (8 SEPARATE INSTANCES)
+    9. ActionDispatch::HostAuthorization
+    10. Rack::Sendfile
+    11. ActionDispatch::Static
+    12. ActionDispatch::Executor
+    13. ActionDispatch::ServerTiming
+    14. ActiveSupport::Cache::Strategy::LocalCache::Middleware
+    15. Rack::Runtime
+    16. ActionDispatch::RequestId
+    17. ActionDispatch::RemoteIp
+    18. Rails::Rack::Logger
+    19. ActionDispatch::ShowExceptions
+    20. ActionDispatch::DebugExceptions (ENABLED - root cause of stack trace disclosure)
+    21. Airbrake::Rack::Middleware (Airbrake 13.0.3 error monitoring)
+    22. ActionDispatch::ActionableExceptions
+    23. ActionDispatch::Reloader
+    24. ActionDispatch::Callbacks
+    25. ActiveRecord::Migration::CheckPending
+    26. Rack::Head
+    27. Rack::ConditionalGet
+    28. Rack::ETag
+    29. ActionDispatch::Cookies
+    30. ActionDispatch::Session::CookieStore
+- Heroku NEL session ID: 812dcc77-0bd0-43b1-a5f1-b25750382959 (same across all requests)
+- Impact: CRITICAL - Complete server configuration disclosure including exact framework versions, database type, schema version, and full middleware chain. The DebugExceptions middleware confirms development mode. The 8x Rack::Cors duplication indicates a misconfigured CORS setup (likely from multiple initializer files). The Airbrake service reveals a separate error monitoring platform. Combined with F714, an attacker has complete knowledge of the application architecture.
+
+### F716 [HIGH] Action Mailbox Conductor Accessible Without Authentication on Staging
+- Target: web-api-staging.deblock.com/rails/conductor/action_mailbox/inbound_emails/sources/new
+- The Rails Action Mailbox Conductor is a DEVELOPMENT-ONLY tool that allows delivering raw email source directly into the application's mail processing pipeline
+- Accessible pages:
+  - `/rails/conductor/action_mailbox/inbound_emails` - Index (returns 500 with full stack trace, 171KB error page)
+  - `/rails/conductor/action_mailbox/inbound_emails/sources/new` - Working email delivery form
+- The delivery form exposes:
+  - A CSRF authenticity token (valid, rotates per request)
+  - A textarea for raw email RFC 822 source
+  - A submit button to "Deliver inbound email"
+  - POST endpoint: `/rails/conductor/action_mailbox/inbound_emails/sources`
+- The index page's 500 error includes full stack trace with sql.active_record timing (2.42ms), confirming it queries the database
+- Also exposed:
+  - `/rails/conductor/action_mailbox/inbound_emails/:id` (show/update/delete individual emails)
+  - `/rails/conductor/action_mailbox/:inbound_email_id/reroute` (reroute emails)
+  - `/rails/conductor/action_mailbox/:inbound_email_id/incinerate` (destroy emails)
+- The application has UserNotifierMailer configured (confirmed via /rails/mailers)
+- Impact: HIGH - Unauthenticated email injection into the staging application's mail processing pipeline. An attacker can craft arbitrary RFC 822 email messages and submit them through the conductor. If the staging database is shared with or mirrors production data, injected emails could trigger business logic (password resets, notifications, onboarding flows). The CSRF token is provided in the form itself, so the protection is trivially bypassed.
+
+### F717 [HIGH] SEPA Upload Endpoint Accepts Requests Without Authentication on Production and Staging
+- Targets: web-api.deblock.com (PRODUCTION), web-api-staging.deblock.com
+- Endpoint: POST /v1/upload/anthony/:token (mapped to v1/webhook#upload_sepa_to_s3)
+- Production: `POST /v1/upload/anthony/testtoken` -> `{"status":"ok"}` (HTTP 200)
+- Staging: `POST /v1/upload/anthony/testtoken` with JSON body -> `{"status":"ok"}` (HTTP 200)
+- Staging: `POST /v1/upload/anthony/testtoken` with multipart file upload -> `{"status":"Forbidden"}` (only multipart rejected)
+- The endpoint name "upload_sepa_to_s3" indicates it processes SEPA (Single Euro Payments Area) bank transfer files and uploads them to Amazon S3
+- The `:token` URL parameter is the only access control mechanism
+- "testtoken" (a random string) was accepted on both environments
+- No bearer token, session cookie, or API key required
+- No rate limiting observed
+- The "anthony" path segment appears to be a developer/employee name hardcoded in the route
+- SEPA files contain sensitive banking information: account numbers (IBANs), transaction amounts, beneficiary names, payment references
+- Impact: HIGH - Unauthenticated SEPA file upload endpoint accessible on PRODUCTION. While the endpoint accepted the test request with "ok" status, the actual file processing behavior depends on whether the token is validated against S3 or a database. If tokens are predictable or not validated, an attacker could:
+  1. Upload malicious SEPA files that get processed by the payment system
+  2. Overwrite legitimate SEPA files in the S3 bucket
+  3. Inject fraudulent payment instructions
+  The endpoint's existence on production with developer-name-in-URL routing is a code quality concern.
+
+### F718 [HIGH] web-api-staging Rails Development Mode with Full Stack Trace Disclosure
+- Target: web-api-staging.deblock.com
+- Application runs in Rails DEVELOPMENT mode on a publicly accessible server
+- Every 404 or error response includes the full Ruby stack trace with:
+  - Exception class names and object IDs
+  - Controller file paths (e.g., app/controllers/v1/ambassador_auto_signup_controller.rb:114)
+  - Method names and parameter handling logic
+  - Complete middleware call chain (84 stack frames per error)
+  - Gem versions and paths (actionpack, activesupport, activerecord, rack, puma, airbrake, rack-cors)
+  - Internal Rails method calls revealing framework behavior
+- Stack traces confirmed in:
+  - JSON 404 responses (ActionController::RoutingError)
+  - JSON 400 responses (ActionController::ParameterMissing - reveals controller param structure)
+  - JSON 422 responses (ActionController::InvalidAuthenticityToken)
+  - HTML 500 responses (full debug page with source code context)
+- The DebugExceptions middleware (position 20 in the chain) is the root cause
+- rack-cors 1.1.1 appears in 9 positions in the stack trace (8 before Rails engine, 1 after)
+- Impact: HIGH - A publicly accessible staging server running in development mode exposes the complete internal architecture. Stack traces reveal controller structures, method names, parameter requirements, and gem dependencies. This information directly enables targeted attacks on the production API (which runs the same codebase).
+
+### F719 [MEDIUM] Ambassador and Company Signup Process Requests Without Authentication on Production
+- Targets: web-api.deblock.com (PRODUCTION), web-api-staging.deblock.com
+- Ambassador email signup:
+  - Production: `POST /v1/ambassador/email` with `{"ambassador":{"email":"test@example.com"}}` -> `{"status":"ok"}`
+  - Staging: Same request -> `{"status":"ok"}`
+  - No authentication, CSRF protection, or rate limiting required
+  - Likely triggers email delivery or database record creation
+- Company countries endpoint:
+  - Production: `GET /v1/company/countries` -> Full list of 41 supported countries (FR, GP, MQ, GF, RE, YT, MF, BL, PM, WF, NC, PF, AT, BE, BG, HR, CY, CZ, DK, EE, FI, DE, GR, HU, IS, IE, IT, LV, LI, LT, LU, MT, NL, NO, PL, PT, RO, SK, SI, ES, SE)
+  - Reveals EEA + French overseas territories coverage
+- Check callback endpoint:
+  - Production: `GET /v1/check/callback` -> `{"status":"ok"}`
+  - Purpose: ambassador callback logging
+- Company email: Returns `{"status":"fail","error":"This uuid isn't valid!"}` revealing parameter validation logic
+- Impact: MEDIUM - Unauthenticated ambassador signup on production. The email endpoint can be used for:
+  1. Spam/phishing: Trigger Deblock-branded emails to arbitrary addresses
+  2. Email validation: Check if addresses exist in Deblock's system (different responses)
+  3. Database pollution: Create ambassador records for non-existent users
+  The company signup flow requires multi-step completion but the initial email step has no rate limiting.
+
+### F720 [MEDIUM] Sidekiq Web UI Mounted on Both Production and Staging
+- Targets: web-api.deblock.com/sidekiq, web-api-staging.deblock.com/sidekiq
+- Both return HTTP 401 with `www-authenticate: Basic realm=""`
+- The Sidekiq job processing dashboard is mounted and accessible on both environments
+- Protected by HTTP Basic authentication (empty realm, no realm name configured)
+- Common credentials tested and rejected: admin:admin, admin:password, sidekiq:sidekiq
+- Sidekiq web UI, if accessed, exposes:
+  - All background job queues and their sizes
+  - Failed job details including arguments (which may contain PII)
+  - Worker processes and threads
+  - Scheduled jobs
+  - Dead job set with full error details
+  - Redis connection information
+  - Ability to retry, delete, or clear jobs
+- The empty realm suggests minimal configuration of the Basic auth
+- Impact: MEDIUM - Sidekiq web UI is internet-facing with only Basic auth protection. Brute-force attacks against the Basic auth are not rate-limited at the HTTP level. If credentials are compromised, full access to the job processing system including potentially sensitive job arguments (user IDs, email addresses, transaction data).
+
+### F721 [MEDIUM] Action Mailbox Ingest Endpoints Exposed on Staging
+- Target: web-api-staging.deblock.com
+- Multiple Action Mailbox ingress endpoints are routed and accessible:
+  - `POST /rails/action_mailbox/postmark/inbound_emails` - Postmark webhook
+  - `POST /rails/action_mailbox/relay/inbound_emails` - Relay
+  - `POST /rails/action_mailbox/sendgrid/inbound_emails` - SendGrid webhook
+  - `GET /rails/action_mailbox/mandrill/inbound_emails` - Mandrill health check
+  - `POST /rails/action_mailbox/mandrill/inbound_emails` - Mandrill webhook
+  - `POST /rails/action_mailbox/mailgun/inbound_emails/mime` - Mailgun webhook
+- These endpoints are designed to receive inbound emails from various email service providers
+- The Postmark endpoint is likely the active one (Deblock uses Postmark for email, confirmed by pm-bounces.deblock.com subdomain)
+- While these endpoints typically require webhook-specific authentication (passwords, API keys), they are now known to exist
+- The Conductor endpoint (F716) provides an additional unauthenticated email injection path
+- Impact: MEDIUM - Inbound email processing endpoints exposed. Combined with knowledge of which provider Deblock uses (Postmark), an attacker could attempt to forge webhook deliveries if the webhook password is weak or leaked.
+
+### F722 [MEDIUM] Active Storage Direct Upload Endpoint on Staging
+- Target: web-api-staging.deblock.com/rails/active_storage/direct_uploads
+- Endpoint returns 422 (not 404) with InvalidAuthenticityToken error
+- The 422 response confirms the endpoint exists and processes requests
+- Full stack trace in error response (21KB) reveals the CSRF validation flow
+- Related Active Storage endpoints also accessible:
+  - `GET /rails/active_storage/blobs/redirect/:signed_id/*filename` - File download by signed ID
+  - `GET /rails/active_storage/blobs/proxy/:signed_id/*filename` - File proxy
+  - `GET /rails/active_storage/representations/redirect/:signed_blob_id/:variation_key/*filename` - Image variants
+  - `GET /rails/active_storage/disk/:encoded_key/*filename` - Disk storage access
+  - `PUT /rails/active_storage/disk/:encoded_token` - Disk update
+- The CSRF token from the Conductor form (F716) could potentially be reused to bypass CSRF protection
+- Active Storage signed IDs use Rails MessageVerifier with the application secret key
+- Impact: MEDIUM - Active Storage file management endpoints are accessible. While CSRF protection prevents unauthenticated uploads, the CSRF token from the Conductor form may bypass this. If a valid signed_id is obtained (e.g., from error logs or user content), files could be downloaded without authentication.
+
+### F723 [MEDIUM] UAT-02 Health Endpoint Exposes Build ID Without Authentication
+- Target: app-uat-02.deblock.com/api/health
+- Returns: `{"status":"ok","buildId":"86c92c6","timestamp":"2026-10-06T19:53:27.269Z"}`
+- No authentication required
+- Exposes:
+  - Build ID / git commit hash: 86c92c6
+  - Server timestamp with millisecond precision
+  - Application health status
+- Production (business.deblock.com/api/health) returns 404 - this endpoint does not exist in production
+- The build ID matches the UAT-02 Sentry release (86c92c6), confirming it is a real git commit hash
+- Server timestamp can be used for timing attacks or to verify server clock accuracy
+- Impact: MEDIUM - Unauthenticated build information disclosure on UAT-02. The git commit hash can be used to identify the exact codebase version and find differences from production (54029c4). The endpoint's absence in production suggests it was intentionally removed but persists in UAT.
+
+### F724 [MEDIUM] UAT-02 Sentry Environment Misconfigured as "production"
+- Target: app-uat-02.deblock.com
+- Sentry meta tags in HTML source:
+  - `sentry-environment=production` (SHOULD BE "uat" or "staging")
+  - `sentry-release=86c92c6`
+  - `sentry-public_key=95a2f173ce955f9d1ff52358da173ece` (different from production key)
+- Production Sentry configuration for comparison:
+  - `sentry-environment=production`
+  - `sentry-release=54029c4`
+  - `sentry-public_key=2f75b94510aa39f72db5dd805d1c1dc8`
+- The UAT-02 environment tag "production" means:
+  1. UAT-02 errors are mixed with production errors in Sentry filtering
+  2. Error volume from UAT testing inflates production error counts
+  3. Alert rules based on environment="production" trigger for UAT-02 errors
+  4. Makes it harder to distinguish genuine production issues from UAT test failures
+- The different public key (95a2...) may indicate a different Sentry project or DSN override
+- Impact: MEDIUM - Sentry environment misconfiguration causes UAT-02 error data to pollute production monitoring. This degrades the reliability of production error tracking and alerting, potentially causing alert fatigue or masking real production issues.
+
+### F725 [LOW] UserNotifierMailer Preview Page Exposed on Staging
+- Target: web-api-staging.deblock.com/rails/mailers
+- Returns HTML page listing mailer previews
+- One mailer found: UserNotifierMailer (with no preview methods listed)
+- The mailer preview page is a development-only feature that renders email templates
+- While no preview methods are currently listed, the endpoint confirms:
+  1. The application has a UserNotifierMailer class
+  2. Mailer preview infrastructure is accessible
+  3. If preview methods are added, they would be accessible without authentication
+- Impact: LOW - Mailer class name disclosure. Limited impact since no preview methods are exposed, but confirms the existence of user notification email functionality.
+
+### F726 [LOW] web-api.deblock.com Separate Heroku Rails API (Production)
+- Target: web-api.deblock.com
+- DNS CNAME: same Heroku infrastructure as web-api-staging
+- Backend: Ruby on Rails in production mode
+- Error response: `{"status":404,"error":"Not Found"}` (no stack traces, properly configured)
+- Server headers confirm Heroku: NEL, report-to, x-runtime, via: 2.0 heroku-router
+- Heroku NEL session: c4c9725f-1ab0-44d8-820f-430df2718e11
+- robots.txt: returns 200 (content not interesting)
+- Key differences from staging:
+  - No rails/info endpoints accessible (404)
+  - No stack traces in error responses
+  - DebugExceptions middleware is disabled
+  - CORS headers not returned for non-deblock origins
+- /sidekiq returns 401 (same as staging, Basic auth protected)
+- Endpoints that work without auth on production:
+  - `/v1/upload/anthony/:token` -> `{"status":"ok"}`
+  - `/v1/ambassador/email` -> `{"status":"ok"}`
+  - `/v1/company/countries` -> full country list
+  - `/v1/check/callback` -> `{"status":"ok"}`
+- Endpoints that require auth on production:
+  - `/v1/admin/ambassador/*` -> `{"status":"fail","error":"Forbidden!"}`
+  - `/v1/waitlist/status` -> `{"status":"fail","error":"Forbidden!"}`
+  - `/v1/blog/list` -> `{"status":"fail","error":"Forbidden!"}`
+  - `/v1/coins/list/*` -> `{"status":"fail","error":"Forbidden!"}`
+  - `/v1/download/link` -> `{"status":"fail","error":"Forbidden!"}`
+- Impact: LOW - Infrastructure mapping of the production Heroku Rails API. Production mode is properly configured with no debug information leakage. However, the SEPA upload and ambassador email endpoints being accessible without auth (see F717, F719) are concerning.
+
+### F727 [INFO] Microservice Subdomain Infrastructure Mapping
+- Separate backend services discovered on GCP infrastructure (34.8.230.142):
+  - onboarding.prod.deblock.com: 404 (text/plain, 8 bytes) - backend exists, GCP
+  - payments.prod.deblock.com: 502 Bad Gateway - gateway configured but service down
+  - proof.prod.deblock.com: 502 Bad Gateway - gateway configured but service down
+  - transfers.dev.deblock.com: 404 (text/plain, 8 bytes) - backend exists, GCP
+  - users.dev.deblock.com: 404 (text/plain, 8 bytes) - backend exists, GCP
+- The ".prod." and ".dev." naming convention confirms environment separation at the DNS level
+- The 404 responses in text/plain (not HTML/JSON) suggest these are API-only services without a web frontend
+- The 502 responses for payments and proof indicate:
+  - The GCP load balancer/reverse proxy is configured for these services
+  - The backend services are not currently running or are unreachable
+  - These may be maintenance mode or scheduled downtime services
+- Impact: INFO - Microservice architecture mapping. Confirms separate services for onboarding, payments, proof (likely identity verification), transfers, and users. The .dev endpoints suggest a development environment accessible on the internet.
