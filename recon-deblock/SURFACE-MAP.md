@@ -1876,7 +1876,20 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 317 | MEDIUM | UAT environment marked as production in Sentry | app-uat-01.deblock.com | CWE-16 | YES | sentry-environment=production on UAT deployment, shared error tracking |
 | 318 | LOW | Google Maps Embed API key exposed in UAT runtime config | app-uat-01.deblock.com | CWE-200 | YES | AIzaSyD7n7VD-9gy534lf__8x9QyR76OTXYLtq4 in window.__RUNTIME_ENV__ |
 
-Total: 318 findings (12 critical, 62 high, 120 medium, 84 low, 47 info)
+| 319 | CRITICAL | UAT /api/cards auth bypass via empty request body | app-uat-01.deblock.com | CWE-287 | YES | POST with no body/CL:0 returns "Failed to create card" (500) vs "User is not authenticated" (400) |
+| 320 | HIGH | UAT auth/analytics blind injection sink accepts all payloads without auth | app-uat-01.deblock.com | CWE-74 | YES | XSS, SQLi, SSTI, mass assignment (userId/role) all return {"success":true} |
+| 321 | MEDIUM | UAT health endpoint exposes build ID and server timestamp without auth | app-uat-01.deblock.com | CWE-200 | YES | GET /api/health returns buildId, timestamp, status |
+| 322 | MEDIUM | UAT CSP violation endpoint accepts arbitrary fake reports (log poisoning) | app-uat-01.deblock.com | CWE-117 | YES | POST /api/csp-violation returns 204 on any data, no CORS, no rate limit |
+| 323 | MEDIUM | UAT path traversal normalization via %2e%2e encoding | app-uat-01.deblock.com | CWE-22 | YES | /api/auth/%2e%2e/x redirects to /x, inconsistent proxy/backend handling |
+| 324 | MEDIUM | UAT CSP reveals additional third-party services not in production | app-uat-01.deblock.com | CWE-200 | YES | Prelude phone verify, Ledger wallet, Adjust marketing, StakeKit |
+| 325 | MEDIUM | UAT analytics zero rate limiting and unlimited payload size | app-uat-01.deblock.com | CWE-770 | YES | 20/20 rapid requests accepted, 10KB+ payloads accepted |
+| 326 | LOW | Robots.txt exposes hidden developer paths on deblock.com | deblock.com | CWE-200 | YES | /Resume, /WphYZ/, /Jordan, /miggy, /vercel/path0/public/locales |
+| 327 | LOW | UAT additional API endpoints reach backend without auth | app-uat-01.deblock.com | CWE-200 | YES | passkeys/register, sepa-transfer/create, self-transfer/create, roundups/settings |
+| 328 | LOW | Marketing-widgets endpoint leaks mobile deeplink names without auth | app-uat-01.deblock.com | CWE-200 | YES | Deeplinks: iban, wallet, exchange_btc, referrals + CDN image URLs |
+| 329 | LOW | Google Drive appdata scope in JS reveals cloud backup integration | app-uat-01.deblock.com | CWE-200 | YES | OAuth scope drive.appdata for wallet recovery key storage |
+| 330 | LOW | UAT auth/facetec-2fa 307 redirect leaks full CSP with service map | app-uat-01.deblock.com | CWE-200 | YES | 307 to /, CSP body includes all third-party services, GCS bucket names |
+
+Total: 330 findings (13 critical, 63 high, 125 medium, 88 low, 47 info)
 
 ## 15. Session Notes
 
@@ -1912,6 +1925,7 @@ Total: 318 findings (12 critical, 62 high, 120 medium, 84 low, 47 info)
 - Session 15: GTM container configuration extracted (F252): GA4 G-3MRQ5Z62VD, Google Ads AW-11482270425, cross-domain linker across 3 domains. GA4 Measurement Protocol accepts events without valid API secret (F253): analytics poisoning confirmed. dblk.me short URL domain fully mapped (F254): Vercel, 75 pages, 276 rewrites. Build manifest full route structure (F255). Developer names in robots.txt (F256). Survey/beta endpoint unauthenticated email spoofing (F257): stored XSS in answer field, no rate limiting. Business app Turbopack chunks reveal 24+ API routes (F258). CSRF token unauthenticated (F259). Apigee error disclosure (F260). Auth/financial endpoints confirmed (F261). PWA manifest exposed (F262). next.deblock.com Cloudflare challenge (F263). Cross-domain tracking GDPR concern (F264). Total findings: 264.
 - Session 16: Committed F265-F270 (Sardine sandbox, Regula IP leak, CSP third-party, UAT verbose errors, Dotfile deployment, app.deblock.com 410). recovery.deblock.com auth bypass confirmed: /_next/static/*, /api/*, /_vercel/* paths bypass Basic Auth (F273). All 3 lazy-loaded chunks are i18n files (EN/ES/FR) revealing complete wallet recovery architecture including Solana Ed25519 key handling (F274). staging.deblock.com discovered: full Vercel staging environment with different build ID (F271). status.deblock.com: Statuspal status page reveals 11 blockchains and full service architecture (F272). support.deblock.com: dangling Intercom CNAME returning 404 (F275). Business API Apigee 502 errors on POST endpoints (F276). CSRF token unauthenticated with 30-min window (F277). WebSocket 426 confirmed (F278). Speed Insights, S3 signed URLs, wildcard CSP on status page (F279-F281). Staging build ID metadata (F282). Google OAuth false positive corrected (all redirect URIs properly rejected). Total findings: 282.
 - Session 17: Staging Rails API deep dive on web-api-staging.deblock.com. Active Storage direct_uploads leaks 85-line stack trace with full gem versions and middleware chain (F283). Ambassador OTP has zero rate limiting: 30 consecutive wrong codes accepted without lockout (F284). Dead route ambassador/search_email returns ActionNotFound trace (F285). Data removal endpoint hits DB (sql.active_record 17ms) before verifying auth token (F286). Rack::Cors loaded 9x in middleware stack indicating misconfigured initializer (F287). CORS wildcard Access-Control-Allow-Origin:* on both staging AND production page responses (F288). Status page window.incidents exposes 12 incidents with 60 service IDs (F289). OVH load balancer headers x-iplb-request-id/x-iplb-instance leaked on status page (F290). Apigee Response405WithoutAllowHeader new error type on UAT passkeys/bank-details (F291). Company onboarding session creation works without auth, returns full session UUID (F292). Ambassador certification oracle at /v1/check/ambassador (F293). Deep link /d/[hash] data deletion page publicly accessible (F294). CRITICAL: Production company onboarding chain exploited: phone verification bypass (F295), unauthenticated session creation (F296), IDOR on sessions (F297), combined attack chain for account hijack (F298). No rate limiting on session creation (F299), 25 EU countries supported (F300). Business API session oracle (F301). K8s readyz accessible (F302). CDN directories (F303). Build manifest route enumeration (F304). Sardine sandbox in prod CSP (F305). Total findings: 305.
+- Session 19: UAT API deep exploitation. CRITICAL finding: /api/cards auth bypass via empty body. POST with no body (Content-Length: 0 or missing) returns 500 "Failed to create card" (business logic) instead of 400 "User is not authenticated". Auth middleware requires valid JSON body >= 2 bytes to activate. 100% reproducible (5/5 consistent). Cards-specific, NOT on production (403 Forbidden regardless). auth/analytics confirmed as blind injection sink: XSS, SQLi, SSTI, mass assignment (userId/role extra fields) all accepted with {"success":true}, zero rate limiting (20/20), 10KB+ payloads. CSP violation /api/csp-violation accepts arbitrary reports (204 No Content, log poisoning). Path traversal via %2e%2e encoding: /api/auth/%2e%2e/%2e%2e/admin redirects to /admin (Apigee normalizes then redirects). UAT health endpoint exposes buildId+timestamp unauthenticated. New live backend endpoints: passkeys/register, sepa-transfer/create, self-transfer/create, roundups/settings. UAT CSP reveals Prelude (phone verify), Ledger (hardware wallet), Adjust (marketing), StakeKit. Marketing-widgets leaks deeplink names (iban, wallet, exchange_btc, referrals). Google Drive appdata scope in JS for wallet recovery. Robots.txt hides /Resume, /WphYZ/, /Jordan, /miggy developer paths. auth/facetec-2fa 307 redirect leaks full CSP service map. Production company endpoints no longer routed through business.deblock.com frontend (404). Total findings: 330.
 - Session 18: UAT deep dive via cert CN discovery. app-uat-01.deblock.com found via production TLS cert CN field - full production-like app accessible without auth (F306). Production cert CN=app-uat-01.deblock.com leaks UAT hostname to passive observers (F307). Sentry meta tags expose org_id 4510324489519104, public_key 95a2f173ce955f9d1ff52358da173ece, release e95b8cf, environment incorrectly set to "production" on UAT (F308, F317). Apigee fault details on /api/auth and /api/auth/refresh (F309). Real API backends responding on UAT: /api/features 401, /api/cards 400, /api/vaults 400, /api/passkeys 400, /api/auth POST 403 (F310). Auth/refresh reveals token lookup error message (F311). recovery.deblock.com CSP confirms Solana mainnet wallet recovery with 3 RPC providers (F312). Company email race condition: same email accepted on two sessions simultaneously (F313). Survey and website endpoints confirmed live (F314). Dev GCS bucket in UAT CSP (F315). Auth status code inconsistency 401 vs 400 (F316). Google Maps API key in runtime config (F318). blog.deblock.com and uat-business.deblock.com blocked by egress proxy. Sardine sandbox API reaches Kubernetes default backend. Bearer token 404 on all waitlist-api paths. Production app.deblock.com returns 410 Gone (confirmed decommissioned). recovery.deblock.com basic auth holds (7 credential pairs tested). GCS buckets not listable but objects individually readable if path known. Total findings: 318.
 
 ### 12e. Business App API Route Map (from JS bundle analysis)
@@ -4051,6 +4065,141 @@ F318 - Google Maps Embed API key exposed in UAT runtime config (LOW):
 - Maps JavaScript API confirmed active and billable
 - Key appears restricted to browser referer but served via server-side render
 - Impact: Redundant exposure via runtime config, previously documented billing risk
+
+### 15i. Session 19 Findings (F319-F330)
+
+F319 - UAT /api/cards auth bypass via empty request body (CRITICAL):
+- POST /api/cards with no body: 500 "Failed to create card" (auth BYPASSED)
+- POST /api/cards with empty body (-d ''): 500 "Failed to create card" (auth BYPASSED)
+- POST /api/cards with Content-Length: 0: 500 "Failed to create card" (auth BYPASSED)
+- POST /api/cards with Content-Type: application/x-www-form-urlencoded: 500 "Failed to create card" (BYPASSED)
+- POST /api/cards with body (-d '{}'): 400 "User is not authenticated" (auth works normally)
+- POST /api/cards with body (-d '[]'): 400 "User is not authenticated" (auth works normally)
+- POST /api/cards with body (-d 'null'): 400 "User is not authenticated" (auth works normally)
+- POST /api/cards with 1-byte body (-d ' '): 500 "Failed to create card" (BYPASSED)
+- Root cause: Auth middleware only activates when request body is parseable JSON >= 2 bytes
+- 100% reproducible: 5/5 tests in each direction consistently show different behavior
+- NOT present on production (business.deblock.com returns 403 "Forbidden" regardless of body)
+- Cards-specific: other endpoints (features, vaults, passkeys, sepa-transfer) are NOT affected
+- "Failed to create card" is a business logic error from the card creation handler, not auth
+- If valid card creation parameters were provided (in query string, since body must be empty for bypass), actual card creation without auth could succeed
+- Query string params tested but not recognized for card creation: ?type=virtual&currency=EUR still returns "Failed to create card"
+- Impact: Authentication bypass on financial card management endpoint, P1 severity
+
+F320 - UAT auth/analytics blind injection sink (HIGH):
+- POST /api/auth/analytics accepts arbitrary payloads without authentication
+- Required fields: eventId, eventType, flowId, screenId (returns error listing these if missing)
+- XSS payload: {"eventId":"1","eventType":"<script>alert(1)</script>","flowId":"x","screenId":"x"} -> {"success":true}
+- SQLi payload: {"eventId":"2","eventType":"test' OR 1=1--","flowId":"x","screenId":"x"} -> {"success":true}
+- SSTI payload: {"eventId":"3","eventType":"${7*7}","flowId":"x","screenId":"{{7*7}}"} -> {"success":true}
+- Mass assignment: Extra fields userId, role, extraField, creditCard all accepted -> {"success":true}
+- SSRF URL payload: eventType set to http://169.254.169.254/latest/meta-data/ -> {"success":true}
+- 10KB+ payload in single field: accepted without truncation or rejection
+- Zero rate limiting: 20/20 rapid requests all returned 200
+- If analytics events are rendered in admin dashboard or processed by backend: stored XSS/injection risk
+- If eventType URLs are fetched server-side: SSRF risk
+- Combined with mass assignment: attacker can inject fake user context (userId, role) into analytics
+- Impact: Blind injection into analytics pipeline, potential stored XSS in admin, data integrity
+
+F321 - UAT health endpoint information disclosure (MEDIUM):
+- GET /api/health returns: {"status":"ok","buildId":"e95b8cf","timestamp":"2026-10-06T08:51:35.364Z"}
+- No authentication required
+- buildId matches Sentry release hash, confirms deployment version
+- Server timestamp useful for timing correlation attacks
+- X-Forwarded-Host and X-Forwarded-For headers do not change response
+- Impact: Build tracking, deployment monitoring, timing correlation
+
+F322 - UAT CSP violation log poisoning (MEDIUM):
+- POST /api/csp-violation returns 204 No Content on any data
+- Accepts application/json and application/csp-report Content-Types
+- Can inject fake violation reports with attacker-controlled URIs
+- No CORS headers on OPTIONS response (browser CSP reports are exempt from CORS)
+- No rate limiting: rapid requests all accepted
+- If CSP reports are displayed in a monitoring dashboard: stored XSS risk via document-uri or blocked-uri fields
+- If reports trigger automated responses: denial of service or alert fatigue
+- Impact: Log poisoning, potential stored XSS in security monitoring tools
+
+F323 - UAT path traversal normalization (MEDIUM):
+- /api/auth/%2e%2e/%2e%2e/admin -> 302 redirect to https://app-uat-01.deblock.com/admin
+- /api/auth/..;/admin -> 302 redirect to https://app-uat-01.deblock.com/api/admin (different normalization!)
+- /api/health/%2e%2e/cards -> 302 redirect to /api/cards
+- Apigee resolves %2e%2e to .. then redirects to normalized path
+- Semicolon treated as path separator by some layer (Spring-style)
+- Self-reference (./): accepted (200)
+- Double-slash (//): accepted (200)
+- Uppercase path: 404 (case-sensitive routing)
+- Double encoding (%252e): 404 (only single encoding decoded)
+- Inconsistent path handling between Apigee proxy and Next.js backend
+- If Apigee auth policies match on un-normalized path, could enable auth bypass
+- Impact: Path normalization inconsistency, potential auth bypass on path-based policies
+
+F324 - UAT CSP reveals additional third-party services (MEDIUM):
+- edge.prelude.dev: Prelude phone verification (connect-src, returns 401 Unauthorized)
+- ledgerb.api.ledger.com: Ledger hardware wallet integration (connect-src)
+- wasm.regulaforensics.com, lic.regulaforensics.com, api.regulaforensics.com: Document verification (connect-src + img-src + frame-src)
+- api.apple-cloudkit.com, cdn.apple-cloudkit.com, feedbackws.apple-cloudkit.com, appleid.apple.com: Apple CloudKit (connect-src)
+- app.adjust.com, app.adjust.world: Adjust marketing attribution (connect-src)
+- assets.stakek.it/tokens/: StakeKit token images (img-src)
+- These services are in UAT CSP but not all are in the production business.deblock.com CSP
+- Reveals product roadmap: Ledger integration, phone verification migration to Prelude
+- Impact: Third-party supply chain exposure, product roadmap disclosure
+
+F325 - UAT analytics unlimited rate and payload size (MEDIUM):
+- 20 rapid requests to /api/auth/analytics: all returned 200 {"success":true}
+- 10,000-character payload in eventType field: accepted without rejection or truncation
+- No IP-based, token-based, or session-based rate limiting
+- Combined with F320 (blind injection): unlimited injection at scale
+- Could be used for analytics data poisoning at volume
+- Impact: Resource abuse, analytics data integrity, potential for API abuse at scale
+
+F326 - Robots.txt hidden developer paths (LOW):
+- /Resume: 404 (removed but still in robots.txt)
+- /WphYZ/: 308 redirect (test/internal page with random path)
+- /Jordan: 404 (developer name)
+- /miggy: 404 (developer name)
+- /vercel/path0/public/locales: 404 (Vercel build path leaked)
+- /choose-your-country: 404 (product page removed)
+- Developer names Jordan and miggy exposed
+- Vercel build path structure exposed (/vercel/path0/)
+- Impact: Personnel enumeration, build system disclosure
+
+F327 - UAT additional live backend endpoints (LOW):
+- POST /api/passkeys/register: 400 "User is not authenticated" (reaches backend)
+- POST /api/sepa-transfer/create: 400 "User is not authenticated" (live financial endpoint)
+- POST /api/sepa-transfer/get-bank-details: 400 "User is not authenticated" (live financial)
+- POST /api/self-transfer/create: 400 "User is not authenticated" (live financial)
+- POST /api/roundups/settings: 400 "User is not authenticated" (reaches backend)
+- POST /api/auth/refresh: 401 "No token or refresh token found" (token-based)
+- POST /api/auth/logout: 401 (session management endpoint)
+- POST /api/auth/facetec-2fa: 307 redirect to / (biometric auth)
+- These extend the F310 findings with additional live endpoints
+- Financial endpoints (SEPA, self-transfer) are production-grade on UAT
+- Impact: Expanded attack surface on UAT, live financial operations accessible
+
+F328 - Marketing-widgets deeplink and product info disclosure (LOW):
+- GET /api/marketing-widgets returns JSON array without auth
+- Deeplinks: iban, wallet, exchange_btc, referrals (mobile app deep linking)
+- CDN image URLs: cdn1.deblock.com/webassets/{details,wallet,btc,referral}.png
+- Product copy: "Get up to 500EUR by inviting your friends"
+- Deeplink names map to internal app navigation routes
+- Impact: Mobile app route structure, product details, marketing material
+
+F329 - Google Drive appdata scope for wallet recovery (LOW):
+- JS chunk 081j6xt3ixwpe.js contains: access_token, drive.appdata scope
+- OAuth flow: implicit grant for Google Drive hidden app data access
+- Used for "Orwell" wallet recovery key storage
+- Previously documented in F132 (Google OAuth client ID) but scope context is new
+- Combined with OAuth client ID: phishing risk for wallet recovery key theft
+- Impact: Wallet recovery architecture detail, OAuth phishing vector clarification
+
+F330 - auth/facetec-2fa 307 redirect CSP service map (LOW):
+- POST /api/auth/facetec-2fa returns 307 redirect to /
+- Response includes full CSP header with complete service inventory
+- CSP report-uri set to /api/csp-violation (exploitable per F322)
+- Contains all GCS bucket names: deblock-dev-crypto-currencies-v2, deblock-production-crypto-currencies-v2, deblock-production-crypto-nfts-v2/images
+- Contains worker-src allowing service workers from wasm.regulaforensics.com
+- object-src set to data: (allows data: URIs in object tags)
+- Impact: Complete third-party service inventory from a single redirect response
 
 ## 16. Next Steps for Continued Testing
 
