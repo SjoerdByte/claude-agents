@@ -7725,3 +7725,114 @@ Priority 3 (Enumeration/escalation):
 - Write operations (POST/PUT/PATCH/DELETE) not routed for bb endpoints
 - Impact: INFO - Infrastructure details for the legacy Heroku-hosted waitlist/NFT API.
 
+### F667 [HIGH] Chained Attack: NFT Owner Financial Surveillance via Waitlist API + Alchemy Key
+- Targets: waitlist-api.deblock.com + Alchemy API (eth-mainnet.g.alchemy.com)
+- Demonstrated attack chain combining F659 (hardcoded bearer token), F660 (wallet enumeration), and F650 (Alchemy API key):
+  1. Enumerate all 1000 NFT owner wallet addresses via waitlist-api.deblock.com/v1/bb/{1-1000}
+  2. For each wallet, query alchemy_getTokenBalances to get current token holdings
+  3. For each wallet, query alchemy_getAssetTransfers to get full transaction history
+- Proof of concept tested on BB#1 owner (0xa586fa52be32702625be5537c1da76958ca41d39):
+  - Token balances: USDC balance detected (contract 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48)
+  - Transfer history: 3 recent ETH transfers with destination addresses and amounts
+- All 1000 wallets can be profiled this way, revealing:
+  - Current crypto holdings (all ERC-20 tokens)
+  - Transaction patterns (frequency, amounts, counterparties)
+  - DeFi protocol interactions
+  - Exchange deposit/withdrawal addresses
+- Deblock is a KYC-regulated entity; NFT holders who used Deblock have verified identities
+- Impact: HIGH - Demonstrated chain enabling financial surveillance of KYC-verified users. An attacker can build complete financial profiles of 1000 Deblock NFT holders using only publicly leaked credentials. No authentication or account required.
+
+### F668 [MEDIUM] Production WebSocket Accepts Unauthenticated Commands and Leaks Backend Service Name
+- Target: business.deblock.com/api/crypto-commands-socket (PRODUCTION)
+- WebSocket connections require no authentication cookies or headers
+- All three valid command types are accepted and forwarded to the backend:
+  1. sign_message: Returns `{"status":"error","event":"backend_error","message":"No token available, aborting.","backend":"business-crypto-commands"}`
+  2. store_stocks_keys: Same error response
+  3. derive_stocks_wallet: No response (silently processed)
+- The "subscribe" command type is also forwarded and processed by the backend
+- Invalid command types (e.g., "get_all_wallets") are silently dropped by the gateway
+- Raw strings and non-JSON messages receive periodic ping events
+- Backend service name leak: "business-crypto-commands" revealed in error messages
+- Authentication with dummy cookie (__Host-auth-token=x) does not change behavior - authentication is enforced by the backend, not the WebSocket gateway
+- The WebSocket gateway acts as a transparent proxy to the "business-crypto-commands" backend service
+- Impact: MEDIUM - Unauthenticated command injection into the backend service. While the backend validates tokens, the gateway's lack of authentication means:
+  1. Any user can send commands to the crypto operations backend
+  2. DoS potential: flooding the backend with invalid commands
+  3. Backend service architecture revealed
+  4. If a backend bug allows command processing without a token, immediate exploitation
+
+### F669 [MEDIUM] UAT-02 Key Management Endpoint Accessible Without User Authentication
+- Target: app-uat-02.deblock.com/api/key-management/{userId}/resend
+- POST requests with X-Device-Key header are processed without user session authentication
+- Accepts any valid UUID as userId parameter
+- Invalid UUID format (non-UUID strings) returns: `{"error":"Invalid user ID"}`
+- Valid UUID format returns: `{"error":"Failed to retrieve escrow token"}`
+- The endpoint attempts to look up an escrow token for the given userId in the database
+- If a valid userId is supplied (one that has an escrow token), this endpoint would trigger a resend of the escrow recovery email
+- This enables:
+  1. User ID enumeration: Different error messages for valid vs invalid IDs
+  2. Email bombing: Repeated POST requests to trigger email resends to a valid user
+  3. Token leakage: If the response includes the escrow token for valid users
+- Only accessible on UAT-02 (production returns 403 "Forbidden")
+- Impact: MEDIUM - Unauthenticated access to key management on UAT-02. The error differentiation enables user ID enumeration. If valid user IDs exist in UAT-02's database, this could trigger unsolicited emails.
+
+### F670 [MEDIUM] UAT-02 FaceTec Endpoint Processes Requests Without User Authentication
+- Target: app-uat-02.deblock.com/api/facetec-gateway/process-request
+- Request processing flow (UAT-02):
+  1. Without X-Device-Key: `{"error":"Device key identifier is required"}`
+  2. With X-Device-Key, without requestBlob: `{"error":"Request blob is required"}`
+  3. With X-Device-Key and requestBlob: `{}` (empty JSON, processed)
+- Production behaves differently: always returns `{"error":"FaceTec 2FA session not found"}` regardless of headers
+- UAT-02 session-token endpoint: Returns `{}` with X-Device-Key header
+- The progressive error messages reveal the validation order:
+  1. Device key check (X-Device-Key header)
+  2. Request blob validation
+  3. Session validation (skipped on UAT-02?)
+- Impact: MEDIUM - The FaceTec biometric verification endpoint on UAT-02 processes requests with only a device key header, bypassing user session authentication. While exploitation requires valid FaceTec session data, the relaxed validation could enable biometric bypass attacks on the UAT environment.
+
+### F671 [LOW] UAT-02 Marketing Widgets Reveal Product Features and Deeplinks
+- Target: app-uat-02.deblock.com/api/marketing-widgets
+- Endpoint returns product promotional data without authentication:
+  - "Your Account Details" -> deeplink: "iban"
+  - "Your Crypto Wallet" (BTC, ETH, SOL) -> deeplink: "wallet"
+  - "Bitcoin" -> deeplink: "exchange_btc"
+  - "Get up to 500 EUR by inviting friends" -> deeplink: "referrals"
+- CDN image URLs: cdn1.deblock.com/webassets/{details,wallet,btc,referral}.png
+- Reveals the app deeplink routing structure (iban, wallet, exchange_btc, referrals)
+- Impact: LOW - Public marketing content and deeplink structure disclosure.
+
+### F672 [LOW] UAT-02 Client Region Endpoint Reveals Request Geolocation
+- Target: app-uat-02.deblock.com/api/client-region
+- Returns `{"region":"US"}` without authentication
+- Reveals the geographic location classification of the requesting IP
+- Could be used to test geo-blocking or regional feature restrictions
+- Endpoint not available on production (404)
+- Impact: LOW - IP geolocation disclosure.
+
+### F673 [LOW] Apigee Gateway Path Traversal Processing
+- Target: business.deblock.com
+- URL-encoded path traversal `%2e%2e` (encoded `..`) is processed by the Apigee gateway
+- Request: GET /api/%2e%2e/readyz -> 302 redirect to /readyz
+- Request: GET /api/%2e%2e/ -> 302 redirect to /
+- Request: GET /api/%2e%2e/robots.txt -> 302 redirect to /robots.txt
+- Apigee decodes the URL and resolves the path traversal, then issues a 302 redirect
+- This does not bypass access controls (the redirect goes to the same host)
+- Null byte injection (%00) returns 400 Bad Request
+- Semicolon injection (/check-session;.js) returns 404
+- Impact: LOW - Path traversal is processed but results in redirects, not direct resource access. No security bypass demonstrated.
+
+### F674 [LOW] No CORS Configuration on Production or UAT-02 API
+- Targets: business.deblock.com, app-uat-02.deblock.com
+- Tested origins: evil.com, app.deblock.com, deblock.com, business.deblock.com, null
+- No access-control-allow-origin headers returned for any origin on either environment
+- Same-origin policy is fully enforced
+- Impact: LOW - Negative finding. Proper CORS configuration (or rather, no CORS at all) prevents cross-origin API access.
+
+### F675 [LOW] No CRLF Injection in Response Headers
+- Targets: business.deblock.com, app-uat-02.deblock.com
+- X-Request-Id header reflects client input but:
+  - URL-encoded CRLF (%0d%0a) is preserved as literal percent-encoded characters, not decoded
+  - Raw CRLF characters are stripped by HTTP/2 binary framing
+  - No header injection possible on HTTP/2 connections
+- Impact: LOW - Negative finding. HTTP/2 binary framing prevents CRLF injection.
+
