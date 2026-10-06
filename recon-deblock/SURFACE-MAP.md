@@ -1725,7 +1725,7 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 136 | INFO | QR login abandon works without auth (204) | - | - | YES | /api/qr-login/abandon POST returns 204 |
 | 137 | INFO | FaceTec 2FA mobile session error oracle | - | - | YES | "FaceTec 2FA session not found" on create-2fa-mobile-session |
 
-Total: 137 findings (10 critical, 27 high, 38 medium, 29 low, 33 info)
+Total: 152 findings (10 critical, 29 high, 43 medium, 34 low, 36 info)
 
 ## 15. Session Notes
 
@@ -2140,6 +2140,175 @@ Legal & System:
 - /analytics/entry (POST, no auth)
 - /analytics/organisms (POST, no auth)
 - /websocket (WebSocket)
+
+## 12m. CSP Policy Analysis (Findings 138-141)
+
+Finding 138 [MEDIUM]: CSP unsafe-eval in script-src
+- Target: app-uat-01.deblock.com, deblock.com
+- CSP header includes 'unsafe-eval' in script-src directive
+- Also includes 'wasm-eval' in script-src-attr
+- Allows execution of eval(), Function(), setTimeout(string), setInterval(string)
+- Combined with any DOM injection, this enables full XSS without needing to bypass nonce
+- Nonces themselves rotate properly per request (not static, not bypassable)
+- Impact: Weakens CSP protection significantly; any injection vector becomes exploitable
+
+Finding 139 [MEDIUM]: CSP unsafe-inline in style-src
+- Target: app-uat-01.deblock.com, deblock.com
+- CSP header includes 'unsafe-inline' in style-src directive
+- Enables CSS injection attacks (data exfiltration via CSS selectors)
+- Impact: Enables style-based data exfiltration if injection point exists
+
+Finding 140 [MEDIUM]: CSP object-src allows data: URIs
+- Target: app-uat-01.deblock.com, deblock.com
+- CSP header: object-src 'self' data:
+- Allows embedding Flash/Java/PDF plugins via data: URIs
+- Impact: Potential for plugin-based code execution if combined with injection
+
+Finding 141 [LOW]: CSP violation reporting endpoint accepts arbitrary data
+- Target: app-uat-01.deblock.com/api/csp-violation
+- Endpoint: POST /api/csp-violation
+- Accepts arbitrary POST body, returns 204 No Content
+- No authentication required, no rate limiting observed
+- If violation reports are rendered in an admin panel, stored XSS possible
+- Impact: Potential stored XSS in admin dashboard, log pollution
+
+## 12n. FaceTec Gateway Auth Bypass (Findings 142-144)
+
+Finding 142 [HIGH]: FaceTec gateway checks session before authentication
+- Target: business-uat-01.deblock.com/api/facetec-gateway/process-request
+- POST request without any authentication returns 401 with body:
+  {"error":"FaceTec 2FA session not found","details":{"statusCode":401}}
+- The error message reveals that the system first looks up the FaceTec session
+  and THEN checks authentication, leaking that the session lookup failed
+- On personal app (app-uat-01.deblock.com), same endpoint returns:
+  {"error":"Device key identifier is required","details":{"statusCode":400,"code":"DEVICE_KEY_MISSING"}}
+- This difference reveals different middleware stacks between personal and business apps
+- Impact: Session enumeration possible; auth check ordering vulnerability
+
+Finding 143 [HIGH]: FaceTec gateway has no rate limiting
+- Target: business-uat-01.deblock.com/api/facetec-gateway/process-request
+- 10 rapid sequential POST requests all returned 401 with identical response
+- No rate limiting, no blocking, no CAPTCHA triggered
+- Combined with Finding 142, enables brute-force session enumeration
+- Impact: Unlimited attempts to enumerate active FaceTec 2FA sessions
+
+Finding 144 [MEDIUM]: FaceTec endpoint exposes Apigee error on GET
+- Target: business-uat-01.deblock.com/api/facetec-gateway/process-request (GET)
+- GET request returns 405 with Apigee-specific error:
+  {"fault":{"faultstring":"Received 405 Response without Allow Header",
+  "detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}
+- Reveals Apigee API gateway in the backend infrastructure
+- The error format and detail codes are Apigee-specific
+- Impact: Technology fingerprinting, infrastructure disclosure
+
+## 12o. CSRF and Session Analysis (Findings 145-147)
+
+Finding 145 [LOW]: CSRF token contains predictable timestamp structure
+- Target: app-uat-01.deblock.com/api/csrf, business-uat-01.deblock.com/api/csrf
+- Token format: {timestamp_start}.{timestamp_end}.{random_22chars}.{hmac_43chars}
+- Timestamps are Unix epoch milliseconds (issuance time and expiry time)
+- The issuance and expiry timestamps are embedded in plaintext, not encrypted
+- HMAC prevents forgery, but timestamps reveal token lifetime and server time
+- Impact: Server clock disclosure, token lifetime disclosure (aids timing attacks)
+
+Finding 146 [LOW]: Business check-session leaks validity state without auth
+- Target: business-uat-01.deblock.com/api/auth/check-session
+- GET without auth returns: {"valid":false}
+- Confirms session validation endpoint exists and leaks session state
+- Impact: Information disclosure; confirms auth architecture
+
+Finding 147 [MEDIUM]: Passkeys endpoints reveal middleware architecture
+- Target: business-uat-01.deblock.com
+- GET /api/passkeys returns 401 (Unauthorized)
+- POST /api/passkeys/auth returns 403 (Forbidden)
+- POST /api/passkeys/register returns 403 (Forbidden)
+- The 401 vs 403 difference suggests passkey auth/register routes use
+  additional middleware (role check or feature gate) beyond standard auth
+- Impact: Architecture disclosure; potential authorization bypass vector
+
+## 12p. Staging & Production Info Disclosure (Findings 148-152)
+
+Finding 148 [LOW]: Staging Vercel build path disclosure
+- Target: app-uat-01.deblock.com
+- Error responses and resource paths reveal: /vercel/path0/public/locales
+- Confirms Vercel deployment infrastructure and internal path structure
+- Build ID: jiQWozk8dR12Q2EFM5KOi (personal app UAT)
+- Build ID: itZOfsUPscBBqOqIMg5FS (business app UAT)
+- Build ID: e95b8cf (production, appears to be git commit hash)
+- Impact: Infrastructure disclosure, build tracking
+
+Finding 149 [LOW]: A/B testing and geolocation cookies disclosed
+- Target: app-uat-01.deblock.com
+- Cookies set without auth: header_variant=B (A/B test assignment)
+- Cookie: geo_country (geolocation tracking)
+- Reveals active A/B testing framework and geo-targeting
+- Impact: Feature flag and targeting logic disclosure
+
+Finding 150 [INFO]: Apple Team ID and deep link paths disclosed
+- Target: app.deblock.com/.well-known/apple-app-site-association
+- Apple Team ID: 7C8K5383JS
+- App Bundle: com.deblock.deblockapp.production
+- Deep link paths: /qr-login/*, /*/qr-login/*
+- Impact: Mobile app identification, deep link hijacking research
+
+Finding 151 [INFO]: app.deblock.com /private/ path returns 410 Gone
+- Target: app.deblock.com/private/
+- Discovered via robots.txt Disallow: /private/
+- Returns HTTP 410 (Gone) - deliberately removed content
+- On UAT: returns 308 redirect then 404
+- Impact: Confirms previously existing private content was intentionally removed
+
+Finding 152 [INFO]: Business app JS bundles contain no hardcoded secrets
+- Target: business-uat-01.deblock.com
+- 39 JS chunks scanned for API keys, tokens, passwords, secrets
+- No hardcoded credentials found (unlike personal app which had multiple)
+- Business app uses cleaner secret management
+- Impact: Positive security note; business app has better secret hygiene
+
+## 12q. Business App API Route Map
+
+Routes extracted from business-uat-01.deblock.com JS bundles:
+
+Authentication & Session:
+- /auth/login (POST)
+- /auth/login-2fa (POST)
+- /auth/refresh (POST)
+- /auth/check-session (GET, no auth returns {"valid":false})
+- /csrf (GET, no auth)
+
+User & Business:
+- /users/user (GET)
+- /users/browsers/:id/ping (POST)
+- /business-onboarding (GET/POST)
+- /frontdesk/accounts (GET)
+- /frontdesk/features (GET)
+
+Banking & Cards:
+- /bank-details (GET)
+- /cards (GET)
+- /cashbacks/lifetime (GET)
+- /transactions (GET)
+- /pricing/plans (GET)
+
+Crypto:
+- /crypto-business (GET)
+- /crypto-business-socket (WebSocket)
+- /crypto-commands-socket (WebSocket)
+- /crypto-messages/messages/:id (GET)
+- /crypto-simulation/:id (GET)
+- /crypto-transactions/:id/browser-keys/:key (GET)
+
+Security:
+- /facetec-gateway/process-request (POST)
+- /passkeys (GET)
+- /passkeys/auth (POST)
+- /passkeys/register (POST)
+- /sca (GET)
+
+WebSocket Endpoints:
+- /websocket
+- /crypto-business-socket
+- /crypto-commands-socket
 
 ## 16. Next Steps for Continued Testing
 
