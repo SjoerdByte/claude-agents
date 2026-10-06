@@ -1753,8 +1753,15 @@ Based on all phases of testing. Ranked by exploitability and impact.
 | 198 | MEDIUM | FaceTec gateway device key parameter leak | - | CWE-209 | YES | "Device key identifier is required" without auth on UAT |
 | 199 | LOW | Alchemy getTokenMetadata works across 10 chains | - | CWE-798 | YES | Token name/symbol/decimals for any contract on any chain |
 | 200 | MEDIUM | Business app full API route map from JS chunks | - | CWE-200 | YES | 30+ endpoints including cashbacks, crypto-business, pricing, SCA |
+| 201 | MEDIUM | WordPress REST API 14 namespace exposure | - | CWE-200 | YES | Users, media, pages, BackWPup/Elementor routes all enumerable |
+| 202 | MEDIUM | CSP violation endpoint arbitrary data injection | - | CWE-117 | YES | POST /api/csp-violation 204 for any data, zero rate limiting |
+| 203 | MEDIUM | Staging environment CORS wildcard | - | CWE-942 | YES | Access-Control-Allow-Origin: * on staging.deblock.com |
+| 204 | LOW | AASA/assetlinks app config and signing cert exposure | - | CWE-200 | YES | Two Android signing certs, QR login deep link paths |
+| 205 | LOW | Status page wildcard CSP | - | CWE-16 | YES | default-src * unsafe-inline unsafe-eval on Statuspal |
+| 206 | MEDIUM | UpdraftPlus backup directory exists on server | - | CWE-538 | YES | /wp-content/updraft/ 403, /wp-content/backup-db/ 403 |
+| 207 | LOW | Elementor Pro/AI REST API route structure exposure | - | CWE-200 | YES | 35+ routes including form-submissions, send-event, user-data |
 
-Total: 200 findings (12 critical, 43 high, 64 medium, 45 low, 36 info)
+Total: 207 findings (12 critical, 43 high, 68 medium, 48 low, 36 info)
 
 ## 15. Session Notes
 
@@ -1780,6 +1787,7 @@ Total: 200 findings (12 critical, 43 high, 64 medium, 45 low, 36 info)
 - Session 6: Production API deep dive (Phase 7). Company onboarding phone verification bypass confirmed with clean session (phone_verified auto-set to true, /v1/company/phone/otp returns 404 on production). OTP rate limit bypass via UUID rotation confirmed (5 attempts per UUID, unlimited new UUIDs per email). /v1/upload/anthony/:token accepts arbitrary file uploads without auth on production and staging. /v1/mobile/account/:user_id returns terms documents for any user_id without auth. Full staging route map extracted (90+ routes). Staging mailer preview interface exposed (UserNotifierMailerPreview). Staging rails/conductor triggers PostgreSQL errors leaking table names. NFT metadata fully enumerable (/v1/meta/bb/1-1000). Company survey/type/turnover reference data exposed. Ambassador certification oracle confirmed. Blog cache delete endpoint accessible via GET. GCS buckets properly locked. CORS on staging properly configured (no ACAO).
 - Session 7: Phase 8 - Business app deep dive. Egress proxy blocked api.deblock.com and deblock.com but business.deblock.com, app-uat-01, business-uat-01, brand.deblock.com, staging, recovery, status, bursted-bubbles still accessible. Downloaded 39 JS chunks from business.deblock.com, extracted full 25-endpoint API route map including auth flow, passkeys/WebAuthn, FaceTec biometric, SCA, crypto business, bank details, and CSRF implementation. Discovered PGP-encrypted auth body, device ID persistence via IndexedDB, Redis pub/sub for FaceTec 2FA sessions. Tested all API endpoints: CSRF token returned unauthenticated, Apigee API gateway error details leaked on 10+ POST-only endpoints (faultstring+errorcode), FaceTec keys endpoint returns distinct error "FaceTec 2FA session not found". WordPress deep dive: BackWPup v1/v2 API route enumeration (20+ endpoints), addjob and chatbot-context validate params before auth check (info leak), exposed readme/install/version/cron files, Elementor documents media import endpoint exists. app.deblock.com confirmed deprecated (410 Gone, empty body, via GCP). Total findings: 96.
 - Session 8: Phase 9/10 - UAT JS deep scan + active API key testing. Downloaded and scanned 86 JS chunks from app-uat-01.deblock.com. Found Alchemy API key (ACTIVE, enhanced API with getTokenBalances, getNFTs, getAssetTransfers all working), iCloud CloudKit API token (production container, 401 on direct query), Google OAuth Client ID with drive.appdata scope for "Orwell" wallet recovery, Google Maps Embed API key (Maps JS API active/billable, project 449958774220), WalletConnect projectId (working), OneSignal App ID + Safari Web Push ID, GTM Container, second Intercom App ID, Unleash feature flag client key. Discovered UUID-gated hidden route bypassing IS_DEV check, 7 test routes in production JS, E2E testing cookies. Mapped 130+ API endpoints and 6 WebSocket paths. Confirmed Kubernetes readyz endpoint accessible. GCS dev bucket has public object listing (NoSuchKey response). NFT contract is upgradeable BeaconProxy (FairXYZDeployer, 742 holders, 1000 supply). WordPress REST API fully open (users, media, search, categories enumerable). Elementor Pro v1 license routes exposed. Total findings: 124.
+- Session 10: WordPress REST API 14-namespace deep dive. Confirmed BackWPup v1/v2 full route structure (chatbot-context, startbackup, authenticate_cloud, storagelistcompact, getjobslist). Elementor v1 35+ routes including form-submissions, form-submissions/export, send-event, user-data/current-user. Elementor Pro refresh-loop/refresh-search don't check auth before param validation. CSP violation endpoint (/api/csp-violation) accepts arbitrary POST data with zero rate limiting (50 rapid requests all 204). UpdraftPlus backup directory confirmed (403, not 404). staging.deblock.com back online with CORS wildcard (Access-Control-Allow-Origin: *). Apple AASA and Android assetlinks expose app config and signing certs. Status page wildcard CSP. Alchemy key confirmed getTokenBalances for NFT contract (holds HEX token). No source maps, no debug endpoints, no open redirects on QR login. Total findings: 207.
 
 ### 12e. Business App API Route Map (from JS bundle analysis)
 
@@ -2923,6 +2931,49 @@ Additional testing results (no new findings):
 - WebSocket endpoints still 404 (were 502 before, now 404)
 - 2FA mobile session changed from 403 to "FaceTec 2FA session not found"
 - QR login endpoints still 403
+
+## 12ad. WordPress REST API Exposure, CSP Violation Injection, Staging CORS, and Universal Links (Session 10)
+
+F201 - WordPress REST API full namespace exposure with 14 active APIs (MEDIUM):
+The WordPress REST API at brand.deblock.com/wp-json/ exposes 14 active namespaces: oembed/1.0, elementor-one/v1, elementor/v1, elementor-pro/v1, backwpup/v1, backwpup/v2, elementor-hello-theme/v1, elementor/v1/documents, elementor-ai/v1, elementor/v1/feedback, wp/v2, wp-site-health/v1, wp-block-editor/v1, wp-abilities/v1. Unauthenticated access confirmed on: wp/v2/users (user ID 1 = admin-deblock, gravatar hash, Elementor AI introduction flags), wp/v2/pages (9 brand guideline pages), wp/v2/media (50+ media files including marketing videos, photos, and Deblock-logo-svg.zip downloadable archive), wp/v2/search, wp/v2/types, wp/v2/statuses, wp/v2/taxonomies. Site metadata: timezone Europe/Paris, GMT offset 2. The BackWPup v1 API exposes route structure including: chatbot-context (GET/POST), startbackup, authenticate_cloud, delete_auth_cloud, cloudsaveandtest, getjobslist, addjob, updatejob, save_job_settings, backups, process_bulk_actions. BackWPup chatbot-context GET doesn't check auth before param validation (returns 400 missing params instead of 401), but POST checks auth first. All BackWPup data endpoints require authentication.
+
+F202 - CSP violation reporting endpoint accepts arbitrary data with zero rate limiting (MEDIUM):
+POST /api/csp-violation on app-uat-01.deblock.com returns 204 for any POST data without authentication. Tested with: proper CSP report format (application/csp-report), arbitrary JSON (application/json), and rapid-fire 50 consecutive requests, all returned 204 with zero rate limiting or blocking. This enables: (1) log injection/poisoning of the CSP violation logging system, (2) storage abuse by flooding the endpoint with arbitrary data, (3) potential log4j-style exploitation if violation data is logged and processed by vulnerable parsers. The endpoint is NOT available on business.deblock.com (returns 404).
+
+F203 - Staging environment publicly accessible with CORS wildcard (MEDIUM):
+staging.deblock.com is publicly accessible on Vercel, serving a full Deblock marketing site. Returns Access-Control-Allow-Origin: * header, x-robots-tag: noindex/nofollow, and A/B test cookie header_variant=B plus geo_country=US. Uses old webpack-based Next.js (build ID jiQWozk8dR12Q2EFM5KOi) unlike the UAT Turbopack build. References next.deblock.com (behind Cloudflare challenge, 403) and bursted-bubbles.deblock.com. The CORS wildcard means any website can make cross-origin requests to the staging environment, potentially reading response data. While the staging appears to be a marketing site, the wildcard CORS is a misconfiguration that could leak data if staging endpoints mirror authenticated APIs.
+
+F204 - Apple AASA and Android assetlinks expose app configuration (LOW):
+app-uat-01.deblock.com/.well-known/apple-app-site-association reveals: App ID 7C8K5383JS.com.deblock.deblockapp.production, deep link paths /qr-login/* and /*/qr-login/* (confirmed QR login as the only universal link path). The QR login page renders for ANY path value (e.g., /qr-login/AAAA returns 200) without server-side validation before page render. Locale routing confirmed: /en/qr-login/AAAA redirects 307 to /qr-login/AAAA with app-locale=en cookie. Android assetlinks.json reveals: package com.deblock.deblockapp with TWO SHA-256 signing cert fingerprints: 68:84:A7:99:78:A0:68:43:71:32:6D:55:36:E6:0F:F5:E5:C7:85:C2:61:9F:83:A3:6B:0E:29:34:B7:42:99:02 and 65:4A:46:8F:CB:15:26:48:62:04:4B:23:37:06:E0:A7:B2:A2:AA:A9:E3:D0:19:5F:62:EB:7A:82:D2:97:C3:EB (one likely debug, one production). No open redirect on QR login paths (tested redirect, next, return_url, callback params).
+
+F205 - Status page on Statuspal with wildcard CSP and OVH S3 presigned URLs (LOW):
+status.deblock.com hosted on Statuspal (statuspal.eu) with OVH S3 storage at statushq-eu-container.s3.eu-west-par.io.cloud.ovh.net. The CSP is essentially wildcard: default-src * data: blob: filesystem: about: ws: wss: 'unsafe-inline' 'unsafe-eval'. Presigned S3 URLs for favicon include AWS credential ID 680e03577efa45baad331ca90be3e74b (this is Statuspal's credential, not Deblock's). The weak CSP on the status page could be exploited if XSS is found, though the page is third-party hosted.
+
+F206 - UpdraftPlus backup directory exists on server (MEDIUM):
+Direct access to brand.deblock.com/wp-content/updraft/ returns 403 (not 404), confirming UpdraftPlus backup files are stored locally on the server. Similarly, wp-content/backup-db/ returns 403 and wp-content/debug.log returns 403 (exists but protected). If backup file names can be guessed (format: backup_DATE-TIME_SITENAME_HASH-TYPE.EXT), full database and file backups containing WordPress credentials, configuration, and content would be downloadable. Individual backup files within the directory may return 200 even though directory listing is blocked by LiteSpeed.
+
+F207 - Elementor Pro and AI REST API route exposure (LOW):
+Elementor v1 REST API exposes 35+ routes including critical endpoints: form-submissions (GET/DELETE/POST/PUT/PATCH), form-submissions/export (GET), forms (GET), user-data/current-user (GET/PATCH), send-event (POST), site-editor/templates (GET/POST), globals/colors and globals/typography (GET/POST/DELETE). The send-event endpoint processes POST requests without auth up to param validation (returns 400 "event_data must be object" for string input, then checks auth for valid objects). Elementor Pro refresh-loop and refresh-search endpoints don't check auth but require valid widget_id and post_id parameters. All form submission and user data endpoints properly require auth (401). The oEmbed endpoint returns author_name: admin-deblock and embed HTML with data-secret tokens.
+
+Additional testing results (no new findings):
+- No source maps served (.js.map returns 404)
+- No Next.js debug endpoints (__nextjs_original-stack-frame, _next/development/source-map-debug)
+- Next.js Server Action IDs not extractable from JS chunks (callServer exists but IDs are runtime-generated)
+- No open redirect on QR login paths
+- Elementor form submissions, globals, site editor require auth
+- Elementor license status and tier features require auth
+- BackWPup storage, cloud auth, messages, storages require auth
+- WordPress site-health tests require auth
+- Elementor AI permissions and Elementor One authorize require auth
+- WordPress plugins/ and themes/ directories return 200 (empty)
+- WordPress uploads/ directory returns 403 (LiteSpeed)
+- WordPress search returns no results for "password" or "admin"
+- Promo-codes claimability returns 400 (auth required), use-code POST returns 400 (auth required)
+- Crypto simulation and crypto/prices endpoints return 404 HTML
+- Ledger API (ledgerb.api.ledger.com) returns 404
+- Prelude edge API (edge.prelude.dev) properly requires auth (401)
+- next.deblock.com behind Cloudflare challenge (403)
+- 58 more WordPress XMLRPC multicall passwords tested, none matched
 
 ## 16. Next Steps for Continued Testing
 
