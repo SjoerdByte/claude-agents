@@ -9101,3 +9101,127 @@ Priority 3 (Enumeration/escalation):
 - Card operations include: ordering new cards, activation, PIN management, freeze/unfreeze, limit queries, and card replacement
 - These would be high-value targets for IDOR testing with authenticated sessions
 - Impact: LOW - Route confirmation only. No data exposed without valid authentication. The endpoint mapping is useful for targeted testing once authenticated access is obtained.
+
+### F760 [HIGH] Company Email OTP Race Condition Bypasses 5-Attempt Lockout on Production
+- Target: web-api.deblock.com/v1/company/email/otp
+- The company email OTP lockout counter is not atomic, enabling a race condition:
+  - Normal sequential behavior: lockout after 5 failed attempts (as documented in F743)
+  - With 10 concurrent requests: 6 accepted, 4 locked (bypassed limit by 1)
+  - With 20 concurrent requests: 6 accepted, 14 locked (still only 6 processed before lock)
+  - The lockout mechanism checks and increments the attempt counter non-atomically
+- Reproduction:
+  1. Create a new company session via POST /v1/company/country
+  2. Set an email via POST /v1/company/email
+  3. Fire 20+ concurrent POST requests to /v1/company/email/otp with different OTP codes
+  4. Result: 6 OTP codes are validated instead of the expected 5-attempt maximum
+- Combined with F742 (unlimited session creation) and F743 (session-based lockout bypass):
+  - An attacker can create N sessions for the same email
+  - Each session allows 6 concurrent attempts (not 5) before lockout
+  - Effective brute-force rate: 6 x N attempts per lockout window
+  - For 4-digit OTP: 10,000 / 6 = 1,667 sessions needed (each with 20 concurrent requests)
+  - For 6-digit OTP: 1,000,000 / 6 = 166,667 sessions needed
+- Impact: HIGH - The non-atomic lockout counter allows 20% more attempts per session than intended. Combined with unlimited session creation, the effective lockout is completely bypassable.
+
+### F761 [MEDIUM] WordPress XMLRPC system.multicall Enables Amplified Brute-Force on brand.deblock.com
+- Target: brand.deblock.com/xmlrpc.php
+- XMLRPC is fully enabled with 80+ methods including system.multicall
+- system.multicall allows batching multiple authentication attempts in a single HTTP request:
+  - Tested: 4 wp.getUsersBlogs calls with different passwords in 1 request
+  - All 4 processed and returned individual fault code 403 ("Identifiant ou mot de passe incorrect")
+  - No rate limiting observed on multicall requests
+  - Each multicall request counts as 1 HTTP request but tests N passwords
+- Key methods exposed:
+  - wp.getUsersBlogs (credential verification)
+  - wp.getUsers, wp.getUser (user enumeration with auth)
+  - wp.uploadFile (file upload with auth)
+  - wp.newPost, wp.editPost, wp.deletePost (content management with auth)
+  - pingback.ping (SSRF - see F756)
+  - wp.getOptions (configuration disclosure with auth)
+- The known admin username is admin-deblock (from F754)
+- With multicall, an attacker can test hundreds of passwords per request without triggering IP-based rate limits
+- Impact: MEDIUM - Amplified brute-force via XMLRPC multicall against the known admin user. A single HTTP connection can test many passwords. If the admin password is weak or leaked, this provides full WordPress admin access including file upload capability.
+
+### F762 [MEDIUM] Active Storage Direct Upload Endpoint Accessible Without Authentication
+- Target: web-api.deblock.com/rails/active_storage/direct_uploads and web-api-staging.deblock.com
+- The Rails Active Storage direct upload endpoint is accessible on both production and staging:
+  - Production: POST returns 422 (CSRF token required, but no auth check first)
+  - Staging: POST returns 422 with FULL stack trace revealing:
+    - ActionController::InvalidAuthenticityToken exception
+    - Complete middleware chain (85 frames) including Airbrake, Puma, Rack::Cors
+    - ActionText is loaded (actiontext 7.0.10) confirming rich text content support
+    - The CSRF check happens BEFORE any authentication check
+- Direct upload flow (if CSRF is obtained):
+  1. POST /rails/active_storage/direct_uploads with blob metadata (filename, content_type, byte_size, checksum)
+  2. Server returns a signed upload URL (typically to S3/GCS)
+  3. Client uploads directly to cloud storage using the signed URL
+  4. No authentication is required beyond the CSRF token
+- The lack of authentication before CSRF check means: with a CSRF token (obtainable via XSS or conductor forms), arbitrary files could be uploaded to Deblock's cloud storage
+- Impact: MEDIUM - The direct upload endpoint only requires a CSRF token, not authentication. If a CSRF token can be obtained (via XSS, social engineering, or the Action Mailbox conductor), an attacker could upload arbitrary files to Deblock's cloud storage backend.
+
+### F763 [LOW] WordPress wp-cron.php Publicly Accessible on brand.deblock.com
+- Target: brand.deblock.com/wp-cron.php
+- wp-cron.php returns HTTP 200 with empty body
+- This endpoint triggers WordPress scheduled tasks (email notifications, updates, backups)
+- BackWPup 5.6.7 is installed, which uses wp-cron for scheduled backups
+- Public access to wp-cron.php allows:
+  1. Triggering scheduled tasks on demand (backup execution)
+  2. Potential DoS by rapidly triggering resource-intensive cron jobs
+  3. Timing attacks to determine when backups run
+- WordPress config backup files return 403 (blocked by LiteSpeed), indicating they may exist but are access-controlled
+- Impact: LOW - wp-cron.php access enables on-demand triggering of scheduled tasks including BackWPup backups, but the backup files themselves appear properly protected.
+
+### F764 [LOW] Admin Ambassador Endpoints Confirmed Active on Production Behind Auth
+- Target: web-api.deblock.com
+- Two admin ambassador endpoints confirmed active (return 403 "Forbidden", not 404):
+  - GET /v1/admin/ambassador/applicants -> 403 (ambassador application queue)
+  - GET /v1/admin/ambassador/dashboard -> 403 (admin dashboard data)
+- Auth bypass attempts all returned 403:
+  - Cookie bypass (__Host-auth-token=x) -> 403
+  - Waitlist bearer token -> 403
+  - Debug headers (X-Debug: true, deblock-dispatch-id: admin) -> 403
+- Other admin endpoints return 404: validate, token, referral, ledger, ranking, upgrade, discord
+- The admin endpoints use a separate authorization layer from the standard auth-gated endpoints
+- Impact: LOW - Route confirmation. Admin endpoints are properly protected with a separate authorization mechanism that resists all tested bypass techniques.
+
+### F765 [INFO] status.deblock.com Reveals Service Architecture via Statuspal
+- Target: status.deblock.com
+- Status page platform: Statuspal (statuspal.eu)
+- Protected by hCaptcha for subscription/notifications
+- Server: nginx (separate from GCP/Vercel/Heroku infrastructure)
+- Monitored services revealed: Cryptocurrency, Card, Fiat, SEPA, Transfer, App
+- Service IDs: 23239, 23240, 23242, 23243, 23244, 23245, 23252, 23253, 23254
+- Response time monitoring is configured for tracked services
+- CSP is very permissive: default-src * with unsafe-inline and unsafe-eval
+- Impact: INFO - Confirms the microservice architecture and monitored service categories. The service names align with the subdomain mapping (payments.prod, transfers.dev).
+
+### F766 [INFO] next.deblock.com Behind Cloudflare WAF with Challenge Mode
+- Target: next.deblock.com
+- Returns 403 for all paths with Cloudflare challenge (cf-mitigated: challenge)
+- Headers reveal:
+  - Server: cloudflare
+  - Accept-CH with full Client Hints enumeration (UA-Bitness, UA-Arch, UA-Model, etc.)
+  - COEP: require-corp, COOP: same-origin, CORP: same-origin
+  - CSP: Cloudflare challenge scripts only
+- This is the only Cloudflare-protected subdomain discovered (all others use GCP/Vercel/Heroku directly)
+- The subdomain name "next" suggests this may be a next-generation or preview deployment
+- Impact: INFO - Infrastructure mapping. Cloudflare WAF blocks all non-browser access. The strict challenge mode suggests this contains sensitive or pre-release content.
+
+### F767 [MEDIUM] Mobile Legal Docs API Exposes Internal Document UUIDs and Version History
+- Target: web-api.deblock.com/v1/mobile/:locale/:country
+- Accessible without authentication on production
+- Returns full legal document inventory with internal metadata:
+  - 12 documents per country, same set across all tested countries (FR, GB, DE, ES, IT, BE, NL, IE, LU)
+  - Internal UUIDs for each document (e.g., 3211429b-8de0-8011-974a-c98abd246d47)
+  - Document version history via URL patterns (dates in filenames: 20231206, 20260223, 20260319, 20260904, 20260918)
+  - CDN URLs: https://cdn1.deblock.com/terms/... (all publicly accessible)
+  - Label types revealing internal content management: TERMS_PRE_KYC, TERMS_PRE_KYC_V2, TERMS_SIGNATURE, TERMS_SIGNATURE_V2, TERMS_QES, TERMS_QES_V2, TERMS_KYC_2_PRIVACY
+- Document types include:
+  - Fee Information Document (BETA version from 2023-12-06, current v6.3)
+  - Personal Terms (multiple versions: v12.3, v13.1, v3_1-Techblock, merged-terms)
+  - Privacy Policy (v2.2)
+  - User Identity Declaration (v1)
+- The version progression reveals:
+  - "Techblock" appears in a recent version (2026-09-04), suggesting a product rename or sub-brand
+  - "merged-terms" in the latest version (2026-09-18) suggests terms consolidation
+  - BETA fee document from 2023 still served alongside current version
+- Impact: MEDIUM - Internal document UUIDs, version history, and CDN paths are exposed without authentication. The version progression reveals business decisions (product naming, terms merges) and the label types expose the internal KYC flow stages. The sequential UUID pattern (3211429b-8de0-80xx) suggests predictable document ID generation.
