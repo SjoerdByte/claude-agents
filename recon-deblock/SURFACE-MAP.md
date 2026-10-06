@@ -7901,3 +7901,56 @@ Priority 3 (Enumeration/escalation):
 - This naming difference could help identify environment-specific service discovery or routing
 - Impact: MEDIUM - Internal service naming convention difference between environments exposed through unauthenticated WebSocket error messages.
 
+### F680 [MEDIUM] Alchemy API Key on Free Tier with Write Access (eth_sendRawTransaction)
+- Target: Client-side Alchemy API key PxkB3B-1-0bFVQHY4Gy5e9V_-FwVj7Pt
+- Confirmed via `alchemy_getModuleConfig` that the key is on the FREE tier
+- Available write methods include `eth_sendRawTransaction` (transaction relay)
+- Available read methods include `alchemy_getTokenBalances`, `alchemy_getAssetTransfers`, `eth_estimateGas`
+- Alchemy node version: reth/v2.5.2-5a6940e/x86_64-unknown-linux-gnu (via web3_clientVersion)
+- Free tier limitations reduce blast radius but the key is still live and usable
+- Impact: MEDIUM - Free-tier API key with write access exposed client-side. eth_sendRawTransaction could relay crafted transactions via Deblock's API allocation. Combined with F655 (waitlist token) for NFT owner wallet enumeration, enables financial surveillance chain (F668).
+
+### F681 [LOW] All Three Main Subdomains Share Single IP with Host Header Routing
+- Targets: business.deblock.com, app.deblock.com, app-uat-02.deblock.com
+- All three resolve to 34.8.230.142 (GCP)
+- app-uat-02.deblock.com CNAMEs to app.deblock.com, which A-records to 34.8.230.142
+- Host header determines which application responds:
+  - Host: business.deblock.com -> 200 (active production business app)
+  - Host: app.deblock.com -> 410 Gone (decommissioned consumer app)
+  - Host: app-uat-02.deblock.com -> 200 (UAT environment)
+- UAT-02 is accessible on the same infrastructure as production with no network-level separation
+- Impact: LOW - Shared infrastructure increases lateral movement risk if one application is compromised. UAT environment runs on production infrastructure without network isolation.
+
+### F682 [LOW] Production Frontend Migrated from Webpack to Turbopack
+- Target: business.deblock.com
+- Production buildId: 26tbWezWroJnCCGBceFD9
+- JS chunks now use Turbopack naming convention (e.g., `_next/static/chunks/[hash]._.js`) instead of previous webpack convention
+- 37 production chunks downloaded and analyzed - no new secrets, API keys, or sensitive configuration found beyond what was already documented
+- Turbopack is Next.js's Rust-based bundler, indicating recent framework upgrade
+- Impact: LOW - Technology migration information. No new secrets exposed in Turbopack-generated chunks.
+
+### F683 [LOW] UAT-02 Next.js Catch-All Route Reflects Path in HTML Lang Attribute
+- Target: app-uat-02.deblock.com
+- Requesting paths like `/[anything]` causes the catch-all route to use the path segment as the locale
+- Example: GET /`.env` returns `<html lang=".env">`
+- The reflected value is HTML-entity encoded, preventing direct XSS
+- The reflection is limited to the `lang` attribute on the `<html>` tag
+- Tested with XSS payloads - all properly escaped by Next.js
+- Impact: LOW - Minor input reflection in a non-exploitable context. HTML encoding prevents injection.
+
+### F684 [LOW] Marketing Widgets Expose Application Deeplink Structure
+- Target: app-uat-02.deblock.com/api/marketing-widgets
+- Returns widget configuration data with CDN image URLs and deeplink patterns
+- Deeplinks observed: `iban`, `wallet`, `exchange_btc`, `referrals`
+- CDN URLs reference cdn1.deblock.com (CloudFront/S3)
+- No authentication required to access this endpoint
+- Impact: LOW - Exposes internal navigation structure and deeplink scheme used by mobile/PWA applications.
+
+### F685 [INFO] Sentry Tunnel Does Not Enable SSRF
+- Target: business.deblock.com/monitoring
+- Tunnel reconstructs the Sentry ingest URL from the DSN fields (org ID, project ID, public key) provided in the request
+- Manipulating the DSN host field in the envelope header does NOT redirect the tunnel to an arbitrary host
+- Cross-project injection is also blocked: providing a DSN public key that doesn't match the configured project returns an error
+- Region parameter (`r=`) is optional; tunnel works with or without it
+- Impact: INFO - Negative finding. Tunnel implementation is secure against SSRF and cross-project injection.
+
