@@ -1,0 +1,9 @@
+{
+  "domain": "substackinc.com",
+  "nameservers": ["NS-1489.AWSDNS-58.ORG","NS-1889.AWSDNS-44.CO.UK","NS-856.AWSDNS-43.NET","NS-97.AWSDNS-12.COM"],
+  "registrar": "Amazon Registrar, Inc.",
+  "registration_date": "2018-02-05T20:22:29Z",
+  "expiration_date": "2031-02-05",
+  "mx": ["aspmx.l.google.com", "alt2.aspmx.l.google.com", "aspmx2.googlemail.com", "aspmx3.googlemail.com"],
+  "corp_saas_verifications": ["atlassian","decagon","1password","apple","mailgun","zapier","openai","canva","zoom","stripe","cursor","notion","bitrise","hashicorp","loom","anthropic","microsoft365","airtable"]
+}

@@ -1,0 +1,32 @@
+{
+  "scan_date": "2026-10-05",
+  "candidates": {
+    "substack.com":            {"ns":"ali.ns.cloudflare.com,lee.ns.cloudflare.com","verdict":"SEED-OWNED"},
+    "substackcdn.com":         {"ns":"ns-*.awsdns-*","verdict":"OWNED","evidence":"serves substack assets, same Amazon abuse contact"},
+    "substackcdn.net":         {"ns":"ns-*.awsdns-*","verdict":"OWNED","evidence":"serves Substack error page"},
+    "substackinc.com":         {"ns":"ns-*.awsdns-*","verdict":"OWNED-CORP","evidence":"Google Workspace MX + 20+ SaaS corporate TXT verifications (OpenAI, Anthropic, 1Password, Apple, Stripe, Cursor, Notion, Zoom, Zapier, Airtable, Bitrise, Atlassian, Decagon, HashiCorp, Loom, Canva, Microsoft 365, Mailgun)"},
+    "substack.cc":             {"ns":"ali.ns.cloudflare.com,lee.ns.cloudflare.com","verdict":"OWNED","evidence":"redirects to substack.com; identical Cloudflare NS pair as substack.com"},
+    "substack.info":           {"ns":"ali.ns.cloudflare.com,lee.ns.cloudflare.com","verdict":"OWNED-INTERNAL","evidence":"gated by substack.cloudflareaccess.com SSO login; identical google-site-verification token as substack.com; Mailgun MX; same Cloudflare NS pair"},
+    "substack-staging.com":    {"ns":"ns-*.awsdns-*","verdict":"OWNED-STAGING","evidence":"gated by substack.cloudflareaccess.com SSO login; AWS-registered"},
+    "substack-custom-domains.com":{"ns":"ali.ns.cloudflare.com,lee.ns.cloudflare.com","verdict":"LIKELY-OWNED","evidence":"identical Cloudflare NS pair as substack.com; name describes core Substack feature"},
+    "keep-substack.com":       {"ns":"ns-*.awsdns-*","verdict":"OWNED","evidence":"reverse-whois match; serves Substack-powered page using substackcdn.com"},
+    "substackapp.com":         {"ns":"ns-*.awsdns-*","verdict":"LIKELY-OWNED-DEFENSIVE","evidence":"AWS-registered, no A record (defensive)"},
+    "substack.help":           {"ns":"ns-*.awsdns-*","verdict":"LIKELY-OWNED-DEFENSIVE","evidence":"AWS-registered, no A record (defensive)"},
+    "substackmail.com":        {"ns":"ns-*.awsdns-*","verdict":"POSSIBLE-OWNED","evidence":"AWS NS pattern, unverified content"},
+    "substack.club":           {"ns":"ns-*.awsdns-*","verdict":"POSSIBLE-OWNED","evidence":"AWS NS pattern, unverified"},
+    "substack.io":             {"ns":"spaceship","verdict":"NOT-OWNED","evidence":"for sale on Spaceship"},
+    "substack.ai":             {"ns":"spaceship","verdict":"NOT-OWNED","evidence":"for sale on Spaceship"},
+    "substack.co":             {"ns":"parkingcrew.net","verdict":"NOT-OWNED","evidence":"domain parking"},
+    "substack.net":            {"ns":"digitalocean","verdict":"NOT-OWNED","evidence":"third-party content"},
+    "substack.app":            {"ns":"porkbun","verdict":"NOT-OWNED","evidence":"redirects to upstract.com"},
+    "substack.dev":            {"ns":"ali.ns.cloudflare.com,lee.ns.cloudflare.com","verdict":"POSSIBLE-OWNED","evidence":"same Cloudflare NS pair as substack.com but returns Heroku 'No such app' - may be owned but unused"},
+    "substack.email":          {"ns":"namecheap","verdict":"NOT-OWNED","evidence":"Namecheap parking IP"},
+    "substack.co.uk":          {"ns":"sedoparking","verdict":"NOT-OWNED","evidence":"Sedo parking"},
+    "substack.us":             {"ns":"afternic","verdict":"NOT-OWNED","evidence":"Afternic for sale"},
+    "substack.pub":            {"ns":"NXDOMAIN","verdict":"NOT-REGISTERED"},
+    "substack.media":          {"ns":"NXDOMAIN","verdict":"NOT-REGISTERED"},
+    "substackmedia.com":       {"ns":"NXDOMAIN","verdict":"NOT-REGISTERED"},
+    "getsubstack.com":         {"ns":"NXDOMAIN","verdict":"NOT-REGISTERED"},
+    "substack-inc.com":        {"ns":"NXDOMAIN","verdict":"NOT-REGISTERED"}
+  }
+}

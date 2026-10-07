@@ -1,0 +1,1 @@
+{"query": "org:substackinc", "total_count": 129, "note": "All results from 'universal-constructor' repo - internal AI coding assistant (not production Substack code). No Substack API references found inside; uses OpenAI/Anthropic/Groq/XAI/DeepSeek. No AWS secrets, hostnames or infrastructure details leaked in public code."}

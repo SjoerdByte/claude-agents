@@ -1,0 +1,11 @@
+url	status	content_type	size	note
+https://admin.substack.com/	200	text/html; charset=utf-8	44663	html-title:Sign in to Substack
+https://dash.substack.com/	200	text/html; charset=utf-8	77880	html-title:dash’s Newsletter | Substack
+https://substack.com/api/v1/customer_support_mode	400	application/json; charset=utf-8	12	json:{"error":""}
+https://substack.com/api/v1/post_unlock_token	404	text/html; charset=utf-8	67276	html-title:Discover Substack Newsletters
+https://substack.com/api/v1/check_subdomain	400	application/json; charset=utf-8	196	json:{"errors":[{"location":"query","param":"subdomain","msg":"Please enter a longer web URL"},{"location":"query","param":"subdomain","msg":"Please enter a valid web URL (letters and numbers only)"}]}
+https://substack.com/api/v1/publications/by-domain	404		0	
+https://substack.com/api/v1/stripe/account	404		0	
+https://substack.com/api/v1/subscription	404		0	
+https://substack.com/api/v1/subscription/change_plan	401	application/json; charset=utf-8	153	json:{"errors":[{"msg":"Please sign in","msgHTML":"Please <a native href=\"/account/login?redirect=%2Fapi%2Fv1%2Fsubscription%2Fchange_plan\">sign in</a>."}]}
+https://substack.com/api/v1/subscription/reactivate	401	application/json; charset=utf-8	152	json:{"errors":[{"msg":"Please sign in","msgHTML":"Please <a native href=\"/account/login?redirect=%2Fapi%2Fv1%2Fsubscription%2Freactivate\">sign in</a>."}]}

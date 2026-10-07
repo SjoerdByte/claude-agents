@@ -1,0 +1,1 @@
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"substack.net","type":15}],"Authority":[{"name":"substack.net","type":6,"TTL":1800,"data":"ns1.digitalocean.com. hostmaster.substack.net. 0 10800 3600 604800 1800"}]}

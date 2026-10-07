@@ -1,0 +1,1 @@
+{"query": ".substack.pub", "total_count": 30, "note": "No actual .substack.pub subdomain hits - all 30 matches are false positives from the string 'substack.publication' / 'substack.pubs' in code. Confirms Substack does not use .substack.pub TLD publicly."}

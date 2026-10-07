@@ -1,0 +1,65 @@
+=== Search Engine Discoveries (Bing + DDG + urlscan) ===
+
+Search engines yielded very limited enumeration due to CAPTCHA (DDG, Yandex, Startpage), bot walls (Google 429), and poor Bing substring matching.
+
+=== Confirmed *.substack.com subdomains surfaced by search engines ===
+substack.com (apex)
+www.substack.com (main)
+substack.substack.com (meta/corporate pub)
+on.substack.com (also /account - user account mgmt + resource center)
+pages.substack.com (landing-page builder)
+
+=== Candidate *.substack.com subdomains searched but not surfaced (unverified, worth bruting) ===
+api.substack.com
+admin.substack.com
+staging.substack.com
+app.substack.com
+ads.substack.com
+video.substack.com
+analytics.substack.com
+careers.substack.com
+jobs.substack.com
+help.substack.com
+support.substack.com
+blog.substack.com
+connect.substack.com
+partners.substack.com
+press.substack.com
+investors.substack.com
+open.substack.com
+signin.substack.com
+publication.substack.com
+docs.substack.com
+dev.substack.com
+internal.substack.com
+test.substack.com
+
+=== Related Substack-owned CDN/infra domains observed ===
+substackcdn.com - CDN domain (seen in urlscan results, serving /image/fetch/* via Cloudflare)
+substack.net - (unconfirmed, searched)
+substack.pub - (unconfirmed, searched)
+
+=== Custom (3rd-party) domains hosted on Substack (via urlscan.io JSON) ===
+These are publishers' own domains CNAMEd to Substack infra - out of ROE scope for substack.com-only pentest, but confirm substack hosts arbitrary 3rd-party DNS. Listing because they prove the "custom-domain" tenant plane exists.
+dappled.info
+thelinkedinengineer.com
+dropsitenews.com
+bagable.com
+neuroai.science
+downthestack.co
+thenewpragmatic.com
+thehumanperimeter.com
+controlplanecapital.com
+testedinicchia.eu
+architectingsecurity.com
+torchandtinder.org
+manifacture.xyz
+financewithoutfinance.com
+democracyproject.org.nz
+tnxasia.com
+marketsondeck.net
+economicshelp.org
+amazonunderworld.org
+
+=== Observed URLScan infrastructure pattern ===
+substackcdn.com/image/fetch/* -> image proxy / resizer (SSRF candidate class)
