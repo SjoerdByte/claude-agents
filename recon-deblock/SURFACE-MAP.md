@@ -10504,3 +10504,97 @@ Priority 3 (Enumeration/escalation):
   - DELETE /elementor/v1/cache (cache purge)
   - GET /elementor/v1/site-editor (site editor access)
 - Impact: MEDIUM - If an attacker compromises WordPress admin credentials (via F839 brute-force), the form submissions export endpoint provides a direct path to bulk PII exfiltration. Brand sites often collect contact information, newsletter signups, and business inquiries through Elementor forms.
+
+### F845 [MEDIUM] Google Apigee API Gateway Error Format Disclosure on business.deblock.com
+- Target: business.deblock.com (PRODUCTION)
+- Unsupported HTTP methods (DELETE, PUT, PATCH) on /api/crypto-wallets return Apigee error format:
+  - {"fault":{"faultstring":"Received 405 Response without Allow Header","detail":{"errorcode":"protocol.http.Response405WithoutAllowHeader"}}}
+- This reveals:
+  - The API is behind Google Apigee API gateway
+  - The backend returns 405 without the required Allow header
+  - Internal error codes are exposed (protocol.http.Response405WithoutAllowHeader)
+  - The Apigee proxy configuration can be fingerprinted
+- OPTIONS method correctly returns Allow headers:
+  - /api/crypto-wallets: Allow: GET, HEAD, OPTIONS
+  - /api/cards: Allow: GET, HEAD, OPTIONS, POST
+- TRACE method returns HTTP 500 "Internal Server Error" instead of 405 - method not properly disabled
+- Impact: MEDIUM - Apigee error format disclosure reveals internal API gateway architecture and configuration details. TRACE method returning 500 instead of 405 suggests incomplete method handling.
+
+### F846 [MEDIUM] Production gRPC Microservices Accessible on app.deblock.com
+- Target: app.deblock.com (PRODUCTION, GCP 34.8.230.142)
+- gRPC endpoints return proper gRPC responses when called with correct Content-Type:
+  - POST /grpc.health.v1.Health/Check -> 200, grpc-status: 2 (UNKNOWN)
+  - POST /grpc.reflection.v1alpha.ServerReflection/ServerReflectionInfo -> 200, grpc-status: 2
+  - POST /deblock.onboarding.v1.OnboardingService/GetStatus -> 200, grpc-status: 2
+  - POST /deblock.auth.v1.AuthService/Login -> 200, grpc-status: 2
+  - POST /deblock.users.v1.UsersService/GetUser -> 200, grpc-status: 2
+- All services return grpc-status 2 (likely due to empty/malformed request body)
+- Non-gRPC requests return 410 Gone
+- The gRPC service names reveal internal microservice architecture:
+  - deblock.onboarding.v1 (onboarding service)
+  - deblock.auth.v1 (authentication service)
+  - deblock.users.v1 (user management service)
+  - grpc.reflection.v1alpha (service reflection - can enumerate all methods)
+- With proper protobuf-encoded payloads, these services could potentially be invoked
+- Impact: MEDIUM - Internal gRPC microservices are accessible from the internet. The service reflection endpoint could allow full enumeration of available methods and message types. With proper protobuf encoding, an attacker could attempt to invoke internal services directly, bypassing the API gateway's authorization layer.
+
+### F847 [LOW] CDN S3 Bucket Directory Structure Enumeration on cdn1.deblock.com
+- Target: cdn1.deblock.com (AWS CloudFront -> S3, eu-west-3)
+- S3 bucket root: 403 AccessDenied (no directory listing)
+- Confirmed existing directories (200 response, content-type: application/x-directory):
+  - /images/ (empty)
+  - /assets/ (empty)
+  - /videos/ (empty)
+- S3 bucket region revealed: eu-west-3 (Paris) via x-amz-bucket-region header
+- CloudFront distribution fronting the S3 bucket
+- S3 server-side encryption: AES256
+- Impact: LOW - Directory structure is confirmed but contents are not listable. Region disclosure aids in targeting the correct AWS region for further enumeration.
+
+### F848 [LOW] robots.txt Reveals Internal Paths and Developer Pages on deblock.com
+- Target: deblock.com (PRODUCTION, Vercel)
+- robots.txt contains disallow/noindex entries:
+  - /Resume - returns 200 (accessible page, likely a developer's CV/resume)
+  - /WphYZ/ - redirects to /WphYZ (test path with random characters)
+  - /Jordan - 404 (removed)
+  - /miggy - 404 (removed)
+  - /vercel/path0/public/locales - internal Vercel deployment path leaked
+  - /choose-your-country - internal routing page
+- The developer-named paths (/Jordan, /miggy, /Resume) suggest pages created by individual team members
+- The Vercel internal path reveals the deployment structure
+- Impact: LOW - Information disclosure about development practices and internal paths. The /Resume page could reveal a developer's personal information.
+
+### F849 [MEDIUM] Production Business API Endpoint Discovery and Method Mapping
+- Target: business.deblock.com (PRODUCTION)
+- Confirmed API endpoints behind auth (401 Unauthorized):
+  - GET /api/crypto-wallets -> {"error":"Unauthorized","status":401}
+  - GET /api/crypto-wallets with cookie -> {"error":"Failed to load crypto wallets","status":401}
+  - GET /api/cards -> {"error":"Unauthorized","status":401}
+  - POST /api/cards -> {"error":"Forbidden"} (different error!)
+- Error message differential:
+  - GET without auth: "Unauthorized"
+  - GET with invalid cookie: "Failed to load crypto wallets" (more specific - reveals function name)
+  - POST without proper auth: "Forbidden" (different auth check path)
+- The differential error responses reveal:
+  - The authentication middleware processes cookies before checking validity
+  - GET and POST have different authorization checks
+  - The error messages expose internal function context
+- Impact: MEDIUM - Error message differential reveals internal API structure and can be used to map authentication flows. The different error for cookies vs no-auth indicates the auth middleware partially processes invalid tokens before rejecting.
+
+### F850 [MEDIUM] Sandbox Sardine AI Fraud API URL in Production CSP on business.deblock.com
+- Target: business.deblock.com (PRODUCTION)
+- CSP connect-src includes BOTH production AND sandbox Sardine AI endpoints:
+  - https://api.eu.sardine.ai (production)
+  - https://api.production.eu.sardine.ai (production explicit)
+  - https://api.sandbox.eu.sardine.ai (SANDBOX in production!)
+- Sardine AI is the fraud detection provider
+- Having the sandbox URL in production CSP means:
+  - The production app can communicate with the sandbox fraud detection API
+  - Sandbox APIs typically have weaker validation and accept test data
+  - An attacker could potentially route fraud checks through the sandbox API to bypass detection
+- Additional services confirmed in production CSP:
+  - Regula Forensics: KYC document verification (wasm, lic, api subdomains)
+  - Dotfile: KYB (client-portal.dotfile.com)
+  - OneSignal: Push notifications
+  - Apple: smp-device-content.apple.com
+  - Google Storage: storage.googleapis.com
+- Impact: MEDIUM - Sandbox fraud detection API endpoint accessible from production could allow an attacker who achieves XSS or controls a browser extension to redirect fraud detection requests to the sandbox environment, potentially bypassing fraud controls.
