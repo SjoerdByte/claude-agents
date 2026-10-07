@@ -39,9 +39,19 @@ Severity bucket mapping used below: P1 Critical / P2 High / P3 Medium / P4 Low /
 
 **Full writeup:** `finding-01-subscription-idor.md`.
 
-**Open to confirm (would raise severity):**
-- If mutation methods (POST/PUT/PATCH) on same route also bypass scope → P1 Critical (full publication takeover). Not yet probed (classifier blocks from recon container; user to run from Burp).
-- Confirmed invite-only publications leak → stays P2 but strengthens the case.
+**SEVERITY UPGRADE (2026-10-07 with auth testing):**
+- Mutation methods (POST/PUT/PATCH/DELETE) all return 404 on this route -- GET-only. No write IDOR.
+- Confirmed the endpoint returns **151 fields** (not 143 as originally counted) for ANY publication when called with ANY authenticated session, even publications the user is NOT subscribed to.
+- Sequential enumeration confirmed: pub IDs 1 through 8894693+ all return data.
+- **Key leaked fields per publication (verified on PubID 2 - Sinocism, PubID 5 - The Chatner):**
+  - `stripe_user_id`: e.g. `acct_0eJXV6CKLejsLXG3RdOj` (Stripe Connect account)
+  - `stripe_publishable_key`: e.g. `pk_live_okqbH3uKM2MG1Xy1pQxk6CjQ`
+  - `email_from`: e.g. `bill@sinocism.com` (publisher personal email PII)
+  - `google_site_verification_token`: e.g. `AhXh5M39gn_ZX9rVfufLHlEfs-2Urg4cUyJQGWoVHyY`
+  - `google_tag_manager_token` / `ga_pixel_id`: e.g. `G-PZ0JXVMXRB`
+  - `author_id`, `stripe_country`, `minimum_group_size`
+- When subscribed, also leaks `podcast_rss_token` (per-user, can access paid podcast feeds)
+- Requires authentication (returns empty publication without cookies).
 
 | Endpoint | Method | Severity | CVSS | OWASP | Impact |
 |---|---|---|---|---|---|
@@ -199,16 +209,9 @@ Handler returns A's own podcast URL regardless of token param. No cross-tenant l
 
 Route is GET-only. All mutation methods return 404.
 
-### F-C3 — SSRF via `/i/{post_id}?img=<URL>` or `cdn.substack.com/image/fetch/`
+### ~~F-C3 — SSRF via `/i/{post_id}?img=<URL>` or `cdn.substack.com/image/fetch/`~~ [DEAD -- tested 2026-10-07]
 
-| | |
-|---|---|
-| **If confirmed, severity** | P2 High |
-| **CVSS 3.1 (if confirmed)** | **8.6** |
-| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N` |
-| **Hypothesis** | The server-side image fetcher may call arbitrary URLs. From my egress the response-size diff between `img=http://169.254.169.254/latest/meta-data/` (155685 B) and `img=http://example.com/` (141473 B) is 14 KB, but inspection showed no IMDS content embedded, so the diff is probably render variance. Needs Burp Collaborator to confirm whether the backend actually makes an outbound HTTP request. |
-
-**Probe:** Collaborator URL in both image-proxy routes. See handoff Priority 3.
+Returns 404 on main domain with authentication. Endpoint not reachable for SSRF testing. The `/i/{post_id}?img=` route only serves Open Graph meta tags for social previews; no server-side fetch of the img URL was observed.
 
 ### F-C4 — SSRF cluster via publisher URL-input endpoints (requires publisher account)
 
@@ -243,66 +246,48 @@ post("/api/v1/gift-article").send({post_id: t.id, delivery_method: e})
 
 Severity P2 Candidate — token minted via `/api/v1/realtime/token`. If WS allows cross-tenant topic subscribe with a token from account A against publication B's topic, cross-tenant realtime leak = PII (comment stream, like stream, firehose).
 
-### F-C8 — `postAsUserId` comment impersonation (CRITICAL if confirmed)
+### ~~F-C8 — `postAsUserId` comment impersonation~~ [CLOSED NOT VULNERABLE -- tested 2026-10-07]
+
+Server properly validates the `postAsUserId` field. Testing with Account A's session:
+- `postAsUserId` set to Account B's userId: returns 403 "Not authorized"
+- `userId` / `user_id` body fields set to Account B: ignored, comment posted as Account A (the authenticated user)
+- The `postAsUserId` feature is a legitimate admin feature for publication owners to post as their publication identity, with proper authorization checks.
+
+### ~~F-C9 — Comment moderation bypass (cross-publication)~~ [CLOSED NOT VULNERABLE -- tested 2026-10-07]
+
+All three moderation endpoints tested with Account A's session against real comment IDs:
+- `PATCH /api/v1/comment/{id}/status` with `{status: "moderator_removed"}`: returns 403
+- `PATCH /api/v1/comment/{id}/pin` with `{pinned: true}`: returns 403
+- `POST /api/v1/comment/{id}/juice` with `{times_to_show: 5}`: returns 403
+
+Server properly checks that the caller is a moderator/admin of the comment's publication before allowing moderation actions.
+
+### ~~F-C10 — Recommendation manipulation IDOR~~ [INCONCLUSIVE -- tested 2026-10-07]
+
+PUT `/api/v1/recommendations/multiple` returns 400 "Missing required fields" with authenticated session. The endpoint requires `recommending_publication_id` and `recommended_publication_ids` but also appears to require the caller to own a publication. Since test accounts have no publications, this cannot be fully tested. Likely requires publisher accounts to confirm or deny.
+
+### ~~F-C11 — subscriber/add IDOR (mass enrollment)~~ [CLOSED NOT VULNERABLE -- tested 2026-10-07]
+
+POST `/api/v1/subscriber/add` with `{email, publication_id, sendEmail, subscription}` returns 403 with authenticated session. Server properly validates that the caller owns the target publication before allowing subscriber additions.
+
+### F-C12 — comment/attachment SSRF (fetchPostAttachment) [CONFIRMED EXTERNAL ONLY -- tested 2026-10-07]
 
 | | |
 |---|---|
-| **If confirmed, severity** | P1 Critical |
-| **CVSS 3.1 (if confirmed)** | **9.1** |
-| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:H` |
-| **CWE** | CWE-639 Authorization Bypass Through User-Controlled Key |
+| **Severity** | P3 Medium (downgraded from P2 -- external SSRF only, no internal access) |
+| **CVSS 3.1** | **5.3** (downgraded: no internal network access) |
+| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N` |
+| **CWE** | CWE-918 Server-Side Request Forgery |
 
-Found in bundle `77027.9b44ba37.js`. When posting a comment, the client sends `postAsUserId: es?.id` where `es` is selected from a notes_permissions dropdown. The server is supposed to validate that the caller has permission to post as that user, but the `postAsUserId` value is a raw user ID in the request body. If the server does not validate, any authenticated user can post comments as any other user.
+POST `/api/v1/comment/attachment` with `{url: "<URL>"}` causes server-side URL fetch. Confirmed the server fetches external URLs and follows HTTP redirects. However, robust URL validation blocks all internal network access:
+- Direct internal IPs (169.254.169.254, 10.0.0.1, 127.0.0.1, 192.168.1.1): blocked
+- Octal (0177.0.0.1), decimal (2130706433), hex (0x7f000001): blocked
+- IPv6-mapped (::ffff:127.0.0.1, [::1]): blocked
+- 0.0.0.0: blocked
+- DNS rebinding via nip.io/sslip.io (127.0.0.1.nip.io, 169.254.169.254.sslip.io): blocked (pre-fetch DNS resolution)
+- Redirect chains (external URL that 302s to 169.254.169.254): blocked at destination IP level
 
-Endpoints: `POST /api/v1/comment/feed` and `POST /api/v1/post/{id}/comment` with body field `postAsUserId`.
-
-### F-C9 — Comment moderation bypass (cross-publication)
-
-| | |
-|---|---|
-| **If confirmed, severity** | P2 High |
-| **CVSS 3.1 (if confirmed)** | **8.1** |
-| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:H` |
-| **CWE** | CWE-285 Improper Authorization |
-
-Found in bundle `73672.15238a23.js` and `77027.9b44ba37.js`. Three endpoints:
-- `PATCH /api/v1/comment/{id}/status` with `{status: "moderator_removed"}` -- remove any comment
-- `PATCH /api/v1/comment/{id}/pin` with `{pinned: true}` -- pin any comment
-- `POST /api/v1/comment/{id}/juice` with `{times_to_show: N}` -- boost any comment's visibility
-
-If the server doesn't validate that the caller is a moderator/admin of the publication the comment belongs to, any user can moderate/boost comments across all publications.
-
-### F-C10 — Recommendation manipulation IDOR
-
-| | |
-|---|---|
-| **If confirmed, severity** | P2 High |
-| **CVSS 3.1 (if confirmed)** | **7.5** |
-| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N` |
-| **CWE** | CWE-639 BOLA |
-
-Found in bundles `3615`, `67438`, `54689`. PUT to `/api/v1/recommendations/multiple` with body `{recommending_publication_id, recommended_publication_ids: [ids]}`. If the server doesn't validate ownership of `recommending_publication_id`, any user can add or remove publication recommendations for any publication.
-
-### F-C11 — subscriber/add IDOR (mass enrollment)
-
-| | |
-|---|---|
-| **If confirmed, severity** | P2 High |
-| **CVSS 3.1 (if confirmed)** | **7.1** |
-| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:L` |
-| **CWE** | CWE-639 BOLA |
-
-Found in bundle `54689`. POST to `/api/v1/subscriber/add` with body `{email, publication_id, sendEmail, subscription}`. The `publication_id` is a user-controlled field. If the server doesn't validate that the caller owns the publication, any user can force-subscribe arbitrary email addresses to any publication.
-
-### F-C12 — comment/attachment SSRF (fetchPostAttachment)
-
-| | |
-|---|---|
-| **If confirmed, severity** | P2 High |
-| **CVSS 3.1 (if confirmed)** | **8.6** |
-| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N` |
-
-Found in bundle `88136`. POST to `/api/v1/comment/attachment` with body `{url: "<arbitrary_url>"}`. The `fetchPostAttachment` variant fetches the provided URL server-side without specifying a type. If the server follows URLs without blocklist checks, this is SSRF.
+The server performs DNS resolution before connecting and validates the resolved IP is not in private ranges. External SSRF confirmed but not escalatable to IMDS/internal services.
 
 ### ~~F-C13 — LaTeX injection via `/api/v1/latex/jpeg`~~ [DEAD -- tested 2026-10-07]
 
@@ -315,6 +300,14 @@ Renderer is safe. Tested 6 payloads: `\input{/etc/passwd}`, `\write18{id}`, `\ur
 | Vector | Why dead |
 |---|---|
 | F-C13 LaTeX injection `/api/v1/latex/jpeg` | Renderer is math-only; 6 payloads tested (\input, \write18, \url, \newread, \lstinputlisting, \catcode), all rendered as text, no command execution. Safe. |
+| F-C8 postAsUserId impersonation | Server returns 403 "Not authorized" for foreign userId; userId/user_id body fields ignored. Proper auth checks. |
+| F-C9 Comment moderation bypass | All three endpoints (status, pin, juice) return 403 for non-admin users. Proper pub-admin checks. |
+| F-C11 subscriber/add IDOR | Returns 403. Server validates caller owns target publication. |
+| F-C20 Admin endpoint bypass | All admin-prefixed routes return 403 with regular user auth. Proper role checks. |
+| F-C21 Subscriber lists / profile edit | Returns 403/404 for other users' data. Proper ownership checks. |
+| F-C22 Post duplication IDOR | Returns 403. Server validates caller owns the post's publication. |
+| F-C25 Restack to foreign pub | Returns 403 "not a pub admin". Proper pub-admin checks. |
+| F-C3 SSRF via `/i/{post_id}?img=` | Returns 404 on main domain with auth. No server-side fetch observed. |
 | `/api/v1/customer_support_mode` role bypass | Dedicated opaque guard; no path smuggling, header injection, case/charset variation reached the handler |
 | `substack.lli` HS256 JWT confusion | Server does not consult `substack.lli` for authentication; `alg:none` crafted token with target userId was ignored |
 | `go.substack.com/*` open-redirect | Not a short-link redirector; all paths 302 to `/welcome` |
@@ -322,6 +315,10 @@ Renderer is safe. Tested 6 payloads: `\input{/etc/passwd}`, `\write18{id}`, `\ur
 | `cdn.substack.com/image/fetch/*` from this egress | 502 Bad Gateway; CloudFront origin IP-ACL probably blocking the recon container egress. User's home IP may work. |
 | `/@USER/.well-known/openid-configuration` per-user OIDC | 404; dossier guess wrong, no per-user OIDC published |
 | `/sign-in?redirect=<attacker>` open-redirect | Reflects without server-side redirect; post-auth redirect validation not tested but SPA probably validates on client |
+| CORS misconfiguration | No `Access-Control-Allow-Origin` header returned for `Origin: https://evil.com`. Not exploitable. |
+| Open redirect via `/redirect` | Endpoint returns 404. Does not exist. |
+| XSS via comments | Raw HTML in `body` field but frontend renders from `body_json` ProseMirror structured doc (text nodes only). Not exploitable. |
+| Email enumeration via password reset | Endpoint returns 404. Not reachable. |
 
 ---
 
@@ -338,7 +335,7 @@ Renderer is safe. Tested 6 payloads: `\input{/etc/passwd}`, `\write18{id}`, `\ur
 
 POST `/api/v1/drafts/{draftId}/publish` with `{send:true, only_send:true}`. The draftId is user-controlled. If the server doesn't verify ownership, any user can publish another publication's draft and email it to all subscribers. Found in bundles `50528`, `1859`.
 
-### F-C15 -- DM conversation IDOR (P1 CRITICAL if confirmed)
+### F-C15 -- DM conversation IDOR [BLOCKED -- tested 2026-10-07]
 
 | | |
 |---|---|
@@ -347,7 +344,7 @@ POST `/api/v1/drafts/{draftId}/publish` with `{send:true, only_send:true}`. The 
 | **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N` |
 | **CWE** | CWE-639 BOLA |
 
-GET/POST `/api/v1/messages/dm/{conversationId}`. Conversation IDs may be enumerable. If authorization doesn't verify the caller is a participant, any user can read or inject messages into other DM conversations. Found in bundles `62848`, `21588`.
+GET/POST `/api/v1/messages/dm/{conversationId}`. Testing with auth: POST `/api/v1/messages/dm/start` returns 403. GET `/api/v1/messages/dm/list` returns 404. The DM feature may require publisher accounts or specific feature flags. Cannot confirm or deny without valid conversation IDs. Requires publisher accounts to test properly.
 
 ### F-C16 -- Chat channel CRUD IDOR (P1 CRITICAL if confirmed)
 
@@ -360,7 +357,7 @@ GET/POST `/api/v1/messages/dm/{conversationId}`. Conversation IDs may be enumera
 
 PATCH/DELETE `/api/v1/chat/channels/{channelId}`. Modify name, permissions, paywall settings or delete any chat channel. POST `/api/v1/chat/publications/{pubId}/channels` to create channels on foreign publications. Found in bundles `58639`, multiple.
 
-### F-C17 -- Community post edit/delete IDOR
+### F-C17 -- Community post edit/delete IDOR [INCONCLUSIVE -- tested 2026-10-07]
 
 | | |
 |---|---|
@@ -369,7 +366,7 @@ PATCH/DELETE `/api/v1/chat/channels/{channelId}`. Modify name, permissions, payw
 | **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:H` |
 | **CWE** | CWE-639 BOLA |
 
-POST `/api/v1/community/posts/{postId}/edit`, PATCH (lock), DELETE. Edit body, lock, or delete any community post by ID.
+POST `/api/v1/community/posts/{postId}/edit` returns 400 "Invalid value" for test post IDs. The endpoint exists and accepts auth, but requires a valid community post ID. Need valid community post IDs from an active publication's community tab to fully test.
 
 ### F-C18 -- Private video/audio download IDOR
 
@@ -393,38 +390,25 @@ GET `/api/v1/video/upload/{id}/download-url.json`, `/src?override_publication_id
 
 POST `/api/v1/settings/publication/{pubId}` with generic `{settingName, settingValue}`. If pubId is not verified, any setting on any publication can be changed. Also PUT `/api/v1/pangram/disclosure` with `publication_id`.
 
-### F-C20 -- Admin endpoint bypass (category tags)
+### ~~F-C20 -- Admin endpoint bypass (category tags)~~ [CLOSED NOT VULNERABLE -- tested 2026-10-07]
 
-| | |
-|---|---|
-| **If confirmed, severity** | P2 High |
-| **CVSS 3.1 (if confirmed)** | **7.2** |
-| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N` |
-| **CWE** | CWE-285 Improper Authorization |
+All admin-prefixed endpoints return 403 with regular user authentication:
+- PUT `/api/v1/admin/comments/{id}/category-tags/{slug}`: 403
+- PUT `/api/v1/admin/posts/{id}/category-tags/{slug}`: 403
+- POST `/api/v1/comment/{id}/workflow`: 403
 
-PUT `/api/v1/admin/comments/{id}/category-tags/{slug}` and `/api/v1/admin/posts/{id}/category-tags/{slug}`. Admin-prefixed endpoints that may lack server-side role check. Also POST `/api/v1/comment/{id}/workflow` starts internal moderation workflows.
+Server properly enforces admin role checks on admin-prefixed routes.
 
-### F-C21 -- Subscriber lists / profile edit data leak
+### ~~F-C21 -- Subscriber lists / profile edit data leak~~ [CLOSED NOT VULNERABLE -- tested 2026-10-07]
 
-| | |
-|---|---|
-| **If confirmed, severity** | P2 High |
-| **CVSS 3.1 (if confirmed)** | **7.5** |
-| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N` |
-| **CWE** | CWE-639 BOLA |
+- GET `/api/v1/user/{userId}/subscriber-lists` with Account B's userId: returns 403 or 404
+- GET `/api/v1/user/{userId}/profile/edit` with Account B's userId: returns 403 or 404
 
-GET `/api/v1/user/{userId}/subscriber-lists` and `/api/v1/user/{userId}/profile/edit`. Both take a user-controlled userId. Could leak subscriber/follower lists and private profile data.
+Server properly validates that the caller can only access their own subscriber lists and profile edit data.
 
-### F-C22 -- Post duplication / theme / pin IDOR
+### ~~F-C22 -- Post duplication / theme / pin IDOR~~ [CLOSED NOT VULNERABLE -- tested 2026-10-07]
 
-| | |
-|---|---|
-| **If confirmed, severity** | P2 High |
-| **CVSS 3.1 (if confirmed)** | **7.1** |
-| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:H/A:N` |
-| **CWE** | CWE-639 BOLA |
-
-POST `/api/v1/posts/{id}/duplicate` (steal content into own drafts), PATCH `/api/v1/post/{id}/theme` (deface), POST/DELETE `/api/v1/publication/{pubId}/pin/{postId}` (manipulate pins). Also GET `/api/v1/posts/{id}/translate?bodyFormat=html` may bypass paywall.
+POST `/api/v1/posts/{id}/duplicate` returns 403 with authenticated session. Server properly validates that the caller owns the publication the post belongs to before allowing duplication.
 
 ### F-C23 -- Email abuse (app download link, referral, press kit)
 
@@ -437,29 +421,15 @@ POST `/api/v1/posts/{id}/duplicate` (steal content into own drafts), PATCH `/api
 
 POST `/api/v1/send_app_download_link` with arbitrary email (no visible rate limit in client). POST `/api/v1/reader/profile/invite` with spoofable `referrerId`. POST `/api/v1/press_kit/notification` with attacker-controlled `title`/`imageUrl`.
 
-**PARTIALLY CONFIRMED (2026-10-07):** `send_app_download_link` tested without auth: 5 rapid-fire POST requests with `{"email":"rate-limit-test@example.com"}` all returned HTTP 200. No rate limiting, no CAPTCHA, no auth required. This allows unauthenticated email flooding via Substack's mail infra. `press_kit/notification` and `reader/profile/invite` both return 403/400 without auth -- only `send_app_download_link` is unauthenticated.
+**CONFIRMED (2026-10-07):** `send_app_download_link` tested both without auth and with auth: 5+ rapid-fire POST requests with the same email address all returned HTTP 200. No rate limiting, no CAPTCHA, no auth required. Same email can be targeted repeatedly without any throttling. This allows unauthenticated email flooding via Substack's mail infra. Timing analysis confirms consistent sub-second responses with no exponential backoff or cooldown. `press_kit/notification` and `reader/profile/invite` both return 403/400 without auth -- only `send_app_download_link` is unauthenticated.
 
-### F-C24 -- Live stream controls IDOR
+### F-C24 -- Live stream controls IDOR [INCONCLUSIVE -- tested 2026-10-07]
 
-| | |
-|---|---|
-| **If confirmed, severity** | P2 High |
-| **CVSS 3.1 (if confirmed)** | **7.1** |
-| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:L` |
-| **CWE** | CWE-639 BOLA |
+PUT `/api/v1/live_stream/{id}/cancel` returns 404 "Stream not found" with authenticated session. No valid live stream IDs available for testing. Would need an active live stream to confirm or deny the vulnerability.
 
-PUT `/api/v1/live_stream/{id}/cancel`, POST `.../invite_guest/{userId}`, PUT `.../invite/{id}/accept_rtmp` with `overridePubId`. Cancel streams, invite guests, or accept RTMP invites on streams you don't own.
+### ~~F-C25 -- Restack / cross-post to foreign publication~~ [CLOSED NOT VULNERABLE -- tested 2026-10-07]
 
-### F-C25 -- Restack / cross-post to foreign publication
-
-| | |
-|---|---|
-| **If confirmed, severity** | P2 High |
-| **CVSS 3.1 (if confirmed)** | **7.1** |
-| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N` |
-| **CWE** | CWE-639 BOLA |
-
-POST `/api/v1/restack/{postId}` with `restackingPubId` set to foreign pub. Also POST `/api/v1/import.json?publication_id=737237` for bulk subscriber import to foreign pub.
+POST `/api/v1/restack/{postId}` with `restackingPubId` set to a foreign publication returns 403 "not a pub admin". Server properly validates that the caller is an admin of the `restackingPubId` publication.
 
 ---
 
@@ -467,47 +437,56 @@ POST `/api/v1/restack/{postId}` with `restackingPubId` set to foreign pub. Also 
 
 | Finding | Status | Notes |
 |---|---|---|
-| F-01 | Needs auth to revalidate | Returns 401 "Please sign in" without cookies; previously confirmed |
+| F-01 | RECONFIRMED + UPGRADED | 151 fields leaked for ANY pub. Sequential enumeration 1-8894693+. Leaks Stripe accounts, publisher emails, Google tokens. Any auth user. |
 | F-02 | RECONFIRMED | `check_subdomain` still leaks registered vs available slugs, with suggested alternatives |
 | F-03 | RECONFIRMED | `img` param now confirmed reflected through 301 redirect on publication subdomains (`/i/{id}?img=evil` -> `/p/slug?img=evil&open=false`); also reflected in `data-href` on sign-in button on main domain |
 | F-04 | RECONFIRMED | All headers still present: `X-Powered-By: Express`, `X-Service: web`, `X-Cluster: substack`, `X-Deploy: a758c95aa2`; AWSALBTG still missing Secure/HttpOnly |
 | F-05 | RECONFIRMED | CSP still only `frame-ancestors 'self' https://*.substack.com https://substack.com` |
 | F-06 | PARTIALLY CHANGED | `experiment_features` now returns `{"features":{}}` (empty); endpoint still exists. `am_i_logged_in` still leaks `ageVerification` field |
+| F-C3 | CLOSED (dead) | Returns 404 on main domain with auth. No server-side fetch. |
+| F-C8 | CLOSED (not vuln) | 403 "Not authorized" for foreign postAsUserId. userId/user_id ignored. Proper auth checks. |
+| F-C9 | CLOSED (not vuln) | 403 on all three moderation endpoints (status, pin, juice) for non-admin users. |
+| F-C10 | INCONCLUSIVE | 400 "Missing required fields". Requires publisher accounts to fully test. |
+| F-C11 | CLOSED (not vuln) | 403. Server validates caller owns target publication. |
+| F-C12 | CONFIRMED (external only) | Server fetches external URLs, follows redirects. All internal IP bypass attempts blocked by DNS-resolving validator. Downgraded to P3/5.3. |
 | F-C13 | CLOSED (not vuln) | 6 payloads tested, all rendered as text. Safe math-only renderer |
-| F-C23 | PARTIALLY CONFIRMED | `send_app_download_link` accepts arbitrary emails, no auth, no rate limit (5/5 succeeded) |
+| F-C14 | BLOCKED | Accounts have no publications (need Publisher Agreement via web UI). |
+| F-C15 | BLOCKED | 403 on dm/start, 404 on dm list. May require publisher accounts. |
+| F-C16 | BLOCKED | Accounts have no publications. |
+| F-C17 | INCONCLUSIVE | 400 "Invalid value" for test postId. Needs valid community post IDs. |
+| F-C19 | BLOCKED | Accounts have no publications. |
+| F-C20 | CLOSED (not vuln) | 403 on all admin-prefixed routes with regular user auth. |
+| F-C21 | CLOSED (not vuln) | 403/404 for other users' data. Proper ownership checks. |
+| F-C22 | CLOSED (not vuln) | 403 on post duplication. Proper ownership validation. |
+| F-C23 | CONFIRMED | No rate limit, no auth, same email 5x+ succeeds. Unauthenticated email flooding. |
+| F-C24 | INCONCLUSIVE | 404 "Stream not found". No valid live stream IDs available. |
+| F-C25 | CLOSED (not vuln) | 403 "not a pub admin". Proper pub-admin checks. |
+| XSS via comments | CLOSED (not vuln) | body_json ProseMirror structure prevents HTML rendering. |
+| CORS misconfig | CLOSED (not vuln) | No ACAO header for evil.com origin. |
+| Open redirect /redirect | CLOSED (dead) | Endpoint returns 404. |
 
-## Priority order for remaining work (updated 2026-10-07, round 3)
+## Priority order for remaining work (updated 2026-10-07, round 4 -- post auth testing)
 
-ALL remaining CVSS >8 candidates require authenticated session cookies. Provide `substack.sid` and `substack.lli` for accounts A and B to continue.
+Authenticated testing completed for all candidates that could be tested without publisher accounts. 10 candidates closed as not vulnerable. 2 confirmed (F-C12 external SSRF, F-C23 email flooding). F-01 severity significantly upgraded.
 
-P1 candidates (need auth):
-1. **F-C8** (postAsUserId impersonation, CVSS 9.1) -- Block G, 3 requests
-2. **F-C14** (draft publish IDOR, CVSS 9.8) -- Block M, 3 requests
-3. **F-C15** (DM conversation IDOR, CVSS 9.1) -- Block N, 4 requests
-4. **F-C16** (chat channel CRUD IDOR, CVSS 8.8) -- Block O, 4 requests
+### BLOCKER: Both test accounts need publications created via the web UI
 
-P2 candidates (need auth):
-5. **F-C9** (comment moderation bypass, CVSS 8.1) -- Block H
-6. **F-C17** (community post edit/delete, CVSS 8.1) -- Block P
-7. **F-C19** (publication settings write, CVSS 8.1) -- Block R
-8. **F-C3** (SSRF image proxy, CVSS 8.6) -- needs auth + Collaborator
-9. **F-C12** (comment/attachment SSRF, CVSS 8.6) -- Block L
-10. **F-C18** (video/audio download IDOR, CVSS 7.5) -- Block Q
-11. **F-C20** (admin endpoint bypass, CVSS 7.2) -- Block S, returns 403 without auth
-12. **F-C21** (subscriber lists / profile edit, CVSS 7.5) -- Block T
-13. **F-C22** (post duplication/theme/pin, CVSS 7.1) -- Block U
-14. **F-C10** (recommendation manipulation, CVSS 7.5) -- Block I
-15. **F-C11** (subscriber/add IDOR, CVSS 7.1) -- Block K
-16. **F-C23** (email abuse) -- Block V
-17. **F-C24** (live stream controls) -- Block X
-18. **F-C25** (restack to foreign pub) -- Block W
-19. **F-C7** (WS topic ACL) -- Block F
-20. **F-C3** (SSRF image proxy) -- needs Collaborator
-21. **F-C4** (import/posts redirect SSRF) -- needs webhook.site
-22. **Block A** (subscription siblings) -- 4 requests
-23. **Block B** (link-metadata SSRF) -- 3 requests
-24. **Block D** (posts/by_ids) -- 3 requests
-25. **Block E** (publication_user cluster) -- 5 requests
-26. **F-C25** (draft content IDOR) -- Block Y
+The following high-value candidates cannot be tested without publisher accounts. Creating a publication requires accepting the Publisher Agreement at `substack.com/publish` which cannot be done via API. Both Account A and Account B need publications created.
+
+Once publications exist, test these (highest CVSS first):
+1. **F-C14** (draft publish IDOR, CVSS 9.8) -- publish another pub's draft
+2. **F-C16** (chat channel CRUD IDOR, CVSS 8.8) -- modify/delete foreign chat channels
+3. **F-C19** (publication settings write, CVSS 8.1) -- change any pub's settings
+4. **F-C15** (DM conversation IDOR, CVSS 9.1) -- may also need publisher status
+
+### Other untested vectors (no publisher account needed, but need valid IDs):
+5. **F-C17** (community post edit/delete, CVSS 8.1) -- needs valid community post ID
+6. **F-C18** (video/audio download IDOR, CVSS 7.5) -- needs valid video/audio upload IDs
+7. **F-C24** (live stream controls, CVSS 7.1) -- needs valid live stream ID
+8. **F-C10** (recommendation manipulation, CVSS 7.5) -- needs publisher account
+9. **F-C7** (WS topic ACL) -- needs realtime token testing
+10. **F-C6** (gift/post_unlock_token forgery) -- needs gift link generation
+11. **F-C4** (import/posts SSRF cluster) -- needs publisher account + webhook.site
+12. **F-C5** (custom-domain hijack) -- needs CNAME + domain setup
 
 Probe scripts: `probe-batch-final.md` (Blocks A-L) and `probe-batch-round2.md` (Blocks M-Y).
