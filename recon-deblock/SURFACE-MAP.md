@@ -10598,3 +10598,54 @@ Priority 3 (Enumeration/escalation):
   - Apple: smp-device-content.apple.com
   - Google Storage: storage.googleapis.com
 - Impact: MEDIUM - Sandbox fraud detection API endpoint accessible from production could allow an attacker who achieves XSS or controls a browser extension to redirect fraud detection requests to the sandbox environment, potentially bypassing fraud controls.
+
+### F851 [HIGH] Alchemy API Key Has Premium Tier Access - Full Blockchain Data Exposure
+- Target: app.deblock.com (PRODUCTION)
+- API Key: PxkB3B-1-0bFVQHY4Gy5e9V_-FwVj7Pt (hardcoded in production JavaScript)
+- Alchemy node: reth/v2.5.2-5a6940e/x86_64-unknown-linux-gnu
+- Confirmed premium API access with this key:
+  - alchemy_getTokenBalances: Returns all token balances for any address (99 tokens returned for test address)
+  - alchemy_getAssetTransfers: Returns full transfer history for any address (5 transfers returned for test)
+  - alchemy_getTransactionReceipts: Returns all transaction receipts in a block (446 receipts in single block)
+  - alchemy_getNFTs / alchemy_getNFTsForOwner: Full NFT enumeration for any address
+  - eth_getBalance, eth_getTransactionByHash, eth_blockNumber: Standard RPC calls all working
+  - Networks confirmed: Ethereum mainnet, Polygon
+- The key provides unrestricted read access to the entire Ethereum and Polygon blockchains
+- An attacker can use this key to:
+  - Monitor all Deblock user wallet addresses and track their token holdings
+  - Enumerate user transaction history (deposits, withdrawals, swaps)
+  - Track real-time asset movements across all Deblock wallets
+  - Enumerate NFT holdings of any Deblock user
+  - Build a complete financial profile of any user whose wallet address is known
+- The key appears to be on a premium/growth tier (not free) given the API methods available
+- Combined with any wallet address leak (see browser-keys IDOR F652), this enables full financial surveillance
+- Impact: HIGH - While blockchain data is technically public, the premium API key provides efficient bulk querying capability that enables systematic user financial profiling. The key should be server-side only, not exposed in client JavaScript. API usage costs are also borne by Deblock.
+
+### F852 [MEDIUM] Staging API Exposes Full Cryptocurrency Market Data Without Authentication
+- Target: web-api-staging.deblock.com (STAGING)
+- Endpoint: GET /v1/coins/list (no authentication required)
+- Returns complete cryptocurrency market data including:
+  - Bitcoin: EUR 75,066.82, 24h change -2.72%, market cap EUR 1.49T
+  - Ethereum: EUR 2,288.36, 24h change -5.44%, market cap EUR 275.7B
+  - Total market cap: EUR 2.56T across all listed coins
+  - Sparkline data (7-day price history per coin)
+  - Coin image URLs served from cdn1.deblock.com
+- Response includes data structure revealing internal API design
+- No rate limiting observed on this endpoint
+- The staging API is the Rails backend on Heroku (not behind Vercel proxy)
+- Additional staging endpoints accessible without auth on the Heroku backend directly
+- Impact: MEDIUM - Market data itself is not sensitive, but the unauthenticated endpoint reveals internal API structure and could be abused for unlimited free market data queries at Deblock's expense.
+
+### F853 [LOW] UAT Environment Returns 502 Bad Gateway - Misconfigured/Abandoned
+- Target: uat.deblock.com
+- HTTP Response: 502 Bad Gateway
+- Server: Google Frontend (GFE)
+- The UAT (User Acceptance Testing) environment exists in DNS but the backend is down or misconfigured
+- Hosted on GCP (same infrastructure as production app.deblock.com)
+- A 502 from GFE means the load balancer cannot reach the backend service
+- Possible scenarios:
+  - Backend pods crashed or were scaled to zero
+  - Service account permissions changed
+  - Environment was abandoned but DNS/LB config remains
+- If the backend is restored with stale code, it may have vulnerabilities patched in production
+- Impact: LOW - Currently not exploitable as backend is unreachable, but indicates infrastructure hygiene issue. The environment should be fully decommissioned if no longer in use.
