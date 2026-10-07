@@ -1,0 +1,381 @@
+================================================================================
+DEBLOCK STAGING API - IDOR & AUTHORIZATION VULNERABILITY ASSESSMENT
+================================================================================
+Target: web-api-staging.deblock.com
+Stack:  Rails 7.0.10 on Heroku (development mode), Puma 7.2.1
+Date:   2026-10-05
+================================================================================
+
+
+================================================================================
+TEST 1: CACHE DELETION ENDPOINTS (NO AUTHENTICATION)
+================================================================================
+
+--- 1a. GET /v1/blog/cache/delete/test_key ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/blog/cache/delete/test_key"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 200
+
+--- 1b. GET /v1/legals/cache/delete/test_key ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/legals/cache/delete/test_key"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 200
+
+--- 1c. GET /v1/faq/cache/delete/test_key ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/faq/cache/delete/test_key"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 200
+
+--- 1d. GET /v1/home/cache/delete/test_key ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/home/cache/delete/test_key"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 200
+
+FINDING [LOW]: All cache deletion endpoints return HTTP 200 with a "Forbidden!"
+error in the body. The HTTP status code should be 403, not 200. Returning 200 for
+a failed authorization check is misleading and may cause issues with security
+monitoring tools that rely on HTTP status codes. The endpoints do appear to require
+some form of authentication (they reject unauthenticated requests), but the
+incorrect status code is a weakness.
+
+
+================================================================================
+TEST 2: GDPR DATA REMOVAL ENDPOINT
+================================================================================
+
+--- 2a. GET /v1/remove/data/dGVzdA== (base64 of "test") ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/remove/data/dGVzdA=="
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 403
+
+--- 2b. GET /v1/remove/data/YWRtaW4= (base64 of "admin") ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/remove/data/YWRtaW4="
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 403
+
+--- 2c. GET /v1/remove/data/invalid_token ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/remove/data/invalid_token"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 403
+
+FINDING [OK]: The endpoint properly returns 403 for unauthenticated requests.
+All three tokens (valid base64, different valid base64, invalid token) return the
+same generic error. This means the endpoint does NOT leak information about whether
+a user exists based on the token provided. Token validation happens after
+authentication, which is the correct order.
+
+
+================================================================================
+TEST 3: AMBASSADOR UUID ENUMERATION
+================================================================================
+
+--- 3a. GET /v1/ambassador/00000000-0000-0000-0000-000000000000 ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/ambassador/00000000-0000-0000-0000-000000000000"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 403
+
+--- 3b. GET /v1/ambassador/00000000-0000-0000-0000-000000000001 ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/ambassador/00000000-0000-0000-0000-000000000001"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 403
+
+--- 3c. GET /v1/ambassador/test ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/ambassador/test"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 403
+
+--- 3d. GET /v1/ambassador/1 ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/ambassador/1"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 403
+
+FINDING [OK]: All responses are identical regardless of UUID format (valid UUID,
+sequential UUID, string, integer). No enumeration is possible through this endpoint
+as authentication is checked before any ambassador lookup occurs. Error messages do
+not differ between valid and invalid UUID formats.
+
+
+================================================================================
+TEST 4: MOBILE ACCOUNT DELETION IDOR
+================================================================================
+
+--- 4a. DELETE /v1/mobile/account/1 ---
+Request:  curl -sS -X DELETE --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/mobile/account/1"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 200
+
+--- 4b. DELETE /v1/mobile/account/test ---
+Request:  curl -sS -X DELETE --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/mobile/account/test"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 200
+
+--- 4c. DELETE /v1/mobile/account/00000000-0000-0000-0000-000000000000 ---
+Request:  curl -sS -X DELETE --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/mobile/account/00000000-0000-0000-0000-000000000000"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 200
+
+FINDING [LOW]: Same issue as Test 1 -- the endpoint returns HTTP 200 with
+"Forbidden!" in the body. A destructive DELETE endpoint returning 200 on an
+authorization failure is particularly concerning. While the deletion itself is
+blocked, the incorrect status code could mask authorization failures in monitoring
+and logging systems. Should return HTTP 403.
+
+
+================================================================================
+TEST 5: S3 UPLOAD ENDPOINT
+================================================================================
+
+--- 5a. POST /v1/upload/anthony/test (empty body) ---
+Request:  curl -sS -X POST --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/upload/anthony/test"
+Response: {"status":"ok"}
+HTTP Status: 200
+
+--- 5b. POST /v1/upload/anthony/test (multipart/form-data) ---
+Request:  curl -sS -X POST -H "Content-Type: multipart/form-data" --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/upload/anthony/test"
+Response: {"status":"ok"}
+HTTP Status: 200
+
+FINDING [HIGH - POTENTIAL]: The upload endpoint returns HTTP 200 {"status":"ok"}
+with NO authentication required. Both an empty-body POST and a multipart POST
+succeed. Key concerns:
+  - No authentication or authorization check is performed
+  - The endpoint accepts requests with any username path parameter ("anthony")
+  - Returns success even with an empty body (no file)
+  - Does NOT reveal S3 bucket names in the response
+  - The "ok" response may indicate the endpoint silently succeeds or does nothing
+    when no file is provided, but the lack of auth is the primary concern
+  - An attacker could potentially upload arbitrary files to the S3 bucket associated
+    with any user path segment
+
+RECOMMENDATION: Add authentication. Validate the user path parameter against the
+authenticated user. Require a file in the request body. Rate limit this endpoint.
+
+
+================================================================================
+TEST 6: TWILIO WEBHOOK
+================================================================================
+
+--- 6a. POST /v1/webhook/twilio/test (empty body) ---
+Request:  curl -sS -X POST --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/webhook/twilio/test"
+Response: {"status":"Gone","message":"This endpoint is deprecated and no longer available."}
+HTTP Status: 410
+
+--- 6b. POST /v1/webhook/twilio/invalid_hash (empty body) ---
+Request:  curl -sS -X POST --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/webhook/twilio/invalid_hash"
+Response: {"status":"Gone","message":"This endpoint is deprecated and no longer available."}
+HTTP Status: 410
+
+FINDING [INFO]: The Twilio webhook endpoint has been properly deprecated with
+HTTP 410 Gone. The hash parameter in the URL does not affect the response -- both
+"test" and "invalid_hash" return the same 410 message. No hash validation logic
+can be tested as the endpoint rejects all requests before reaching that stage.
+The deprecation is handled correctly.
+
+
+================================================================================
+TEST 7: ADMIN ENDPOINTS AUTH BYPASS ATTEMPTS
+================================================================================
+
+--- 7a. GET /v1/admin/ambassador/applicants (no auth) ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/admin/ambassador/applicants"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 403
+
+--- 7b. GET /v1/admin/ambassador/applicants (X-API-Key: test) ---
+Request:  curl -sS -H "X-API-Key: test" --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/admin/ambassador/applicants"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 403
+
+--- 7c. GET /v1/admin/ambassador/applicants (Authorization: Bearer test) ---
+Request:  curl -sS -H "Authorization: Bearer test" --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/admin/ambassador/applicants"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 403
+
+--- 7d. GET /v1/admin/ambassador/applicants (?api_key=test) ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/admin/ambassador/applicants?api_key=test"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 403
+
+FINDING [OK]: The admin endpoint consistently returns 403 regardless of the
+authentication method attempted. All four methods (no auth, X-API-Key header,
+Bearer token, query parameter) produce identical responses. The endpoint does
+not reveal what authentication mechanism it expects, which is good security
+practice. No auth bypass was achievable with these methods.
+
+
+================================================================================
+TEST 8: DOWNLOAD LINK ENDPOINT
+================================================================================
+
+--- 8a. POST /v1/download/link ---
+Request:  curl -sS -X POST -H "Content-Type: application/json" -d '{"phone": "+33600000000"}' --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/download/link"
+Response: {"status":"fail","error":"Forbidden!","result":{}}
+HTTP Status: 403
+
+FINDING [OK]: The download link endpoint properly requires authentication.
+It does not process the phone number without authorization, meaning it cannot
+be used for phone number enumeration or SMS spam.
+
+
+================================================================================
+TEST 9: AMBASSADOR AUTO-SIGNUP FLOW
+================================================================================
+
+--- 9a. POST /v1/ambassador/email ---
+Request:  curl -sS -X POST -H "Content-Type: application/json" -d '{"email": "test@test.com"}' --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/ambassador/email"
+Response: HTTP 400 with FULL STACK TRACE (see below)
+
+Response body (truncated for key details):
+{
+  "status": 400,
+  "error": "Bad Request",
+  "exception": "#<ActionController::ParameterMissing: param is missing or the value is empty: ambassador>",
+  "traces": {
+    "Application Trace": [
+      {"trace": "app/controllers/v1/ambassador_auto_signup_controller.rb:114:in `ambassador_params'"},
+      {"trace": "app/controllers/v1/ambassador_auto_signup_controller.rb:100:in `check_email'"}
+    ],
+    "Framework Trace": [
+      {"trace": "actionpack (7.0.10) lib/action_controller/metal/strong_parameters.rb:477:in `require'"},
+      ... (78 additional framework trace entries)
+    ]
+  }
+}
+
+FINDING [CRITICAL - INFORMATION DISCLOSURE]: The ambassador email endpoint returns
+FULL STACK TRACES in development mode. This is a severe information disclosure
+vulnerability. Exposed information includes:
+
+  1. INTERNAL FILE PATHS:
+     - app/controllers/v1/ambassador_auto_signup_controller.rb (lines 100, 114)
+
+  2. EXACT GEM VERSIONS (attack surface mapping):
+     - actionpack 7.0.10
+     - activesupport 7.0.10
+     - activerecord 7.0.10
+     - railties 7.0.10
+     - rack 2.2.23
+     - rack-cors 1.1.1
+     - puma 7.2.1
+     - airbrake 13.0.3
+
+  3. APPLICATION ARCHITECTURE:
+     - Controller name: ambassador_auto_signup_controller
+     - Method names: ambassador_params, check_email
+     - Uses strong parameters requiring "ambassador" param wrapper
+     - Uses Airbrake for error monitoring
+     - Multiple rack-cors middleware layers (9 instances visible in trace)
+     - Running on Puma web server
+
+  4. PARAMETER STRUCTURE REVEALED:
+     - The endpoint expects params wrapped in an "ambassador" key
+     - e.g., {"ambassador": {"email": "test@test.com"}}
+
+  5. NO AUTHENTICATION REQUIRED:
+     - The endpoint processes the request (reaches parameter validation)
+       without any authentication check
+     - The before_action callback check_email runs without auth
+
+RECOMMENDATION:
+  - IMMEDIATELY disable development mode / debug exceptions on staging
+  - Set config.consider_all_requests_local = false
+  - Set config.action_dispatch.show_exceptions = :rescuable (or true in older Rails)
+  - Add authentication before parameter processing
+  - Return generic error messages in non-development environments
+
+
+================================================================================
+TEST 10: CHECK CALLBACK / AMBASSADOR
+================================================================================
+
+--- 10a. GET /v1/check/callback ---
+Request:  curl -sS --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/check/callback"
+Response: {"status":"ok"}
+HTTP Status: 200
+
+--- 10b. POST /v1/check/ambassador ---
+Request:  curl -sS -X POST -H "Content-Type: application/json" -d '{"code": "test"}' --cacert /root/.ccr/ca-bundle.crt "https://web-api-staging.deblock.com/v1/check/ambassador"
+Response: {"status":"fail","error":"This person is not certified by Deblock!","result":{}}
+HTTP Status: 406
+
+FINDING [LOW]:
+  - /v1/check/callback: Returns a simple health-check style response with no
+    authentication. Low risk, but confirms the API is alive to any scanner.
+  - /v1/check/ambassador: Returns a specific error message "This person is not
+    certified by Deblock!" with HTTP 406 (Not Acceptable). This endpoint:
+    * Requires no authentication
+    * Processes the "code" parameter without auth
+    * The specific error message reveals business logic (Deblock certification)
+    * Could potentially be used to enumerate valid ambassador codes by observing
+      different responses for valid vs. invalid codes (needs further testing
+      with valid codes)
+
+
+================================================================================
+SUMMARY OF FINDINGS
+================================================================================
+
+CRITICAL (1):
+  [C1] Information Disclosure via Stack Traces (Test 9)
+       - POST /v1/ambassador/email returns full Ruby stack traces
+       - Exposes internal file paths, gem versions, controller structure
+       - Development mode is enabled on a publicly-accessible staging server
+       - No authentication required to trigger
+
+HIGH (1):
+  [H1] Unauthenticated S3 Upload Endpoint (Test 5)
+       - POST /v1/upload/{username}/{filename} returns 200 OK with no auth
+       - Arbitrary username path accepted
+       - Could allow unauthorized file uploads to S3
+
+LOW (3):
+  [L1] Incorrect HTTP Status Codes (Tests 1, 4)
+       - Cache deletion and mobile account deletion return HTTP 200 for auth
+         failures instead of 403
+       - Could mask security events in monitoring systems
+
+  [L2] Unauthenticated Health Check (Test 10a)
+       - /v1/check/callback confirms API availability to scanners
+
+  [L3] Ambassador Code Check Without Auth (Test 10b)
+       - /v1/check/ambassador reveals business logic error messages
+       - Potential for ambassador code enumeration
+
+INFORMATIONAL (1):
+  [I1] Deprecated Twilio Webhook (Test 6)
+       - Properly returns 410 Gone
+       - Endpoint should be removed entirely from routing
+
+PASSED (4):
+  [P1] GDPR data removal (Test 2) - Proper 403, no user enumeration
+  [P2] Ambassador UUID enumeration (Test 3) - Consistent 403, no info leak
+  [P3] Admin auth bypass (Test 7) - Consistent 403 across all methods
+  [P4] Download link (Test 8) - Proper 403, no phone enumeration
+
+
+================================================================================
+RECOMMENDATIONS (PRIORITY ORDER)
+================================================================================
+
+1. URGENT: Disable development/debug mode on staging
+   - config.consider_all_requests_local = false
+   - This single change eliminates the critical stack trace disclosure
+
+2. HIGH: Investigate and secure /v1/upload endpoint
+   - Add authentication middleware
+   - Validate user path parameter against authenticated user
+   - Require file content in request body
+
+3. MEDIUM: Fix HTTP status codes for auth failures
+   - Return 403 instead of 200 for forbidden cache/account operations
+   - Ensures monitoring tools correctly flag unauthorized access attempts
+
+4. LOW: Add authentication to /v1/check/* endpoints
+   - Or accept the risk that they reveal minimal information
+
+5. LOW: Remove deprecated /v1/webhook/twilio/* from routes
+   - Dead code in routing adds unnecessary attack surface
+
+================================================================================
+END OF REPORT
+================================================================================
