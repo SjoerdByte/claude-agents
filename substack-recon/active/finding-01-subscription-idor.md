@@ -132,11 +132,41 @@ Account B (`peter.bjorndos`) reproduces identically. The guard is "has any valid
 ### Attempts that DO NOT work (confirming the exact shape of the bug)
 
 - `/api/v1/subscription/1565911732` (A's actual subscription_id) → `400 {"error":""}`. Handler clamps or shape-guards large integers; the enumeration range is only `[1, ~1_000_000]` where publication_ids live. **The route is incorrectly named — it treats the path parameter as publication_id.**
-- `/api/v1/publication/1` → `403 "Not authorized"` (correctly guarded; this is the "correct" endpoint).
+- `/api/v1/publication/737237` with same session → **`403 "Not authorized"` (14 B)**. This is the sibling, correctly-guarded endpoint. **Side-by-side proof that `/subscription/{id}` is a scope-bypass of `/publication/{id}`.**
 - `/api/v1/user/1` → `403 "Not authorized"` (correctly guarded).
 - `/api/v1/publications/1` → 404 (no route).
 
-So the vulnerability is specifically that `/subscription/{id}` leaks publication data without the scope check that `/publication/{id}` has.
+### Full response shape
+
+```json
+{
+  "hasPledge": true,
+  "publication": { /* 143 fields including the sensitive classes above */ },
+  "subscription": { /* only populated when the authenticated user HAS a subscription to {id}; otherwise null */
+    "id": 1565911718,
+    "user_id": <AUTHENTICATED_USER_ID>,
+    "publication_id": 737237,
+    "membership_state": "free_signup",
+    "visibility": "public",
+    "podcast_rss_token": "<UUID>",   /* per-subscriber private podcast feed token */
+    "gift_user_id": null,              /* reveals gifter identity if present */
+    "paused": null,
+    "expiry": null,
+    "bundle_id": null,
+    "first_payment_at": null,
+    "email_disabled": false,
+    "created_at": "...",
+    "is_founding": false,
+    "is_favorite": false
+  }
+}
+```
+
+**Confirmed on `/subscription/5`** (publication A does NOT subscribe to): `.subscription` is `null`, `.publication` is still full 143 fields. The `.publication` leak is **unconditional** on subscription status.
+
+**Confirmed on `/subscription/737237`** (publication A DOES subscribe to): both `.publication` (143 fields) and `.subscription` (A's own record incl. `podcast_rss_token`) are populated. The subscription record is A's own, so the subscription payload itself isn't a cross-user leak here — but it exposes a surface that would become one if a separate IDOR let an attacker swap the authenticated user.
+
+So the vulnerability is specifically that `/subscription/{id}` returns the publication object without the scope check that `/publication/{id}` enforces.
 
 ## Impact
 
