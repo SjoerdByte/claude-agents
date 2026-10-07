@@ -304,16 +304,9 @@ Found in bundle `54689`. POST to `/api/v1/subscriber/add` with body `{email, pub
 
 Found in bundle `88136`. POST to `/api/v1/comment/attachment` with body `{url: "<arbitrary_url>"}`. The `fetchPostAttachment` variant fetches the provided URL server-side without specifying a type. If the server follows URLs without blocklist checks, this is SSRF.
 
-### F-C13 — LaTeX injection via `/api/v1/latex/jpeg`
+### ~~F-C13 — LaTeX injection via `/api/v1/latex/jpeg`~~ [DEAD -- tested 2026-10-07]
 
-| | |
-|---|---|
-| **If confirmed, severity** | P1 Critical |
-| **CVSS 3.1 (if confirmed)** | **9.8** |
-| **Vector** | `CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H` |
-| **CWE** | CWE-94 Code Injection |
-
-GET endpoint, no auth required. Takes `expression` query param with LaTeX string. If the renderer uses pdflatex/xelatex without sandboxing, `\input{/etc/passwd}`, `\write18{command}`, or `\url{http://internal/}` can achieve file read, RCE, or SSRF. Blocked from testing in this container; user must run from their box.
+Renderer is safe. Tested 6 payloads: `\input{/etc/passwd}`, `\write18{id}`, `\url{http://169.254.169.254/...}`, `\newread\file\openin\file=/etc/passwd...`, `\lstinputlisting{/etc/passwd}`, `\catcode...`. All returned HTTP 200 with images that only render the commands as typeset text -- no file contents, no command output, no SSRF response. Happy path confirmed: basic math expressions (e.g. `x^2+y^2=z^2`) render correctly as PNG. The renderer uses a restricted/math-only mode that does not execute LaTeX commands.
 
 ---
 
@@ -321,6 +314,7 @@ GET endpoint, no auth required. Takes `expression` query param with LaTeX string
 
 | Vector | Why dead |
 |---|---|
+| F-C13 LaTeX injection `/api/v1/latex/jpeg` | Renderer is math-only; 6 payloads tested (\input, \write18, \url, \newread, \lstinputlisting, \catcode), all rendered as text, no command execution. Safe. |
 | `/api/v1/customer_support_mode` role bypass | Dedicated opaque guard; no path smuggling, header injection, case/charset variation reached the handler |
 | `substack.lli` HS256 JWT confusion | Server does not consult `substack.lli` for authentication; `alg:none` crafted token with target userId was ignored |
 | `go.substack.com/*` open-redirect | Not a short-link redirector; all paths 302 to `/welcome` |
@@ -443,6 +437,8 @@ POST `/api/v1/posts/{id}/duplicate` (steal content into own drafts), PATCH `/api
 
 POST `/api/v1/send_app_download_link` with arbitrary email (no visible rate limit in client). POST `/api/v1/reader/profile/invite` with spoofable `referrerId`. POST `/api/v1/press_kit/notification` with attacker-controlled `title`/`imageUrl`.
 
+**PARTIALLY CONFIRMED (2026-10-07):** `send_app_download_link` tested without auth: 5 rapid-fire POST requests with `{"email":"rate-limit-test@example.com"}` all returned HTTP 200. No rate limiting, no CAPTCHA, no auth required. This allows unauthenticated email flooding via Substack's mail infra. `press_kit/notification` and `reader/profile/invite` both return 403/400 without auth -- only `send_app_download_link` is unauthenticated.
+
 ### F-C24 -- Live stream controls IDOR
 
 | | |
@@ -467,26 +463,41 @@ POST `/api/v1/restack/{postId}` with `restackingPubId` set to foreign pub. Also 
 
 ---
 
-## Priority order for remaining work (updated 2026-10-07, round 2)
+## Revalidation log (2026-10-07)
 
-P1 candidates (run first):
-1. **F-C8** (postAsUserId impersonation) -- Block G, 3 requests
-2. **F-C13** (LaTeX injection) -- Block J, 4 requests, no auth
-3. **F-C14** (draft publish IDOR) -- Block M, 3 requests
-4. **F-C15** (DM conversation IDOR) -- Block N, 4 requests
-5. **F-C16** (chat channel CRUD IDOR) -- Block O, 4 requests
+| Finding | Status | Notes |
+|---|---|---|
+| F-01 | Needs auth to revalidate | Returns 401 "Please sign in" without cookies; previously confirmed |
+| F-02 | RECONFIRMED | `check_subdomain` still leaks registered vs available slugs, with suggested alternatives |
+| F-03 | RECONFIRMED | `img` param now confirmed reflected through 301 redirect on publication subdomains (`/i/{id}?img=evil` -> `/p/slug?img=evil&open=false`); also reflected in `data-href` on sign-in button on main domain |
+| F-04 | RECONFIRMED | All headers still present: `X-Powered-By: Express`, `X-Service: web`, `X-Cluster: substack`, `X-Deploy: a758c95aa2`; AWSALBTG still missing Secure/HttpOnly |
+| F-05 | RECONFIRMED | CSP still only `frame-ancestors 'self' https://*.substack.com https://substack.com` |
+| F-06 | PARTIALLY CHANGED | `experiment_features` now returns `{"features":{}}` (empty); endpoint still exists. `am_i_logged_in` still leaks `ageVerification` field |
+| F-C13 | CLOSED (not vuln) | 6 payloads tested, all rendered as text. Safe math-only renderer |
+| F-C23 | PARTIALLY CONFIRMED | `send_app_download_link` accepts arbitrary emails, no auth, no rate limit (5/5 succeeded) |
 
-P2 candidates (run next):
-6. **F-C9** (comment moderation bypass) -- Block H
-7. **F-C17** (community post edit/delete) -- Block P
-8. **F-C18** (video/audio download IDOR) -- Block Q
-9. **F-C19** (publication settings write) -- Block R
-10. **F-C20** (admin endpoint bypass) -- Block S
-11. **F-C21** (subscriber lists / profile edit) -- Block T
-12. **F-C22** (post duplication/theme/pin) -- Block U
-13. **F-C10** (recommendation manipulation) -- Block I
-14. **F-C11** (subscriber/add IDOR) -- Block K
-15. **F-C12** (comment/attachment SSRF) -- Block L
+## Priority order for remaining work (updated 2026-10-07, round 3)
+
+ALL remaining CVSS >8 candidates require authenticated session cookies. Provide `substack.sid` and `substack.lli` for accounts A and B to continue.
+
+P1 candidates (need auth):
+1. **F-C8** (postAsUserId impersonation, CVSS 9.1) -- Block G, 3 requests
+2. **F-C14** (draft publish IDOR, CVSS 9.8) -- Block M, 3 requests
+3. **F-C15** (DM conversation IDOR, CVSS 9.1) -- Block N, 4 requests
+4. **F-C16** (chat channel CRUD IDOR, CVSS 8.8) -- Block O, 4 requests
+
+P2 candidates (need auth):
+5. **F-C9** (comment moderation bypass, CVSS 8.1) -- Block H
+6. **F-C17** (community post edit/delete, CVSS 8.1) -- Block P
+7. **F-C19** (publication settings write, CVSS 8.1) -- Block R
+8. **F-C3** (SSRF image proxy, CVSS 8.6) -- needs auth + Collaborator
+9. **F-C12** (comment/attachment SSRF, CVSS 8.6) -- Block L
+10. **F-C18** (video/audio download IDOR, CVSS 7.5) -- Block Q
+11. **F-C20** (admin endpoint bypass, CVSS 7.2) -- Block S, returns 403 without auth
+12. **F-C21** (subscriber lists / profile edit, CVSS 7.5) -- Block T
+13. **F-C22** (post duplication/theme/pin, CVSS 7.1) -- Block U
+14. **F-C10** (recommendation manipulation, CVSS 7.5) -- Block I
+15. **F-C11** (subscriber/add IDOR, CVSS 7.1) -- Block K
 16. **F-C23** (email abuse) -- Block V
 17. **F-C24** (live stream controls) -- Block X
 18. **F-C25** (restack to foreign pub) -- Block W
