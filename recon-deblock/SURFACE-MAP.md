@@ -10029,14 +10029,18 @@ Priority 3 (Enumeration/escalation):
   - Route exists on staging but not accessible via GET
 - Impact: MEDIUM - SEPA upload endpoint reveals banking file processing pipeline. If a valid upload token is obtained, arbitrary SEPA files could be uploaded to the S3 bucket, potentially manipulating transaction records.
 
-### F814 [CRITICAL] Company Onboarding Phone Verification Completely Bypassed on Production
+### F814 [CRITICAL] Company Onboarding Phone Verification Never Implemented (Controller Action Missing) on Production
 - Target: web-api.deblock.com (PRODUCTION)
 - POST /v1/company/country with {"country_code":"FR"} creates unauthenticated onboarding session
   - Returns full session object with UUID: {"uuid":"5ecaf4e6-cb33-4a3c-84bb-e214e8daa1d1","country_code":"FR","email":null,"email_verified":false,"phone":null,"phone_verified":false,...}
 - POST /v1/company/phone with {"uuid":"<uuid>","phone":"+33612345678"} sets phone and INSTANTLY marks phone_verified:true
   - No OTP sent, no OTP verification required
-  - No /v1/company/phone/otp endpoint exists at all
-  - Confirmed on both production (web-api.deblock.com) and staging (web-api-staging.deblock.com)
+  - /v1/company/phone/otp returns 404 on production (route not defined)
+  - On staging, the ROUTE exists (/v1/company/phone/otp -> v1/company#phone_otp) but the CONTROLLER ACTION was never implemented:
+    AbstractController::ActionNotFound: The action 'phone_otp' could not be found for V1::CompanyController
+  - Root cause: the phone_otp action was never written in the CompanyController, meaning phone verification was never implemented at all (not removed, never built)
+  - Both staging AND production auto-verify phone on POST /v1/company/phone (phone_verified=true)
+  - Email OTP has a 6-attempt lockout; ambassador OTP has zero lockout (F833); company phone OTP does not exist
 - POST /v1/company/email with {"uuid":"<uuid>","email":"any@example.com"} sets email (email_verified remains false)
   - Email OTP verification at /v1/company/email/otp exists but has 5-attempt lockout (1 hour)
 - POST /v1/company/website with {"uuid":"<uuid>","url":"https://example.com"} sets website/domain
@@ -10289,3 +10293,50 @@ Priority 3 (Enumeration/escalation):
 - The endpoint still processes requests and returns a proper JSON response
 - The hash parameter accepts any value
 - Impact: LOW - The deprecated webhook endpoint should be fully removed rather than returning 410. The continued existence of the route handler could potentially be exploited if the deprecation logic has edge cases.
+
+### F832 [HIGH] Sentry Monitoring Tunnel Allows Arbitrary Event Injection Into Production Error Tracking
+- Target: business.deblock.com (PRODUCTION)
+- POST /monitoring?o=4510324489519104&p=4510324496859216&r=de accepts Sentry envelope payloads
+- Successfully injected events confirmed with Sentry response:
+  - Event 1: {"id":"694af9ade3414473af36014eeaa61ca2"} (HTTP 200)
+  - Event 2: {"id":"7364577fed084e5cbd35fdada13d49ca"} (HTTP 200)
+- The tunnel validates:
+  - Query parameters (o=orgid, p=projectid, r=region) are required
+  - DSN in envelope header must match (wrong DSN returns 401)
+  - Envelope format must have proper newline separators
+- All required values are publicly exposed:
+  - DSN key: 2f75b94510aa39f72db5dd805d1c1dc8 (from JS source)
+  - Org ID: 4510324489519104
+  - Project ID: 4510324496859216
+  - Region: de (from DSN host)
+- No authentication beyond the DSN key (which is public)
+- No rate limiting on event submission
+- Attacker can inject arbitrary events with any:
+  - Error level (info, warning, error, fatal)
+  - Message content
+  - Stack traces
+  - Tags and metadata
+  - User context (potentially spoofing real users)
+- CORS configuration on the tunnel:
+  - Access-Control-Allow-Origin: * (wildcard - any website can POST)
+  - Access-Control-Allow-Methods: POST
+  - Access-Control-Allow-Headers: x-sentry-auth, x-requested-with, x-forwarded-for, origin, referer, accept, content-type, authentication, authorization, content-encoding, transfer-encoding
+  - Cross-Origin-Resource-Policy: cross-origin
+- This means a malicious website visited by any user can silently inject Sentry events in the background
+- Impact: HIGH - An attacker can flood Deblock's Sentry project with fake error events from any website (CORS wildcard allows cross-origin POST). This enables alert fatigue attacks, obscuring real errors during an active attack, and potentially triggering automated incident responses. If Sentry integrations auto-create tickets (Jira, Linear) or send alerts (PagerDuty, Slack), the injection could disrupt engineering operations. The CORS wildcard combined with the publicly exposed DSN means no authentication or origin restriction exists.
+
+### F833 [MEDIUM] Company Email OTP Has 6-Attempt Lockout But Ambassador OTP Has Zero Lockout
+- Target: web-api.deblock.com and web-api-staging.deblock.com
+- Company email OTP (/v1/company/email/otp):
+  - Locks after 6 failed attempts: "Please wait 1 hour before trying again!"
+  - Tested on staging (same behavior confirmed on production in previous tests with 5-attempt lockout)
+  - 1 hour lockout period
+- Ambassador email OTP (/v1/ambassador/email/otp):
+  - NO lockout whatsoever (25+ sequential attempts confirmed, F811)
+  - 5 concurrent attempts all processed simultaneously
+  - Response time 0.33-0.67s per attempt
+  - 6-digit OTP = 1,000,000 combinations
+  - At 5 concurrent requests: brute force feasible in ~67,000 seconds (~18.5 hours)
+  - At higher concurrency (no rate limiting): significantly faster
+- The inconsistency suggests the ambassador OTP was implemented without the rate limiting applied to the company flow
+- Impact: MEDIUM - While the company email OTP has reasonable lockout protection, the ambassador OTP has none. An attacker can brute force a 6-digit ambassador OTP to take over any ambassador account by email. Combined with the ambassador auto-signup flow, this could enable unauthorized ambassador account creation and access to the ambassador program (referral tracking, revenue sharing, payment claims).
