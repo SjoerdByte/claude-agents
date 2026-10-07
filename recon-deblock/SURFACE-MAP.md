@@ -10340,3 +10340,167 @@ Priority 3 (Enumeration/escalation):
   - At higher concurrency (no rate limiting): significantly faster
 - The inconsistency suggests the ambassador OTP was implemented without the rate limiting applied to the company flow
 - Impact: MEDIUM - While the company email OTP has reasonable lockout protection, the ambassador OTP has none. An attacker can brute force a 6-digit ambassador OTP to take over any ambassador account by email. Combined with the ambassador auto-signup flow, this could enable unauthorized ambassador account creation and access to the ambassador program (referral tracking, revenue sharing, payment claims).
+
+### F834 [CRITICAL] Subdomain Takeover: web-api.deblock.com (Heroku) - Dangling CNAME to Unclaimed Heroku App
+- Target: web-api.deblock.com (PRODUCTION API SUBDOMAIN)
+- CNAME: synthetic-shelf-1mvmh3udes4a3ek6he8yvxts.herokudns.com
+- HTTP response: 404 from Heroku router (server: Heroku, x-runtime: 0.000763)
+- The domain is registered in DNS pointing to Heroku but NO Heroku app claims it
+- Verified: Both / and /v1/health return identical Heroku 404 with empty body
+- Attack scenario:
+  1. Attacker creates a Heroku app
+  2. Adds web-api.deblock.com as a custom domain
+  3. CNAME already resolves to Heroku
+  4. Attacker now controls content served on web-api.deblock.com
+- This is named "web-api" - a critical API subdomain
+- An attacker controlling this domain could:
+  - Serve a fake API mimicking Deblock's real API contract
+  - Steal authentication tokens from any client/mobile app configured to use this endpoint
+  - Phish users with SSL-valid deblock.com subdomain
+  - Serve malicious content with same-origin cookies if SameSite is not strict
+- Impact: CRITICAL - Full subdomain takeover on an API subdomain. Any application, mobile client, or service still referencing web-api.deblock.com will connect to attacker-controlled infrastructure. Given this was apparently the production web API endpoint (Heroku-based), legacy clients or hardcoded references may still point here.
+
+### F835 [HIGH] Subdomain Takeover: waitlist-api.deblock.com (Heroku) - Dangling CNAME to Unclaimed Heroku App
+- Target: waitlist-api.deblock.com
+- CNAME: triangular-nori-mturdfu2pnyuzlr1knxqprkr.herokudns.com
+- HTTP response: 404 from Heroku router (server: Heroku, empty body)
+- Same takeover vector as F834 - no Heroku app claims this domain
+- Attack scenario identical to F834
+- Impact: HIGH - Subdomain takeover on the waitlist API endpoint. While the waitlist may be legacy, the domain name under deblock.com can be used for phishing, cookie theft, or credential harvesting.
+
+### F836 [HIGH] Subdomain Takeover: staging-bursted-bubbles.deblock.com (Vercel) - DEPLOYMENT_NOT_FOUND
+- Target: staging-bursted-bubbles.deblock.com
+- CNAME: 9a1671be9b0a61fb.vercel-dns-016.com
+- HTTP response: 404 with "DEPLOYMENT_NOT_FOUND" from Vercel
+- Vercel explicitly states "The deployment could not be found on Vercel"
+- Attack scenario:
+  1. Attacker creates a Vercel project
+  2. Adds staging-bursted-bubbles.deblock.com as a custom domain
+  3. CNAME already resolves to Vercel
+  4. Attacker controls content on this subdomain
+- Impact: HIGH - Subdomain takeover. "Bursted Bubbles" appears to be a Deblock product/feature. An attacker could serve malicious content with a valid deblock.com SSL certificate.
+
+### F837 [HIGH] Subdomain Takeover: email.mail.deblock.com (Mailgun) - Potential Email Interception
+- Target: email.mail.deblock.com
+- CNAME: mailgun.org
+- MX records: mxa.mailgun.org, mxb.mailgun.org (priority 10)
+- TXT records include SPF for Mailgun, Google site verification, Yahoo verification
+- HTTP response: 404 "page not found" from Mailgun
+- If this domain is no longer claimed in any Mailgun account:
+  1. Attacker creates Mailgun account
+  2. Adds email.mail.deblock.com domain
+  3. DNS already has MX records pointing to Mailgun
+  4. Attacker can receive ALL emails sent to *@email.mail.deblock.com
+- The extensive TXT verification records suggest this was an actively used email sending domain
+- Impact: HIGH - Potential email subdomain takeover enabling email interception. If transactional emails (password resets, OTP codes, notifications) are sent from this domain, an attacker could intercept them. The SPF record actively authorizes Mailgun to send on behalf of this domain.
+
+### F838 [MEDIUM] Subdomain Takeover: support.deblock.com (Intercom) - Unclaimed Custom Domain
+- Target: support.deblock.com
+- CNAME: custom.eu.intercom.help
+- HTTP response: 404 "Not found" from Intercom (x-intercom-version header present)
+- Extensive CSP policy from Intercom reveals integration points
+- Intercom custom domains require domain verification, making takeover harder
+- However, if the Intercom workspace no longer claims this domain, another workspace could potentially claim it
+- Impact: MEDIUM - Potential takeover of the support subdomain. An attacker could serve a fake support/help center to harvest credentials or personal information from users seeking help.
+
+### F839 [HIGH] WordPress XML-RPC Multicall Brute-Force Vector on brand.deblock.com
+- Target: brand.deblock.com (PRODUCTION)
+- POST /xmlrpc.php with system.multicall method is fully functional
+- Tested: Two credential attempts in single HTTP request, both returned distinct responses
+- Response: faultCode 403, "Identifiant ou mot de passe incorrect" (French: Wrong username or password)
+- system.multicall allows batching hundreds of wp.getUsersBlogs calls in a single request
+- Each call in the batch tests a different password against a known username
+- Known admin username: admin-deblock (from F841)
+- No rate limiting observed on XML-RPC endpoint
+- Full list of available XML-RPC methods confirmed (80+ methods including all wp.*, metaWeblog.*, blogger.* methods)
+- Attack scenario: Attacker sends multicall requests with 500+ password attempts per request, bypassing any per-request rate limiting
+- Impact: HIGH - Enables efficient credential brute-forcing against the WordPress admin account. Multiple passwords can be tested in a single HTTP request, making traditional rate limiting ineffective. If the admin password is weak or in a common wordlist, account compromise is feasible.
+
+### F840 [MEDIUM] WordPress XML-RPC Pingback SSRF Vector on brand.deblock.com
+- Target: brand.deblock.com (PRODUCTION)
+- POST /xmlrpc.php with pingback.ping method is available
+- Tested with localhost (127.0.0.1:80) and AWS metadata (169.254.169.254) as source URLs
+- Both returned faultCode 0 with empty faultString (request processed)
+- The server processes pingback requests which cause it to make outbound HTTP requests
+- While the fault response suggests the SSRF may not return useful data in the response, the server still makes the outbound connection
+- Could be used for:
+  - Internal network scanning (port scanning internal services)
+  - Cloud metadata endpoint access (if running on cloud infrastructure)
+  - DDoS amplification (server makes requests to attacker-specified targets)
+- Impact: MEDIUM - SSRF vector via XML-RPC pingback. The server on Hostinger (LiteSpeed) processes pingback requests which cause outbound HTTP connections. Limited impact because Hostinger likely blocks internal network access, but still enables DDoS amplification and potential information disclosure through timing differences.
+
+### F841 [MEDIUM] WordPress User Enumeration and Information Disclosure on brand.deblock.com
+- Target: brand.deblock.com (PRODUCTION)
+- Multiple enumeration vectors confirmed:
+  1. /wp-json/wp/v2/users returns full user list publicly (no auth required)
+  2. /?author=1 redirects to /author/admin-deblock/ (user slug confirmed)
+  3. /?author=2 returns 404 (only 1 user exists)
+- User details exposed:
+  - ID: 1
+  - Username: admin-deblock
+  - Slug: admin-deblock
+  - URL: http://brand.deblock.com (note: HTTP not HTTPS)
+  - Gravatar SHA256: 44f51df94ecb1454d3e064107d59a8a4606564f21ace0b536097f9f7a185e5f3
+  - Elementor introduction flags (reveals feature usage)
+- Only one WordPress user exists (single admin account)
+- Combined with F839, provides a known-username target for brute-force
+- Impact: MEDIUM - User enumeration provides the admin username for credential attacks. The Gravatar hash could potentially be reversed to reveal the admin's email address. Single-admin setup means successful compromise gives full site control.
+
+### F842 [MEDIUM] WordPress BackWPup REST API Routes Exposed on brand.deblock.com
+- Target: brand.deblock.com (PRODUCTION)
+- BackWPup v5.6.7 plugin REST API routes publicly listed at /wp-json/
+- Exposed routes include:
+  - POST /backwpup/v1/startbackup (trigger backup)
+  - GET /backwpup/v1/getjobslist (list backup jobs)
+  - POST /backwpup/v1/addjob (add backup job)
+  - DELETE /backwpup/v1/delete_job (delete backup job)
+  - POST /backwpup/v1/save_job_settings (modify backup settings)
+  - POST /backwpup/v1/save_excluded_tables (modify exclusions)
+  - POST /backwpup/v1/save_files_exclusions (modify file exclusions)
+  - POST /backwpup/v1/authenticate_cloud (cloud storage auth)
+  - GET /backwpup/v1/storagelistcompact (list storage targets)
+  - POST,GET /backwpup/v1/chatbot-context (AI chatbot context)
+- All endpoints properly return 401 (rest_forbidden) without authentication
+- However, the route listing reveals the backup infrastructure:
+  - Backup system is active
+  - Cloud storage is configured (authenticate_cloud, cloud_is_authenticated endpoints)
+  - Multiple backup jobs exist
+- Impact: MEDIUM - While endpoints are properly auth-gated, the route listing reveals the backup architecture. An attacker who gains WordPress admin access (via F839) knows exactly which endpoints to target for backup exfiltration (database dumps, file backups to cloud storage).
+
+### F843 [LOW] WordPress Version and Server Configuration Disclosure on brand.deblock.com
+- Target: brand.deblock.com (PRODUCTION)
+- WordPress version: 7.1.2 (from CSS version strings: dashicons.min.css?ver=7.1.2)
+- PHP version: 8.3.33 (from X-Powered-By header)
+- Server: LiteSpeed on Hostinger (platform: hostinger, panel: hpanel)
+- readme.html publicly accessible (200, 7407 bytes)
+- wp-login.php accessible (login form served)
+- WordPress REST API index at /wp-json/ returns full route listing
+- CSP includes: upgrade-insecure-requests
+- Timezone: Europe/Paris
+- Additional plugins detected via API routes:
+  - Elementor Pro 4.0.1
+  - Elementor One (managed plugin system)
+  - Elementor AI (AI features enabled)
+  - BackWPup 5.6.7
+  - Hello Elementor theme
+- wp-content/debug.log: 403 (blocked by LiteSpeed, but file may exist)
+- Impact: LOW - Version disclosure enables targeted vulnerability research. While WP 7.1.2 is recent, the specific version combination with plugins allows CVE matching.
+
+### F844 [MEDIUM] WordPress Elementor Form Submissions Route Accessible on brand.deblock.com
+- Target: brand.deblock.com (PRODUCTION)
+- Elementor Pro exposes form submission management routes at /wp-json/elementor/v1/:
+  - GET,DELETE,POST,PUT,PATCH /elementor/v1/form-submissions (list/manage submissions)
+  - GET,DELETE,POST,PUT,PATCH /elementor/v1/form-submissions/{id} (individual submission)
+  - GET /elementor/v1/form-submissions/export (export all submissions)
+  - GET /elementor/v1/form-submissions/referer (form referers)
+  - POST,PUT,PATCH /elementor/v1/form-submissions/restore (restore deleted)
+  - GET /elementor/v1/forms (list forms)
+- All endpoints properly return 401 without authentication
+- However, the route listing confirms forms are used and submissions are stored
+- The export endpoint suggests bulk data extraction is possible with admin credentials
+- Additional sensitive Elementor routes:
+  - POST /elementor/v1/documents/{id}/media/import (media import)
+  - GET,POST /elementor/v1/send-event (event tracking)
+  - DELETE /elementor/v1/cache (cache purge)
+  - GET /elementor/v1/site-editor (site editor access)
+- Impact: MEDIUM - If an attacker compromises WordPress admin credentials (via F839 brute-force), the form submissions export endpoint provides a direct path to bulk PII exfiltration. Brand sites often collect contact information, newsletter signups, and business inquiries through Elementor forms.
