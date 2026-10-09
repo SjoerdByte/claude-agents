@@ -56,16 +56,28 @@
     {"id": "T017", "priority": "P3", "summary": "common-repository/anyday-woocommerce mirror may preserve older plugin versions with removed endpoints/test credentials — diff against latest", "source": "github mirror"},
     {"id": "T018", "priority": "P3", "summary": "ichnaea.anyday.io at 20.223.60.248 (Azure) — Mozilla Ichnaea is a geolocation service; is anyday running a private geolocation API?", "source": "passive-DNS"},
     {"id": "T019", "priority": "P3", "summary": "developer.anyday.io is on ReadMe.io — public docs may expose /api/* paths not visible in GitHub (api.anyday.io shape in particular)", "source": "passive-DNS"},
-    {"id": "T020", "priority": "P3", "summary": "sqlproxy-nordiska.anyday.io exposes codename 'Nordiska' and runs on Azure 13.63.25.203 — identify what the SQL proxy fronts", "source": "passive-DNS"}
+    {"id": "T020", "priority": "P3", "summary": "sqlproxy-nordiska.anyday.io exposes codename 'Nordiska' and runs on Azure 13.63.25.203 — identify what the SQL proxy fronts", "source": "passive-DNS"},
+    {"id": "T021", "priority": "P1", "summary": "Open-redirect candidates on POST /api/v1/orders: successRedirectUrl, cancelRedirectUrl, returnUrl, refererUrl. The checkout flow sends the customer to these URLs post-authorization; if domain allowlist is missing, this is a classic phishing primitive. CVSS 6.1 (reflected) to 7.4 (stored via order id).", "source": "developer.anyday.io OpenAPI"},
+    {"id": "T022", "priority": "P1", "summary": "IDOR via webshopId on POST /api/v1/orders — the body accepts an explicit webshopId UUID that 'will ignore referrer'. If backend doesn't verify the Bearer token is scoped to that webshop, a merchant can create orders tied to another merchant's shop (and absorb the money). CVSS target 8.1-9.1.", "source": "developer.anyday.io OpenAPI"},
+    {"id": "T023", "priority": "P1", "summary": "GET /api/v1/webshop/mine leaks apiKey + testAPIKey + privateKey — the privateKey is the HMAC secret used to sign callbacks. If this endpoint is IDOR-vulnerable (same Bearer sees another merchant's data), attacker forges valid callbacks declaring Captures/Refunds on victim orders. CVSS 8.6-9.3.", "source": "developer.anyday.io OpenAPI"},
+    {"id": "T024", "priority": "P1", "summary": "API keys are HS256 JWTs with payload {name, iat}. Test (a) alg confusion (None, RS256-with-HMAC-key), (b) kid/jku/x5u header injection, (c) HS256 secret bruteforce on an exfiltrated key. If the server shares one HS256 secret across all merchants, a single secret-leak is total cross-tenant key forgery.", "source": "developer.anyday.io OpenAPI example"},
+    {"id": "T025", "priority": "P2", "summary": "Customer checkout endpoint GET /api/v1/internal/checkout/begin?checkoutId=<uuid> is unauthenticated. Test checkoutId enumeration (sequential UUIDs?), session fixation, and Referer-based identity binding.", "source": "developer.anyday.io online-integration-guide"},
+    {"id": "T026", "priority": "P2", "summary": "internalQrCodeId / externalQrCodeId / externalUserId fields on POST /api/v1/orders — test cross-merchant QR-code reuse (take merchant A's QR UUID, create order against it with merchant B's Bearer).", "source": "developer.anyday.io OpenAPI"},
+    {"id": "T027", "priority": "P2", "summary": "The /en/ merchant dashboard SPA at my.anyday.io/en/merchant/dashboard/* — enumerate dashboard routes via sitemap/Angular routes.json; test for admin-only pages reachable with merchant Bearer.", "source": "developer.anyday.io authentication-copy"},
+    {"id": "T028", "priority": "P2", "summary": "Shopify Alternative-Provider ID 105578497 is Anyday's. Fetch the Shopify App Store listing for the app's required scopes and backend host (routes to connect.anyday.io).", "source": "developer-docs/docs/shopify.md"},
+    {"id": "T029", "priority": "P3", "summary": "Error code 17 virtualCardUnlinkedTransaction suggests Marqeta virtual-card issuing is tied to transactions server-side; test POST /api/v1/orders with large partial captures to see if virtual-card provisioning paths trigger (potential state-machine confusion).", "source": "PaymentErrorCode enum"}
   ],
   "pending_decisions": [
-    "Workflow wf_3969a41b-69a still running: pending phases are Discover-Secrets, Deep-Read, Harvest, Completeness, Synthesize. Merge their output when complete."
+    "Workflow wf_3969a41b-69a resumed after spending-limit reset; waiting for Discover-Secrets + Deep-Read + Harvest + Completeness + Synthesize to complete."
   ],
-  "hours_spent": 2,
+  "hours_spent": 3,
   "session_goal": "Surface mapping from GitHub + passive DNS",
   "findings": [],
   "artifacts": {
     "provisional_surface_map": "anyday-recon/SURFACE-MAP-provisional.md",
+    "api_spec_recovered": "anyday-recon/passive/API-SPEC.md",
+    "developer_docs_llms_txt": "anyday-recon/passive/developer-llms.txt",
+    "developer_docs_tree": "anyday-recon/passive/developer-docs/",
     "passive_dns_inventory": "anyday-recon/passive/DNS-INVENTORY.md",
     "live_subdomains_doh": "anyday-recon/passive/doh-resolution.json",
     "all_passive_subdomains": "anyday-recon/passive/all-passive-subdomains.txt",

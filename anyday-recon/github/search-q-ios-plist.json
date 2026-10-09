@@ -1,1 +1,71 @@
-Saved search results via tool output
+{
+  "vector": "q-ios-plist",
+  "note": "No iOS plist / GoogleService-Info.plist files for anyday.io found on public GitHub.",
+  "queries_tried": [
+    "\"anyday\" filename:Info.plist OR filename:GoogleService-Info.plist",
+    "\"anyday\" filename:Info.plist",
+    "\"anyday\" filename:GoogleService-Info.plist",
+    "\"anyday.io\" filename:Info.plist",
+    "\"anyday.io\" filename:GoogleService-Info.plist",
+    "\"anyday\" \"CFBundleIdentifier\"",
+    "\"anyday\" \"BUNDLE_ID\" filename:GoogleService-Info.plist",
+    "\"anyday\" \"CFBundleURLSchemes\"",
+    "\"io.anyday\" filename:Info.plist",
+    "\"anyday\" \"REVERSED_CLIENT_ID\"",
+    "\"com.anyday\" extension:plist",
+    "\"anyday\" extension:plist",
+    "\"anyday\" \"GOOGLE_APP_ID\"",
+    "\"anyday\" \"FirebaseAppDelegateProxyEnabled\"",
+    "\"anyday.io\" extension:plist",
+    "\"anyday.io\" filename:AndroidManifest.xml",
+    "\"anyday\" filename:google-services.json",
+    "\"anyday.io\" filename:Podfile",
+    "\"api.anyday.io\" extension:plist OR extension:xml OR extension:json",
+    "\"anyday\" \"firebaseapp.com\"",
+    "\"anyday\" filename:Podfile.lock",
+    "\"anyday.io\" filename:project.pbxproj",
+    "\"anydaymobile\" OR \"AnydayApp\"",
+    "\"anyday\" \"aps-environment\"",
+    "\"anyday\" \"URL_TYPES\" extension:plist",
+    "\"dk.anyday\" OR \"anyday.dk\"",
+    "\"anyday\" \"appstoreconnect\"",
+    "\"anyday.io\" extension:swift",
+    "\"anyday.io\" extension:kt OR extension:java",
+    "\"anyday.io\" extension:gradle",
+    "\"anyday.io\" \"Firebase\"",
+    "\"anyday.io\" \"cookie\"",
+    "\"anyday.io\" \"googleapis\""
+  ],
+  "incidental_hits_non_ios": [
+    {
+      "repo": "AnodyneAps/BY",
+      "path": "layout/theme.liquid",
+      "url": "https://github.com/AnodyneAps/BY/blob/master/layout/theme.liquid",
+      "why": "Shopify theme (merchant integration). References commented-out script src https://my.anyday.io/webshopPriceTag/anyday-price-tag-da-es2015.js - reveals real anyday CDN host my.anyday.io and asset path /webshopPriceTag/anyday-price-tag-da-es2015.js"
+    },
+    {
+      "repo": "powplowdevs/SpyView",
+      "path": "SView/domains/NO/anyday.io.json",
+      "url": "https://github.com/powplowdevs/SpyView/blob/main/SView/domains/NO/anyday.io.json",
+      "why": "DuckDuckGo tracker-radar derived data lists rule anyday\\.io\\/price-widget\\/anyday-price-widget\\.js - confirms endpoint path /price-widget/anyday-price-widget.js on *.anyday.io"
+    },
+    {
+      "repo": "WebJax/CookieDK",
+      "path": "database/providers.json",
+      "url": "https://github.com/WebJax/CookieDK/blob/main/database/providers.json",
+      "why": "Danish cookie-consent provider DB classifies Anyday (https://anyday.io) as third_party service. Not inside session's allowed repos but public search snippet lists Firebase as a provider in context - possible indicator anyday loads Firebase on web pages (needs confirmation; may be about CookieDK's own stack)."
+    },
+    {
+      "repo": "kompost/scraper",
+      "path": "apps/api/src/scraper/scraper.service.ts",
+      "url": "https://github.com/kompost/scraper/blob/main/apps/api/src/scraper/scraper.service.ts",
+      "why": "A third-party web scraper service lists anyday.io in a filter alongside usercentrics / cookiebot - suggests anyday widget frequently shows on crawl targets. No new endpoint."
+    },
+    {
+      "repo": "duckduckgo/tracker-radar-wiki",
+      "path": "docs/domains/anyday.io.html",
+      "url": "https://github.com/duckduckgo/tracker-radar-wiki/blob/main/docs/domains/anyday.io.html",
+      "why": "DDG Tracker Radar entry for anyday.io - low prevalence (0.00%), 0 cookies, 0 fingerprinting (as of 2022). Context, not a leak."
+    }
+  ]
+}

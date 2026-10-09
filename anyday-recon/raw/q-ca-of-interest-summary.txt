@@ -1,0 +1,59 @@
+VECTOR: q-ca-of-interest
+Date: 2026-10-09
+
+Queries run (via mcp__github__search_code):
+1. "anyday" "Jonas Overgaard"  -> 0 hits
+2. "anydaycph"                 -> 0 hits
+3. "anyday" "Nordiska"         -> 2 hits (noise: unrelated startup list, Swedish lang file)
+4. "anyday.io" "Jonas"         -> 3 hits (jo@anyday.io email in email-blacklist dumps; crunchbase CSV)
+5. "anyday" "Overgaard"        -> 8 hits (ALL noise: expired-domain lists, cirosantilli repos, review datasets)
+6. "anydayab"                  -> 9 hits (ALL noise: expired domain lists, CGC poller files)
+7. "@anyday.io"                -> 5 hits (confirms onboarding@anyday.io and jo@anyday.io)
+8. "anyday.io" language:TypeScript -> 1 hit (kompost/scraper allowlist)
+9. "anyday.io" language:JavaScript -> 3 hits (biggest signal: anyday-io/website-js-deprecated events.js)
+10. "anyday.io" language:C#   -> 0 hits
+11. "my.anyday.io"             -> 17 hits (confirmed subdomain + path templates; see endpoints below)
+12. "anyday" org:anyday-io     -> 1 hit (events.js in website-js-deprecated)
+13. "api.anyday.io"            -> 0 hits
+14. "anyday" "Hangfire"        -> 0 hits of interest (unrelated projects)
+
+Key GitHub repos (official-looking, public):
+- anyday-io/website-js-deprecated         <- client JS calling internal API
+- anyday-payments/ANYDAY-Magento2         <- Magento2 plugin, server-side API client
+- anyday-payments/ANYDAY-WooCommerce      <- WooCommerce plugin
+- common-repository/anyday-woocommerce    <- mirror of WooCommerce plugin (wp.org)
+
+Attack-surface signals found:
+
+Confirmed hostnames (seen in code, no probing):
+- my.anyday.io
+- www.anyday.io
+
+Internal API path templates (verbatim from code):
+- GET  https://my.anyday.io/api/{version}/internal/shops         (query params: PageSize, Language, display, SortBy, Ascending, Featured, CategoryIds, Search, Page)
+- GET  https://my.anyday.io/api/{version}/internal/categories
+- GET  https://my.anyday.io/api/{version}/internal/categories/{id}  <- id is a UUID (potential IDOR surface)
+- POST https://my.anyday.io/api/v1/authentication/login
+- /api/v1/orders                   (base path from WooCommerce plugin)
+- /api/v1/orders/{id}/capture      (merchant-plugin called)
+- /api/v1/orders/{id}/refund       (merchant-plugin called)
+- /webshopPriceTag/anyday-price-tag-{lang}-es2015.js (public JS asset)
+- /price-widget/anyday-price-widget.js               (public JS asset)
+
+Discount / promo signals (relevant to high-value attack patterns):
+- Campaign code "blackweek"; discount tier slugs 25offall, upto80..upto20
+- The /api/{v}/internal/shops Featured + Search params may expose discount filtering IDOR / mass-assignment on tenant visibility
+- categories/{UUID} dynamic path -> classic numeric/UUID IDOR candidate
+
+Auth lifecycle:
+- /api/v1/authentication/login confirmed as the credential endpoint (POST)
+- Merchant orders flow: authorize -> capture/refund/cancel; constants: ANYDAY_STATUS_PENDING|AUTHORIZE|CAPTURE|REFUND|CANCEL
+
+Emails observed (data, not from an anyday repo):
+- onboarding@anyday.io       (public, from README of ANYDAY-Magento2 / ANYDAY-WooCommerce)
+- jo@anyday.io               (listed in two unrelated third-party cold-email blacklists: aditWorkspace/emailsending)
+
+Tech signals:
+- Backend status set is consistent with .NET + Hangfire anyday stack hint (not directly confirmed in these repos)
+- WooCommerce plugin version 1.7.8
+- Frontend events.js uses jQuery $.get, un-authenticated public catalog calls

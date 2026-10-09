@@ -1,0 +1,39 @@
+{
+  "vector": "q-s3-buckets",
+  "note": "Broad 'anyday' + S3/GCS/Azure cloud-storage queries found no anyday-owned buckets. Narrower 'anyday.io' + S3/GCS/Azure queries returned ZERO hits for those storage providers. However, incidental anyday.io recon surfaced subdomains, internal API path templates, and the official anyday-payments / anyday-io GitHub orgs.",
+  "subdomains_discovered": [
+    "staging.anyday.io",
+    "sandbox.anyday.io",
+    "connect.anyday.io",
+    "s.connect.anyday.io",
+    "grafana.anyday.io",
+    "my.anyday.io",
+    "www.anyday.io"
+  ],
+  "endpoint_templates": [
+    "https://my.anyday.io/api/v1/authentication/login",
+    "https://my.anyday.io/api/v1/orders",
+    "https://my.anyday.io/api/v1/orders/{id}/capture",
+    "https://my.anyday.io/api/v1/orders/{id}/refund",
+    "https://my.anyday.io/api/{version}/internal/<path>",
+    "https://my.anyday.io/webshopPriceTag/anyday-price-tag-{lang}-es2015.js",
+    "https://my.anyday.io/price-widget/anyday-price-widget.js"
+  ],
+  "repos_of_interest": [
+    "anyday-payments/ANYDAY-Magento2",
+    "anyday-payments/ANYDAY-WooCommerce",
+    "anyday-payments/ANYDAY-Magento1",
+    "anyday-io/website-js-deprecated",
+    "common-repository/anyday-woocommerce (plugin mirror)",
+    "rix4uni/BugBountyData -> data/anyday.io.txt"
+  ],
+  "cloud_storage_buckets_found_for_anyday": [],
+  "negative_results": {
+    "query_anyday_io_s3_amazonaws": 0,
+    "query_anyday_io_storage_googleapis": 0,
+    "query_anyday_io_blob_core_windows_net": 0,
+    "query_org_anyday_payments_bucket_s3_aws": 0,
+    "query_org_anyday_io_bucket_s3_aws": 0,
+    "query_anyday_digitaloceanspaces_cloudfront": 0
+  }
+}

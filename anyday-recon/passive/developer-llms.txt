@@ -1,0 +1,61 @@
+# Anyday Documentation
+
+> Welcome to the Anyday Developer Hub. Here, you can find guides for implementing Anyday's marketing widgets, integrations, and APIs.
+
+## Guides: Getting Started
+- [Getting Started with Anyday](https://developer.anyday.io/docs/getting-started.md): This page will help you get started with Anyday. You'll be up and running in a jiffy!
+
+## Guides: Price Widget
+- [Price Widget Script](https://developer.anyday.io/docs/price-widget-script.md)
+- [Price Widget Element](https://developer.anyday.io/docs/price-widget-element.md)
+
+## Guides: Shopsystems
+- [Getting Started with Anyday Plugins](https://developer.anyday.io/docs/getting-started-plugins.md)
+- [Gateway Activation](https://developer.anyday.io/docs/general-gateway-activation.md)
+  - [Anyday API keys](https://developer.anyday.io/docs/anyday-api-keys.md)
+  - [Quickpay](https://developer.anyday.io/docs/quickpay.md)
+  - [Pensopay](https://developer.anyday.io/docs/pensopay.md)
+  - [Shipmondo Payments](https://developer.anyday.io/docs/shipmondo-payments.md)
+  - [Billwerk+ (Reepay)](https://developer.anyday.io/docs/billwerk-formerly-reepay.md)
+  - [Onpay](https://developer.anyday.io/docs/onpay.md)
+- [Shopify (New!)](https://developer.anyday.io/docs/shopify.md)
+  - [Collaborator Request Code](https://developer.anyday.io/docs/collaborator-request-code-new.md)
+- [Shopify (Deprecated)](https://developer.anyday.io/docs/shopify-quickpay.md)
+  - [Integration Overview (Deprecated)](https://developer.anyday.io/docs/integration-overview-shopify.md)
+  - [Setup Guides (Deprecated)](https://developer.anyday.io/docs/setup-guides-shopify.md)
+  - [Collaborator Request Code](https://developer.anyday.io/docs/collaborator-request-code.md)
+- [WooCommerce](https://developer.anyday.io/docs/woocommerce.md)
+  - [Integration Overview](https://developer.anyday.io/docs/integration-overview-woocommerce.md)
+  - [Setup Guides](https://developer.anyday.io/docs/setup-guides-woocommerce.md)
+- [PrestaShop](https://developer.anyday.io/docs/prestashop.md)
+  - [Integration Overview](https://developer.anyday.io/docs/integration-overview-prestashop.md)
+  - [Setup Guides](https://developer.anyday.io/docs/setup-guides-prestashop.md)
+- [Magento 1.x](https://developer.anyday.io/docs/magento-1.md)
+  - [Integration Overview](https://developer.anyday.io/docs/integration-overview-1.md)
+  - [Setup Guides](https://developer.anyday.io/docs/setup-guides-1.md)
+- [Magento 2.x](https://developer.anyday.io/docs/magento-2.md)
+  - [Integration Overview](https://developer.anyday.io/docs/integration-overview-2.md)
+  - [Setup Guides](https://developer.anyday.io/docs/magento-24.md)
+- [DanDomain (old)](https://developer.anyday.io/docs/dandomain.md)
+  - [Integration Overview](https://developer.anyday.io/docs/integration-overview-3.md)
+  - [Setup Guides](https://developer.anyday.io/docs/setup-guides-2.md)
+- [MCB.Cloud](https://developer.anyday.io/docs/mcbcloud.md)
+  - [Integration Overview](https://developer.anyday.io/docs/integration-overview-4.md)
+  - [Setup Guides](https://developer.anyday.io/docs/setup-guides-3.md)
+- [Shoporama](https://developer.anyday.io/docs/shoporama.md)
+  - [Integration Overview](https://developer.anyday.io/docs/integration-overview-5.md)
+  - [Setup Guides](https://developer.anyday.io/docs/setup-guides-4.md)
+- [Third-Party Integrations](https://developer.anyday.io/docs/third-party-integrations.md)
+
+## API Reference: Anyday API
+- [Authentication](https://developer.anyday.io/reference/authentication-copy.md)
+- [Login](https://developer.anyday.io/reference/post_api-v1-authentication-login.md)
+- [Get Shops](https://developer.anyday.io/reference/get_api-v1-webshop-mine.md)
+- [Anyday Order API](https://developer.anyday.io/reference/intro.md)
+- [Online Integration Guide](https://developer.anyday.io/reference/online-integration-guide.md)
+- [In-Store Integration Guide](https://developer.anyday.io/reference/in-store-integration-guide.md)
+- [Create Order](https://developer.anyday.io/reference/create-order.md): Update purchase order detail if order id exist or create new if the order id does not already exist
+- [Capture Order](https://developer.anyday.io/reference/capture-order.md)
+- [Refund Order](https://developer.anyday.io/reference/refund-order.md)
+- [Cancel Order](https://developer.anyday.io/reference/cancel-order.md)
+- [Get Order](https://developer.anyday.io/reference/get-order.md)
