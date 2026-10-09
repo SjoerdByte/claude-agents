@@ -12,3 +12,9 @@ exploit/sessions/
 **/localstorage*.json
 **/sessionstorage*.json
 **/oauth-*.headers
+
+# Raw apiKey-hunt grep output may contain live secret values - keep local
+raw/apikey-hunt/env-*.txt
+raw/apikey-hunt/*-full-*.txt
+raw/apikey-hunt/*-prod-*.txt
+raw/apikey-hunt/*prod*.txt

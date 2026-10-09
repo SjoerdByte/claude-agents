@@ -1,20 +1,3 @@
-./exploit/node_modules/minimatch/minimatch.js:Segments = [[[], 0]]
-./exploit/node_modules/minimatch/minimatch.js:Segments,
-./exploit/node_modules/minimatch/minimatch.js:Segments, fileIndex, 0, partial, 0, !!fileTailMatch
-./exploit/node_modules/minimatch/minimatch.js:Segments, fileIndex, bodyIndex, partial, globStarDepth, sawTail
-./exploit/node_modules/minimatch/minimatch.js:Segments.length - 1
-./exploit/node_modules/minimatch/minimatch.js:Segments.length; si++) {
-./exploit/node_modules/minimatch/minimatch.js:Segments.push(currentBody)
-./exploit/node_modules/minimatch/minimatch.js:Segments[0]
-./exploit/node_modules/minimatch/minimatch.js:Segments[bodyIndex]
-./exploit/node_modules/minimatch/minimatch.js:Segments[si][0].length)
-./exploit/node_modules/minimatch/minimatch.js:Segments[si][1] = fileLength -
-./exploit/node_modules/minimatch/minimatch.js:segment
-./exploit/node_modules/minimatch/minimatch.js:segment of a file with a trailing slash.
-./exploit/node_modules/minimatch/minimatch.js:segments at each GLOBSTAR
-./exploit/node_modules/puppeteer-extra-plugin-stealth/evasions/navigator.languages/index.test.js:PushError = (() => {
-./exploit/node_modules/puppeteer-extra-plugin-stealth/evasions/navigator.languages/index.test.js:PushError,
-./exploit/node_modules/puppeteer-extra-plugin-stealth/evasions/navigator.languages/index.test.js:PushError: true,
 ./exploit/probe.js:intercom-auth-GET
 ./exploit/probe.js:intercom/auth
 ./exploit/probe2.js:intercom-auth-GET
