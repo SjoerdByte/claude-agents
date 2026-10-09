@@ -1,0 +1,13 @@
+{
+  "target": "blockpit.io",
+  "authorization": "Written permission from CEO Florian Wimmer",
+  "scope_note": "*.blockpit.io - everything in scope, including vendor-hosted infrastructure running Blockpit code or storing Blockpit data. ~85 subdomains known upfront.",
+  "ruled_out": [],
+  "open_threads": [],
+  "pending_decisions": [],
+  "hours_spent": 0,
+  "known_stack": ["Angular", "Sentry"],
+  "second_account_available": "yes, can self-create",
+  "session_goal": "Surface mapping from GitHub",
+  "findings": []
+}
