@@ -1,0 +1,30 @@
+VECTOR: q-ios-plist
+QUERY: "anyday" filename:Info.plist (and variations)
+RESULT: No iOS plist / GoogleService-Info.plist files found referencing anyday.io on public GitHub.
+
+DIRECT NEGATIVE RESULTS:
+- "anyday" filename:Info.plist => 0
+- "anyday" filename:GoogleService-Info.plist => 0
+- "anyday.io" filename:Info.plist => 0
+- "anyday.io" filename:GoogleService-Info.plist => 0
+- "anyday.io" filename:google-services.json => 0
+- "anyday.io" extension:plist => 0
+- "anyday-io" filename:Info.plist => 0
+- "io.anyday" (bundle ID style) => 0
+- "anyday.io" extension:swift => 0
+- "anyday.io" extension:kt => 0
+- "anyday.io" extension:m => 0
+- "anyday" filename:project.pbxproj => only unrelated matches (HowManyDays, ManyDays)
+- "anyday" filename:AndroidManifest.xml => only unrelated matches (ManyDays, HowManyDays, AnyDayViewPager)
+
+ADJACENT FINDS (not from plist search but surfaced during related queries):
+- GitHub org exists: `anyday-payments` with public repos:
+  * anyday-payments/ANYDAY-Magento2  (Magento 2 payment extension)
+  * anyday-payments/ANYDAY-WooCommerce (WooCommerce plugin)
+- Base API host: https://my.anyday.io/api/
+- Auth URL: v1/authentication/login
+- Order endpoints: /api/v1/orders, /api/v1/orders/{id}/capture, /api/v1/orders/{id}/refund
+- Pricetag asset host: https://my.anyday.io/webshopPriceTag/anyday-price-tag-{en|da}-es2015.js
+- CSP wildcard: *.anyday.io (trust for all subdomains, interesting for cross-subdomain XSS / origin trust)
+
+CONCLUSION: No mobile iOS/Android app code appears to have been published publicly by Anyday under their org name. Mobile app binaries if they exist would need to be downloaded from App Store / Play Store (out of scope for GitHub recon). The anyday-payments org only hosts PHP ecommerce plugins.
