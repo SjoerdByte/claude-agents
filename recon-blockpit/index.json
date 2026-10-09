@@ -17,6 +17,11 @@
     "No new blockpit.io subdomains leaked beyond the 85 we started with - the Angular bundles only reference app, api, cdn, cn, cta, gate, gov, gov-api."
   ],
   "open_threads": [
+    "GET /api/General/Version on both blockchain-api.blockpit.io and financial-api.blockpit.io - only op the spec declares as apiKey-free; probe first in next session to confirm server behavior matches spec + capture build/version string.",
+    "GET /api/Elrond/DeconstructTransaction and /api/Hedera/DeconstructTransaction - the spec declares NO 401 response. Test unauth; if 200 is returned, runtime apiKey enforcement is missing on these two chains and probably on /GetAccountBalances + /IsValidImportAccount on both.",
+    "GET /api/Bitcoin/GetTransactionsByXPubKey (+ Y/Z-Pub variants + Litecoin/Dash/Doge/BCH) - 34 xpub endpoints collectively de-anonymise wallets from a single extended public key. Test with any held apiKey for cross-user privacy impact.",
+    "GET /api/General/GetMultichainAddressesByAddressList - one call fans out to 66 chain RPCs with a bulk address list; the single most expensive op in the surface and a resource-abuse multiplier.",
+    "TaxToolEvmTransaction.kyt_txdb_id (int64) leaks internal transaction DB IDs through this unauthenticated utility API. Use observed kyt_txdb_id values as neighbor-id seeds against cn.blockpit.io / bit-api / cta-api /v1/transactions/{id} and /report/{id} endpoints in the authenticated session.",
     "cn.blockpit.io/api/v1/transactions/export?year=<YYYY> is the SuPuL endpoint - confirmed real path but all requests from automation are 403-blocked at Cloudflare managed challenge before reaching the Blockpit origin. Need origin IP (TLS SAN / passive DNS / cert transparency) to probe auth-scheme error body; this is a hard-dependency for the whole cn.blockpit.io/api/* surface.",
     "/v1/users PATCH is a mass-assignment candidate - login response contains advisorRole, agentId, advisorId fields - test whether sending these in a PATCH escalates a standard user to a gov advisor on cn.blockpit.io (needs authenticated session).",
     "gov.blockpit.io POST /v1/members payload includes isAdmin passed straight through from client (createMember sends {name,email,password,isAdmin}). If server trusts isAdmin, self-registering a gov advisor + flipping isAdmin would give full tenant admin on gov-api.blockpit.io - needs a gov-tenant invite to test.",
@@ -42,7 +47,7 @@
     "whitelistedUsers in prod bundle leaks 4 internal account emails incl. CEO (mail@florianwimmer.at, guineapig@blockpit.io, daniil.rabizo@blockpit.io, blockpitdemo@gmail.com). Not a finding alone but is the targeted-phish list; also useful to attempt username enumeration via login error-body differences later."
   ],
   "pending_decisions": [],
-  "hours_spent": 3.5,
+  "hours_spent": 5.7,
   "known_stack": [
     "Angular 17+ (esbuild / Rolldown; standalone-components, loadComponent, modulepreload prefetch)",
     "NX monorepo (apps/*-app, libs/design-system/atoms+molecules, Storybook)",
@@ -60,12 +65,31 @@
   "second_account_available": "yes, can self-create",
   "session_goal": "Unauth Angular+API surface mapping",
   "github_surface": {
-    "orgs_real": ["cryptotax-team"],
-    "orgs_squatter": ["Blockpit", "blockpitru"],
+    "orgs_real": [
+      "cryptotax-team"
+    ],
+    "orgs_squatter": [
+      "Blockpit",
+      "blockpitru"
+    ],
     "docker_hub_org": "blockpit (3 images, last push 2022)",
-    "employee_github_handles_confirmed": ["pascalc23"],
-    "employee_github_handles_legacy": ["rgoeritz", "TonnTamerlan", "pushkin-82", "robotdude17"],
-    "employee_emails_leaked": ["peter.schoellauf@blockpit.io", "mail@pascalcosta.com", "robert.goeritzer@gmail.com", "tonn.tamerlan@gmail.com", "s.putilin.82@gmail.com", "hgruschinski@gmail.com"],
+    "employee_github_handles_confirmed": [
+      "pascalc23"
+    ],
+    "employee_github_handles_legacy": [
+      "rgoeritz",
+      "TonnTamerlan",
+      "pushkin-82",
+      "robotdude17"
+    ],
+    "employee_emails_leaked": [
+      "peter.schoellauf@blockpit.io",
+      "mail@pascalcosta.com",
+      "robert.goeritzer@gmail.com",
+      "tonn.tamerlan@gmail.com",
+      "s.putilin.82@gmail.com",
+      "hgruschinski@gmail.com"
+    ],
     "surface_map_file": "github/SURFACE-MAP-GITHUB.md",
     "employees_file": "github/employees.csv",
     "new_subdomains_file": "github/new-subdomains.txt",
@@ -86,14 +110,103 @@
     "raw_dir": "raw/angular/"
   },
   "api_unauth_surface": {
-    "reachable_hosts_direct_origin": ["blockchain-api.blockpit.io", "financial-api.blockpit.io"],
-    "reachable_hosts_cf_edge_only": ["cn.blockpit.io", "cta-api.blockpit.io", "gov-api.blockpit.io"],
-    "dark_hosts_proxy_502_twice": ["api.blockpit.io", "api-staging.blockpit.io", "api-test.blockpit.io", "bit-api.blockpit.io", "bit-api-test.blockpit.io", "kytapi.blockpit.io", "test.kytapi.blockpit.io"],
-    "swagger_endpoints_unauth": ["https://blockchain-api.blockpit.io/swagger/v1/swagger.json", "https://financial-api.blockpit.io/swagger/v1/swagger.json"],
+    "reachable_hosts_direct_origin": [
+      "blockchain-api.blockpit.io",
+      "financial-api.blockpit.io"
+    ],
+    "reachable_hosts_cf_edge_only": [
+      "cn.blockpit.io",
+      "cta-api.blockpit.io",
+      "gov-api.blockpit.io"
+    ],
+    "dark_hosts_proxy_502_twice": [
+      "api.blockpit.io",
+      "api-staging.blockpit.io",
+      "api-test.blockpit.io",
+      "bit-api.blockpit.io",
+      "bit-api-test.blockpit.io",
+      "kytapi.blockpit.io",
+      "test.kytapi.blockpit.io"
+    ],
+    "swagger_endpoints_unauth": [
+      "https://blockchain-api.blockpit.io/swagger/v1/swagger.json",
+      "https://financial-api.blockpit.io/swagger/v1/swagger.json"
+    ],
     "swagger_endpoint_count": 641,
     "api_unauth_file": "API-UNAUTH.md",
     "raw_dir": "raw/api-unauth/"
   },
   "discovered_subdomains": [],
-  "findings": []
+  "findings": [
+    {
+      "id": "F001",
+      "endpoint": "link.blockpit.io/",
+      "method": "GET",
+      "severity": "medium",
+      "cvss": 6.1,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N",
+      "owasp": "A05: Security Misconfiguration",
+      "status": "unverified",
+      "summary": "Dangling CNAME link.blockpit.io -> custom-domain.linkdrip.io (LinkDrip) with no claimed tenant - every slug 301s to vendor fallback https://fun.com. Attacker can sign up at LinkDrip and claim the subdomain, inheriting live traffic from Blockpit's X profile, Facebook, LinkedIn, iOS/Android app badges, and marketing campaign shortlinks for phishing. No main-app session-cookie reach (no Domain=.blockpit.io auth cookie), so phishing-only.",
+      "file": "link-takeover/FINDING-DRAFT.md"
+    }
+  ],
+  "openapi_surface": {
+    "specs_file_blockchain": "raw/swagger/blockchain-api.json",
+    "specs_file_financial": "raw/swagger/financial-api.json",
+    "attack_map_file": "openapi/ATTACK-MAP.md",
+    "notes": "Specs are byte-identical in paths+definitions; only host differs. Swagger 2.0 (NSwag/.NET). All 641 operations are GET. 60 definitions. Zero securityDefinitions, zero per-op security. apiKey is a query-string param on 640/641 ops (enforced server-side via 401). The surface is a stateless blockchain-data gateway (66 chains x small catalog) - no user IDs, tenants, PII, admin, discount or auth-lifecycle endpoints.",
+    "counts": {
+      "total_operations": 641,
+      "method_distribution": {
+        "get": 641,
+        "post": 0,
+        "put": 0,
+        "patch": 0,
+        "delete": 0
+      },
+      "unique_tags": 66,
+      "unique_schemas": 60,
+      "unauth_declared_ops": 1,
+      "missing_401_declaration_ops": 7,
+      "classical_idor_candidates": 0,
+      "mass_assignment_candidates": 0,
+      "pii_strict_candidates": 0,
+      "onchain_data_exposure_ops": 231,
+      "admin_endpoints": 0,
+      "destructive_ops": 0,
+      "discount_coupon_ops": 0,
+      "auth_flow_ops": 0,
+      "xpub_ypub_zpub_ops": 34,
+      "batch_array_param_ops": 32,
+      "free_form_object_fields": 3
+    },
+    "key_findings_offline": [
+      "/api/General/Version is the ONLY op the spec declares as apiKey-free. Confirms host reachability + exposes build version.",
+      "6 Elrond + Hedera ops declare NO 401 response (/DeconstructTransaction, /IsValidImportAccount, /GetAccountBalances on each chain). Suggests apiKey check may be absent at runtime on those two chains.",
+      "Hedera_IsValidImportAccount parameter doc uses the Elrond erd1 regex (copy-paste bug). If the backend handler is also copied, Hedera input validation is broken.",
+      "TaxToolEvmTransaction leaks internal integer IDs (kyt_txdb_id int64, kyt_contract_id int32, blockchain_id, currency_id). These are IDOR seeds for sibling cn.blockpit.io / bit-api endpoints that accept the same IDs.",
+      "34 xpub/ypub/zpub endpoints: a single apiKey + a single xpub de-anonymises an entire wallet across all derived addresses.",
+      "/api/General/GetMultichainAddressesByAddressList fans one call into 66 chain RPCs - the most expensive single operation. If apiKey-free, resource abuse at scale.",
+      "ResponseModelOfObject.result and TaxToolToken.details are free-form object fields (empty inline schema). Potential arbitrary-JSON injection channels from upstream RPCs.",
+      "Spec declares schemes:[http] on TLS-only hosts - spec-authoring drift, not a live hole."
+    ],
+    "deliverables": [
+      "openapi/ATTACK-MAP.md",
+      "openapi/path-diff.tsv",
+      "openapi/security-declarations.tsv",
+      "openapi/idor-candidates.tsv",
+      "openapi/mass-assignment-candidates.tsv",
+      "openapi/discount-coupon.tsv",
+      "openapi/auth-flow.tsv",
+      "openapi/pii-exposure.tsv",
+      "openapi/admin-endpoints.tsv",
+      "openapi/destructive-ops.tsv",
+      "openapi/batch-export.tsv",
+      "openapi/privacy-xpub.tsv",
+      "openapi/spec-servers.tsv",
+      "openapi/schemas-summary.tsv",
+      "openapi/priority-ranked.tsv"
+    ]
+  }
 }

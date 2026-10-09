@@ -1,0 +1,3 @@
+host	scheme	basePath	schemes_declared
+blockchain-api.blockpit.io	http	/	http
+financial-api.blockpit.io	http	/	http
