@@ -43,11 +43,12 @@
     "Postman public workspaces for 'blockpit' not resolvable this session (bot-detect); re-try via curl in a next session.",
     "legacy cryptotax-team org still owns parser-js (archived) and parser - download both and look for any hard-coded CSV schema fields that reveal internal column names for IDOR / mass-assignment hints.",
     "Peter Schoellauf is confirmed Blockpit staff via @blockpit.io email in commit trailer - pivot through DAICers/DAIC Capital org for any ops dashboards or server configs leaking Blockpit infra details.",
-    "whitelistedDomainsCors in prod env lists 'ct-unified-generated-reports' + 'ct-wiso-generated-reports' + 'fsn1.your-objectstorage.com' - likely Hetzner object-storage bucket names. Enumerate these buckets for public ACL on the generated tax PDFs.",
+    "Hetzner buckets 'ct-unified-generated-reports' and 'ct-wiso-generated-reports' return NoSuchBucket in fsn1/nbg1/hel1 for every S3-compatible probe (ListObjects v1+v2, HEAD, ?location/?cors/?acl/?policy/?versioning/?lifecycle/?website/?encryption, presigned-URL-shaped GET, OPTIONS with blockpit origin). No listing, no CORS reflection, no finding against these names today. Next-session validation: live-auth agent must generate a tax PDF, capture GET /report/download/{id} on gate.blockpit.io, read the real downloadUrl host+bucket; those two names may be substring matches against a longer real bucket. See hetzner/BUCKETS.md.",
+    "Angular 'whitelistedDomainsCors' is mis-named - it is actually a BEARER-TOKEN-STRIP whitelist in the HTTP interceptor (String.includes substring match). URLs containing cdn.blockpit.io, ct-unified-generated-reports, ct-wiso-generated-reports, fsn1.your-objectstorage.com are issued WITHOUT the OAuth2 bearer. Substring match on user-controllable URLs (if any such input vector exists) is a minor hazard - revisit after mapping any user-URL-input feature in the authenticated app.",
     "whitelistedUsers in prod bundle leaks 4 internal account emails incl. CEO (mail@florianwimmer.at, guineapig@blockpit.io, daniil.rabizo@blockpit.io, blockpitdemo@gmail.com). Not a finding alone but is the targeted-phish list; also useful to attempt username enumeration via login error-body differences later."
   ],
   "pending_decisions": [],
-  "hours_spent": 5.7,
+  "hours_spent": 6.2,
   "known_stack": [
     "Angular 17+ (esbuild / Rolldown; standalone-components, loadComponent, modulepreload prefetch)",
     "NX monorepo (apps/*-app, libs/design-system/atoms+molecules, Storybook)",
@@ -151,6 +152,54 @@
       "file": "link-takeover/FINDING-DRAFT.md"
     }
   ],
+  "hetzner_object_storage": {
+    "regional_endpoint": "fsn1.your-objectstorage.com",
+    "resolves_to": "88.198.120.64",
+    "backend_fingerprint": "fsn1-prod1-ceph3 (Ceph radosgw via x-amz-request-id on regional ListAllMyBuckets)",
+    "anonymous_list_buckets_response": "<ListAllMyBucketsResult><Owner><ID>anonymous</ID></Owner><Buckets></Buckets></ListAllMyBucketsResult> (expected - never lists other owners' buckets)",
+    "probed_buckets": [
+      {
+        "name": "ct-unified-generated-reports",
+        "dns": "wildcard A -> 88.198.120.64",
+        "listable_unauth": false,
+        "listable_response": "404 NoSuchBucket (RequestId=N/A, HostId=N/A - frontend router pre-Ceph)",
+        "head_root": "404 NoSuchBucket",
+        "regions_tested": ["fsn1", "nbg1", "hel1"],
+        "regions_result": "NoSuchBucket in all three",
+        "subresources_tested": ["list-type=2", "max-keys=10", "prefix=", "delimiter=/", "location", "policy", "versioning", "lifecycle", "cors", "acl", "tagging", "encryption", "website", "logging", "accelerate", "notification", "requestPayment"],
+        "subresources_result": "404 NoSuchBucket on all (501 NotImplemented on tagging/logging/accelerate/notification/requestPayment which are rejected pre-bucket-check)",
+        "cors_preflight_blockpit_origin": "404 NoSuchBucket, no access-control-* headers",
+        "cors_preflight_evil_origin": "404 NoSuchBucket, no reflection",
+        "presigned_url_shaped_probe": "404 NoSuchBucket (not SignatureDoesNotMatch - bucket really doesn't exist)",
+        "generic_key_probes_result": "/, /index.html, /README, /robots.txt all 404 NoSuchBucket",
+        "keys_discovered": 0,
+        "naming_pattern": "n/a - bucket not resolvable at this probe time"
+      },
+      {
+        "name": "ct-wiso-generated-reports",
+        "dns": "wildcard A -> 88.198.120.64",
+        "listable_unauth": false,
+        "listable_response": "404 NoSuchBucket (identical to unified)",
+        "head_root": "404 NoSuchBucket",
+        "regions_tested": ["fsn1", "nbg1", "hel1"],
+        "regions_result": "NoSuchBucket in all three",
+        "subresources_result": "identical to unified bucket",
+        "cors_preflight_blockpit_origin": "404 NoSuchBucket, no access-control-* headers",
+        "cors_preflight_evil_origin": "404 NoSuchBucket, no reflection",
+        "keys_discovered": 0,
+        "naming_pattern": "n/a - bucket not resolvable at this probe time"
+      }
+    ],
+    "frontend_role": "Angular 'whitelistedDomainsCors' array matches these strings via String.prototype.includes to STRIP the OAuth2 bearer before the HTTP interceptor sends the request - semantically a bearer-token-strip whitelist, not a CORS whitelist. On today's app the URL is only constructed from a backend-provided downloadUrl so there is no user-controllable path.",
+    "cdn_blockpit_io_note": "cdn.blockpit.io is unrelated - CloudFront+AWS S3 (x-amz-server-side-encryption, x-amz-version-id, via 1.1 cloudfront.net), not Hetzner. Root is 403 AccessDenied (correct posture); images at /images/illustrations/* are public (expected).",
+    "verdict_now": "no finding against these two bucket names - either deleted/renamed since bundle shipped or the strings are substring-matches against longer real bucket names. Live-auth agent must capture GET /report/download/{id} downloadUrl to identify real bucket name, then re-run probe matrix. Hypothetical worst-case if real bucket is public-listable with per-user tax PDFs: AV:N/AC:L/PR:N/UI:N/S:C/C:H ~9.0+ OWASP A01.",
+    "deliverables": [
+      "hetzner/BUCKETS.md",
+      "hetzner/dns.txt",
+      "hetzner/cors-probe.txt",
+      "hetzner/raw/"
+    ]
+  },
   "openapi_surface": {
     "specs_file_blockchain": "raw/swagger/blockchain-api.json",
     "specs_file_financial": "raw/swagger/financial-api.json",
