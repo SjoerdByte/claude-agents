@@ -1,0 +1,12 @@
+{
+  "target": "anyday.io",
+  "authorization": "Written permission from CEO Jonas Overgaard",
+  "scope_note": "Everything, including *.anyday.io subdomains and vendor-hosted infrastructure running anyday code or storing anyday data. Known subdomains: anyday.io, help.anyday.io, my.anyday.io, tokens.pay.anyday.io, admin.sandbox.anyday.io, google-pay.pay.sandbox.anyday.io, s.shopify.staging.anyday.io, m.anyday.io, localhost.staging.anyday.io, developer.anyday.io, grafana.anyday.io, shopify.staging.anyday.io, staging.anyday.io, merchant.pay.anyday.io, api.anyday.io, localhost.anyday.io, apple-pay.pay.sandbox.anyday.io, email.staging.anyday.io, webmail.anyday.io, status.anyday.io, ftp.staging.anyday.io, api2.anyday.io, email.anyday.io, www.staging.anyday.io, sqlproxy-nordiska.anyday.io, merchant.pay.sandbox.anyday.io, api.pay.sandbox.anyday.io, webhooks.anyday.io, apple-pay.pay.anyday.io, metabase-copy.internal.anyday.io, metabase-v2.internal.anyday.io, www.anyday.io, shop.anyday.io, vpn.anyday.io, cdn.anyday.io, metabase.internal.anyday.io, ftp.anyday.io, google-pay.pay.anyday.io, admin.anyday.io, tokens.pay.sandbox.anyday.io, admin.staging.anyday.io, da.anyday.io, posthog-dev.anyday.io, marqeta.services.anyday.io, clearhaus-sync.services.anyday.io, admin.pay.sandbox.anyday.io, www.shop.anyday.io, go.anyday.io, my.staging.anyday.io, helpdesk.anyday.io, admin.pay.anyday.io, mobilepay.pay.anyday.io, submit.anyday.io, connect.anyday.io, ichnaea.anyday.io, api.pay.anyday.io, assets.anyday.io, portal.anyday.io, sendgrid.anyday.io, hangfire.services.internal.anyday.io, mobilepay.pay.sandbox.anyday.io, sftp.marqeta.services.anyday.io, s.connect.anyday.io, qr.anyday.io. More subdomains may exist and should be discovered.",
+  "stack_hints": "Angular confirmed by user, more likely. Payment-processor adjacent (Clearhaus, Marqeta, MobilePay, Apple Pay, Google Pay). Shopify integration. Metabase (internal). Grafana. PostHog. Hangfire (.NET background jobs).",
+  "ruled_out": [],
+  "open_threads": [],
+  "pending_decisions": [],
+  "hours_spent": 0,
+  "session_goal": "Surface mapping from GitHub",
+  "findings": []
+}
