@@ -1,0 +1,16 @@
+=== raw/angular/chunk-ORXhH1FY.js ===
+ldLabel(e){switch(e){case NQ.Key:return this.translateService.instant(`exchange.apiKey`);case NQ.Secret:return this.translateService.instant(`exchange.apiSecret`);cas
+=== raw/angular/main-C3DOLOTM.js ===
+)=>(_$1(aS).loadBlockpitPlusSubscription$.next(),!0);var fe={[NQ.Key]:`exchange.apiKey`,[NQ.Secret]:`exchange.apiSecret`,[NQ.CustomerId]:`exchange.customerId`,[NQ.Pas
+CHANGE&&n.exchangeData&&(i={type:n.exchangeData.type,params:{key:n.exchangeData.apiKey,secret:n.exchangeData.apiSecret,customerId:n.exchangeData.customerId,passphrase
+e}=this.form.getRawValue();this.form.valid&&this.exchangeData.emit({exchange:pe,apiKey:n,apiSecret:i,customerId:C,passphrase:P,date:e,image:pe.image?{url:pe.image,alt
+=== raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js ===
+ldLabel(e){switch(e){case eG.Key:return this.translateService.instant(`exchange.apiKey`);case eG.Secret:return this.translateService.instant(`exchange.apiSecret`);cas
+=== netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js ===
+ldLabel(e){switch(e){case mn.Key:return this.translateService.instant("exchange.apiKey");case mn.Secret:return this.translateService.instant("exchange.apiSecret");cas
+eholder(e){switch(e){case mn.Key:return this.translateService.instant("exchange.apiKeyPlaceholder");case mn.Secret:return this.translateService.instant("exchange.apiS
+ldLabel(e){switch(e){case mn.Key:return this.translateService.instant("exchange.apiKey");case mn.Secret:return this.translateService.instant("exchange.apiSecret");cas
+=== netlify/bundles/bp-frontend-prod/main-C3DOLOTM.js ===
+)=>(_$1(aS).loadBlockpitPlusSubscription$.next(),!0);var fe={[NQ.Key]:`exchange.apiKey`,[NQ.Secret]:`exchange.apiSecret`,[NQ.CustomerId]:`exchange.customerId`,[NQ.Pas
+CHANGE&&n.exchangeData&&(i={type:n.exchangeData.type,params:{key:n.exchangeData.apiKey,secret:n.exchangeData.apiSecret,customerId:n.exchangeData.customerId,passphrase
+e}=this.form.getRawValue();this.form.valid&&this.exchangeData.emit({exchange:pe,apiKey:n,apiSecret:i,customerId:C,passphrase:P,date:e,image:pe.image?{url:pe.image,alt
