@@ -1,0 +1,45 @@
+{
+  "vector": "q-api-anyday",
+  "queries": [
+    "\"api.anyday.io\" OR \"api2.anyday.io\" OR \"api.pay.anyday.io\"  -> 0",
+    "\"api.anyday.io\"  -> 0",
+    "\"api2.anyday.io\" -> 0",
+    "\"api.pay.anyday.io\" -> 0",
+    "\"anyday.io\"      -> 61",
+    "org:anyday-payments -> 131 (3 repos: ANYDAY-Magento2, ANYDAY-WooCommerce, ANYDAY-Magento1)",
+    "org:anyday-io      -> 1 (website-js-deprecated)",
+    "\"my.anyday.io\"    -> 17",
+    "\"my.anyday.io/api\"-> 2",
+    "\"anyday.io/api/v1\"-> 0",
+    "\"my.anyday.io\" \"/api/v2\" -> 0",
+    "\"anyday.io\" \"Authorization\" -> 0",
+    "\"anyday.io\" \"token\" -> 24 (mostly merchant-side public widget tokens)"
+  ],
+  "key_endpoints_found": [
+    {"host": "my.anyday.io", "path": "/api/v1/authentication/login", "method": "POST", "source": "anyday-payments/ANYDAY-Magento2 Api/Anyday/ManagerInterface.php"},
+    {"host": "my.anyday.io", "path": "/api/v1/orders", "method": "POST", "source": "Api/Data/Payment/UrlDataInterface.php + ANYDAY-WooCommerce adm-core.php"},
+    {"host": "my.anyday.io", "path": "/api/v1/orders/{id}/capture", "method": "POST", "source": "same"},
+    {"host": "my.anyday.io", "path": "/api/v1/orders/{id}/refund",  "method": "POST", "source": "same"},
+    {"host": "my.anyday.io", "path": "/api/{version}/internal/shops", "method": "GET (no auth header)", "source": "anyday-io/website-js-deprecated events.js (anydayAPI())"},
+    {"host": "my.anyday.io", "path": "/api/{version}/internal/categories", "method": "GET (no auth header)", "source": "same"},
+    {"host": "my.anyday.io", "path": "/api/{version}/internal/categories/{cat-id}", "method": "GET (no auth header)", "source": "same (built from URL param)"},
+    {"host": "my.anyday.io", "path": "/webshopPriceTag/anyday-price-tag-{lang}-es2015.js", "method": "GET", "source": "merchant plugins"},
+    {"host": "my.anyday.io", "path": "/price-widget/anyday-price-widget.js", "method": "GET", "source": "merchant plugins"}
+  ],
+  "notable": {
+    "internal_api_prefix": "my.anyday.io/api/v{version}/internal/* -- deprecated front-end JS calls with no Authorization header. Prime IDOR/mass-assignment target.",
+    "query_param_reflected_into_path": "/api/v*/internal/categories/${cat-id} where cat-id comes from URL query ?cat-id=... (SSRF/traversal review candidate)",
+    "unauthenticated_shops_list": "shops list exposes PageSize up to 175 with Featured/Language/SortBy/CategoryIds[]/Search/Page params",
+    "all_known_deal_category_uuids": [
+      "7a418f22-85f1-4f6c-997e-7390dccf3229",
+      "9849bf3f-63d9-4305-8610-c1d87f258f5d",
+      "b722cea6-8fea-4870-a1e4-57b8a44e807d",
+      "8240993c-6dfc-42f0-98ba-dd0c4830990f",
+      "069c7108-fa76-48b0-aca3-61b751f2324e",
+      "2a9a6112-65b1-4d5f-a3f2-aec68b9075f4",
+      "66b92fdb-d6cf-4628-be21-7e0ef9479206",
+      "c71b7386-a61f-4388-aa13-7ea018599e2d",
+      "3cd1f971-b82d-4812-a8e9-f213e9a1bdf8"
+    ]
+  }
+}

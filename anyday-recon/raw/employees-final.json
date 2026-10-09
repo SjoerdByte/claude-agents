@@ -1,0 +1,19 @@
+{
+  "orgs": [
+    {"org":"anyday-io","location":"Aarhus, Denmark","email":null,"public_repos":["website-js-deprecated"],"members":0},
+    {"org":"anyday-payments","email":"help@anyday.io","location":"Aarhus, Denmark","website":"https://www.anyday.io/","public_repos":["ANYDAY-Magento2","ANYDAY-WooCommerce","ANYDAY-Magento1"],"members":0}
+  ],
+  "employees_found": [
+    {"login":"CKret","name":"Sani Huttunen","role":"Head of Engineering @ Anyday.io","location":"Chiang Mai","blog":"http://www.ckret.net","repos":["AdventOfCode","SOL-Solar-System-Simulation"],"interesting_repos":[]},
+    {"login":"Nononpng","name":"Nonon Nononpng","blog_or_company":"anyday.io","repos":[],"interesting_repos":[]}
+  ],
+  "contractors_contributors": [
+    {"login":"mayurkathale","name":"Mayur Kathale","email":"mayur.kathale@gmail.com","location":"Bangkok","role":"Main anyday-payments PHP/Magento/WooCommerce contributor","interesting_repos":["card-payment","docker-magento2"]},
+    {"login":"luke-golden","name":"Luke Golden","email":"74642465+luke-golden@users.noreply.github.com","role":"Secondary PR merger on anyday-payments","repos":[]}
+  ],
+  "leaked_contact_emails": ["onboarding@anyday.io","jo@anyday.io","help@anyday.io"],
+  "internal_api_pattern":"https://my.anyday.io/api/{v1|v2}/internal/{resource}",
+  "internal_api_endpoints_from_website_js_deprecated":["shops","categories","categories/{uuid}"],
+  "public_api_from_magento_integration":["/api/v1/authentication/login","/api/v1/orders","/api/v1/orders/{id}/capture","/api/v1/orders/{id}/refund"],
+  "cdn_assets":["https://my.anyday.io/webshopPriceTag/anyday-price-tag-{lang}-es2015.js","https://my.anyday.io/price-widget/anyday-price-widget.js"]
+}

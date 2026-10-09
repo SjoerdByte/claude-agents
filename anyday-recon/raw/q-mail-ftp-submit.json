@@ -1,0 +1,12 @@
+{
+  "query": "\"submit.anyday.io\"",
+  "total_count": 5,
+  "patterns_found": [
+    "https://submit.anyday.io/iziibuy-kyc?pluginid={key}",
+    "https://submit.anyday.io/iziibuy-kyc?shopid={shop_id}"
+  ],
+  "repos": [
+    "iziibuy/iziibuynew",
+    "Kazi-Rayhan/mywebshop"
+  ]
+}

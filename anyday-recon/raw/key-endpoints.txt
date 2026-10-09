@@ -1,0 +1,54 @@
+# Anyday API endpoints discovered via GitHub recon
+
+## Base
+https://my.anyday.io  (consumer / merchant portal + API)
+https://my.anyday.io/api/{version}/internal/  (JS internal public API — v1, v2 seen)
+
+## Authentication (merchant)
+POST /api/v1/authentication/login
+  body: {"Username": <email>, "Password": <password>}
+  returns: {"access_token": "...", "errors": [...]}
+Auth header: Authorization: Bearer <access_token>  (set via setAuthorization in Magento2 Curl helper)
+
+## Merchant data
+GET /api/v1/webshop/mine
+  Auth: Bearer <token>
+  returns: {"data":[{"apiKey","testAPIKey","priceTagToken","privateKey"}, ...], "errors":[...]}
+
+## Orders (merchant-facing checkout API) — base https://my.anyday.io
+POST  /api/v1/orders                        (authorize)
+POST  /api/v1/orders/{id}/capture
+POST  /api/v1/orders/{id}/refund
+POST  /api/v1/orders/{id}/cancel
+
+## Internal/public JS consumer API (used by anyday.io website / webflow)
+GET /api/v2/internal/shops         (featured shops; params: PageSize, Language, display, SortBy, Ascending, Featured, Search, Page, CategoryIds[])
+GET /api/v1/internal/categories    (category menu)
+GET /api/v1/internal/categories/{id} (subcategories)
+
+## Webhook (merchant store receives from Anyday — pattern)
+Magento2 route: /anydayfront/payment/webhook  (header x_anyday_signature, HMAC-SHA256 of raw body with privateKey; body contains at least {id, transaction, type, status, cancelled})
+WordPress route: /wp-json/anyday/webhook      (same header name x_anyday_signature, HMAC-SHA256)
+Body JSON fields referenced: id, transaction, type, status, cancelled
+Event types seen: cancel (plus authorize/capture/refund/cancel inferred from AnydayEvent* classes)
+
+## Price widget / price tag (static)
+GET /price-widget/anyday-price-widget.js
+GET /webshopPriceTag/anyday-price-tag-{en|da}-es2015.js
+Attributes used on <anyday-price-widget>: token, currency, price, price-selector, price-format-locale, locale, shop-name, theme, size, orientation
+  (token values are per-merchant pricetag tokens, NOT secrets)
+
+## Other merchant signup / KYC URLs
+https://submit.anyday.io/iziibuy-kyc?pluginid={pluginid}         (iziibuy integration)
+https://submit.anyday.io/iziibuy-kyc?shopid={shopid}             (iziibuy integration)
+
+## WordPress option keys that store merchant Anyday credentials
+adm_merchant_username, adm_merchant_password  (plaintext in WP DB)
+adm_api_key, adm_test_api_key, adm_pricetag_token, adm_private_key
+
+## Magento 2 config paths
+SettingsInterface::PATH_TO_SECRET_KEY  (private key used to verify webhook HMAC)
+
+## Known subdomains surfaced in GitHub text:
+my.anyday.io, submit.anyday.io, grafana.anyday.io, s.connect.anyday.io,
+www.anyday.io, anyday.io

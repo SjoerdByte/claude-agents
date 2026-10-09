@@ -1,0 +1,870 @@
+{
+  "admin.anyday.io": {
+    "status": 0,
+    "A": [
+      "13.33.67.33",
+      "13.33.67.111",
+      "13.33.67.41",
+      "13.33.67.95"
+    ],
+    "AAAA": [
+      "2600:9000:208d:4800:2:e5b4:f40:93a1",
+      "2600:9000:208d:2a00:2:e5b4:f40:93a1",
+      "2600:9000:208d:4a00:2:e5b4:f40:93a1",
+      "2600:9000:208d:6a00:2:e5b4:f40:93a1",
+      "2600:9000:208d:7200:2:e5b4:f40:93a1",
+      "2600:9000:208d:3200:2:e5b4:f40:93a1",
+      "2600:9000:208d:4000:2:e5b4:f40:93a1",
+      "2600:9000:208d:a000:2:e5b4:f40:93a1"
+    ],
+    "CNAME": [
+      "d39z8786ntahj1.cloudfront.net."
+    ],
+    "SOA_only": false
+  },
+  "admin.pay.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "admin.pay.sandbox.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "admin.sandbox.anyday.io": {
+    "status": 0,
+    "A": [
+      "18.165.83.43",
+      "18.165.83.54",
+      "18.165.83.59",
+      "18.165.83.57"
+    ],
+    "AAAA": [
+      "2600:9000:2511:8800:1a:410e:1f00:93a1",
+      "2600:9000:2511:2800:1a:410e:1f00:93a1",
+      "2600:9000:2511:ba00:1a:410e:1f00:93a1",
+      "2600:9000:2511:3a00:1a:410e:1f00:93a1",
+      "2600:9000:2511:a00:1a:410e:1f00:93a1",
+      "2600:9000:2511:9e00:1a:410e:1f00:93a1",
+      "2600:9000:2511:f600:1a:410e:1f00:93a1",
+      "2600:9000:2511:3c00:1a:410e:1f00:93a1"
+    ],
+    "CNAME": [
+      "d1lxm0uigen8fw.cloudfront.net."
+    ],
+    "SOA_only": false
+  },
+  "admin.staging.anyday.io": {
+    "status": 0,
+    "A": [
+      "3.167.183.34",
+      "3.167.183.17",
+      "3.167.183.121",
+      "3.167.183.45"
+    ],
+    "AAAA": [
+      "2600:9000:27dd:8400:1:897c:4600:93a1",
+      "2600:9000:27dd:5a00:1:897c:4600:93a1",
+      "2600:9000:27dd:2000:1:897c:4600:93a1",
+      "2600:9000:27dd:2600:1:897c:4600:93a1",
+      "2600:9000:27dd:b800:1:897c:4600:93a1",
+      "2600:9000:27dd:7400:1:897c:4600:93a1",
+      "2600:9000:27dd:f200:1:897c:4600:93a1",
+      "2600:9000:27dd:a00:1:897c:4600:93a1"
+    ],
+    "CNAME": [
+      "dzypcfazatamw.cloudfront.net."
+    ],
+    "SOA_only": false
+  },
+  "admini.pay.sandbox.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "admino.pay.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "anyday.io": {
+    "status": 0,
+    "A": [
+      "198.202.211.1"
+    ],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "api.anyday.io": {
+    "status": 0,
+    "A": [
+      "13.50.135.158",
+      "13.62.73.60",
+      "13.63.55.184"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "anyday-prd-backend-corewebapi-387709868.eu-north-1.elb.amazonaws.com."
+    ],
+    "SOA_only": false
+  },
+  "api.pay.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "api.pay.sandbox.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "api2.anyday.io": {
+    "status": 0,
+    "A": [
+      "13.63.55.184",
+      "13.50.135.158",
+      "13.62.73.60"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "anyday-prd-backend-corewebapi-387709868.eu-north-1.elb.amazonaws.com."
+    ],
+    "SOA_only": false
+  },
+  "apiu.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "apple-pay.pay.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "apple-pay.pay.sandbox.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "assets.anyday.io": {
+    "status": 0,
+    "A": [
+      "13.33.252.90",
+      "13.33.252.75",
+      "13.33.252.16",
+      "13.33.252.64"
+    ],
+    "AAAA": [
+      "2600:9000:2141:3e00:18:1ca:da80:93a1",
+      "2600:9000:2141:9a00:18:1ca:da80:93a1",
+      "2600:9000:2141:c00:18:1ca:da80:93a1",
+      "2600:9000:2141:e600:18:1ca:da80:93a1",
+      "2600:9000:2141:b400:18:1ca:da80:93a1",
+      "2600:9000:2141:fa00:18:1ca:da80:93a1",
+      "2600:9000:2141:200:18:1ca:da80:93a1",
+      "2600:9000:2141:aa00:18:1ca:da80:93a1"
+    ],
+    "CNAME": [
+      "d2dgwu29m9644q.cloudfront.net."
+    ],
+    "SOA_only": false
+  },
+  "cdn.anyday.io": {
+    "status": 0,
+    "A": [
+      "150.171.110.193"
+    ],
+    "AAAA": [
+      "2603:1061:14:47::1"
+    ],
+    "CNAME": [
+      "anydaycdn-cdbhg3g6b0d3fgcm.z01.azurefd.net."
+    ],
+    "SOA_only": false
+  },
+  "clearhaus-sync.services.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "connect.anyday.io": {
+    "status": 0,
+    "A": [
+      "13.62.186.52",
+      "16.171.86.28",
+      "13.50.124.126"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "anyday-prd-shopify-alb-1577860503.eu-north-1.elb.amazonaws.com."
+    ],
+    "SOA_only": false
+  },
+  "da.anyday.io": {
+    "status": 0,
+    "A": [
+      "104.17.201.193"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "websites.weglot.com."
+    ],
+    "SOA_only": false
+  },
+  "developer.anyday.io": {
+    "status": 0,
+    "A": [
+      "104.16.241.118",
+      "104.16.242.118"
+    ],
+    "AAAA": [
+      "2606:4700::6810:f276",
+      "2606:4700::6810:f176"
+    ],
+    "CNAME": [
+      "ssl.readmessl.com."
+    ],
+    "SOA_only": false
+  },
+  "developerq.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "email.anyday.io": {
+    "status": 0,
+    "A": [
+      "34.36.71.179"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "e-trk-eu.customeriomail.com."
+    ],
+    "SOA_only": false
+  },
+  "email.staging.anyday.io": {
+    "status": 0,
+    "A": [
+      "34.36.71.179"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "e-trk-eu.customeriomail.com."
+    ],
+    "SOA_only": false
+  },
+  "ftp.anyday.io": {
+    "status": 0,
+    "A": [
+      "5.254.55.36"
+    ],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "ftp.staging.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "go.anyday.io": {
+    "status": 0,
+    "A": [
+      "104.17.220.218",
+      "104.17.223.218",
+      "104.17.224.218",
+      "104.17.222.218",
+      "104.17.221.218"
+    ],
+    "AAAA": [
+      "2606:4700::6811:e0da",
+      "2606:4700::6811:ddda",
+      "2606:4700::6811:deda",
+      "2606:4700::6811:dfda",
+      "2606:4700::6811:dcda"
+    ],
+    "CNAME": [
+      "cname.sibpages.com."
+    ],
+    "SOA_only": false
+  },
+  "google-pay.pay.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "google-pay.pay.sandbox.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "google-payy.pay.sandbox.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "grafana.anyday.io": {
+    "status": 0,
+    "A": [
+      "10.1.57.15",
+      "10.1.89.174",
+      "10.1.70.187"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "internal-anyday-prd-backend-grafana-1697027106.eu-north-1.elb.amazonaws.com."
+    ],
+    "SOA_only": false
+  },
+  "hangfire.services.internal.anyday.io": {
+    "status": 0,
+    "A": [
+      "51.104.136.9"
+    ],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "hangfirea.services.internal.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "help.anyday.io": {
+    "status": 0,
+    "A": [
+      "54.157.241.171",
+      "34.224.144.42"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "anyday.elevio.help."
+    ],
+    "SOA_only": false
+  },
+  "helpdesk.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "helpdeskg.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "ichnaea.anyday.io": {
+    "status": 0,
+    "A": [
+      "20.223.60.248"
+    ],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "internal.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "localhost.anyday.io": {
+    "status": 0,
+    "A": [
+      "127.0.0.1"
+    ],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "localhost.staging.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "m.anyday.io": {
+    "status": 0,
+    "A": [
+      "5.254.55.36"
+    ],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "marqeta.services.anyday.io": {
+    "status": 0,
+    "A": [
+      "51.104.136.9"
+    ],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "merchant.pay.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "merchant.pay.sandbox.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "metabase-copy.internal.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "metabase-v2.internal.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "metabase.internal.anyday.io": {
+    "status": 0,
+    "A": [
+      "16.192.209.214",
+      "13.62.202.53",
+      "13.62.93.26"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "anyday-prd-metabase-308502671.eu-north-1.elb.amazonaws.com."
+    ],
+    "SOA_only": false
+  },
+  "metabasea.internal.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "mobilepay.pay.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "mobilepay.pay.sandbox.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "my.anyday.io": {
+    "status": 0,
+    "A": [
+      "3.170.152.7",
+      "3.170.152.37",
+      "3.170.152.91",
+      "3.170.152.77"
+    ],
+    "AAAA": [
+      "2600:9000:201d:d800:5:3235:e380:93a1",
+      "2600:9000:201d:dc00:5:3235:e380:93a1",
+      "2600:9000:201d:ce00:5:3235:e380:93a1",
+      "2600:9000:201d:4600:5:3235:e380:93a1",
+      "2600:9000:201d:8a00:5:3235:e380:93a1",
+      "2600:9000:201d:800:5:3235:e380:93a1",
+      "2600:9000:201d:f200:5:3235:e380:93a1",
+      "2600:9000:201d:8e00:5:3235:e380:93a1"
+    ],
+    "CNAME": [
+      "d1i8wvrrwewg3y.cloudfront.net."
+    ],
+    "SOA_only": false
+  },
+  "my.staging.anyday.io": {
+    "status": 0,
+    "A": [
+      "3.171.61.47",
+      "3.171.61.72",
+      "3.171.61.50",
+      "3.171.61.55"
+    ],
+    "AAAA": [
+      "2600:9000:28a3:0:f:5709:a9c0:93a1",
+      "2600:9000:28a3:8800:f:5709:a9c0:93a1",
+      "2600:9000:28a3:ea00:f:5709:a9c0:93a1",
+      "2600:9000:28a3:9200:f:5709:a9c0:93a1",
+      "2600:9000:28a3:1e00:f:5709:a9c0:93a1",
+      "2600:9000:28a3:9e00:f:5709:a9c0:93a1",
+      "2600:9000:28a3:6600:f:5709:a9c0:93a1",
+      "2600:9000:28a3:c600:f:5709:a9c0:93a1"
+    ],
+    "CNAME": [
+      "d1nosqo28e2y07.cloudfront.net."
+    ],
+    "SOA_only": false
+  },
+  "pay.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "pay.sandbox.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "portal.anyday.io": {
+    "status": 0,
+    "A": [
+      "108.156.107.81",
+      "108.156.107.107",
+      "108.156.107.61",
+      "108.156.107.59"
+    ],
+    "AAAA": [
+      "2600:9000:2350:cc00:1:2727:6540:93a1",
+      "2600:9000:2350:6c00:1:2727:6540:93a1",
+      "2600:9000:2350:d600:1:2727:6540:93a1",
+      "2600:9000:2350:a600:1:2727:6540:93a1",
+      "2600:9000:2350:fc00:1:2727:6540:93a1",
+      "2600:9000:2350:6400:1:2727:6540:93a1",
+      "2600:9000:2350:c800:1:2727:6540:93a1",
+      "2600:9000:2350:ea00:1:2727:6540:93a1"
+    ],
+    "CNAME": [
+      "d3re0a5qkg6u1h.cloudfront.net."
+    ],
+    "SOA_only": false
+  },
+  "posthog-dev.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "qa1.staging.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "qa2.staging.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "qa3.staging.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "qa4.staging.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "qa5.staging.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "qa7.staging.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "qa9.staging.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "qr.anyday.io": {
+    "status": 0,
+    "A": [
+      "66.33.60.66"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "cname.dub.co."
+    ],
+    "SOA_only": false
+  },
+  "s.connect.anyday.io": {
+    "status": 0,
+    "A": [
+      "13.50.215.132",
+      "51.21.164.130",
+      "51.21.230.229"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "anyday-prd-shopify-mtls-alb-1810572842.eu-north-1.elb.amazonaws.com."
+    ],
+    "SOA_only": false
+  },
+  "s.shopify.staging.anyday.io": {
+    "status": 0,
+    "A": [
+      "18.139.220.26",
+      "13.251.78.2",
+      "13.228.172.196"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "anyday-dev-shopify-mtls-alb-2102534995.ap-southeast-1.elb.amazonaws.com."
+    ],
+    "SOA_only": false
+  },
+  "sandbox.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "sendgrid.anyday.io": {
+    "status": 0,
+    "A": [
+      "13.62.122.235",
+      "13.50.32.219",
+      "13.50.215.23"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "d-wv3fmp3mhf.execute-api.eu-north-1.amazonaws.com."
+    ],
+    "SOA_only": false
+  },
+  "services.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "services.internal.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "sftp.marqeta.services.anyday.io": {
+    "status": 0,
+    "A": [
+      "13.79.217.253"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "sftp-marqeta-services.northeurope.cloudapp.azure.com."
+    ],
+    "SOA_only": false
+  },
+  "sftpc.marqeta.services.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "shop.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "shopify.staging.anyday.io": {
+    "status": 0,
+    "A": [
+      "54.179.212.104",
+      "3.0.153.46",
+      "52.221.31.95"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "anyday-dev-shopify-alb-303371972.ap-southeast-1.elb.amazonaws.com."
+    ],
+    "SOA_only": false
+  },
+  "sqlproxy-nordiska.anyday.io": {
+    "status": 0,
+    "A": [
+      "13.63.25.203"
+    ],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "staging.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "status.anyday.io": {
+    "status": 0,
+    "A": [
+      "142.132.149.97"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "stats.uptimerobot.com."
+    ],
+    "SOA_only": false
+  },
+  "submit.anyday.io": {
+    "status": 0,
+    "A": [
+      "35.205.106.218"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "cname.tally.so."
+    ],
+    "SOA_only": false
+  },
+  "tokens.pay.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "tokens.pay.sandbox.anyday.io": {
+    "status": 2,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "vpn.anyday.io": {
+    "status": 0,
+    "A": [
+      "20.166.75.195"
+    ],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "web-dev.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "webhooks.anyday.io": {
+    "status": 0,
+    "A": [
+      "13.61.59.199",
+      "13.48.191.87",
+      "16.170.48.15"
+    ],
+    "AAAA": [],
+    "CNAME": [
+      "d-2wvmeuedgb.execute-api.eu-north-1.amazonaws.com."
+    ],
+    "SOA_only": false
+  },
+  "webmail.anyday.io": {
+    "status": 0,
+    "A": [
+      "5.254.55.36"
+    ],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": false
+  },
+  "www.anyday.io": {
+    "status": 0,
+    "A": [
+      "198.202.211.1"
+    ],
+    "AAAA": [
+      "2620:cb:2000::1"
+    ],
+    "CNAME": [
+      "cdn.webflow.com."
+    ],
+    "SOA_only": false
+  },
+  "www.shop.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  },
+  "www.staging.anyday.io": {
+    "status": 0,
+    "A": [],
+    "AAAA": [],
+    "CNAME": [],
+    "SOA_only": true
+  }
+}

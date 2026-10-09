@@ -1,0 +1,21 @@
+Vector: q-graphql
+Primary GitHub code search queries run:
+  1. "anyday" graphql  (137 hits; nearly all noise - unrelated projects where "anyday" is a tagline or GraphQL `anyDay` identifier)
+  2. "anyday.io" graphql  (2 hits, both wordlist dumps mentioning grafana.anyday.io adjacent to a `graphql` domain)
+  3. "anydayTransaction" graphql  (1 hit - T-AIMaven/GreenMind - unrelated, uses `anydayTransaction` mutation name coincidentally in Russian anywayanyday travel)
+  4. "anyday.io" api OR endpoint  (2 hits - anyday-io/website-js-deprecated events.js + Magento integration)
+  5. "anyday" extension:graphql  (6 hits, all false positives - `anyDay` field names in unrelated Webkul booking schemas)
+  6. "anyday" filename:schema.graphql  (1 noise hit)
+  7. "anyday.io" "query " OR "mutation "  (0 hits)
+  8. "anyday" "Apollo" OR "apollo-client"  (0 hits)
+  9. "anyday-io" OR "anydayfinance"  (0 hits)
+  10. "anyday.io" filename:.env  (0 hits)
+  11. "my.anyday.io" OR "api.anyday.io" OR "pay.anyday.io"  (0 hits - partial-string indexing excluded them)
+  12. org:anyday-io  (1 public repo: website-js-deprecated)
+  13. org:anyday-payments  (3 public repos: ANYDAY-Magento2, ANYDAY-WooCommerce, ANYDAY-Magento1)
+
+Conclusion for GRAPHQL vector:
+  No GraphQL endpoint is exposed under any *.anyday.io host in public GitHub code. The anyday.io platform appears to be REST-only:
+    - Base: https://my.anyday.io/api/{v1|v2}/internal/
+    - Auth: POST /api/v1/authentication/login  (Magento2 integration)
+  Angular SPA + .NET/Hangfire backend. No evidence of a GraphQL gateway. (Hangfire shows at hangfire.services.internal.anyday.io but that is a background-job dashboard, not GraphQL.)

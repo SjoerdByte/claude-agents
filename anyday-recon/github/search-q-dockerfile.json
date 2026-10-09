@@ -1,0 +1,24 @@
+{
+  "vector": "q-dockerfile",
+  "queries": [
+    {"q": "\"anyday\" filename:Dockerfile", "total": 1, "note": "Only hit: L3KTRO/adayliketoday — unrelated (dir named /anyday under build/dist from a React project literally called 'A Day Like Today')."},
+    {"q": "\"anyday.io\" filename:Dockerfile", "total": 0},
+    {"q": "anyday-io filename:Dockerfile", "total": 0},
+    {"q": "\"anyday\" \"hangfire\" language:Dockerfile", "total": 0},
+    {"q": "\"anyday\" FROM mcr.microsoft.com language:Dockerfile", "total": 0},
+    {"q": "\"anyday\" \"appsettings\" language:Dockerfile", "total": 0},
+    {"q": "\"@anyday\" filename:Dockerfile", "total": 0},
+    {"q": "\"anyday\" filename:docker-compose.yml", "total": 1, "note": "Hit: Dennis7456/anyday-backend — unrelated personal 'anyday-backend' Prisma project, not anyday.io."},
+    {"q": "org:anyday-payments filename:Dockerfile", "total": 0},
+    {"q": "org:anyday-io filename:Dockerfile", "total": 0}
+  ],
+  "orgs_identified": {
+    "anyday-io":        {"id": 102197843, "public_repos": 1, "notable": ["website-js-deprecated"]},
+    "anyday-payments":  {"id":  74642689, "public_repos": 3, "notable": ["ANYDAY-WooCommerce", "ANYDAY-Magento1", "ANYDAY-Magento2"]}
+  },
+  "endpoint_leaks_from_adjacent_search": [
+    "https://my.anyday.io/api/{version}/internal/   (events.js, anyday-io/website-js-deprecated)",
+    "https://my.anyday.io/api/v1/authentication/login   (ANYDAY-Magento2 Api/Anyday/ManagerInterface.php)",
+    "https://my.anyday.io/webshopPriceTag/anyday-price-tag-{en|da}-es2015.js   (ANYDAY-WooCommerce PriceTag.php)"
+  ]
+}

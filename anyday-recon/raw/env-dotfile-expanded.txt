@@ -1,0 +1,42 @@
+# q-env-dotfile vector — expanded findings
+# Confirmed Anyday-owned GitHub orgs discovered during the sweep:
+#   - anyday-payments  (public: ANYDAY-Magento2, ANYDAY-WooCommerce; 131 code hits)
+#   - anyday-io        (public: website-js-deprecated — contains an internal API caller)
+#
+# Direct dotfile commits with anyday.io secrets: NONE FOUND.
+# Query org:anyday-payments filename:.env returned 0 hits.
+# No *.anyday.io host embedded in a .env file across public GitHub.
+#
+# Endpoint intel pulled from these two orgs & mirror repos:
+# A) https://my.anyday.io/api/v1/authentication/login
+#    - anyday-payments/ANYDAY-Magento2 Api/Anyday/ManagerInterface.php
+#    - const ANYDAY_AUTH_URL = 'v1/authentication/login'
+#
+# B) https://my.anyday.io/api/v1/orders              (POST authorize)
+#    https://my.anyday.io/api/v1/orders/{id}/capture
+#    https://my.anyday.io/api/v1/orders/{id}/refund
+#    - anyday-payments/ANYDAY-Magento2 Api/Data/Payment/UrlDataInterface.php
+#
+# C) https://my.anyday.io/api/{version}/internal/{resource}         <-- INTERNAL API
+#    - anyday-io/website-js-deprecated events.js: `async function anydayAPI(path, method, data, version, structure, setPage) {
+#        const BASE_URL = "https://my.anyday.io/api/"+version+"/internal/";`
+#    - Internal API reachable from browser context (events.js is a public website script); worth probing for IDOR,
+#      mass assignment, token lifecycle, authn-bypass. HIGH VALUE.
+#
+# D) Webhook controller with CSRF skipped:
+#    - anyday-payments/ANYDAY-Magento2 Plugins/CsrfValidatorSkip.php -> Controller/Payment/Webhook.php
+#    - This is server-side on the MERCHANT side (Magento) — informs how webhook signatures must be validated.
+#
+# E) Pricetag + widget assets:
+#    - https://my.anyday.io/webshopPriceTag/anyday-price-tag-{en|da}-es2015.js
+#    - https://my.anyday.io/price-widget/anyday-price-widget.js (type=module)
+#    - Widgets accept attributes: currency, price, token, locale, shop-name — token appears
+#      hardcoded in example merchant sites (shopify dumps). Token=7f281129bc204154884460e6d8519455
+#      for number-nineshop.com — passed in HTML attribute; indicates per-shop pricing token.
+#
+# Other anyday-io/anyday-payments repos observed (incomplete list, 131 hits):
+#    anyday-payments/ANYDAY-Magento2  (Magento 2 payment plugin)
+#    anyday-payments/ANYDAY-WooCommerce (WordPress plugin)
+#    anyday-io/website-js-deprecated  (deprecated website JS)
+#
+# No new *.anyday.io subdomain surfaced from this vector beyond those on the known list.

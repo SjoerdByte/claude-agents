@@ -1,0 +1,27 @@
+{
+  "vector": "q-package-json",
+  "primary_query": "\"anyday\" filename:package.json",
+  "primary_hits": 9,
+  "primary_outcome": "ALL FALSE POSITIVES. None of the 9 hits belong to anyday.io / anyday-payments. GitHub Code Search does not return any package.json file in anyday-io org (only one public repo exists there: website-js-deprecated, which is Webflow JS without a package.json), nor in anyday-payments (PHP plugins without package.json).",
+  "secondary_queries": [
+    "\"anyday.io\" filename:package.json  -> 0 hits",
+    "\"@anyday\" filename:package.json    -> 0 hits",
+    "\"anyday\" \"angular\" filename:package.json -> 1 unrelated hit (culas/pickanyday)",
+    "\"anydaypay\" filename:package.json  -> 0 hits",
+    "\"anyday\" extension:json            -> 17440 hits (noise)",
+    "org:anyday-io                       -> 1 repo: website-js-deprecated",
+    "org:anyday-payments                 -> 3 repos: ANYDAY-WooCommerce / Magento1 / Magento2",
+    "\"my.anyday.io\"                     -> 17 hits (incl. 2 anyday-io & 3 anyday-payments)",
+    "\"anyday-price-widget\"              -> 6 hits",
+    "\"anyday-io\"                        -> 2 hits",
+    "\"@anyday.io\" extension:json        -> 1 hit (jo@anyday.io in a lead-gen state.json)"
+  ],
+  "real_official_orgs": [
+    "anyday-io  (owns the main site code; one public repo 'website-js-deprecated' containing storefront JS calling my.anyday.io/api/v{1,2}/internal/*)",
+    "anyday-payments  (owns the public e-commerce plugin distributions: Magento1, Magento2, WooCommerce)"
+  ],
+  "notable_devs_identified": [
+    "@anyday-io org member: Stefano Cicatiello (location Bangkok, per gayanvoice/top-github-users mirror of GitHub stats)",
+    "jo@anyday.io  (surfaced via a public email leak dataset in aditWorkspace/emailsending)"
+  ]
+}

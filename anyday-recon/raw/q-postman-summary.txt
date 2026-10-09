@@ -1,0 +1,43 @@
+VECTOR: q-postman
+Queries run (via mcp__github__search_code):
+  1. "anyday" extension:postman_collection.json              -> 2 hits (both FALSE POSITIVES: substring 'anyDay' in CompanyDayJobStats / updateManyDay)
+  2. "anyday.io" filename:postman_collection.json            -> 0 hits
+  3. "anyday" filename:*.postman_collection.json             -> 0 hits
+  4. "anyday.io" extension:postman_collection.json           -> 0 hits
+  5. "api.anyday.io" extension:json                          -> 0 hits
+  6. "anyday.io" postman                                     -> 0 hits
+  7. "api.pay.anyday.io" extension:json                      -> 0 hits
+  8. "anyday.io" extension:json                              -> 5 hits (unrelated: domain lists, Skyline API catalog metadata, email list, provider list)
+  9. "pay.anyday.io" postman OR collection                   -> 0 hits
+ 10. "anyday" "schema.getpostman.com"                        -> 3 hits (all FALSE POSITIVES - same substring issue)
+ 11. "anyday" "info" "schema.getpostman.com" language:JSON   -> 3 hits (same false positives)
+ 12. "anydaypay" OR "anyday-api" extension:postman_collection.json -> 0 hits
+ 13. "api.pay.anyday.io" OR "api.anyday.io"                  -> 0 hits  (entire GitHub, meaningful negative)
+
+RESULT: No Postman collections on public GitHub reference anyday.io or any of its subdomains.
+
+NOTABLE NEGATIVE FINDINGS:
+ - Zero collections target api.anyday.io or api.pay.anyday.io.
+ - Zero mentions of anyday.io inside any postman_collection.json file.
+ - The strings "api.anyday.io" and "api.pay.anyday.io" do NOT appear anywhere on indexed GitHub code (query 13).
+   This suggests anyday.io has not published Postman collections publicly, nor has a customer leaked one.
+   (Downstream vectors should look at OpenAPI/Swagger specs instead - e.g. developer.anyday.io is in scope.)
+
+INTERESTING ADJACENT HIT (not a postman collection):
+ Repo: emadomedher/skyline-api-library  (Skyline / Apideck integration catalog)
+ Path: profiles/anyday-io/profile.json
+ URL:  https://github.com/emadomedher/skyline-api-library/blob/main/profiles/anyday-io/profile.json
+ Content (fetched via raw.githubusercontent.com):
+ {
+   "id": "anyday-io",
+   "title": "Anyday.io",
+   "subtitle": "Anyday offers installment payments with no interest, fees, or other unpleasant surprises...",
+   "tags": ["buy-now-pay-later"],
+   "category": "Other",
+   "specType": "auto-detect",
+   "authType": "api-key",       <-- indicates Anyday API uses API-key auth (relevant for token lifecycle vector)
+   "logo": "https://res.cloudinary.com/apideck/image/upload/v1642182993/icons/anyday-io.png",
+   "website": "https://www.anyday.io/"
+ }
+ This is a third-party integration-catalog entry only; no endpoints disclosed. The authType=api-key hint
+ is a mild tech signal for the api.pay.anyday.io / api.anyday.io attack surface.

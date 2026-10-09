@@ -1,0 +1,13 @@
+{
+  "vector": "org-employees",
+  "orgs_found": [
+    {"org": "anyday-io", "repos": ["website-js-deprecated"], "public_members": 0},
+    {"org": "anyday-payments", "repos": ["ANYDAY-Magento2", "ANYDAY-WooCommerce", "ANYDAY-Magento1"], "note": "legacy payment integration repos"}
+  ],
+  "employees": [
+    {"login": "CKret", "name": "Sani Huttunen", "role": "Head of Engineering @ Anyday.io", "location": "Chaing Mai", "blog": "http://www.ckret.net", "public_repos": ["AdventOfCode", "SOL-Solar-System-Simulation"], "high_value": true},
+    {"login": "Nononpng", "name": "Nonon Nononpng", "blog_or_company": "anyday.io", "public_repos": 0}
+  ],
+  "contact_emails_leaked": ["onboarding@anyday.io", "jo@anyday.io"],
+  "internal_api_patterns": "https://my.anyday.io/api/{v1|v2}/internal/{resource}"
+}

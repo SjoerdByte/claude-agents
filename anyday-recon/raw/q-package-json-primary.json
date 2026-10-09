@@ -1,0 +1,16 @@
+{
+  "search_query": "\"anyday\" filename:package.json",
+  "total_count": 9,
+  "notes": "Primary query returned 9 hits, ALL FALSE POSITIVES: these are unrelated hobby/scratch projects named 'anyday', 'todo-anyday', 'anyday-football-supabase', 'anyday-backend', 'pickanyday', 'howmanydays' etc. NONE are from anyday.io (anyday-payments org).",
+  "false_positive_repos": [
+    "PatrickKennedy/anyday",
+    "Keerthi421/To_do (name todo-anyday)",
+    "sohailehiz/anydayfootball",
+    "Dennis7456/anyday-backend",
+    "culas/pickanyday",
+    "tongrhj/howmanydays",
+    "Gmsus4/contador-dominadas-ga",
+    "Danielvandervelden/howmanydays",
+    "Eun/WhenDoesTheQuarterEnd.com"
+  ]
+}

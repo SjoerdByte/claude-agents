@@ -1,0 +1,28 @@
+VECTOR: q-internal
+QUERIES RUN (all via GitHub code search unless noted):
+  1. "internal.anyday.io"                                  -> 0 hits
+  2. "metabase.internal.anyday.io" OR "hangfire.services.internal.anyday.io" -> 0 hits
+  3. "services.internal.anyday.io"                         -> 0 hits
+  4. "anyday.io" hangfire                                  -> 0 anyday-owned hits
+  5. "anyday.io" metabase                                  -> 0 hits
+  6. "anyday.io" internal                                  -> 1 anyday-owned hit (anyday-io/website-js-deprecated/events.js)
+  7. "anyday" hangfire                                     -> 0 anyday-owned hits
+  8. "@anyday.io" email                                    -> 0 sensitive hits (only public jo@anyday.io exposure)
+  9. "anyday" nordiska|sqlproxy|marqeta                    -> 0 hits
+ 10. "my.anyday.io/api"                                    -> 2 hits (plugin repos)
+ 11. "api.anyday.io"                                       -> 0 hits
+ 12. "admin.anyday.io" OR "admin.staging.anyday.io" OR "admin.sandbox.anyday.io" -> 0 hits
+ 13. "staging.anyday.io" OR "sandbox.anyday.io"            -> 0 hits
+ 14. "anyday.io/api" internal                              -> 1 hit (events.js)
+ 15. repo:anyday-payments/ANYDAY-Magento2 "api/v1" OR "api/v2" -> 0 hits
+ 16. repo:anyday-payments/ANYDAY-Magento2 authentication   -> 3 hits (ManagerInterface, Manager, README)
+ 17. repo:anyday-payments/ANYDAY-Magento2 URL_ANYDAY       -> 7 hits
+ 18. repo:anyday-payments/ANYDAY-Magento2 webhook|callback -> 1 hit (InitializeStrategyCommand)
+ 19. repo:anyday-payments/ANYDAY-WooCommerce "anyday.io"   -> 5 hits
+ 20. org:anyday-io / org:anyday-payments repo enumeration via mcp__github__search_repositories
+
+ORGS DISCOVERED:
+  - github.com/anyday-io           (1 public repo: website-js-deprecated)
+  - github.com/anyday-payments     (3 public repos: ANYDAY-Magento2, ANYDAY-WooCommerce, ANYDAY-Magento1)
+
+NO PUBLIC CODE REFERENCES to any *.internal.anyday.io host, metabase.*, hangfire.services.*, or sqlproxy-nordiska.

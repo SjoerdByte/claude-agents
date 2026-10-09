@@ -1,0 +1,20 @@
+Vector: q-pay-subdomains
+Primary query (exact three pay-subdomain strings) returned 0 hits on GitHub code search:
+  - "pay.anyday.io"               -> 0
+  - "merchant.pay.anyday.io"      -> 0
+  - "tokens.pay.anyday.io"        -> 0
+  - "api.pay.anyday.io"           -> 0
+
+Broader fallback query "anyday.io" + pay returned 49 hits across repos.
+Discovered org on GitHub: anyday-payments
+  - anyday-payments/ANYDAY-WooCommerce  (official WooCommerce plugin)
+  - anyday-payments/ANYDAY-Magento2     (official Magento 2 plugin)
+Both reveal production API host: https://my.anyday.io
+  - ANYDAY_BASE_URL = 'https://my.anyday.io/api/'
+  - ANYDAY_AUTH_URL = 'v1/authentication/login'
+  - URL_AUTORIZE   = '/api/v1/orders'
+  - PriceTag script: https://my.anyday.io/webshopPriceTag/anyday-price-tag-<lang>-es2015.js
+  - Price widget JS: https://my.anyday.io/price-widget/anyday-price-widget.js
+Third-party KYC flow:
+  - https://submit.anyday.io/iziibuy-kyc?pluginid=<key>   (ID-based parameter — IDOR candidate)
+Mirror repo: common-repository/anyday-woocommerce (likely clone of WooCommerce plugin)

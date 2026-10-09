@@ -1,0 +1,77 @@
+VECTOR: q-admin-portal
+PRIMARY QUERY: "admin.anyday.io" OR "admin.pay.anyday.io" OR "portal.anyday.io" OR "my.anyday.io"
+PRIMARY QUERY RESULT: 0 hits (combined OR was zero despite individual term hits — GitHub Code Search token limits)
+
+INDIVIDUAL QUERIES RUN:
+  "admin.anyday.io"        -> 0 hits
+  "admin.pay.anyday.io"    -> 0 hits
+  "portal.anyday.io"       -> 0 hits
+  "my.anyday.io"           -> 17 hits
+  "api.anyday.io"          -> 0 hits
+  org:anyday-io admin      -> 0 hits
+  org:anyday-payments admin-> 25 hits (plugin code — no actual admin.anyday.io host refs; all local Magento Admin area + ADM_PLUGIN prefix)
+  "anyday.io" admin portal -> 0 hits
+  "anyday.io" "/admin"     -> 0 hits
+  "anyday.io" dashboard    -> 11 hits (unrelated or iziibuy integration)
+  "merchant.pay.anyday.io" -> 0 hits
+
+KEY FINDINGS (ADMIN/PORTAL/HIGH-SURFACE):
+
+[1] host: my.anyday.io  (CUSTOMER PORTAL / PAYMENT INITIATION HOST)
+    Confirmed on multiple repos as the production API base.
+    Base URL used by Magento2 + WooCommerce plugins:
+      ANYDAY_BASE_URL  = https://my.anyday.io/api/
+      URL_ANYDAY       = https://my.anyday.io
+      ANYDAY_AUTH_URL  = v1/authentication/login       (POST merchant login)
+      URL_AUTORIZE     = /api/v1/orders                (POST order create)
+      URL_CAPTURE      = /api/v1/orders/{id}/capture   (POST capture by order id)
+      URL_REFUND       = /api/v1/orders/{id}/refund    (POST refund by order id)
+    Price-tag JS CDN: https://my.anyday.io/webshopPriceTag/anyday-price-tag-{lang}-es2015.js
+    Price-widget JS : https://my.anyday.io/price-widget/anyday-price-widget.js
+    Internal API    : https://my.anyday.io/api/{version}/internal/{path}  (v1 + v2 — categories, shops)
+                      unauthenticated per website-js-deprecated/events.js
+                      Query params used: PageSize, Language, display, SortBy, Ascending, Featured,
+                                         Search, Page, CategoryIds[], (also saw lowercase categoryIds — case mismatch)
+    Interesting: /webshopPriceTag/* path, serving JS off the auth/order host (same origin as the merchant API)
+    Repo refs:
+      - anyday-payments/ANYDAY-Magento2  (public, Jonas Overgaard's main integration plugin)
+      - anyday-payments/ANYDAY-WooCommerce (public, same org)
+      - anyday-io/website-js-deprecated  (private metadata, raw file accessed via raw.githubusercontent)
+
+[2] endpoint: /api/v1/orders/{id}/capture  AND  /api/v1/orders/{id}/refund
+    Confirmed in Api/Data/Payment/UrlDataInterface.php (ANYDAY-Magento2).
+    ATTACK SURFACE: order-id-scoped actions — perfect IDOR candidate if the
+    tokens issued by /v1/authentication/login do not strictly bind merchant->order.
+
+[3] endpoint: /api/v1/authentication/login
+    Classic merchant login endpoint on my.anyday.io.
+    ATTACK SURFACE: auth lifecycle (brute-safe testing, token scope).
+
+[4] endpoint: /api/{v1|v2}/internal/shops
+             /api/{v1|v2}/internal/categories
+             /api/{v1|v2}/internal/categories/{categoryId}
+    From anyday-io/website-js-deprecated/events.js. Called **unauthenticated**
+    (jQuery $.get without any Authorization header or API key).
+    Interesting path prefix: "/internal/" — typically a surface not intended for
+    arbitrary callers but reachable; worth testing other methods (POST/PUT/DELETE).
+    ATTACK SURFACE: hidden parameters (potential mass-assignment on write methods),
+    enumeration of shop/category UUIDs.
+
+[5] endpoint: https://submit.anyday.io/iziibuy-kyc?shopid={shop_id}
+            https://submit.anyday.io/iziibuy-kyc?pluginid={plugin_key}
+    From iziibuy/iziibuynew (public Laravel app) and Kazi-Rayhan/mywebshop.
+    The shopid / pluginid are supplied by the plugin — reflected in KYC URL.
+    ATTACK SURFACE: parameter tampering / IDOR into other merchants' KYC flow,
+    enumeration via pluginid.
+    The host "submit.anyday.io" is in-scope.
+
+[6] endpoint: ADM_API_ORDERS_BASE_PATH = /api/v1/orders
+    Same host, confirmed again from the WooCommerce plugin (adm-core.php).
+
+HOSTS SEEN IN GITHUB (already in known scope):
+  my.anyday.io
+  submit.anyday.io
+  s.connect.anyday.io  (seen in indonesia-timeline/brantas-judol domains dump)
+  grafana.anyday.io    (seen in indonesia-timeline/brantas-judol domains dump)
+
+NO NEW SUBDOMAINS discovered this vector.

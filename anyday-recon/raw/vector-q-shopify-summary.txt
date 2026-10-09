@@ -1,0 +1,71 @@
+VECTOR: q-shopify (Shopify-app integration)
+Date: 2026-10-09
+
+PRIMARY QUERIES RUN:
+- "shopify.staging.anyday.io"            -> 0 results
+- "s.shopify.staging.anyday.io"          -> 0 results
+- ("anyday" AND "shopify")               -> 551 noisy results (payment-icons, startup CSVs)
+- "anyday.io" shopify                    -> 12 hits (price widget use in Shopify themes)
+- "api.anyday.io" shopify                -> 0
+- "my.anyday.io" shopify                 -> 4 (price-widget JS used in 3rd-party themes)
+- "anyday-price-widget"                  -> 6 (merchant tokens / widget use)
+- "webshopPriceTag" anyday                -> 8 (official plugin repos reveal endpoints)
+- org:anyday-payments                     -> 3 repos: ANYDAY-Magento2 / ANYDAY-WooCommerce / ANYDAY-Magento1
+- "anyday-payments" shopify               -> 0 (nothing shopify-specific in anyday-payments org)
+- repo:anyday-payments/ANYDAY-Magento2 anyday.io -> 7
+- repo:anyday-payments/ANYDAY-WooCommerce anyday.io -> 5
+- repo:anyday-payments/ANYDAY-Magento2 "api/v1"   -> 2
+- "anyday.io" "/api/v1"                   -> 3
+- "anyday.io" "orders" "capture"          -> 17
+- "my.anyday.io" webhook                  -> 0
+- "anyday.io" token api                   -> 18
+- "api.pay.anyday.io"                     -> 0
+- "merchant.pay.anyday.io"                -> 0
+- "developer.anyday.io"                   -> 0
+- "connect.anyday.io" OR "s.connect.anyday.io" -> 2 (DNS blacklists confirming s.connect.anyday.io)
+
+HIGH-VALUE REPOS DISCOVERED (anyday-owned):
+- anyday-payments/ANYDAY-Magento2   (PHP, 2021-2022)
+- anyday-payments/ANYDAY-WooCommerce (PHP, 2020-2021)
+- anyday-payments/ANYDAY-Magento1   (PHP, 2020-2021)
+
+FALSE POSITIVE SHOPIFY-APP (NOT anyday.io):
+- nabeel244/shopify-anyday (JavaScript / Remix) — this is a Shopify booking app that happens to be named "anyday"; booking widget / payment flow are for Shopify's own checkout, nothing hits anyday.io.
+
+ENDPOINTS LEAKED BY OFFICIAL PLUGIN SOURCE (my.anyday.io API):
+Base URL: https://my.anyday.io
+- POST /api/v1/authentication/login      (login, returns access_token)                 [Magento2 Service/Anyday/Manager.php]
+- GET  /api/v1/webshop/mine                (owner-of-token webshop info)               [Magento2 Service/Anyday/Manager.php]
+- POST /api/v1/orders                     (authorize / create order)                   [Magento2 UrlDataInterface + WC adm-core.php]
+- POST /api/v1/orders/{id}/capture        (capture authorised order)                   [Magento2 UrlDataInterface]
+- POST /api/v1/orders/{id}/refund         (refund an order)                            [Magento2 UrlDataInterface]
+- POST /api/v1/orders/{id}/cancel         (cancel order)                               [Magento2 UrlDataInterface]
+Front-end widget JS:
+- GET  https://my.anyday.io/webshopPriceTag/anyday-price-tag-{en|da}-es2015.js
+- GET  https://my.anyday.io/price-widget/anyday-price-widget.js
+
+CSP whitelist in Magento2 plugin:
+- *.anyday.io (host wildcard)             [etc/csp_whitelist.xml]
+
+PUBLIC WIDGET TOKEN SEEN IN 3RD-PARTY SHOPIFY THEMES:
+- token="7f281129bc204154884460e6d8519455"   shop-name="number-nineshop.com"
+  (Appears to be a merchant Pricetag identifier, intended to be public/client-side.
+   Not a secret per protocol — but a candidate for enumeration /
+   mass-assignment pivot against merchant endpoints: /api/v1/webshop/mine etc.)
+
+STACK HINTS CONFIRMED:
+- Anyday's merchant API: PHP integrations reach an HTTP+JSON "/api/v1/..." backend
+  that uses bearer token auth (Authorization header set via setAuthorization).
+- Service style suggests OAuth-token or JWT flow after /api/v1/authentication/login.
+- *.anyday.io CSP wildcard entry = anyday operates many *.anyday.io subdomains.
+
+SUBDOMAIN CONFIRMATION (public passive data):
+- s.connect.anyday.io   -> seen in two DNS/domain blacklists (brantas-judol / adops)
+   (already in in-scope list)
+
+NO NEW NON-IN-SCOPE SUBDOMAINS DISCOVERED by this vector.
+
+TECH SIGNALS:
+- Magento 2 plugin: PHP, Anyday\Payment namespace, uses Magento Framework Context / curl helpers
+- WooCommerce plugin: PHP 7.x, plugin slug am-wordpress, "ADM_" prefix constants
+- Public widget: ES2015 module JS, served from my.anyday.io CDN path

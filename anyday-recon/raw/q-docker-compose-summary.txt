@@ -1,0 +1,50 @@
+# Vector: q-docker-compose — raw summary
+# Date: 2026-10-09
+
+## Queries executed (GitHub code search)
+1. "anyday" filename:docker-compose.yml           -> 1 hit (Dennis7456/anyday-backend) — UNRELATED tutorial, not anyday.io payments
+2. "anyday" filename:docker-compose.yaml          -> 0 hits
+3. "anyday.io" filename:docker-compose.yml        -> 0 hits
+4. "anyday.io" filename:docker-compose.yaml       -> 0 hits
+5. "anyday.io" filename:Dockerfile                -> 0 hits
+6. "anydaypay" filename:docker-compose.yml        -> 0 hits
+7. "anyday.io" extension:yml                      -> 0 hits
+8. "anyday.io" extension:yaml                     -> 1 hit (Xiaobei09/Rule-Provider — Clash DOMAIN-SUFFIX routing ruleset)
+9. "api.anyday.io" in:file                        -> 0 hits
+10. "pay.anyday.io" in:file                       -> 0 hits
+11. "sqlproxy-nordiska" in:file                   -> 0 hits
+12. "merchant.pay.anyday" in:file                 -> 0 hits
+13. "metabase.internal.anyday" in:file            -> 0 hits
+14. "ichnaea.anyday" OR "marqeta.services.anyday" OR "clearhaus-sync" -> 0 hits
+15. "api.anyday" docker                           -> 0 hits
+16. "anyday" filename:appsettings.json            -> 9 hits, ALL unrelated (word "anyDay" in C# config of other apps)
+17. "anyday" filename:.env                        -> 3 hits, ALL unrelated
+18. "anyday" filename:Procfile                    -> 0 hits
+19. "anyday" filename:kubernetes.yaml             -> 0 hits
+20. "anyday.io" filename:composer.json            -> 0 hits
+21. "my.anyday.io" OR "admin.anyday.io" in:file   -> 0 hits
+22. "anydaypayment" OR "ANYDAY_API_KEY" OR "ANYDAY_API_URL" -> 0 hits
+23. org:anyday-payments docker-compose            -> 0 hits
+24. org:anyday-payments filename:docker-compose.yml -> 0 hits
+25. "anyday-payments" docker-compose              -> 0 hits
+26. "anyday" Hangfire                             -> 8 hits, ALL unrelated
+
+## Anyday Payments GitHub org (anyday-payments)
+Public repos (3):
+- anyday-payments/ANYDAY-Magento2  (PHP Magento 2 extension)
+- anyday-payments/ANYDAY-WooCommerce (PHP WordPress plugin)
+- anyday-payments/ANYDAY-Magento1  (PHP Magento 1 extension)
+
+None of the three contains a docker-compose.yml/.yaml, Dockerfile, k8s manifest, Procfile, or similar deployment/infra file.
+Only reference to anyday.io host surface in these repos:
+- https://www.anyday.io/webshop (signup link, in README of ANYDAY-Magento2)
+- onboarding@anyday.io (email, README)
+- https://anyday.io (README of ANYDAY-Magento1)
+
+## Mirror repos (not maintained by anyday)
+- common-repository/anyday-woocommerce — WordPress.org mirror of the WooCommerce plugin.
+
+## Conclusion
+The docker-compose vector produces NO useful infrastructure disclosure against anyday.io.
+anyday.io / Anyday ApS does not publish any docker-compose, Dockerfile, Kubernetes, Compose, Procfile or
+environment file that references *.anyday.io or production topology on public GitHub.

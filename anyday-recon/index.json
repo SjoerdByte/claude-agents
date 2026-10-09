@@ -1,12 +1,78 @@
 {
   "target": "anyday.io",
   "authorization": "Written permission from CEO Jonas Overgaard",
-  "scope_note": "Everything, including *.anyday.io subdomains and vendor-hosted infrastructure running anyday code or storing anyday data. Known subdomains: anyday.io, help.anyday.io, my.anyday.io, tokens.pay.anyday.io, admin.sandbox.anyday.io, google-pay.pay.sandbox.anyday.io, s.shopify.staging.anyday.io, m.anyday.io, localhost.staging.anyday.io, developer.anyday.io, grafana.anyday.io, shopify.staging.anyday.io, staging.anyday.io, merchant.pay.anyday.io, api.anyday.io, localhost.anyday.io, apple-pay.pay.sandbox.anyday.io, email.staging.anyday.io, webmail.anyday.io, status.anyday.io, ftp.staging.anyday.io, api2.anyday.io, email.anyday.io, www.staging.anyday.io, sqlproxy-nordiska.anyday.io, merchant.pay.sandbox.anyday.io, api.pay.sandbox.anyday.io, webhooks.anyday.io, apple-pay.pay.anyday.io, metabase-copy.internal.anyday.io, metabase-v2.internal.anyday.io, www.anyday.io, shop.anyday.io, vpn.anyday.io, cdn.anyday.io, metabase.internal.anyday.io, ftp.anyday.io, google-pay.pay.anyday.io, admin.anyday.io, tokens.pay.sandbox.anyday.io, admin.staging.anyday.io, da.anyday.io, posthog-dev.anyday.io, marqeta.services.anyday.io, clearhaus-sync.services.anyday.io, admin.pay.sandbox.anyday.io, www.shop.anyday.io, go.anyday.io, my.staging.anyday.io, helpdesk.anyday.io, admin.pay.anyday.io, mobilepay.pay.anyday.io, submit.anyday.io, connect.anyday.io, ichnaea.anyday.io, api.pay.anyday.io, assets.anyday.io, portal.anyday.io, sendgrid.anyday.io, hangfire.services.internal.anyday.io, mobilepay.pay.sandbox.anyday.io, sftp.marqeta.services.anyday.io, s.connect.anyday.io, qr.anyday.io. More subdomains may exist and should be discovered.",
-  "stack_hints": "Angular confirmed by user, more likely. Payment-processor adjacent (Clearhaus, Marqeta, MobilePay, Apple Pay, Google Pay). Shopify integration. Metabase (internal). Grafana. PostHog. Hangfire (.NET background jobs).",
-  "ruled_out": [],
-  "open_threads": [],
-  "pending_decisions": [],
-  "hours_spent": 0,
-  "session_goal": "Surface mapping from GitHub",
-  "findings": []
+  "scope_note": "Everything *.anyday.io plus vendor-hosted infrastructure that runs anyday code or stores anyday data. Primary attack surface host is my.anyday.io (payment/merchant API); auxiliary core-webapi at api.anyday.io/api2.anyday.io (shared AWS ELB in eu-north-1).",
+  "stack_hints": "Frontend: Angular (anyday-price-widget web component shipped as es2015 bundle) + jQuery (deprecated marketing JS) + Webflow (www). Backend: suspected ASP.NET Core (ELB name 'corewebapi') + Hangfire for background jobs; .NET also indicated by appsettings naming conventions. BI/obs: Metabase, Grafana (both AWS eu-north-1 behind internal ELBs with public DNS). Email: Customer.io, SendGrid (via AWS API Gateway). Shopify integration split between prod (eu-north-1) and staging (ap-southeast-1 Singapore). Payment orchestration: Marqeta + Clearhaus + MobilePay + Apple Pay + Google Pay (all pay.* subdomains currently NXDOMAIN - either decommissioned or split-horizon). CDN: Azure Front Door for cdn.*, 7 independent AWS CloudFront distributions for admin/my/portal/assets. DNS: Azure DNS.",
+  "github_orgs_discovered": {
+    "anyday-payments": {
+      "location": "Aarhus, Denmark",
+      "email": "help@anyday.io",
+      "public_repos": ["ANYDAY-Magento2", "ANYDAY-WooCommerce", "ANYDAY-Magento1"],
+      "note": "Three merchant-side PHP plugins, last touched 2021-2022. Richest first-party source of API endpoint shape."
+    },
+    "anyday-io": {
+      "location": "Aarhus, Denmark",
+      "public_repos": ["website-js-deprecated"],
+      "note": "Repo touched 2026-09-24. events.js exposes anydayAPI() calling my.anyday.io/api/{v1|v2}/internal/* UNAUTHENTICATED."
+    }
+  },
+  "employees_identified": [
+    {"name": "Jonas Overgaard", "role": "CEO", "email": "jo@anyday.io"},
+    {"name": "Sani Huttunen", "github": "CKret", "role": "Head of Engineering", "location": "Chiang Mai"},
+    {"name": "Nonon Nononpng", "github": "Nononpng"},
+    {"name": "Mayur Kathale", "github": "mayurkathale", "role": "PHP contractor (Magento/WooCommerce)", "location": "Bangkok"},
+    {"name": "Luke Golden", "github": "luke-golden"},
+    {"name": "Stefano Cicatiello", "role": "anyday-io org member", "location": "Bangkok"}
+  ],
+  "leaked_contact_emails": ["jo@anyday.io", "onboarding@anyday.io", "help@anyday.io"],
+  "ruled_out": [
+    "pay.anyday.io namespace NXDOMAIN as of 2026-10-09 (all 16 pay.* subdomains): no public DNS",
+    "clearhaus-sync.services.anyday.io NXDOMAIN",
+    "posthog-dev.anyday.io NXDOMAIN",
+    "metabase-copy / metabase-v2 .internal.anyday.io NXDOMAIN",
+    "qa1-9.staging.anyday.io NXDOMAIN (subdomain.center hallucinated)",
+    "sandbox / staging / services / internal apex NXDOMAIN",
+    "No GitHub-leaked AWS/GCP/Azure/Marqeta/Stripe/SendGrid API keys",
+    "No GitHub-published Dockerfile, docker-compose, Terraform, Kubernetes, Postman or OpenAPI specs for anyday code",
+    "No GraphQL endpoint under *.anyday.io on public GitHub (platform appears REST-only)"
+  ],
+  "open_threads": [
+    {"id": "T001", "priority": "P1", "summary": "IDOR on /api/v1/orders/{id}/{capture|refund|cancel} — classic object-ID-scoped action, prime cross-tenant target per rulebook", "source": "github-plugins", "requires": "two merchant accounts"},
+    {"id": "T002", "priority": "P1", "summary": "Potential SSRF via merchant-controlled callbackUrl on POST /api/v1/orders — if anyday backend fetches arbitrary URLs without allowlist, pivot to 169.254.169.254 / localhost / internal services", "source": "github-plugins AnydayPayment.php / InitializeStrategyCommand.php"},
+    {"id": "T003", "priority": "P1", "summary": "grafana.anyday.io CNAMEs to internal-* AWS ELB — probe for public reachability + Grafana CVE-2024-9264 (arbitrary file read), CVE-2022-32275 (anon dashboard)", "source": "passive-DNS"},
+    {"id": "T004", "priority": "P1", "summary": "hangfire.services.internal.anyday.io / and shared Azure VM with marqeta.services.anyday.io at 51.104.136.9 — probe /hangfire default dashboard for weak auth, test Host-header swap for vhost confusion", "source": "passive-DNS"},
+    {"id": "T005", "priority": "P1", "summary": "Unauthenticated /api/{v1|v2}/internal/* reachable from the public website JS — enumerate full surface, try write methods (POST/PUT/DELETE), check for mass-assignment", "source": "github anyday-io/website-js-deprecated events.js"},
+    {"id": "T006", "priority": "P2", "summary": "Auth-token lifecycle: issue via /api/v1/authentication/login, test server-side invalidation on logout, password reset, and token-rotation", "source": "github-plugins"},
+    {"id": "T007", "priority": "P2", "summary": "GET /api/v1/webshop/mine returns apiKey/testAPIKey/priceTagToken/privateKey — IDOR candidate (does Bearer A see Bearer B's keys?); also test PATCH for role/tenant mass-assign", "source": "github MerchantAuthentication.php"},
+    {"id": "T008", "priority": "P2", "summary": "localhost.anyday.io publicly resolves to 127.0.0.1 — test cookie-tossing, origin-spoof, OAuth-redirect allowlist bypass", "source": "passive-DNS"},
+    {"id": "T009", "priority": "P2", "summary": "submit.anyday.io/iziibuy-kyc?pluginid= / ?shopid= — IDOR into other merchants' KYC flow; also stored-XSS via reflected query param", "source": "github iziibuy repos"},
+    {"id": "T010", "priority": "P2", "summary": "Staging Shopify in ap-southeast-1 (Singapore) vs prod in eu-north-1 — region split; test staging for permissive CORS, leftover test data, decommissioned endpoints", "source": "passive-DNS"},
+    {"id": "T011", "priority": "P2", "summary": "mTLS downgrade: connect.anyday.io (non-mTLS) vs s.connect.anyday.io (mTLS) — test whether non-mTLS endpoint accepts requests meant for mTLS one", "source": "passive-DNS"},
+    {"id": "T012", "priority": "P2", "summary": "AWS API Gateway custom-domain IDs leaked (d-wv3fmp3mhf for sendgrid, d-2wvmeuedgb for webhooks) — enumerate stages and underlying resources", "source": "passive-DNS"},
+    {"id": "T013", "priority": "P2", "summary": "CloudFront direct-origin probing on 7 distributions (admin/my/portal/assets x env) — host-header validation, origin exposure", "source": "passive-DNS"},
+    {"id": "T014", "priority": "P2", "summary": "Query parameter smuggling in events.js: anydayAPI() builds query strings without encodeURIComponent — test '=' and '&' in user-controlled values hitting /api/*/internal/*", "source": "github events.js:954"},
+    {"id": "T015", "priority": "P3", "summary": "/api/v1/orders?id={transaction} — enumeration by transaction id (increment or guess) with Bearer token", "source": "github WooCommerce adm-core.php"},
+    {"id": "T016", "priority": "P3", "summary": "ftp.anyday.io / webmail.anyday.io / m.anyday.io share 5.254.55.36 (Simply.com DK) — legacy cPanel attack surface", "source": "passive-DNS"},
+    {"id": "T017", "priority": "P3", "summary": "common-repository/anyday-woocommerce mirror may preserve older plugin versions with removed endpoints/test credentials — diff against latest", "source": "github mirror"},
+    {"id": "T018", "priority": "P3", "summary": "ichnaea.anyday.io at 20.223.60.248 (Azure) — Mozilla Ichnaea is a geolocation service; is anyday running a private geolocation API?", "source": "passive-DNS"},
+    {"id": "T019", "priority": "P3", "summary": "developer.anyday.io is on ReadMe.io — public docs may expose /api/* paths not visible in GitHub (api.anyday.io shape in particular)", "source": "passive-DNS"},
+    {"id": "T020", "priority": "P3", "summary": "sqlproxy-nordiska.anyday.io exposes codename 'Nordiska' and runs on Azure 13.63.25.203 — identify what the SQL proxy fronts", "source": "passive-DNS"}
+  ],
+  "pending_decisions": [
+    "Workflow wf_3969a41b-69a still running: pending phases are Discover-Secrets, Deep-Read, Harvest, Completeness, Synthesize. Merge their output when complete."
+  ],
+  "hours_spent": 2,
+  "session_goal": "Surface mapping from GitHub + passive DNS",
+  "findings": [],
+  "artifacts": {
+    "provisional_surface_map": "anyday-recon/SURFACE-MAP-provisional.md",
+    "passive_dns_inventory": "anyday-recon/passive/DNS-INVENTORY.md",
+    "live_subdomains_doh": "anyday-recon/passive/doh-resolution.json",
+    "all_passive_subdomains": "anyday-recon/passive/all-passive-subdomains.txt",
+    "key_endpoints": "anyday-recon/raw/key-endpoints.txt",
+    "openapi_endpoints_summary": "anyday-recon/raw/endpoints_summary_q-openapi.txt",
+    "github_org_inventory": "anyday-recon/github/org-repos.json",
+    "employees_dossier": "anyday-recon/raw/employees-final.json",
+    "github_recon_workflow_run_id": "wf_3969a41b-69a"
+  }
 }

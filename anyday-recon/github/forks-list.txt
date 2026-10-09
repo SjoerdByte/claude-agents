@@ -1,0 +1,8 @@
+=== Forks of anyday-payments/ANYDAY-WooCommerce ===
+
+=== Forks of anyday-payments/ANYDAY-Magento1 ===
+
+=== Forks of anyday-payments/ANYDAY-Magento2 ===
+
+=== Forks of anyday-io/website-js-deprecated ===
+

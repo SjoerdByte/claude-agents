@@ -1,0 +1,17 @@
+{
+  "vector": "q-terraform",
+  "primary_query": "\"anyday\" extension:tf",
+  "primary_total_count": 2,
+  "note": "Both tf hits are OCI tag resources named 'AnyDay' for scheduling — unrelated to anyday.io. Secondary queries for anyday.io in hcl/yaml/json also returned no IaC leaks. Discovered two official Anyday GitHub orgs: anyday-payments (3 repos: ANYDAY-Magento2, ANYDAY-WooCommerce, ANYDAY-Magento1) and anyday-io (1 repo: website-js-deprecated). The 'website-js-deprecated' repo exposes an internal API path pattern: https://my.anyday.io/api/{version}/internal/{structure}. Magento/WooCommerce plugins expose API endpoints under https://my.anyday.io/api/v1/orders, /capture, /refund, /authentication/login, and the webshopPriceTag script path.",
+  "secondary_queries": [
+    "\"anyday.io\" extension:tf (0)",
+    "\"anyday\" extension:hcl (0)",
+    "\"anyday.io\" extension:yaml (1 - noise)",
+    "\"anyday.io\" extension:json (5 - noise/third-party dirs)",
+    "\"anyday.io\" extension:yml (0)",
+    "\"api.anyday.io\" (0)",
+    "\"my.anyday.io\" (17)",
+    "org:anyday-payments (131)",
+    "org:anyday-io (1)"
+  ]
+}

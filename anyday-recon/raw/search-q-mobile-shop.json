@@ -1,0 +1,29 @@
+{
+  "vector": "q-mobile-shop",
+  "primary_hits": {
+    "anyday-io/website-js-deprecated": {
+      "file": "events.js",
+      "api_base": "https://my.anyday.io/api/{version}/internal/",
+      "endpoints": [
+        "GET /api/v2/internal/shops",
+        "GET /api/v1/internal/categories",
+        "GET /api/v1/internal/categories/{categoryId}"
+      ],
+      "query_params": ["Language","PageSize","Page","display","SortBy","Ascending","Featured","CategoryIds","categoryIds","Search"],
+      "notes": "Deprecated webflow consumer site; still reveals API shape"
+    },
+    "anyday-payments/ANYDAY-Magento2": {
+      "ManagerInterface.php": "const ANYDAY_BASE_URL = 'https://my.anyday.io/api/'; const ANYDAY_AUTH_URL = 'v1/authentication/login';",
+      "Pricetag.php": "https://my.anyday.io/webshopPriceTag/anyday-price-tag-{lang}-es2015.js"
+    },
+    "anyday-payments/ANYDAY-WooCommerce": {
+      "adm-core.php": {
+        "ADM_API_BASE_URL": "https://my.anyday.io",
+        "ADM_API_ORDERS_BASE_PATH": "/api/v1/orders"
+      }
+    },
+    "Kazi-Rayhan/mywebshop": "References https://submit.anyday.io/iziibuy-kyc?shopid={shopid} - KYC form with shopid param (potential IDOR)",
+    "zaman-shakir/wp-daily-bug-fix-snippets": "https://my.anyday.io/price-widget/anyday-price-widget.js with token=4fb221f5d0c44b70aa96b54933f69a47 (merchant widget token)",
+    "thanhmcb/Shopify": "token=7f281129bc204154884460e6d8519455 shop-name=number-nineshop.com (another merchant widget token)"
+  }
+}

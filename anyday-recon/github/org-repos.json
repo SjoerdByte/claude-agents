@@ -1,0 +1,149 @@
+{
+  "collected_at": "2026-10-09",
+  "vector": "org-anyday",
+  "primary_orgs": [
+    {
+      "login": "anyday-payments",
+      "type": "Organization",
+      "name": "Anyday",
+      "blog": "https://www.anyday.io/",
+      "location": "Aarhus, Denmark",
+      "email": "help@anyday.io",
+      "description": "Anyday is a new way to pay. An interest free financing solution freed from unexpected expenses and unpleasant surprises.",
+      "html_url": "https://github.com/anyday-payments",
+      "created_at": "2020-11-18T05:52:41Z",
+      "public_repos_count": 3,
+      "public_members_listed": 0,
+      "repos": [
+        {
+          "full_name": "anyday-payments/ANYDAY-WooCommerce",
+          "description": "Integrate ANYDAY into your WordPress/WooCommerce store with the ANYDAY WooCommerce plugin.",
+          "language": "PHP",
+          "pushed_at": "2022-10-31T04:48:44Z",
+          "updated_at": "2021-12-23T04:31:05Z",
+          "archived": false,
+          "visibility": "public",
+          "default_branch": "master",
+          "size_kb": 372,
+          "stars": 0,
+          "open_issues": 1,
+          "fork": false
+        },
+        {
+          "full_name": "anyday-payments/ANYDAY-Magento1",
+          "description": "Integrate ANYDAY into your Magento 1 store with the ANYDAY Magento 1 extension.",
+          "language": "PHP",
+          "pushed_at": "2021-10-25T08:54:04Z",
+          "updated_at": "2021-10-25T08:54:08Z",
+          "archived": false,
+          "visibility": "public",
+          "default_branch": "main",
+          "size_kb": 67,
+          "stars": 0,
+          "open_issues": 0,
+          "fork": false
+        },
+        {
+          "full_name": "anyday-payments/ANYDAY-Magento2",
+          "description": null,
+          "language": "PHP",
+          "pushed_at": "2022-10-31T04:30:57Z",
+          "updated_at": "2022-01-08T07:24:52Z",
+          "archived": false,
+          "visibility": "public",
+          "default_branch": "master",
+          "size_kb": 208,
+          "stars": 0,
+          "open_issues": 1,
+          "fork": false
+        }
+      ]
+    },
+    {
+      "login": "anyday-io",
+      "type": "Organization",
+      "name": null,
+      "blog": null,
+      "location": null,
+      "email": null,
+      "description": null,
+      "html_url": "https://github.com/anyday-io",
+      "created_at": "2022-03-23T01:32:01Z",
+      "public_repos_count": 1,
+      "public_members_listed": 0,
+      "repos": [
+        {
+          "full_name": "anyday-io/website-js-deprecated",
+          "description": null,
+          "language": "JavaScript",
+          "pushed_at": "2022-12-21T05:19:10Z",
+          "updated_at": "2026-09-24T04:27:58Z",
+          "archived": false,
+          "visibility": "public",
+          "default_branch": "main",
+          "size_kb": 9,
+          "stars": 0,
+          "open_issues": 0,
+          "fork": false,
+          "note": "Repo is tiny (9 KB). Code search surfaces only 'events.js'. Repository is not pre-attached to this session; follow-up read requires add_repo."
+        }
+      ]
+    }
+  ],
+  "candidate_users_not_related": [
+    {
+      "login": "anyday",
+      "type": "User",
+      "public_repos": 4,
+      "note": "Only forks of unrelated upstreams (YouTube api-samples, Laravel, Whatever-Origin). Not the company."
+    },
+    {
+      "login": "AnyDay-Software",
+      "type": "User",
+      "public_repos": 0,
+      "note": "Empty user; name coincidence."
+    }
+  ],
+  "third_party_mirrors_and_integrations": [
+    {
+      "full_name": "common-repository/anyday-woocommerce",
+      "description": "Mirror of WordPress.org plugin: anyday-woocommerce",
+      "note": "Automated mirror of the official WP plugin. Content is a snapshot of the Anyday WooCommerce PHP plugin."
+    },
+    {
+      "full_name": "nabeel244/shopify-anyday",
+      "description": "JavaScript Shopify integration (third-party, 2025-09-19). Unclear if official.",
+      "note": "Lightweight repo — may contain references to Anyday API endpoints"
+    },
+    {
+      "full_name": "zaman-shakir/wp-daily-bug-fix-snippets",
+      "note": "Contains anyday_widget.php — snippet referencing the WP plugin"
+    }
+  ],
+  "keyword_matches_hit": {
+    "api": ["ANYDAY-Magento2 (131 code hits)", "ANYDAY-WooCommerce", "website-js-deprecated/events.js"],
+    "web": ["website-js-deprecated"],
+    "merchant": ["Pending — expect merchant portal docs in Magento/WooCommerce READMEs"],
+    "pay": ["anyday-payments org name"],
+    "shopify": ["nabeel244/shopify-anyday (third-party)"],
+    "clearhaus": ["Not seen yet in GitHub"],
+    "marqeta": ["Not seen yet in GitHub"]
+  },
+  "notable_absences": [
+    "No public backend/API repo (api.anyday.io, api2.anyday.io, api.pay.anyday.io, webhooks.anyday.io, services.anyday.io) exposed by the org",
+    "No public mobile repo (iOS/Android/Flutter) found",
+    "No public Terraform/infra/k8s/helm repos found",
+    "No admin/merchant portal source repos found",
+    "No current 'website' repo — only the deprecated website-js",
+    "No public SDK repo (Anyday-SDK, anyday-js, anyday-php) distinct from the plugins",
+    "No public employee personal accounts enumerated (public membership listing is empty for both orgs)"
+  ],
+  "follow_up_targets": [
+    "Deep read anyday-payments/* PHP plugins for hardcoded endpoints, test accounts, secret-looking tokens, API shape (Magento2 is the fattest at 131 code results)",
+    "anyday-io/website-js-deprecated — events.js only — likely GA/pixel instrumentation; worth skimming for endpoints",
+    "common-repository/anyday-woocommerce — same plugin, may have older commits exposing endpoints",
+    "GitHub-wide code search for anyday.io hosts: api.anyday.io, api.pay.anyday.io, webhooks.anyday.io, admin.anyday.io, services.anyday.io, sandbox.anyday.io, pay.sandbox.anyday.io",
+    "Search for employee emails (@anyday.io) in commit history",
+    "Search individual personal accounts of past employees for forks or demos"
+  ]
+}

@@ -1,0 +1,59 @@
+# q-infra-ops recon vector — raw notes
+# Date: 2026-10-09
+
+## Direct GitHub hits on infra-ops subdomains (grafana/status/vpn/sqlproxy/posthog-dev)
+- Primary OR query: zero direct hits.
+- "grafana.anyday.io" x3 hits in indonesia-timeline/brantas-judol (DNS enum dumps). No intel.
+- "s.connect.anyday.io" x2 hits in same brantas-judol repo. No intel.
+- status.anyday.io / vpn.anyday.io / sqlproxy-nordiska.anyday.io / posthog-dev.anyday.io: zero direct hits.
+
+## Anyday-owned GitHub orgs
+- anyday-io  (1 public repo: website-js-deprecated)
+- anyday-payments (3 public repos: ANYDAY-Magento2, ANYDAY-WooCommerce, ANYDAY-Magento1)
+
+## Core API host discovered
+- https://my.anyday.io is THE API host surfaced in every official integration repo.
+- Merchant / payment APIs are versioned v1 and v2.
+
+## Endpoints (merchant-facing, verbatim from ANYDAY-WooCommerce plugin & ANYDAY-Magento2 plugin)
+- POST /api/v1/authentication/login             (Magento2 ManagerInterface.php ANYDAY_AUTH_URL)
+- POST /api/v1/orders                           (authorize payment)
+- POST /api/v1/orders/{id}/capture
+- POST /api/v1/orders/{id}/cancel
+- POST /api/v1/orders/{id}/refund
+- GET  /api/v1/orders?id={transaction}
+- Auth header: Authorization: Bearer <token>
+- Content-Type: application/json
+- Token selection depends on adm_environment (live|test) and adm_authentication_type (auth_manual|auth_account)
+- Request body carries callbackUrl pointing at merchant web-hook (potential SSRF / mass-assign surface worth testing)
+
+## Internal (web-facing, unauthenticated jQuery GETs) — my.anyday.io
+- Base: https://my.anyday.io/api/{v1|v2}/internal/
+- Hit endpoints: shops (v2), categories (v1), categories/{catId} (v1)
+- No Authorization header on these calls — public catalog surface
+
+## Static assets served from my.anyday.io
+- /webshopPriceTag/anyday-price-tag-{lang}-es2015.js  (old PriceTag SDK)
+- /price-widget/anyday-price-widget.js                (new PriceWidget SDK)
+
+## Mode toggle
+- Model/Config/Source/Modetype.php exposes two choices:
+    1 = Select Live
+    0 = Select Test Mode
+- Confirms sandbox API path is in use (aligns with target *.pay.sandbox.anyday.io subdomains)
+
+## CSP whitelist (anyday-payments/ANYDAY-Magento2 etc/csp_whitelist.xml)
+- <value id="my_anyday_io" type="host">*.anyday.io</value>
+
+## Observability / infra signals (grafana, metabase, hangfire, posthog, sentry, kibana, prometheus, loki, cloudwatch, datadog, elasticsearch)
+- No hits tying any of these to anyday org repos.
+- grafana.anyday.io present in third-party DNS enumeration dumps only.
+- (status / vpn / sqlproxy-nordiska / posthog-dev / internal.anyday.io / services.anyday.io subdomains do NOT appear in any public GitHub code.)
+
+## Shopify merchant widget tokens leaked by third-party stores (public widget tokens; known non-finding category)
+- token="7f281129bc204154884460e6d8519455" shop="number-nineshop.com" (repo thanhmcb/Shopify)
+- These are MERCHANT widget tokens embedded in checkout widgets — public, listed only for cross-ref context.
+
+## Related third-party mirrors
+- common-repository/anyday-woocommerce : WordPress plugin SVN mirror of ANYDAY-WooCommerce
+- duckduckgo/tracker-radar-wiki docs/domains/anyday.io.html — tracker telemetry only

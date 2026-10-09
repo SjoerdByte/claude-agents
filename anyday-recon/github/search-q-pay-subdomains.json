@@ -1,0 +1,22 @@
+{
+  "vector": "q-pay-subdomains",
+  "queries": [
+    {"q": "\"pay.anyday.io\" OR \"merchant.pay.anyday.io\" OR \"tokens.pay.anyday.io\"", "total_count": 0},
+    {"q": "\"pay.anyday.io\"", "total_count": 0},
+    {"q": "\"merchant.pay.anyday.io\"", "total_count": 0},
+    {"q": "\"tokens.pay.anyday.io\"", "total_count": 0},
+    {"q": "\"api.pay.anyday.io\"", "total_count": 0},
+    {"q": "\"pay.anyday.io\" OR \"pay.sandbox.anyday.io\"", "total_count": 0},
+    {"q": "\"pay.anyday\"", "total_count": 0},
+    {"q": "\"anyday.io\" pay", "total_count": 49},
+    {"q": "\"my.anyday.io\"", "total_count": 17},
+    {"q": "\"api.anyday.io\"", "total_count": 0},
+    {"q": "\"submit.anyday.io\"", "total_count": 5},
+    {"q": "\"webhooks.anyday.io\"", "total_count": 0},
+    {"q": "\"anyday\" \"mobilepay\"", "total_count": 381, "note": "mostly 3rd-party BNPL gateway modules (Reepay/Quickpay/OnPay/Pensopay) listing Anyday as a payment method"},
+    {"q": "\"anyday.io/api/\" internal", "total_count": 1},
+    {"q": "org:anyday-io", "total_count": 1},
+    {"q": "org:anyday-payments", "total_count": 3}
+  ],
+  "conclusion": "No GitHub-indexed code contains any of pay.anyday.io, merchant.pay.anyday.io, tokens.pay.anyday.io, apple-pay.pay.anyday.io, google-pay.pay.anyday.io, api.pay.anyday.io, or any *.pay.sandbox.anyday.io hostname. The only Anyday-controlled production hostnames referenced by anyday's own public source trees are my.anyday.io and submit.anyday.io. Pay subdomains appear only in the task's explicit scope list, not in indexed source — meaning pay.* endpoints are likely consumed only by anyday's internal/private client code and must be enumerated with other techniques (crt.sh, Wayback, directly probing documented SDKs, Shopify theme scraping)."
+}

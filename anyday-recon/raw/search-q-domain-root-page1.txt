@@ -1,0 +1,18 @@
+Query: "anyday.io" (page 1, perPage=30), total_count=61
+
+Key hits (official org repos):
+- anyday-payments/ANYDAY-Magento2 - README.md, ManagerInterface.php, UrlDataInterface.php, Pricetag.php (x3), csp_whitelist.xml
+- anyday-payments/ANYDAY-WooCommerce - readme.txt, adm-core.php, PriceTag.php, anyday_widget.php, adm-da_DK.po, anyday-woocommerce.pot
+- common-repository/anyday-woocommerce - mirror
+
+Third-party references:
+- zaman-shakir/wp-daily-bug-fix-snippets - anyday_widget.php uses my.anyday.io/price-widget/anyday-price-widget.js
+- T-AIMaven/GreenMind - pages/Product.vue - my.anyday.io/webshopPriceTag/anyday-price-tag-da-es2015.js
+- kompost/scraper - apps/api/src/scraper/scraper.service.ts
+
+Threat/tracker lists (not actionable):
+- duckduckgo/tracker-radar-wiki/docs/domains/anyday.io.html
+- rix4uni/BugBountyData/data/anyday.io.txt (lists: staging.anyday.io, sandbox.anyday.io, connect.anyday.io)
+- powplowdevs/SpyView
+- indonesia-timeline/brantas-judol (shows grafana.anyday.io and s.connect.anyday.io in DNS resolution lists)
+- Various DK rule lists (Loon/Surge/QuantumultX)

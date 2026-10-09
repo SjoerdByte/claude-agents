@@ -1,0 +1,69 @@
+VECTOR: q-apple-google-pay — RESULT SUMMARY
+===========================================
+
+Primary target queries (all 0 hits on *.pay.anyday.io subdomains):
+- "apple-pay.pay.anyday.io" OR "google-pay.pay.anyday.io" OR "mobilepay.pay.anyday.io"  -> 0
+- "pay.anyday.io"                                                                        -> 0
+- "pay.anyday" OR "pay.sandbox.anyday"                                                   -> 0
+
+Secondary queries that produced value:
+- "anyday.io" apple-pay                                                                  -> 0
+- "anyday.io" google-pay                                                                 -> 0
+- "anyday.io" mobilepay                                                                  -> 7 (mostly noise: domain-lists, startup databases, Shopify merchant themes)
+- "anyday.io" shopify                                                                    -> 12 (more Shopify merchant themes using my.anyday.io price widget)
+- "my.anyday.io"                                                                         -> 17 (large yield; multiple first-party Anyday repos)
+- "anyday-price-widget"                                                                  -> 6
+- repo:anyday-payments/ANYDAY-Magento2 anyday.io                                         -> 7
+- repo:anyday-payments/ANYDAY-WooCommerce anyday.io                                      -> 5
+- repo:anyday-io/website-js-deprecated anyday.io                                         -> 1
+- org:anyday-payments                                                                    -> 3 repos
+- org:anyday-io                                                                          -> 1 repo
+
+Known public first-party repos discovered (NON-ARCHIVED, all public):
+- https://github.com/anyday-payments/ANYDAY-Magento2            (PHP, master branch, last updated 2022-01-08)
+- https://github.com/anyday-payments/ANYDAY-WooCommerce         (PHP, master branch, last updated 2021-12-23)
+- https://github.com/anyday-payments/ANYDAY-Magento1            (PHP, main branch, last updated 2021-10-25)
+- https://github.com/anyday-io/website-js-deprecated            (JavaScript, main branch, last updated 2026-09-24) *** RECENT ***
+
+Confirmed anyday.io API endpoints (from first-party Magento2 + WooCommerce code):
+- POST https://my.anyday.io/api/v1/authentication/login            (merchant login)
+- POST https://my.anyday.io/api/v1/orders                          (authorize/create order)
+- POST https://my.anyday.io/api/v1/orders/{id}/capture             (capture — potential IDOR surface)
+- POST https://my.anyday.io/api/v1/orders/{id}/refund              (refund   — potential IDOR surface)
+- POST https://my.anyday.io/api/v1/orders/{id}/cancel              (cancel   — potential IDOR surface; const URL_CANCEL present but no getter in UrlDataInterface)
+- GET  https://my.anyday.io/api/v1/internal/categories             (internal shop categories listing — may lack auth)
+- GET  https://my.anyday.io/api/v1/internal/categories/{cat-id}    (potential IDOR; takes HTML-attr-controlled id)
+- GET  https://my.anyday.io/api/v2/internal/shops                  (internal shops listing)
+- GET  https://my.anyday.io/webshopPriceTag/anyday-price-tag-{en|da}-es2015.js
+- GET  https://my.anyday.io/price-widget/anyday-price-widget.js
+- CSP whitelist in Magento2 extension: *.anyday.io (wildcard)
+
+Important third-party public-leak observations:
+- Shopify theme repo thanhmcb/Shopify embeds Anyday widget token `7f281129bc204154884460e6d8519455`
+  for merchant `number-nineshop.com` across cart-drawer.liquid, main-cart.liquid, product-info.liquid.
+  Likely a public merchant/shop-identifier token for the widget, not a secret — note for later triage.
+- AnodyneAps/BY theme referenced https://my.anyday.io/webshopPriceTag/anyday-price-tag-da-es2015.js (commented out).
+- zaman-shakir/wp-daily-bug-fix-snippets includes an anyday widget bootstrap snippet.
+
+New *.anyday.io hostnames confirmed in GitHub beyond the known list: none net-new beyond `my.anyday.io`
+(already in known list). CSP wildcard `*.anyday.io` is noted as evidence that other subdomains are
+in-scope by the vendor's own origin policy.
+
+No *.pay.anyday.io or *.pay.sandbox.anyday.io host appears in any public GitHub artifact — the Apple
+Pay / Google Pay / MobilePay wallet-integration code for these subdomains is NOT public on GitHub.
+Any payload or endpoint on those hosts has to be discovered by passive DNS / content-fetch, not GitHub.
+
+Tech signals confirmed:
+- Backend: PHP (Magento2 + WooCommerce extensions), JavaScript (deprecated website)
+- API shape: REST with /api/v1 and /api/v2, uses /internal/ path for shop-facing endpoints
+- Frontend: Anyday price-widget web component delivered via my.anyday.io
+- Known stack hints: Angular (per user), Hangfire=.NET backend (per subdomain list),
+  Metabase deployments (metabase.internal, metabase-copy.internal, metabase-v2.internal)
+
+Attack-surface hints worth escalating to the wallet / IDOR vectors:
+- The {id} placeholder in capture/refund/cancel is prime IDOR candidate; the Magento2 code
+  simply substitutes $idPayment with no cross-tenant guard visible in the public code.
+- /api/v1/internal/* appears unauthenticated in the deprecated website-js — if it still lives,
+  it is a free source of merchant / shop enumeration.
+- The anydayAPI() function builds query strings without encodeURIComponent, suggesting
+  server-side tolerance of raw '&' / parameter smuggling.

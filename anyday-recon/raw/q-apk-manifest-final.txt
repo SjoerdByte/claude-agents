@@ -1,0 +1,47 @@
+VECTOR: q-apk-manifest — Android/mobile app config pointing at prod endpoints
+Agent run: 2026-10-09
+
+STATUS: NEGATIVE for native mobile app surface.
+Zero anyday-owned AndroidManifest.xml, build.gradle(.kts), pubspec.yaml, Info.plist,
+GoogleService-Info.plist, google-services.json, network_security_config.xml, settings.gradle,
+or proguard-rules.pro on public GitHub.
+
+Queries executed (all via mcp__github__search_code):
+1. "anyday" filename:AndroidManifest.xml                      -> 8 hits, ALL unrelated substring matches
+2. "anyday" filename:build.gradle                             -> 2 hits, ALL unrelated
+3. "anyday.io" filename:AndroidManifest.xml                   -> 0
+4. "anyday.io" filename:build.gradle                          -> 0
+5. "anyday.io" filename:AndroidManifest                       -> 0
+6. "anyday.io" extension:gradle                               -> 0
+7. "anyday.io" extension:kts                                  -> 0
+8. "io.anyday" extension:gradle                               -> 0
+9. "io.anyday" filename:AndroidManifest.xml                   -> 0
+10. "anyday.io" filename:Info.plist                           -> 0
+11. "anyday.io" extension:plist                               -> 0
+12. "anyday" filename:pubspec.yaml                            -> 0
+13. "anyday.io" filename:settings.gradle                      -> 0
+14. "anyday" filename:google-services.json                    -> 0
+15. "anyday" filename:GoogleService-Info.plist                -> 0
+16. "anyday" filename:proguard-rules.pro                      -> 0
+17. "anyday" filename:network_security_config.xml             -> 0
+18. "anyday.io" extension:xml (broad)                         -> 1 hit (csp_whitelist.xml, Magento2 plugin)
+19. org:anyday-payments filename:AndroidManifest.xml          -> 0
+20. org:anyday-payments filename:build.gradle                 -> 0
+21. org:anyday-payments extension:xml                         -> 17 hits (all Magento config, no mobile)
+
+CONCLUSION — no publicly-visible anyday-owned Android or iOS app code on GitHub, and no evidence that
+anyday ships a first-party consumer mobile app. The user-known subdomain "m.anyday.io" is likely a
+mobile web endpoint, not a native app with a published repository. Only mobile-adjacent surface is
+submit.anyday.io (KYC on mobile browsers) seen elsewhere.
+
+PIVOT FINDINGS WHILE EXECUTING THIS VECTOR (reported for parent):
+- GitHub org "anyday-payments" has 3 public repos (all e-commerce plugins):
+    anyday-payments/ANYDAY-Magento2    (PHP, Magento 2 extension; last push 2022-01-08)
+    anyday-payments/ANYDAY-WooCommerce (PHP, WordPress plugin; last push 2021-12-23)
+    anyday-payments/ANYDAY-Magento1    (PHP, Magento 1 extension; last push 2021-10-25)
+- GitHub org "anyday-io" has 1 public repo:
+    anyday-io/website-js-deprecated (JavaScript; last push 2026-09-24 — recent)
+- From Magento2 ANYDAY-Magento2/etc/webapi.xml:
+    Route "/V1/validate/credentials" (POST), service "Anyday\Payment\Api\Validate\CredentialsInterface::validate",
+    resources = anonymous   <= interesting: anonymous access to a credential-validator endpoint on the MERCHANT's Magento instance.
+    (This runs on the merchant's own Magento server, not anyday.io directly, but still may reveal credential-check behaviour.)

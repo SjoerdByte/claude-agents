@@ -1,0 +1,31 @@
+{
+  "vector": "q-angular-env",
+  "primary_query": "\"anyday\" filename:environment.ts",
+  "primary_result_count": 0,
+  "secondary_queries": [
+    {"q":"\"anyday.io\" filename:environment.ts","count":0},
+    {"q":"\"anyday\" environment.ts","count":0},
+    {"q":"\"anyday.io\" language:TypeScript","count":1,"notes":"single hit was unrelated kompost/scraper service.ts"},
+    {"q":"\"api.anyday.io\" filename:environment.ts","count":0},
+    {"q":"\"anyday\" filename:environment.prod.ts","count":0},
+    {"q":"\"anyday\" filename:environments.ts","count":0},
+    {"q":"\"anyday\" \"apiUrl\" filename:environment.ts","count":0},
+    {"q":"\"anyday.io\" \"apiUrl\"","count":0},
+    {"q":"\"anyday.io/api\"","count":2,"hits":["anyday-payments/ANYDAY-Magento2:Api/Anyday/ManagerInterface.php","anyday-io/website-js-deprecated:events.js"]},
+    {"q":"\"anyday.io\" filename:config.ts","count":0},
+    {"q":"\"anyday.io\" filename:appsettings.json","count":0},
+    {"q":"\"anyday.io\" extension:ts","count":1},
+    {"q":"\"anyday.io\" extension:js","count":3,"notable":"anyday-io/website-js-deprecated:events.js"},
+    {"q":"\"anyday.io\" \"angular\"","count":2,"notable":"no Angular code hits for anyday itself"},
+    {"q":"\"my.anyday.io/api\"","in-progress":true}
+  ],
+  "orgs": ["anyday-payments","anyday-io"],
+  "repos": [
+    {"full_name":"anyday-payments/ANYDAY-Magento2","lang":"PHP"},
+    {"full_name":"anyday-payments/ANYDAY-Magento1","lang":"PHP"},
+    {"full_name":"anyday-payments/ANYDAY-WooCommerce","lang":"PHP"},
+    {"full_name":"anyday-io/website-js-deprecated","lang":"JavaScript"},
+    {"full_name":"common-repository/anyday-woocommerce","lang":"PHP (mirror)"}
+  ],
+  "conclusion_so_far": "No Angular environment.ts files for *.anyday.io found on public GitHub. The visible Anyday public frontend code is PHP + plain-JS (anyday-io/website-js-deprecated events.js). The ANYDAY-Magento2 PHP interfaces and website-js events.js are the strongest signal of exposed API paths."
+}

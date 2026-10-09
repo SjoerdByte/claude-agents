@@ -1,0 +1,50 @@
+Vector: org-anyday
+Date: 2026-10-09
+
+Candidate GitHub orgs / users searched:
+  q=anyday            -> 74 users; many unrelated (Monday.com clones, personal, plumbers, florists, football)
+  q=anyday-io         -> 0 users (login not matched as user)
+  q=anydayio          -> 0 users
+  q=anydaypay         -> 0 users
+  q=anydayapp         -> 0 users
+  q=anydaycph         -> 0 users
+  q=nordiska anyday   -> 0 users
+  q=anyday copenhagen -> 0 users
+  q=anyday denmark    -> 0 users
+  q=overgaard anyday  -> 0 users
+
+Direct org/user lookups via GitHub REST:
+  GET /orgs/anyday-payments  -> Organization, name="Anyday", blog=https://www.anyday.io/, location="Aarhus, Denmark", email=help@anyday.io, public_repos=3, created 2020-11-18
+  GET /orgs/anyday-io        -> Organization, no profile metadata, public_repos=1, created 2022-03-23
+  GET /users/anyday          -> User, only forks of unrelated upstreams (not the company)
+  GET /users/AnyDay-Software -> User, 0 public repos
+
+Public member listings:
+  anyday-payments  -> []  (no public members)
+  anyday-io        -> []  (no public members)
+
+Repo searches (GitHub advanced):
+  q=org:anyday-payments            -> 3 hits (full org inventory)
+  q=org:anyday-io                  -> implicit via org list -> 1 repo (website-js-deprecated)
+  q=anyday in:name                 -> 75 unrelated noise
+  q=anyday.io in:description       -> 0
+  q=anyday.io in:readme            -> 2 (anyday-payments/ANYDAY-Magento2 README references anyday.io; one unrelated KODA repo)
+  q="anyday.io" in:file (code)     -> 49 total hits; most are DNS/rulelist noise (SpyView, PrivaDB, DK.yaml rule lists)
+     Legit matches:
+       - anyday-io/website-js-deprecated/events.js
+       - common-repository/anyday-woocommerce (mirror of plugin)
+       - zaman-shakir/wp-daily-bug-fix-snippets/anyday_widget.php
+       - nabeel244/shopify-anyday (third-party Shopify integration, 2025-09)
+  q=anyday klarna in:description   -> 0
+  q=anyday shopify in:name,...     -> 2 (nabeel244/shopify-anyday + unrelated SyliusQuickpayPlugin)
+
+Code-level counts:
+  org:anyday-payments code search  -> 131 code hits (biggest surface: ANYDAY-Magento2 — Service/Anyday/*, Gateway/*, Model/Event/*)
+  org:anyday-io code search        -> 1 code hit (events.js)
+
+Conclusion:
+  Two confirmed Anyday-owned GitHub orgs:
+    - anyday-payments (3 PHP plugin repos — merchant-side integrations)
+    - anyday-io       (1 deprecated website JS repo)
+  No public mobile, backend, infra, or admin portal repos surfaced from the orgs themselves.
+  Public member rosters are empty on both orgs — employee enumeration must come from commit email mining.

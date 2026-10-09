@@ -1,0 +1,47 @@
+# Anyday payment-processor endpoints extracted from GitHub (q-openapi vector)
+
+## Hosts (confirmed from source code)
+https://my.anyday.io           -- Main merchant/customer API host
+https://submit.anyday.io       -- KYC/signup form host
+https://www.anyday.io          -- Public marketing / signup landing
+
+## Known endpoints (observed in anyday-payments plugins + anyday-io website js)
+POST   https://my.anyday.io/api/v1/authentication/login
+GET    https://my.anyday.io/api/v1/webshop/mine
+POST   https://my.anyday.io/api/v1/orders                       # URL_AUTORIZE (auth required)
+POST   https://my.anyday.io/api/v1/orders/{id}/capture
+POST   https://my.anyday.io/api/v1/orders/{id}/refund
+POST   https://my.anyday.io/api/v1/orders/{id}/cancel
+GET    https://my.anyday.io/api/v1/internal/categories
+GET    https://my.anyday.io/api/v1/internal/categories/{cat-id} # subCategories exposed
+GET    https://my.anyday.io/api/v2/internal/shops                # supports PageSize up to 175, Search, SortBy, CategoryIds[]
+GET    https://my.anyday.io/webshopPriceTag/anyday-price-tag-{en|da}-es2015.js  # public widget JS
+GET    https://my.anyday.io/price-widget/anyday-price-widget.js                 # public widget JS
+GET    https://submit.anyday.io/iziibuy-kyc?pluginid={key}      # KYC flow (per enterprise pluginid)
+GET    https://submit.anyday.io/iziibuy-kyc?shopid={shop_id}    # KYC flow (per shopid)
+
+## Query parameters consumed by /api/v*/internal/*
+Language, PageSize, display, Featured, SortBy=CreatedDate, Ascending, CategoryIds[], Search, Page, limit
+
+## Category UUIDs (potential IDOR targets, confirmed category ids on prod)
+7a418f22-85f1-4f6c-997e-7390dccf3229
+9849bf3f-63d9-4305-8610-c1d87f258f5d
+b722cea6-8fea-4870-a1e4-57b8a44e807d
+8240993c-6dfc-42f0-98ba-dd0c4830990f
+069c7108-fa76-48b0-aca3-61b751f2324e
+2a9a6112-65b1-4d5f-a3f2-aec68b9075f4
+66b92fdb-d6cf-4628-be21-7e0ef9479206
+c71b7386-a61f-4388-aa13-7ea018599e2d
+3cd1f971-b82d-4812-a8e9-f213e9a1bdf8
+
+## Merchant widget token (literal, not sensitive but functional)
+4fb221f5d0c44b70aa96b54933f69a47  (shop-name=sportyfit.dk, from zaman-shakir/wp-daily-bug-fix-snippets/anyday_widget.php)
+
+## Direct references (code+line not available via REST search; raw files captured)
+- anyday-payments/ANYDAY-Magento2:Api/Data/Payment/UrlDataInterface.php
+- anyday-payments/ANYDAY-Magento2:Api/Anyday/ManagerInterface.php
+- anyday-payments/ANYDAY-Magento2:Service/Anyday/Manager.php
+- anyday-payments/ANYDAY-WooCommerce:adm-core.php
+- anyday-payments/ANYDAY-WooCommerce:includes/classes/MerchantAuthentication.php
+- anyday-io/website-js-deprecated:events.js  (saved)
+- common-repository/anyday-woocommerce:adm-core.php (3rd party mirror of WooCommerce plugin)

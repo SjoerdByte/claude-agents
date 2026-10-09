@@ -1,0 +1,26 @@
+Primary query: "api.anyday.io" OR "api2.anyday.io" OR "api.pay.anyday.io" -> 0 hits (OR syntax likely limiting)
+Individual: "api.anyday.io" -> 0 ; "api2.anyday.io" -> 0 ; "api.pay.anyday.io" -> 0
+Broad: "anyday.io" -> 61 hits (many are third-party blocklists/scraped domain lists; relevant repos below)
+
+Relevant Anyday-owned org on GitHub: anyday-payments
+  Known public repos:
+    - anyday-payments/ANYDAY-Magento2  (PHP, Magento 2 plugin)
+    - anyday-payments/ANYDAY-WooCommerce (PHP, WordPress plugin)
+  Mirror: common-repository/anyday-woocommerce (same content, 2024 copy)
+
+Confirmed endpoint base: https://my.anyday.io
+  const ANYDAY_BASE_URL = 'https://my.anyday.io/api/';
+  const ANYDAY_AUTH_URL = 'v1/authentication/login';
+  URL_AUTORIZE = '/api/v1/orders'
+  URL_CAPTURE  = '/api/v1/orders/{id}/capture'
+  URL_REFUND   = '/api/v1/orders/{id}/refund'
+
+Script asset:
+  https://my.anyday.io/webshopPriceTag/anyday-price-tag-{lang}-es2015.js
+  https://my.anyday.io/price-widget/anyday-price-widget.js  (loaded as ES module)
+
+CSP whitelist: *.anyday.io (merchant-side CSP in Magento module)
+
+NEW subdomains observed in third-party lists but worth confirming:
+  s.connect.anyday.io  (in indonesia-timeline/brantas-judol/round_3467201/dns_live_3467201.txt)
+  grafana.anyday.io (in indonesia-timeline/brantas-judol/round_2235201/dns_live_2235201.txt) -- already in known list

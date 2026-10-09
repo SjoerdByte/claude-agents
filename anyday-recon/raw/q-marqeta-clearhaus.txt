@@ -1,0 +1,37 @@
+VECTOR: q-marqeta-clearhaus
+Date: 2026-10-09
+
+Queries run (GitHub code search via mcp__github__search_code):
+ 1. "marqeta.services.anyday.io" OR "clearhaus-sync.services.anyday.io" OR "sftp.marqeta.services.anyday.io"  => 0 hits
+ 2. "marqeta.services.anyday.io"              => 0 hits
+ 3. "clearhaus-sync.services.anyday.io"       => 0 hits
+ 4. "sftp.marqeta.services.anyday.io"         => 0 hits
+ 5. "anyday" marqeta                          => 9 hits (ALL unrelated: company lists + greenhouse.io recon + CSV scrapes)
+ 6. "anyday" clearhaus                        => 39 hits (ALL third-party PSP docs/code: Reepay, Frisbii, QuickPay, PensoPay — Danish BNPL "Anyday" listed as a payment-source enum value next to acquirer=clearhaus; NO anyday.io code)
+ 7. "anyday.io" marqeta                       => 0 hits
+ 8. "api.anyday.io" marqeta                   => 0 hits
+ 9. "services.anyday.io"                      => 0 hits
+10. "anyday.io" clearhaus-sync                => 0 hits
+11. "@anyday.io" marqeta                      => 0 hits
+12. "@anyday.io" clearhaus                    => 0 hits
+13. "anyday" marqeta webhook                  => 0 hits
+14. "anyday" marqeta sftp                     => 2 hits (unrelated greenhouse.io recon lists)
+15. "pay.anyday.io" marqeta                   => 0 hits
+16. "pay.anyday.io" clearhaus                 => 0 hits
+17. "anyday.io" acquirer                      => 0 hits
+18. "anyday.io" "card_token"                  => 0 hits
+
+Conclusion:
+ - NO public GitHub code references leak the marqeta.services.anyday.io, clearhaus-sync.services.anyday.io,
+   or sftp.marqeta.services.anyday.io hostnames, nor any accompanying integration code / credentials / SFTP keys.
+ - Searches cross-referencing "anyday" + payment-processor terms (marqeta, clearhaus) resolve almost entirely
+   to Danish competitor PSPs (Reepay, Frisbii/billwerk, QuickPay, PensoPay) whose public SDKs list
+   "anyday" as an enum value for a payment-source type (the Anyday Split BNPL product routed through those
+   PSPs). This is tangential — it confirms the Anyday brand ships through PSP integrations and that Clearhaus
+   is a common acquirer in the Danish market, but exposes nothing of anyday.io's own code or infrastructure.
+ - Interesting enum keywords worth noting for later vectors: "anyday", "anydaysplit", "anyday-split",
+   "ANYDAY Split", "Pay with Anyday" — anyday.io's product is called "Anyday Split" (post-payment / BNPL)
+   and ships through Danish gateway partners.
+
+No new *.anyday.io subdomains, no S3/blob/CDN leaks, no new URL path templates discovered via this vector.
+No credentials, keys, tokens found.

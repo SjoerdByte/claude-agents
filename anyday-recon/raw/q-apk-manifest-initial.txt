@@ -1,0 +1,15 @@
+Initial AndroidManifest.xml and build.gradle search returned ZERO matches for anyday.io / io.anyday / official org — confirming anyday.io does NOT publish Android apps on public GitHub.
+
+All initial regex matches for "anyday" in Android manifests/build.gradle were coincidental substring hits in unrelated repos:
+- JoachimR/AnyDayViewPager — "anydayviewpager" lib
+- Applandeo/Material-Calendar-View — "ManyDaysPickerActivity"
+- themejunky/CalendarView — "ManyDays..."
+- melq/HowManyDays2 — HowManyDays counter app
+- SalmonPhapang/CartiqueMain — Many days
+- ijoaquimmartins/Workplace — ManyDaysPickerActivity
+- android-app-development-course/2024-Autumn-Aberdeen-3-Timetable — Many days
+
+Pivoted the vector:
+- Discovered GitHub ORG: anyday-payments (3 repos: ANYDAY-Magento2, ANYDAY-WooCommerce, ANYDAY-Magento1)
+- Discovered GitHub ORG: anyday-io (public repo: website-js-deprecated)
+- No official native mobile app code on public GitHub.

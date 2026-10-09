@@ -1,0 +1,80 @@
+# Forks & Gists Vector — anyday-recon
+# Collected: 2026-10-09
+
+## 1. Forks of anyday-owned repos (anyday-payments/*, anyday-io/*)
+Checked via gh api repos/{owner}/{repo}/forks?per_page=100 — all returned empty arrays.
+
+- anyday-payments/ANYDAY-WooCommerce  -> 0 forks
+- anyday-payments/ANYDAY-Magento1     -> 0 forks
+- anyday-payments/ANYDAY-Magento2     -> 0 forks
+- anyday-io/website-js-deprecated     -> 0 forks
+
+(network_count also 0 per the API's own count — confirmed no network/parent chain.)
+Conclusion: no fork-only history to recover.
+
+## 2. Public gists search
+Target queries (via gist.github.com/search and WebSearch):
+  - "anyday.io"
+  - "api.anyday.io"
+  - "@anyday.io"
+  - site:gist.github.com "anyday.io"
+  - site:gist.github.com "api.anyday.io" OR "my.anyday.io" OR "webhooks.anyday.io"
+
+Every hit on the gist search UI was a false-positive — the matching substring
+is in a truncated portion of the gist but the visible excerpt is unrelated
+(e.g. maartensson/c0d1379ff99f3b91d0402454be8f0e28 main.go — Go imports;
+ddaf519/701d48ab84ba5f6eab3bee3f55a2d05a — Cambridge chat; etc.).  No
+confirmed anyday.io reference in any public gist indexed by GitHub's gist
+search engine.
+
+Employee gist pages (checked directly, "User doesn't have any public gists yet"):
+  - https://gist.github.com/CKret            (Sani Huttunen, Head of Engineering @ Anyday) — 0 gists
+  - https://gist.github.com/Nononpng         (anyday.io bio)                              — 0 gists
+  - https://gist.github.com/mayurkathale     (main PHP/Magento contractor)                 — 0 gists
+  - https://gist.github.com/luke-golden      (secondary PR merger)                         — 0 gists
+
+Conclusion: no gist leaks from the known employee/contractor set, and no gist
+containing anyday.io host strings is indexed.
+
+## 3. Secondary finds (not forks, not gists, but surfaced while fork/gist searching)
+
+### 3a. jo@anyday.io on a public blacklist/suppression export
+Repo:   aditWorkspace/emailsending  (public)
+Path:   export/state.json  AND  export/blacklist.csv
+Note:   The CEO's email jo@anyday.io is included in a 2026-04-28 email-send
+        suppression list. Non-sensitive; only confirms jo@ -> Jonas Overgaard.
+
+### 3b. Third-party integration profile
+Repo:   emadomedher/skyline-api-library
+Path:   profiles/anyday-io/profile.json
+Note:   An Apideck-style integration catalogue entry. authType = "api-key".
+        No endpoints or secrets.
+
+### 3c. Merchant integrations with embedded Anyday widget tokens
+These are NOT forks and NOT gists, but they are third-party public repos that
+expose per-merchant Anyday price-tag tokens. Record of interest for the
+widget surface area:
+
+- shabes.dk  (merchant: Shabes.dk; Shopify theme committed to AnodyneAps/BY)
+      file: snippets/product-meta.liquid
+      token: dcd170a788e84e088823a5682e48ad94
+- vin-huset  (merchant: Vin-huset; Budolfsen/Vin-huset Shopify theme)
+      file: snippets/product-template-default.liquid
+      token: 91624fa2e5c0439ba18dd0ced31eacb9
+- greenmind.dk (merchant: GreenMind; T-AIMaven/GreenMind Nuxt source)
+      file: pages/Product.vue + nuxt.config.ts
+      token: loaded from ./ENV as anyDayTagToken (not in repo)
+
+The price-tag-token is a per-merchant widget token used to render the
+Anyday installment-estimate component on a merchant's product pages.
+It is intended to be public (embedded in client HTML), but the two
+leaked plain-text tokens let an attacker enumerate merchant <-> token
+mapping and probe any token-scoped endpoints
+(my.anyday.io/webshopPriceTag/anyday-price-tag-*.js and whatever
+sibling calls that bundle makes).
+
+### 3d. Historical/mirror copy of the WooCommerce plugin
+Repo:   common-repository/anyday-woocommerce  (automated WP.org mirror)
+Note:   May preserve older plugin versions whose endpoints or test credentials
+        were later removed. Follow-up: diff against anyday-payments/ANYDAY-WooCommerce
+        and inspect older commit history.

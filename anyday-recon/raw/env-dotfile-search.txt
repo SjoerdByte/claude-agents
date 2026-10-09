@@ -1,0 +1,24 @@
+# q-env-dotfile vector raw summary
+# Searches run:
+# 1. "anyday" filename:.env => 3 hits (none directly tied to anyday.io infrastructure)
+# 2. "anyday.io" filename:.env => 0
+# 3. "anyday" extension:env => 1 (Boulevard booking-flow, unrelated)
+# 4. "anyday.io" filename:.env.example => 0
+# 5. "anyday.io" filename:env => 0
+# 6. "api.anyday.io" in:file => 0
+# 7. "anyday" filename:.env.local => 0
+# 8. "anyday" filename:.env.development => 0
+# 9. anyday.io broader => 61 hits
+#
+# Direct .env hits (anyday-tied):
+# NONE. No *.anyday.io host references or SDK keys inside a committed .env file.
+#
+# Collateral endpoints discovered via the broader anyday.io sweep:
+# - my.anyday.io/api/v1/authentication/login            (anyday-payments/ANYDAY-Magento2 ManagerInterface.php)
+# - my.anyday.io/api/v1/orders                          (POST authorize)
+# - my.anyday.io/api/v1/orders/{id}/capture
+# - my.anyday.io/api/v1/orders/{id}/refund
+# - my.anyday.io/webshopPriceTag/anyday-price-tag-{lang}-es2015.js
+# - my.anyday.io/price-widget/anyday-price-widget.js
+# Subdomain list (rix4uni/BugBountyData data/anyday.io.txt): staging, sandbox, connect
+# CSP whitelist (anyday-payments/ANYDAY-Magento2 etc/csp_whitelist.xml): *.anyday.io

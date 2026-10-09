@@ -1,0 +1,33 @@
+{
+  "vector": "q-firebase-cfg",
+  "queries_run": [
+    "\"anyday\" filename:firebase.json",
+    "\"anyday\" filename:.firebaserc",
+    "anyday.io filename:firebase.json",
+    "anyday filename:.firebaserc",
+    "anyday firebaseapp.com",
+    "anyday firebase projectId",
+    "\"anyday.io\" firebase",
+    "\"anyday-io\" firebase",
+    "anyday firebaseio.com",
+    "\"api.anyday.io\"",
+    "\"anyday.io\" firebaseConfig",
+    "\"anyday.io\" apiKey",
+    "users:anyday"
+  ],
+  "primary_results": {
+    "anyday_firebase.json": 0,
+    "anyday_firebaserc": 0,
+    "anyday.io_firebase": 1,
+    "anyday.io_firebase_hit": {
+      "repo": "WebJax/CookieDK",
+      "path": "database/providers.json",
+      "note": "Danish cookie-provider catalog classifying Anyday (https://anyday.io) as a third_party service. No credentials or project-specific firebase config. Just a listing entry."
+    },
+    "api.anyday.io": 0,
+    "anyday.io_apiKey": 0,
+    "anyday.io_firebaseConfig": 0
+  },
+  "github_users_matching_anyday": "74 (none appear to be the Danish fintech anyday.io; top login 'anyday' is a single personal account with no connection to anyday.io payments)",
+  "notes": "No Firebase config files, .firebaserc, firebase apiKey, authDomain, projectId, or databaseURL were found tied to anyday.io the Danish BNPL/payments company. Negative result for the Firebase vector. Consistent with anyday.io's known stack (Angular front end + .NET/Hangfire backend), which does not point to a Firebase project. The one circumstantial hit (CookieDK providers.json) only confirms anyday.io as a classified third-party service and exposes nothing additional."
+}

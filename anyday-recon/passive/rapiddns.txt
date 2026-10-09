@@ -1,0 +1,5 @@
+da.anyday.io
+developer.anyday.io
+my.anyday.io
+www.anyday.io
+www.staging.anyday.io

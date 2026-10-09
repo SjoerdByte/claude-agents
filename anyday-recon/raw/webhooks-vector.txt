@@ -1,0 +1,66 @@
+=== Vector: q-webhooks (webhook / connect / s.connect subdomains) ===
+Date: 2026-10-09
+
+Direct subdomain hits in GitHub code search (webhooks.anyday.io / connect.anyday.io / s.connect.anyday.io):
+ - "webhooks.anyday.io" => 0 hits in code
+ - "connect.anyday.io" => 3 hits (all are passive DNS/subdomain enumeration dumps in bounty-data repos, not real anyday code):
+    * rix4uni/BugBountyData : data/anyday.io.txt
+    * indonesia-timeline/brantas-judol : round_3467201/dns_live_3467201.txt, round_3467201/domains_3467201.txt
+ - "s.connect.anyday.io" => 2 hits (same brantas-judol passive DNS dumps)
+
+Primary anyday-authored repos (public ecommerce plugins) that reveal WEBHOOK HANDLING contracts callers must satisfy:
+
+repo: anyday-payments/ANYDAY-Magento2
+  Controller/Payment/Webhook.php
+    - class Webhook (namespace Anyday\Payment\Controller\Payment) extends Magento Action
+    - const URI = 'anydayfront/payment/webhook'  (relative route merchant side)
+    - verifiedSignature(): reads 'x_anyday_signature' header, computes
+      hash_hmac('sha256', raw_body, $private) where $private = SettingsInterface::PATH_TO_SECRET_KEY
+      strict === equality (NO constant-time compare -> theoretical timing-oracle, but reaches the merchant not anyday)
+    - Payload decoded via json_decode; empty id or null => return early
+    - Does not check HTTP method -> any method tolerated once routed
+    - Note: outbound 'callbackUrl' is pushed to anyday Order API with the merchant's Webhook::URI absolute URL (see InitializeStrategyCommand.php). So AnyDay back-end CALLS OUT to arbitrary merchant-provided URLs when creating orders. If anyday server-side does not whitelist/validate the submitted callbackUrl, that is an SSRF primitive on anyday infrastructure driven by merchant input.
+  Plugins/CsrfValidatorSkip.php
+    - CSRF is skipped when module == 'anydayfront' AND URL contains Webhook::URI
+    - note the "!== -1" bug (strpos returns false or int, never -1); i.e. CSRF skip triggers for EVERY anydayfront request. Merchant-side bug.
+  Api/Anyday/ManagerInterface.php
+    - const ANYDAY_BASE_URL = 'https://my.anyday.io/api/'
+    - const ANYDAY_AUTH_URL = 'v1/authentication/login'
+  Api/Data/Payment/UrlDataInterface.php
+    - const URL_ANYDAY   = 'https://my.anyday.io'
+    - URL_AUTORIZE       = '/api/v1/orders'
+    - URL_CAPTURE        = '/api/v1/orders/{id}/capture'
+    - URL_REFUND         = '/api/v1/orders/{id}/refund'
+  etc/csp_whitelist.xml
+    - CSP whitelists host *.anyday.io (confirms wildcard trust in Magento integration)
+  Block/*/Pricetag.php (3 files)
+    - loads https://my.anyday.io/webshopPriceTag/anyday-price-tag-{lang}-es2015.js  -> ES2015 bundle served from my.anyday.io
+
+repo: anyday-payments/ANYDAY-WooCommerce  (also mirrored at common-repository/anyday-woocommerce)
+  includes/classes/AnydayRest.php
+    - ENDPOINT_NAMESPACE = 'anyday'
+    - ENDPOINT = 'webhook'
+    - Route registered with WP_REST_Server::EDITABLE (POST/PUT/PATCH), route = /wp-json/anyday/webhook
+    - callback($request) verifies 'x_anyday_signature' header (normalised to X-Anyday-Signature)
+    - HMAC-SHA256(body, private) where private = get_option('adm_private_key')
+    - Content-Type MUST be application/json or returns 400 anyday_rest_wrong_header
+    - Signature compared via strict === of hex digest
+  includes/classes/AnydayPayment.php
+    - Sends 'callbackUrl' = get_site_url(null, $this->getWebhookPath()) to anyday Order API
+  adm-core.php
+    - const ADM_API_BASE_URL = "https://my.anyday.io"
+    - const ADM_API_ORDERS_BASE_PATH = "/api/v1/orders"
+  includes/classes/PriceTag.php
+    - fetches https://my.anyday.io/webshopPriceTag/anyday-price-tag-{lang}-es2015.js via curl
+
+Shopify theme hits mentioning Anyday widget (host observed https://my.anyday.io/price-widget/anyday-price-widget.js):
+  - thanhmcb/Shopify : Numberninestore-161203290447/* (public shop token exposed: token="7f281129bc204154884460e6d8519455" - this is a per-merchant widget token, not a secret)
+  - AnodyneAps/BY : layout/theme.liquid (commented widget script)
+
+Anyday backend API surface implied by merchant SDKs:
+  POST   https://my.anyday.io/api/v1/authentication/login
+  POST   https://my.anyday.io/api/v1/orders                            (creates order; takes merchant-controlled callbackUrl)
+  POST   https://my.anyday.io/api/v1/orders/{id}/capture
+  POST   https://my.anyday.io/api/v1/orders/{id}/refund
+
+Additional repo discovered (NOT authored by anyday-payments org, name collision - 'anydaylaundry'): maximor/anydaylaundry-api  (laundry service, Nigerian, unrelated to anyday.io - likely out of scope)

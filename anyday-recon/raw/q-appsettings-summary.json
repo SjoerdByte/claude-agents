@@ -1,0 +1,22 @@
+{
+  "vector": "q-appsettings",
+  "queries": [
+    "\"anyday\" filename:appsettings.json",
+    "\"anyday.io\" filename:appsettings.Development.json",
+    "\"anyday\" filename:appsettings.Production.json",
+    "\"anyday\" filename:appsettings.staging.json",
+    "\"anyday.io\" filename:appsettings.json",
+    "\"anyday.io\" extension:json",
+    "\"api.anyday.io\" extension:json",
+    "\"anyday.io\" filename:appsettings",
+    "\"anyday.io\" extension:cs",
+    "\"anyday.io\" extension:ts",
+    "\"anyday.io\" extension:yml OR extension:yaml",
+    "\"anyday.io\" language:C#",
+    "\"anyday\" \"ClientSecret\"",
+    "\"anyday\" \"ApiKey\" extension:json",
+    "\"api.anyday.io\"",
+    "\"pay.anyday.io\""
+  ],
+  "notes": "Searches for appsettings.json / .NET config files referencing anyday.io returned zero direct hits. All appsettings matches of the raw token 'anyday' were false positives (anyDay/HowManyDays/AllowPostingAnyDay in unrelated .NET projects). No *.anyday.io hostnames appeared in any .NET config file publicly."
+}
