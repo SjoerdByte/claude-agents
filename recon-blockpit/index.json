@@ -24,6 +24,8 @@
     "Email verification IS required to mint a session on the classical register flow (SPA code shows refresh cookie is minted ONLY by activate / login / sso-redeem / magic-link-redeem / handoff-redeem; register response alone does not yield a session cookie). Open avenues to bypass logged as new open_threads (non-Turnstile-gated code-redeem endpoints)."
   ],
   "open_threads": [
+    "2026-10-09 API-surface pass: cn1.blockpit.io, cn-test.blockpit.io, cn1-test.blockpit.io have come back online since prior session (now resolve to CF anycast 104.20.44.219 + 172.66.157.149, same posture as cn/cta/gov). Point the xvfb+headful Playwright harness at each of the 3 new hosts: /api/v1/maintenance, /api/v1/transactions/export?year=YYYY, and all auth-flow sibling probes. May expose a less-locked-down staging/test variant of the production cn.blockpit.io API surface (different build, different middleware, often reduced auth enforcement).",
+    "cn.blockpit.io origin IP still unrecovered - 116.202.100.54 is NOT the cn backend from this vantage (returns CF challenge for Host: cn.blockpit.io). Next-session: Shodan 'ssl.cert.subject:blockpit.io http.title:kestrel' on Hetzner ASNs; passive-DNS historical records for cn.blockpit.io via Rapid7 FDNS / SecurityTrails; check if transformer.blockpit.io / agent.blockpit.io / scim.blockpit.io share the Hetzner IP and expose cn's /api routes under a different hostname.",
     "GET /api/General/Version on both blockchain-api.blockpit.io and financial-api.blockpit.io - only op the spec declares as apiKey-free; probe first in next session to confirm server behavior matches spec + capture build/version string.",
     "GET /api/Elrond/DeconstructTransaction and /api/Hedera/DeconstructTransaction - the spec declares NO 401 response. Test unauth; if 200 is returned, runtime apiKey enforcement is missing on these two chains and probably on /GetAccountBalances + /IsValidImportAccount on both.",
     "GET /api/Bitcoin/GetTransactionsByXPubKey (+ Y/Z-Pub variants + Litecoin/Dash/Doge/BCH) - 34 xpub endpoints collectively de-anonymise wallets from a single extended public key. Test with any held apiKey for cross-user privacy impact.",
@@ -71,7 +73,7 @@
   "pending_decisions": [
     "Registration via app.blockpit.io is blocked by CF Turnstile for automated clients (see BLOCKER-registration-turnstile.md). User choice needed: (a) self-register 2 accounts and share tokens/cookies, (b) authorize 2captcha-type human-solver, or (c) share a storage-state.json from their own browser session. Option (a) was pre-approved at session start but requires user action."
   ],
-  "hours_spent": 10.2,
+  "hours_spent": 10.8,
   "dockerhub_surface": {
     "org": "blockpit",
     "repos": [
@@ -166,7 +168,10 @@
     "reachable_hosts_cf_edge_only": [
       "cn.blockpit.io",
       "cta-api.blockpit.io",
-      "gov-api.blockpit.io"
+      "gov-api.blockpit.io",
+      "cn1.blockpit.io",
+      "cn-test.blockpit.io",
+      "cn1-test.blockpit.io"
     ],
     "dark_hosts_proxy_502_twice": [
       "api.blockpit.io",
@@ -175,8 +180,12 @@
       "bit-api.blockpit.io",
       "bit-api-test.blockpit.io",
       "kytapi.blockpit.io",
-      "test.kytapi.blockpit.io"
+      "test.kytapi.blockpit.io",
+      "cn2.blockpit.io",
+      "cn2-test.blockpit.io"
     ],
+    "api_surface_file": "github/API-SURFACE.md",
+    "api_surface_raw_dir": "raw/api-surface-pass/",
     "swagger_endpoints_unauth": [
       "https://blockchain-api.blockpit.io/swagger/v1/swagger.json",
       "https://financial-api.blockpit.io/swagger/v1/swagger.json"
