@@ -1,0 +1,16 @@
+cn.blockpit.io 403 409 ct=text/html; charset=UTF-8 url=https://cn.blockpit.io/
+cta-api.blockpit.io 403 409 ct=text/html; charset=UTF-8 url=https://cta-api.blockpit.io/
+gov-api.blockpit.io 403 409 ct=text/html; charset=UTF-8 url=https://gov-api.blockpit.io/
+financial-api.blockpit.io 404 119 ct= url=https://financial-api.blockpit.io/
+blockchain-api.blockpit.io 404 119 ct= url=https://blockchain-api.blockpit.io/
+cn1.blockpit.io 403 409 ct=text/html; charset=UTF-8 url=https://cn1.blockpit.io/
+cn-test.blockpit.io 403 409 ct=text/html; charset=UTF-8 url=https://cn-test.blockpit.io/
+cn1-test.blockpit.io 403 409 ct=text/html; charset=UTF-8 url=https://cn1-test.blockpit.io/
+bit-api.blockpit.io 000 141 ct=
+kytapi.blockpit.io 000 141 ct=
+api.blockpit.io 000 141 ct=
+api-staging.blockpit.io 000 141 ct=
+api-test.blockpit.io 000 141 ct=
+bit-api-test.blockpit.io 000 141 ct=
+cn2.blockpit.io 000 141 ct=
+cn2-test.blockpit.io 000 141 ct=

@@ -1,0 +1,24 @@
+cn.blockpit.io	A=104.20.44.219,172.66.157.149
+bit-api.blockpit.io	A=ERR:gaierror:[Errno -5] No address associated with hostname
+kytapi.blockpit.io	A=ERR:gaierror:[Errno -5] No address associated with hostname
+cta-api.blockpit.io	A=104.20.44.219,172.66.157.149
+financial-api.blockpit.io	A=116.202.100.54
+gov-api.blockpit.io	A=104.20.44.219,172.66.157.149
+api.blockpit.io	A=ERR:gaierror:[Errno -5] No address associated with hostname
+blockchain-api.blockpit.io	A=116.202.100.54
+api-staging.blockpit.io	A=ERR:gaierror:[Errno -5] No address associated with hostname
+api-test.blockpit.io	A=ERR:gaierror:[Errno -5] No address associated with hostname
+bit-api-test.blockpit.io	A=ERR:gaierror:[Errno -5] No address associated with hostname
+cn1.blockpit.io	A=104.20.44.219,172.66.157.149
+cn2.blockpit.io	A=ERR:gaierror:[Errno -5] No address associated with hostname
+cn-test.blockpit.io	A=104.20.44.219,172.66.157.149
+cn1-test.blockpit.io	A=104.20.44.219,172.66.157.149
+cn2-test.blockpit.io	A=ERR:gaierror:[Errno -5] No address associated with hostname
+DOH[cloudflare-dns.com] bit-api.blockpit.io	status=0	answers=['hugh.ns.cloudflare.com. dns.cloudflare.com. 2417031578 10000 2400 604800 1800']
+DOH[cloudflare-dns.com] kytapi.blockpit.io	status=0	answers=['hugh.ns.cloudflare.com. dns.cloudflare.com. 2417031578 10000 2400 604800 1800']
+DOH[cloudflare-dns.com] api.blockpit.io	status=0	answers=['hugh.ns.cloudflare.com. dns.cloudflare.com. 2417031578 10000 2400 604800 1800']
+DOH[cloudflare-dns.com] api-staging.blockpit.io	status=0	answers=['hugh.ns.cloudflare.com. dns.cloudflare.com. 2417031578 10000 2400 604800 1800']
+DOH[cloudflare-dns.com] api-test.blockpit.io	status=0	answers=['hugh.ns.cloudflare.com. dns.cloudflare.com. 2417031578 10000 2400 604800 1800']
+DOH[cloudflare-dns.com] bit-api-test.blockpit.io	status=0	answers=['hugh.ns.cloudflare.com. dns.cloudflare.com. 2417031578 10000 2400 604800 1800']
+DOH[cloudflare-dns.com] cn2.blockpit.io	status=0	answers=['hugh.ns.cloudflare.com. dns.cloudflare.com. 2417031578 10000 2400 604800 1800']
+DOH[cloudflare-dns.com] cn2-test.blockpit.io	status=0	answers=['hugh.ns.cloudflare.com. dns.cloudflare.com. 2417031578 10000 2400 604800 1800']
