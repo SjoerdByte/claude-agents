@@ -1,0 +1,45 @@
+# New API endpoints discovered via Netlify branch-deploy pivot
+# (NOT already in angular/ENDPOINTS.md)
+# Source bundle in parentheses.
+#
+# Base host: https://cn.blockpit.io/api
+POST /cta/v1/members                              (staging--bp-gov-frontend-prod main.cc...js, protectedEndpoints)
+POST /cta/v1/clients                              (staging--bp-gov-frontend-prod)
+POST /cta/v1/clients/invite                       (staging--bp-gov-frontend-prod)
+     /cta/v1/data                                 (staging--bp-gov-frontend-prod, method unknown)
+     /cta/v1/organizations                        (staging--bp-gov-frontend-prod, method unknown)
+
+# Base host: https://cn.blockpit.io/api  (legacy /v1/users/* still shipped on staging branch - may still be live, prod now uses /v2/auth/*)
+POST /v1/users/login                              (staging--bp-gov-frontend-prod, prod moved to /v2/auth/login)
+POST /v1/users/register                           (staging--bp-gov-frontend-prod, prod moved to /v2/auth/register)
+POST /v1/users/resetPassword                      (staging--bp-gov-frontend-prod, prod moved to /v2/auth/password/reset)
+     /v1/users/accointingHistory                  (staging--bp-gov-frontend-prod - legacy Accointing-import carryover, worth checking live)
+     /v1/users/intercom/auth                      (staging--bp-gov-frontend-prod - Intercom HMAC endpoint, HV per Claude.md)
+     /v1/users/licenses                           (staging--bp-gov-frontend-prod)
+     /v1/users/subscriptions                      (staging--bp-gov-frontend-prod)
+     /v1/users/taxSettings                        (staging--bp-gov-frontend-prod)
+     /v1/users/taxSettings/reset                  (staging--bp-gov-frontend-prod)
+     /v1/users/delete                             (staging--bp-gov-frontend-prod)
+     /v1/users/changeEmail                        (staging--bp-gov-frontend-prod)
+     /v1/users/changePassword                     (staging--bp-gov-frontend-prod)
+     /v1/users/2fa                                (staging--bp-gov-frontend-prod)
+     /v1/users/reset                              (staging--bp-gov-frontend-prod)
+     /v1/magicLink/{token}                        (staging--bp-gov-frontend-prod - magic-link redeem, legacy v1 path)
+
+# Base host: https://cn.blockpit.io/api  (confirmed older sourceOfFunds subpaths NOT in angular/ENDPOINTS.md)
+     /v1/sourceOfFunds/fromTxId                   (staging--bp-gov-frontend-prod)
+     /v1/sourceOfFunds/blockers/fromTxId          (staging--bp-gov-frontend-prod)
+     /v1/sourceOfFunds/blockers/fromPlannedTx     (staging--bp-gov-frontend-prod)
+     /v1/sourceOfFunds/fromPlannedTx              (staging--bp-gov-frontend-prod)
+     /v1/sourceOfFunds/refreshStatus              (staging--bp-gov-frontend-prod)
+
+# Base host: https://cn.blockpit.io/api  (misc)
+     /v0/api                                      (staging--bp-gov-frontend-prod - a /v0 segment is in-code; worth live-probing)
+     /v2/sso                                      (staging--bp-gov-frontend-prod - SSO endpoint)
+     /v3/recalculation                            (staging--bp-gov-frontend-prod)
+     /v3/recalculation/status                     (staging--bp-gov-frontend-prod)
+
+# Live-probe status (GET from recon host, no payload):
+#   All of /api/cta/v1/* and /api/v1/users/* on cn.blockpit.io return 403 (Cloudflare managed challenge)
+#   -> cannot distinguish 404 (gone) from 403-challenged (alive but challenged) at this layer.
+#   Needs: direct-origin IP OR authenticated session for live verification.

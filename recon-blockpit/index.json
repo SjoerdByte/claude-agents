@@ -45,10 +45,14 @@
     "Peter Schoellauf is confirmed Blockpit staff via @blockpit.io email in commit trailer - pivot through DAICers/DAIC Capital org for any ops dashboards or server configs leaking Blockpit infra details.",
     "Hetzner buckets 'ct-unified-generated-reports' and 'ct-wiso-generated-reports' return NoSuchBucket in fsn1/nbg1/hel1 for every S3-compatible probe (ListObjects v1+v2, HEAD, ?location/?cors/?acl/?policy/?versioning/?lifecycle/?website/?encryption, presigned-URL-shaped GET, OPTIONS with blockpit origin). No listing, no CORS reflection, no finding against these names today. Next-session validation: live-auth agent must generate a tax PDF, capture GET /report/download/{id} on gate.blockpit.io, read the real downloadUrl host+bucket; those two names may be substring matches against a longer real bucket. See hetzner/BUCKETS.md.",
     "Angular 'whitelistedDomainsCors' is mis-named - it is actually a BEARER-TOKEN-STRIP whitelist in the HTTP interceptor (String.includes substring match). URLs containing cdn.blockpit.io, ct-unified-generated-reports, ct-wiso-generated-reports, fsn1.your-objectstorage.com are issued WITHOUT the OAuth2 bearer. Substring match on user-controllable URLs (if any such input vector exists) is a minor hazard - revisit after mapping any user-URL-input feature in the authenticated app.",
-    "whitelistedUsers in prod bundle leaks 4 internal account emails incl. CEO (mail@florianwimmer.at, guineapig@blockpit.io, daniil.rabizo@blockpit.io, blockpitdemo@gmail.com). Not a finding alone but is the targeted-phish list; also useful to attempt username enumeration via login error-body differences later."
+    "whitelistedUsers in prod bundle leaks 4 internal account emails incl. CEO (mail@florianwimmer.at, guineapig@blockpit.io, daniil.rabizo@blockpit.io, blockpitdemo@gmail.com). Not a finding alone but is the targeted-phish list; also useful to attempt username enumeration via login error-body differences later.",
+    "cn.blockpit.io/api/cta/v1/{members,clients,clients/invite,data,organizations} - tenant-admin surface newly discovered via staging-branch gov Angular bundle. protectedEndpoints list in that bundle names cta/v1/members + clients + clients/invite as Turnstile-protected (POST). Mass-assignment candidate (isAdmin, advisorRole, organizationId, tenantId pattern already proven for /v1/members in angular/ENDPOINTS.md). Needs authed cta/advisor session.",
+    "cn.blockpit.io/api/v1/users/{login,register,resetPassword,intercom/auth,accointingHistory,licenses,subscriptions,taxSettings,delete,changeEmail,changePassword,2fa,reset} - legacy auth surface still shipped in staging-branch bp-gov-frontend-prod (v2.60.5). Prod moved to /v2/auth/*. If backend still routes /v1/users/*, these may lack Turnstile that /v2/auth/* now has. Verify by probing cn.blockpit.io origin IP once reachable.",
+    "cn.blockpit.io/api/v0/api, /v2/sso, /v3/recalculation(/status) - unexplained version segments visible in staging-branch bundle only. Enumerate once cn.blockpit.io origin reachable.",
+    "staging--bp-frontend-prod.netlify.app and staging--bp-gov-frontend-prod.netlify.app serve older Angular builds (2.17.1 and 2.60.5) UNAUTHED on production slugs - the staging-branch is excluded from Netlify's password scope on these prod slugs. Not a finding on its own (same env/secrets as prod, no sourcemap) but is an ongoing exposure channel: any time a developer deploys a staging-branch preview on a *-prod slug, it ships open to the internet. Low severity info-disclosure. Could become higher if a future staging build ever ships a new env/secret before prod gets the same code."
   ],
   "pending_decisions": [],
-  "hours_spent": 6.2,
+  "hours_spent": 6.9,
   "known_stack": [
     "Angular 17+ (esbuild / Rolldown; standalone-components, loadComponent, modulepreload prefetch)",
     "NX monorepo (apps/*-app, libs/design-system/atoms+molecules, Storybook)",
@@ -164,9 +168,31 @@
         "listable_unauth": false,
         "listable_response": "404 NoSuchBucket (RequestId=N/A, HostId=N/A - frontend router pre-Ceph)",
         "head_root": "404 NoSuchBucket",
-        "regions_tested": ["fsn1", "nbg1", "hel1"],
+        "regions_tested": [
+          "fsn1",
+          "nbg1",
+          "hel1"
+        ],
         "regions_result": "NoSuchBucket in all three",
-        "subresources_tested": ["list-type=2", "max-keys=10", "prefix=", "delimiter=/", "location", "policy", "versioning", "lifecycle", "cors", "acl", "tagging", "encryption", "website", "logging", "accelerate", "notification", "requestPayment"],
+        "subresources_tested": [
+          "list-type=2",
+          "max-keys=10",
+          "prefix=",
+          "delimiter=/",
+          "location",
+          "policy",
+          "versioning",
+          "lifecycle",
+          "cors",
+          "acl",
+          "tagging",
+          "encryption",
+          "website",
+          "logging",
+          "accelerate",
+          "notification",
+          "requestPayment"
+        ],
         "subresources_result": "404 NoSuchBucket on all (501 NotImplemented on tagging/logging/accelerate/notification/requestPayment which are rejected pre-bucket-check)",
         "cors_preflight_blockpit_origin": "404 NoSuchBucket, no access-control-* headers",
         "cors_preflight_evil_origin": "404 NoSuchBucket, no reflection",
@@ -181,7 +207,11 @@
         "listable_unauth": false,
         "listable_response": "404 NoSuchBucket (identical to unified)",
         "head_root": "404 NoSuchBucket",
-        "regions_tested": ["fsn1", "nbg1", "hel1"],
+        "regions_tested": [
+          "fsn1",
+          "nbg1",
+          "hel1"
+        ],
         "regions_result": "NoSuchBucket in all three",
         "subresources_result": "identical to unified bucket",
         "cors_preflight_blockpit_origin": "404 NoSuchBucket, no access-control-* headers",
@@ -257,5 +287,50 @@
       "openapi/schemas-summary.tsv",
       "openapi/priority-ranked.tsv"
     ]
+  },
+  "netlify_surface": {
+    "locked_hosts_count": 8,
+    "slug_map": {
+      "powerhouse.blockpit.io": "bp-powerhouse",
+      "staging.blockpit.io": "bp-frontend-staging",
+      "cta-staging.blockpit.io": "bp-cta-frontend-staging",
+      "gov-test.blockpit.io": "bp-gov-frontend-test",
+      "test.blockpit.io": "bp-frontend-test",
+      "cta-test.blockpit.io": "bp-cta-frontend-test",
+      "powerhouse-test.blockpit.io": "bp-powerhouse-test",
+      "gov-staging.blockpit.io": "bp-gov-frontend-staging",
+      "app.blockpit.io": "bp-frontend-prod",
+      "gov.blockpit.io": "bp-gov-frontend-prod",
+      "cta.blockpit.io": "bp-cta-frontend-prod"
+    },
+    "slug_discovery_method": "DNS CNAME via Google DoH (raw/cname-doh.txt) - deterministic, no guessing needed",
+    "lock_bypass_summary": "0/8 locked custom-domain hosts bypassed at slug level. Netlify enforces password at the <slug>.netlify.app layer as well (401 identical body, 8296B). Classic 'edge-only lock' misconfig does NOT apply to this account.",
+    "branch_deploy_findings": {
+      "staging--bp-frontend-prod.netlify.app": {
+        "status": 200,
+        "bundle_version": "2.17.1",
+        "net_new_secrets": 0,
+        "note": "old Angular build, env identical to prod app.blockpit.io - no net-new secret, no sourcemap"
+      },
+      "staging--bp-gov-frontend-prod.netlify.app": {
+        "status": 200,
+        "bundle_version": "2.60.5",
+        "net_new_secrets": 0,
+        "net_new_endpoints": 5,
+        "note": "older bp-gov-app build routed through cn.blockpit.io/api instead of gov-api; exposes /cta/v1/* surface not seen in current prod gov bundle"
+      }
+    },
+    "deploy_preview_findings": {
+      "probed": "deploy-preview-{1,10,50,100,200} across all 11 slugs = 55 probes",
+      "result": "all 404 - no preview deploys exposed"
+    },
+    "sourcemap_findings": "none - stripped on every open deploy (bundle tail has no sourceMappingURL comment, .js.map paths SPA-fallback to index.html)",
+    "net_new_endpoints_file": "netlify/new-endpoints.txt",
+    "net_new_endpoints_count": 24,
+    "net_new_hostnames_file": "netlify/new-hostnames.txt",
+    "net_new_secrets_count": 0,
+    "pivot_report": "netlify/NETLIFY-PIVOT.md",
+    "raw_dir": "netlify/raw/",
+    "bundles_dir": "netlify/bundles/"
   }
 }
