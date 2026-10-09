@@ -1,0 +1,8 @@
+# New hosts discovered during Docker Hub inspection, deduped against subdomains.txt.
+# NONE of these are *.blockpit.io.
+# Format: host | source | note
+
+blockpit.127.0.0.1.nip.io | 000-default.conf ServerName (all web/php images) | dev-only, resolves to 127.0.0.1 via nip.io
+florian-weinrich.com | 000-default.conf ServerAdmin dev@florian-weinrich.com | contractor domain, confirms Docker Hub pusher `florianweinrich`
+
+# zero *.blockpit.io subdomains surfaced from any image
