@@ -1,0 +1,8 @@
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 302 Found
+Date: Fri, 09 Oct 2026 11:15:28 GMT
+Server: Kestrel
+Content-Length: 0
+Location: /swagger/index.html
+

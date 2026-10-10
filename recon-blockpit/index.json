@@ -1,0 +1,461 @@
+{
+  "target": "blockpit.io",
+  "authorization": "Written permission from CEO Florian Wimmer",
+  "scope_note": "*.blockpit.io - everything in scope, including vendor-hosted infrastructure running Blockpit code or storing Blockpit data. ~85 subdomains known upfront. Legacy brand domain cryptotax.io and api-docs.cryptotax.io are Blockpit-controlled per vendor-hosted-infra clause (CryptoTax API documents the current /api/v3 partner endpoints, Blockpit logo + sales@blockpit.io on page).",
+  "ruled_out": [
+    "No official Blockpit GmbH GitHub organization exists for the current blockpit.io product. github.com/Blockpit is a US-located squatter / impersonator pushing cryptofeed-based 'tracker' bait as of 2026-09-16, not the Austria company.",
+    "github.com/blockpitru is empty, not Blockpit-controlled.",
+    "No public npm packages under @blockpit scope or user ~blockpit (0 results).",
+    "No public PyPI packages under user blockpit.",
+    "No public SwaggerHub owner 'blockpit'.",
+    "No commits anywhere are authored with an @blockpit.io email in the author/committer fields (search_commits returns 0); only one Co-authored-by trailer surfaces (peter.schoellauf@blockpit.io).",
+    "No live secrets / credentials / API keys attributable to Blockpit were found in public GitHub via common env/config/cred dorks.",
+    "No GraphQL endpoint on any reachable API host (checked /graphql, /graphiql, /playground; main client bundles never mention 'graphql').",
+    "No LaunchDarkly / GrowthBook / Unleash / Optimizely / PostHog / Statsig SDK in client bundles - no 3rd-party feature-flag service in use.",
+    "No Firebase / Supabase config block in client bundles.",
+    "No source-map (.js.map) served by app.blockpit.io or gov.blockpit.io (checked both main-*.js.map paths).",
+    "No new blockpit.io subdomains leaked beyond the 85 we started with - the Angular bundles only reference app, api, cdn, cn, cta, gate, gov, gov-api.",
+    "Legacy /api/v1/users/{register,login,resetPassword} POST endpoints on cn.blockpit.io are NOT a Turnstile bypass (2026-10-09, exploit/raw/legacy-probe-xvfb/): identical reCAPTCHA-required 403 as /api/v2/auth/*.",
+    "/api/v2/auth/sso?registerUrl=<attacker> URL reflection into state blob is NOT an exploitable open redirect alone - the Google/Apple/Coinbase/Bitpanda callbacks validate the server-issued nonce before acting on registerUrl (ssoSessionMismatch returned on crafted states, 2026-10-09, exploit/raw/sso-cb-probe/results.json).",
+    "cn.blockpit.io / cta-api.blockpit.io / gov-api.blockpit.io CF edge challenge is passable via `xvfb-run -a` + Playwright `headless:false`; curl and headless Playwright are permanently 403-blocked. Future API probing MUST use the xvfb+headful harness (exploit/probe3.js is the template).",
+    "No standard OpenID-Connect discovery endpoint published on any Blockpit host (checked /.well-known/openid-configuration on app, cn, api, auth, bit-api; app SPA-fallbacks, cn 403 CF-challenge, api/auth/bit-api 502-dark). Blockpit runs custom /v2/auth/* REST + its own OAuth2 token endpoint; no jwks_uri / userinfo / registration published for OIDC consumers.",
+    "No PWA / robots / sitemap exposure on app.blockpit.io - /manifest.json, /ngsw.json, /ngsw-worker.js, /robots.txt, /sitemap.xml all SPA-fallback to the shell (200 Netlify). The SPA is NOT a PWA and does not install a service worker, despite the Angular platform supporting it. 2026-10-09.",
+    "No separate HTML per auth route - /login, /signup, /register, /sign-up, /auth, /forgot-password, /reset-password, /verify-email, /verify-account all SPA-fallback to the index.html shell with identical body hash. No server-rendered content behind any of them.",
+    "Email verification IS required to mint a session on the classical register flow (SPA code shows refresh cookie is minted ONLY by activate / login / sso-redeem / magic-link-redeem / handoff-redeem; register response alone does not yield a session cookie). Open avenues to bypass logged as new open_threads (non-Turnstile-gated code-redeem endpoints).",
+    "2026-10-09 apikey-hunt: No baked apiKey, OAuth secret (beyond the already-known clientSecret yne8..., 502-dark api.blockpit.io OAuth2 host), Stripe secret key, AWS credential, DB URL, or private key found in captured JS/HTML/JSON corpus (318 files, ~21.6 MB, incl. 5 Angular main bundles). Blockchain-api / financial-api hosts never referenced in SPA code at all - apiKey values are partner-issued only (sales@blockpit.io intake) and out of scope for static-recon leverage. Admin/impersonate/backoffice router paths absent in all 5 Angular bundles. See raw/apikey-hunt/ for inventory, per-pattern hits, and env-config extraction."
+  ],
+  "open_threads": [
+    "RESOLVED 2026-10-09: cn1.blockpit.io / cn-test.blockpit.io / cn1-test.blockpit.io probed through xvfb+headful harness - 18 unauth probes (6 endpoints x 3 hosts). cn1 and cn1-test UNREACHABLE from this vantage: all 6 requests terminated as `TypeError: Failed to fetch` (first req ~800-900ms DNS/TLS attempt, subsequent ~170ms fast rejects - likely CF Access gate / IP allowlist). cn-test.blockpit.io IS LIVE and is a byte-identical twin of prod cn.blockpit.io for the probed routes: /maintenance 200 identical body, /transactions/export 401 missingAccessToken identical to prod, /users/activeYears 401 identical, /pwreset-validate 400 identical, /General/Version 404 (bp-app not blockchain-api, matches prod), /v1/integrations 404 Fastify-default (likely because GET is not the registered method; POST would be Turnstile-gated). No 200-unauth where prod returns 401, no debug/version exposure beyond prod, no stack trace. Attack surface is identical to prod cn.blockpit.io. Raw: exploit/raw/staging-cn/, matrix: exploit/raw/combined-sweeps/MATRIX.md.",
+    "cn.blockpit.io origin IP still unrecovered - 116.202.100.54 is NOT the cn backend from this vantage (returns CF challenge for Host: cn.blockpit.io). Next-session: Shodan 'ssl.cert.subject:blockpit.io http.title:kestrel' on Hetzner ASNs; passive-DNS historical records for cn.blockpit.io via Rapid7 FDNS / SecurityTrails; check if transformer.blockpit.io / agent.blockpit.io / scim.blockpit.io share the Hetzner IP and expose cn's /api routes under a different hostname.",
+    "GET /api/Bitcoin/GetTransactionsByXPubKey (+ Y/Z-Pub variants + Litecoin/Dash/Doge/BCH) - 34 xpub endpoints collectively de-anonymise wallets from a single extended public key. UNAUTH surface is closed (apiKey enforced at ModelState); test with any held apiKey for cross-user privacy impact.",
+    "GET /api/General/GetMultichainAddressesByAddressList - one call fans out to 66 chain RPCs with a bulk address list; most expensive op in the surface and a resource-abuse multiplier. UNAUTH surface is closed (apiKey enforced); test with a held apiKey for QPS / cost-amplification abuse.",
+    "TaxToolEvmTransaction.kyt_txdb_id (int64) leaks internal transaction DB IDs through this unauthenticated utility API. Use observed kyt_txdb_id values as neighbor-id seeds against cn.blockpit.io / bit-api / cta-api /v1/transactions/{id} and /report/{id} endpoints in the authenticated session.",
+    "RESOLVED-WORKAROUND: cn.blockpit.io CF-managed-challenge bypass - 2026-10-09 confirmed CF only 403s automated / headless clients; `xvfb-run -a chromium` (headful via Xvfb) passes the challenge in-browser. Use Playwright `headless:false` behind xvfb-run for ALL future cn.blockpit.io/api/* probes. curl + Playwright APIRequestContext + Playwright `headless:true` all still 403. See exploit/net-check2.js and exploit/probe3.js for working harness. /api/v1/transactions/export still needs an authed cookie/token; the CF edge is no longer the blocker.",
+    "/v1/users PATCH is a mass-assignment candidate - login response contains advisorRole, agentId, advisorId fields - test whether sending these in a PATCH escalates a standard user to a gov advisor on cn.blockpit.io (needs authenticated session).",
+    "gov.blockpit.io POST /v1/members payload includes isAdmin passed straight through from client (createMember sends {name,email,password,isAdmin}). If server trusts isAdmin, self-registering a gov advisor + flipping isAdmin would give full tenant admin on gov-api.blockpit.io - needs a gov-tenant invite to test.",
+    "/v2/auth/handoff + /v2/auth/handoff/redeem + /v2/auth/magicLink/redeem + /v2/auth/sso/redeem are NOT behind Turnstile (per protectedEndpoints list in prod env config). Test one-time-use enforcement and token lifetime of handoff / magic-link flows (per Claude.md auth-token-lifecycle HV pattern).",
+    "/v1/payments/discount - discount/coupon endpoint per Claude.md HV pattern; test unauth listing and auth'd neighbor-code guessing.",
+    "/v3/balances AND /v2/balances AND /v1/balances all coexist - older versions commonly have weaker auth/scoping than the latest. Test v1 and v2 for IDOR after v3 is locked down.",
+    "report-id endpoints /report/{id}, /report/download/{id}, /report/result/{id}, /report/configuration/{id} on gate.blockpit.io/t take a predictable id (tax year + user). Highest-severity target per Claude.md 'predictable-id > everything else'. Needs own session first, then neighbor id probe.",
+    "/v1/sourceOfFunds/{id}/file?language=<lang> generates a PDF document per source-of-funds id. Predictable id, auth required; test neighbor id for cross-tenant SoF-document read.",
+    "/v1/transactions/{id}/editHistory + /v1/transactions/{id}/costBasis are per-transaction read endpoints taking an id in path. Predictable-id candidate - test neighbor id after login.",
+    "/v1/integrations/checkIfExists is an account-enumeration candidate - test whether POSTing {email, exchangeId} reveals whether a given email has an integration of a given type.",
+    "/v1/users/intercom/auth returns Intercom HMAC - if the HMAC is scoped only by email/userId and not combined with a tenant check, could allow Intercom chat impersonation.",
+    "blockchain-api.blockpit.io + financial-api.blockpit.io serve identical 1.1MB swagger spec UNAUTH at /swagger/v1/swagger.json. 641 endpoints across 66 chains, apiKey query-string auth, no RateLimit headers, Access-Control-Allow-Origin: *. Test whether apiKey values are predictable, incremental, or whether a test/demo apiKey is handed out via register flow or shows in frontend.",
+    "api.blockpit.io is the OAuth2 token root per Angular env (authConfig.apiRoot). SPA ships clientId:7 + clientSecret:yne8cq00xogLg4LcIosYMcBkCWMPcF8cZaZfx15B. Host is currently 502-dark from our vantage - once reachable, map /oauth/token response for any info leak.",
+    "api-docs.cryptotax.io exposes a partner CryptoTax API v3 (requestReportCalculation, checkResult, assetsByTickers, transaction_types) accepting JWT bearer tokens; the vendor-hosted domain belongs to Blockpit. Test for predictable report IDs, cross-tenant read of /checkResult results, and v2 (EOL 2026-12-01) still being reachable without authorization checks.",
+    "app.blockpit.io login/dashboard flow is scraped headlessly by invoice-collector/invoice-collector with no CAPTCHA field - check if signup / login lacks CAPTCHA and if a usable session can be created without email verification (high-value attack pattern in Claude.md).",
+    "Angular + NX frontend architecture confirmed via marcellkiss/2022-04-27-nx-monorepo mirror - once logged in, enumerate the real app bundle for every `apps/*-app` and `libs/*/feature-*` route for GET-by-id endpoints (IDOR-prone pattern per Claude.md).",
+    "RESOLVED: Docker Hub blockpit/{web,node,php} org inspection complete 2026-10-09. 3 public repos, 13 tags, 11 distinct amd64 images inspected via raw v2 registry API. All 3 are build-time dev base images (empty /app, empty /var/www/html/web/). NEGATIVE for .env*, API keys, SSH keys, DB URLs, .aws/credentials, .npmrc, .docker/config.json, serviceAccount*.json, cloud creds. Only /var/www/server.key is a dummy example.com Apache tutorial sample reused across every tag - not a Blockpit production key. Image Labels empty everywhere - no org.opencontainers.image.source pivot. Conditional-only hints: SPX IP-whitelist bypass patch on blockpit/php:8.1-latest, display_errors=1 + E_ALL in php-override.ini on all web/php tags, xdebug baked into php:7.4-pgsql-latest and 8.1-latest. All conditional on a live prod host inheriting unchanged - needs live probe to raise. OSINT pivot: dev@florian-weinrich.com in Apache ServerAdmin on every web/php tag ties DH pusher `florianweinrich` to contractor domain florian-weinrich.com. Zero new *.blockpit.io subdomains discovered. See github/DOCKERHUB-INSPECTION.md.",
+    "api-staging / cta-staging / tokensale-staging / blog-staging / cta-test / bit-api-test / api-test / blockpit-test / blockpit-new / cn2 / cn1-test / cn-test / cn2-test subdomains were all 502-dark on both attempts; prioritize revisiting these in a later session (may be VPN-gated internal-only).",
+    "Postman public workspaces for 'blockpit' not resolvable this session (bot-detect); re-try via curl in a next session.",
+    "legacy cryptotax-team org still owns parser-js (archived) and parser - download both and look for any hard-coded CSV schema fields that reveal internal column names for IDOR / mass-assignment hints.",
+    "Peter Schoellauf is confirmed Blockpit staff via @blockpit.io email in commit trailer - pivot through DAICers/DAIC Capital org for any ops dashboards or server configs leaking Blockpit infra details.",
+    "Hetzner buckets 'ct-unified-generated-reports' and 'ct-wiso-generated-reports' return NoSuchBucket in fsn1/nbg1/hel1 for every S3-compatible probe (ListObjects v1+v2, HEAD, ?location/?cors/?acl/?policy/?versioning/?lifecycle/?website/?encryption, presigned-URL-shaped GET, OPTIONS with blockpit origin). No listing, no CORS reflection, no finding against these names today. Next-session validation: live-auth agent must generate a tax PDF, capture GET /report/download/{id} on gate.blockpit.io, read the real downloadUrl host+bucket; those two names may be substring matches against a longer real bucket. See hetzner/BUCKETS.md.",
+    "Angular 'whitelistedDomainsCors' is mis-named - it is actually a BEARER-TOKEN-STRIP whitelist in the HTTP interceptor (String.includes substring match). URLs containing cdn.blockpit.io, ct-unified-generated-reports, ct-wiso-generated-reports, fsn1.your-objectstorage.com are issued WITHOUT the OAuth2 bearer. Substring match on user-controllable URLs (if any such input vector exists) is a minor hazard - revisit after mapping any user-URL-input feature in the authenticated app.",
+    "whitelistedUsers in prod bundle leaks 4 internal account emails incl. CEO (mail@florianwimmer.at, guineapig@blockpit.io, daniil.rabizo@blockpit.io, blockpitdemo@gmail.com). Not a finding alone but is the targeted-phish list; also useful to attempt username enumeration via login error-body differences later.",
+    "cn.blockpit.io/api/cta/v1/{members,clients,clients/invite,data,organizations} - tenant-admin surface newly discovered via staging-branch gov Angular bundle. protectedEndpoints list in that bundle names cta/v1/members + clients + clients/invite as Turnstile-protected (POST). Mass-assignment candidate (isAdmin, advisorRole, organizationId, tenantId pattern already proven for /v1/members in angular/ENDPOINTS.md). Needs authed cta/advisor session.",
+    "RESOLVED-PARTIAL: cn.blockpit.io/api/v1/users/{register,login,resetPassword} - 2026-10-09 confirmed legacy POST endpoints route (not 404) but inherit the SAME Turnstile check as /v2/auth/* (403 '{\"error\":\"reCAPTCHA token is missing...\"}' - identical body). Legacy /v1/users/{intercom/auth,licenses,activeYears} GET confirmed-live, auth-gated (401 '{\"errorKey\":\"missingAccessToken\"}'). Not a Turnstile bypass. Still needs authed-session probing of /v1/users/{accointingHistory,changePassword,delete,logout,intercom/auth} for cross-tenant data leaks and token-lifecycle issues. Raw: exploit/raw/legacy-probe-xvfb/, draft: exploit/findings-drafts/F002-legacy-v1-users-coexistence.md.",
+    "cn.blockpit.io/api/v0/api, /v2/sso, /v3/recalculation(/status) - unexplained version segments visible in staging-branch bundle only. Enumerate once cn.blockpit.io origin reachable.",
+    "staging--bp-frontend-prod.netlify.app and staging--bp-gov-frontend-prod.netlify.app serve older Angular builds (2.17.1 and 2.60.5) UNAUTHED on production slugs - the staging-branch is excluded from Netlify's password scope on these prod slugs. Not a finding on its own (same env/secrets as prod, no sourcemap) but is an ongoing exposure channel: any time a developer deploys a staging-branch preview on a *-prod slug, it ships open to the internet. Low severity info-disclosure. Could become higher if a future staging build ever ships a new env/secret before prod gets the same code.",
+    "/api/v1/sso/google/callback returns HTTP 500 '{\"error\":\"Internal Server Error\"}' when the `state` query param is missing (but valid 400 'Missing authorization code' when `code` is missing). Minor error-handling hygiene; not a finding. See exploit/findings-drafts/F003-sso-callback-500.md. May reward a deeper look at other /sso/*/callback endpoints (apple, bitpanda, coinbase) and at how the state blob is parsed/validated during a REAL OAuth round-trip from an authed session.",
+    "RESOLVED 2026-10-09: GET /api/General/Version on both Kestrel hosts returns 200 with identical body `{\"status\":true,\"message\":\"ok\",\"height\":null,\"version\":\"2.0.9028.21725\",\"result\":\"2.0.9028.21725\"}`. Spec matches runtime (apiKey-free), no build-string drift between hosts, confirms same-image twin deploy. Version string disclosure is standard practice and not raised. Raw: exploit/raw/api-auth-gap/{blockchain,financial}-api.blockpit.io-A1-Version.{body,hdr}.",
+    "RESOLVED 2026-10-09: Six Elrond+Hedera ops (/DeconstructTransaction, /GetAccountBalances, /IsValidImportAccount) that the spec documents without a 401 response declaration DO enforce apiKey at runtime - via ASP.NET ModelState [Required] on the apiKey query-string parameter, returning 400 not 401 before any handler runs. The missing-401 declaration is NSwag documentation drift (every ApiKey-missing response surfaces as 400 ModelState across the whole 641-op surface, including the ops that DO have a declared 401 - see A3 Elrond/GetTransactions). Not a runtime auth gap. Hypothesis REFUTED. Raw: exploit/raw/api-auth-gap/.",
+    "RESOLVED 2026-10-09: /api/Bitcoin/GetBalanceByXPubKey and /api/General/GetMultichainAddresses on both hosts enforce apiKey at ModelState binding (400 Bad Request) - no unauth xpub-wallet de-anonymisation and no unauth 66-chain fan-out. Hypothesis REFUTED. Raw: exploit/raw/api-auth-gap/.",
+    "/api/v2/auth/sso?registerUrl=<attacker-url> reflects the raw registerUrl verbatim into the base64url-encoded `state` blob embedded in Google / Apple / Coinbase / Bitpanda OAuth URLs - however the SSO callback validates nonce FIRST (`ssoSessionMismatch`), so the attacker-controlled registerUrl never reaches a redirect code path with a crafted state alone. Would need to be chained with ssoNonce theft (XSS?) or a nonce bypass. Open thread; low priority. Raw: exploit/raw/sso-probe/results.json and exploit/raw/sso-cb-probe/results.json.",
+    "cn.blockpit.io/api/v1/maintenance returns `{\"enabled\":false,\"databaseDown\":false}` unauth - no auth required, no sensitive data, useful liveness check for future automation. Response size 38B, content-type application/json. Access-Control-Allow-Credentials: true, Vary: Origin.",
+    "BLOCKER: Playwright-driven registration via app.blockpit.io/register cannot pass CF Turnstile 'interaction-only' challenge from this container even with playwright-extra+stealth. CF `/cdn-cgi/challenge-platform/h/g/pat/` returns 401 rejecting our proof-of-work; register XHR to /v2/auth/register never fires. Reserved decision: user must self-register 2 accounts and share tokens, OR authorize a 2captcha-style human-solver, OR share an exported `storage-state.json` from their own browser. Full documentation: exploit/findings-drafts/BLOCKER-registration-turnstile.md.",
+    "Angular bundle whitelisted-bearer-strip list (whitelistedDomainsCors): `cdn.blockpit.io`, `ct-unified-generated-reports`, `ct-wiso-generated-reports`, `fsn1.your-objectstorage.com` - interceptor uses String.includes substring match. If any authenticated feature ever accepts a user-supplied URL that is then passed through the HTTP client, an attacker-crafted URL like `https://evil.example/?x=cdn.blockpit.io` would strip the bearer token - but if the attacker server is upstream, they get the token-less request anyway; the real risk shape is subtle (information leak of request shape). Needs authed-session mapping to see if any user-URL-input feature exists.",
+    "RESOLVED-PARTIAL 2026-10-09: 4 code-redeem endpoints /v2/auth/{activate,magicLink/redeem,handoff/redeem,sso/redeem} probed through xvfb+headful harness - 32 unauth probes (8 shapes x 4 endpoints: no-body, empty, 1-char, dashed-hex, zero-UUID, RFC-v1-UUID, SQL, 72-char overflow). All invalid codes return a tidy JSON error, every endpoint returns byte-identical body regardless of code shape/length/charset: NO oracle for code-exists-vs-not-exists, NO regex/format hint leaked, NO length cap in middleware (72-char accepted to lookup), NO 200 session mint, NO 500 stack trace, NO rate-limit kick-in across 32 req in ~60s. Validation-stage split identified: activate+magicLink return 400 for empty-string code (zod/joi @IsNotEmpty), handoff+sso return 401 for empty-string code (treated as presented-credential, routed through auth layer first). CF WAF managed rule blocks `' OR 1=1 --` SQL probe at edge on all four endpoints. Code format cannot be inferred from the unauth surface - needs a REAL code observed via legitimate account flow to proceed. Raw: exploit/raw/code-redeem/MATRIX.md + per-probe .body/.hdr/.timing. Harness: exploit/probe-coderedeem.js.",
+    "AUTH-SURFACE pending-valid-code: the four code-redeem endpoints behave as opaque-credential lookups - from the unauth side there is nothing more to test. Once a REAL code is observed via a legitimate flow (register=>activate, magicLink login, cross-app handoff, SSO callback) the next measurements are: (1) single-use enforcement (replay after redeem), (2) code lifetime (replay after N min / N hour), (3) cross-user redemption (code from account A redeemed by account B's browser context), (4) parameter smuggling (does activate/code accept magicLink/code and vice-versa), (5) per-code and per-IP rate-limit ceiling. All of these REQUIRE a working account; reserved for the user per the registration-blocker pending_decision.",
+    "RESOLVED 2026-10-09: GET /v2/auth/password/reset/validate?token=<X> probed with 8 unauth shapes (empty, 1-char, 60-char alphabet, zero-UUID, RFC v1 UUID, short-dashed, missing-param, SQL probe). All well-formed invalid tokens return byte-identical 400 `{\"error\":\"Invalid or expired password reset token\",\"errorKey\":\"invalidOrExpiredPasswordResetToken\"}` (99B) in 329-365ms wall. Missing-param case gets a different 400 `{\"error\":\"Validation Error\"}` (28B) - schema-validation vs business-logic drift, not a token-exists oracle. SQL probe blocked at CF WAF edge (`TypeError: Failed to fetch`). No status/body/timing delta between any two well-formed probes. Oracle REFUTED from unauth side; still worth re-measuring with a real valid-but-expired token once authed. Raw: exploit/raw/pwreset-validate/, matrix: exploit/raw/combined-sweeps/MATRIX.md, harness: exploit/probe-pwreset-validate.js.",
+    "AUTH-SURFACE: Angular legacy mis-named interceptor branch (`recaptcha` + `g-recaptcha-response` header) is dead code in prod env (botProtection.type===`turnstile`) - note for defensive-engineering review only, not a finding.",
+    "RESOLVED 2026-10-09: User-enumeration oracle via POST /v2/auth/password/reset/request probed with 8 shapes (4 whitelistedUsers:[] known-exists + 4 synthetic `*@*.invalid` non-exists) via xvfb harness WITHOUT a cf-turnstile-response header. All 8 return byte-identical 403 `{\"error\":\"reCAPTCHA token is missing. ...\"}` (156B). Timings distribute identically across both groups (bimodal 162ms/335ms matches CF-edge-cold vs warm, not a backend-DB-cached lookup). Server enforces Turnstile BEFORE email-exists lookup - correct ordering, no leak. REFUTED. Register endpoint not probed in this pass (also Turnstile-first; same expected result). Raw: exploit/raw/userenum/, matrix: exploit/raw/combined-sweeps/MATRIX.md, harness: exploit/probe-userenum.js.",
+    "2026-10-09 openapi-attack-map A1-A5 probes DONE on both blockchain-api + financial-api (10 ops x 2 hosts = 20 single probes, raw: exploit/raw/api-auth-gap/). All hypotheses REFUTED. A1 /General/Version returns 200 identical body on both hosts (version 2.0.9028.21725 byte-identical -> confirms same-image twin deploy, no build drift to raise). A2 Elrond+Hedera + A3 contrast + A4 xpub + A5 multichain fan-out ALL return 400 ModelState with 'apiKey field is required' as the first error. The spec's missing-401-declaration gap is documentation drift only: runtime enforces apiKey via ASP.NET ModelState [Required] at parameter-binding time, before any handler executes - which also explains why declared-401 contrast op (A3) returns 400 not 401. No 200-with-data, no 500 stack trace, no 403 CF challenge, no 404 delta. Next-session: these 10 ops are RULED OUT as unauth-reachable; next hunting ground is the authenticated apiKey-holder posture (apiKey predictability / enumeration / cross-tenant leakage via kyt_txdb_id IDs in responses). Matrix: exploit/raw/api-auth-gap/MATRIX.md."
+  ],
+  "pending_decisions": [
+    "Registration via app.blockpit.io is blocked by CF Turnstile for automated clients (see BLOCKER-registration-turnstile.md). User choice needed: (a) self-register 2 accounts and share tokens/cookies, (b) authorize 2captcha-type human-solver, or (c) share a storage-state.json from their own browser session. Option (a) was pre-approved at session start but requires user action."
+  ],
+  "hours_spent": 14.0,
+  "dockerhub_surface": {
+    "org": "blockpit",
+    "repos": [
+      "web",
+      "node",
+      "php"
+    ],
+    "repos_count": 3,
+    "tags_total": 13,
+    "distinct_images_inspected": 11,
+    "secret_findings": 0,
+    "conditional_hints": [
+      "blockpit/php:8.1-latest ships php-spx with disable_spx_ip_whitelist.patch applied (check_access() returns 1 unconditionally) - conditional High if any live blockpit.io php-8.1 host inherits this",
+      "all blockpit/web and blockpit/php tags carry php-override.ini with display_errors=1, error_reporting=E_ALL - conditional Medium if production host inherits",
+      "blockpit/php:7.4-pgsql-latest and 8.1-latest have xdebug compiled in - conditional Low"
+    ],
+    "no_pivot_targets": "all image Labels empty, no org.opencontainers.image.source baked into any tag",
+    "new_subdomains_found": 0,
+    "osint_pivot": "dev@florian-weinrich.com in Apache ServerAdmin on every web/php tag ties DH pusher florianweinrich to contractor domain florian-weinrich.com",
+    "report_file": "github/DOCKERHUB-INSPECTION.md",
+    "raw_repos_json": "raw/dockerhub-repos.json",
+    "raw_tags_json_glob": "raw/dockerhub-tags-{web,node,php}.json",
+    "image_configs_dir": "docker/configs/",
+    "deeper_prior_report": "docker/DOCKER-FINDINGS.md"
+  },
+  "known_stack": [
+    "Angular 17+ (esbuild / Rolldown; standalone-components, loadComponent, modulepreload prefetch)",
+    "NX monorepo (apps/*-app, libs/design-system/atoms+molecules, Storybook)",
+    "Jest + Cypress e2e",
+    "Node.js + TypeScript + PostgreSQL (backend; from job listings)",
+    "ASP.NET Core / Kestrel on blockchain-api.blockpit.io and financial-api.blockpit.io (Server: Kestrel header, Swashbuckle swagger)",
+    "Netlify Edge for app.blockpit.io, staging.blockpit.io, gov-staging.blockpit.io, powerhouse.blockpit.io, gov.blockpit.io (netlify-build-id in env)",
+    "Cloudflare in front of cn.blockpit.io, cta-api, gov-api, cn1, exchange, hub, helios, helios-test (CF managed challenge)",
+    "Cloudflare Turnstile bot-protection on signup/login/password-reset/integration POSTs (sitekey 0x4AAAAAABjDn7lbXPdrO7So)",
+    "Stripe (pk_live_LJqkanby4gXAb5JfGbBbs2sB), Intercom (qd5t49rj), Google GTM-M52JVRC, Sentry self-hosted (sentry.blockpit.io, DSN project 11), RevenueCat (errors.rev.cat seen in bundle), TradingView embedded chart",
+    "Hetzner object storage (fsn1.your-objectstorage.com) for generated tax reports (buckets ct-unified-generated-reports, ct-wiso-generated-reports)",
+    "Legacy base images: PHP 7.4 / 8.1, Node 11-16 (Docker Hub)",
+    "No Firebase / Supabase / GraphQL / WebSocket / LaunchDarkly in prod bundles"
+  ],
+  "second_account_available": "yes, can self-create",
+  "session_goal": "Unauth Angular+API surface mapping",
+  "github_surface": {
+    "orgs_real": [
+      "cryptotax-team"
+    ],
+    "orgs_squatter": [
+      "Blockpit",
+      "blockpitru"
+    ],
+    "docker_hub_org": "blockpit (3 images, last push 2022)",
+    "employee_github_handles_confirmed": [
+      "pascalc23"
+    ],
+    "employee_github_handles_legacy": [
+      "rgoeritz",
+      "TonnTamerlan",
+      "pushkin-82",
+      "robotdude17"
+    ],
+    "employee_emails_leaked": [
+      "peter.schoellauf@blockpit.io",
+      "mail@pascalcosta.com",
+      "robert.goeritzer@gmail.com",
+      "tonn.tamerlan@gmail.com",
+      "s.putilin.82@gmail.com",
+      "hgruschinski@gmail.com"
+    ],
+    "surface_map_file": "github/SURFACE-MAP-GITHUB.md",
+    "employees_file": "github/employees.csv",
+    "new_subdomains_file": "github/new-subdomains.txt",
+    "raw_dir": "github/raw/"
+  },
+  "angular_surface": {
+    "app_version": "2.69.24",
+    "netlify_build_id_prod": "6ac8af6291b4a6000860e3ec",
+    "netlify_build_id_gov": "6ac8af62b548aa0008e61b5a",
+    "route_count_prod": 39,
+    "route_count_gov": "clients + members + shared auth paths",
+    "guarded_route_count_prod": 11,
+    "api_endpoints_bp_app": 173,
+    "api_endpoints_bp_gov_app": "~90 unique (overlap with bp-app)",
+    "routes_file": "angular/ROUTES.md",
+    "endpoints_file": "angular/ENDPOINTS.md",
+    "new_subdomains_file": "angular/new-subdomains.txt",
+    "raw_dir": "raw/angular/"
+  },
+  "api_unauth_surface": {
+    "reachable_hosts_direct_origin": [
+      "blockchain-api.blockpit.io",
+      "financial-api.blockpit.io"
+    ],
+    "reachable_hosts_cf_edge_only": [
+      "cn.blockpit.io",
+      "cta-api.blockpit.io",
+      "gov-api.blockpit.io",
+      "cn1.blockpit.io",
+      "cn-test.blockpit.io",
+      "cn1-test.blockpit.io"
+    ],
+    "dark_hosts_proxy_502_twice": [
+      "api.blockpit.io",
+      "api-staging.blockpit.io",
+      "api-test.blockpit.io",
+      "bit-api.blockpit.io",
+      "bit-api-test.blockpit.io",
+      "kytapi.blockpit.io",
+      "test.kytapi.blockpit.io",
+      "cn2.blockpit.io",
+      "cn2-test.blockpit.io"
+    ],
+    "api_surface_file": "github/API-SURFACE.md",
+    "api_surface_raw_dir": "raw/api-surface-pass/",
+    "swagger_endpoints_unauth": [
+      "https://blockchain-api.blockpit.io/swagger/v1/swagger.json",
+      "https://financial-api.blockpit.io/swagger/v1/swagger.json"
+    ],
+    "swagger_endpoint_count": 641,
+    "api_unauth_file": "API-UNAUTH.md",
+    "raw_dir": "raw/api-unauth/"
+  },
+  "discovered_subdomains": [],
+  "findings": [
+    {
+      "id": "F001",
+      "endpoint": "link.blockpit.io/",
+      "method": "GET",
+      "severity": "medium",
+      "cvss": 6.1,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N",
+      "owasp": "A05: Security Misconfiguration",
+      "status": "unverified",
+      "summary": "Dangling CNAME link.blockpit.io -> custom-domain.linkdrip.io (LinkDrip) with no claimed tenant - every slug 301s to vendor fallback https://fun.com. Attacker can sign up at LinkDrip and claim the subdomain, inheriting live traffic from Blockpit's X profile, Facebook, LinkedIn, iOS/Android app badges, and marketing campaign shortlinks for phishing. No main-app session-cookie reach (no Domain=.blockpit.io auth cookie), so phishing-only.",
+      "file": "link-takeover/FINDING-DRAFT.md"
+    }
+  ],
+  "hetzner_object_storage": {
+    "regional_endpoint": "fsn1.your-objectstorage.com",
+    "resolves_to": "88.198.120.64",
+    "backend_fingerprint": "fsn1-prod1-ceph3 (Ceph radosgw via x-amz-request-id on regional ListAllMyBuckets)",
+    "anonymous_list_buckets_response": "<ListAllMyBucketsResult><Owner><ID>anonymous</ID></Owner><Buckets></Buckets></ListAllMyBucketsResult> (expected - never lists other owners' buckets)",
+    "probed_buckets": [
+      {
+        "name": "ct-unified-generated-reports",
+        "dns": "wildcard A -> 88.198.120.64",
+        "listable_unauth": false,
+        "listable_response": "404 NoSuchBucket (RequestId=N/A, HostId=N/A - frontend router pre-Ceph)",
+        "head_root": "404 NoSuchBucket",
+        "regions_tested": [
+          "fsn1",
+          "nbg1",
+          "hel1"
+        ],
+        "regions_result": "NoSuchBucket in all three",
+        "subresources_tested": [
+          "list-type=2",
+          "max-keys=10",
+          "prefix=",
+          "delimiter=/",
+          "location",
+          "policy",
+          "versioning",
+          "lifecycle",
+          "cors",
+          "acl",
+          "tagging",
+          "encryption",
+          "website",
+          "logging",
+          "accelerate",
+          "notification",
+          "requestPayment"
+        ],
+        "subresources_result": "404 NoSuchBucket on all (501 NotImplemented on tagging/logging/accelerate/notification/requestPayment which are rejected pre-bucket-check)",
+        "cors_preflight_blockpit_origin": "404 NoSuchBucket, no access-control-* headers",
+        "cors_preflight_evil_origin": "404 NoSuchBucket, no reflection",
+        "presigned_url_shaped_probe": "404 NoSuchBucket (not SignatureDoesNotMatch - bucket really doesn't exist)",
+        "generic_key_probes_result": "/, /index.html, /README, /robots.txt all 404 NoSuchBucket",
+        "keys_discovered": 0,
+        "naming_pattern": "n/a - bucket not resolvable at this probe time"
+      },
+      {
+        "name": "ct-wiso-generated-reports",
+        "dns": "wildcard A -> 88.198.120.64",
+        "listable_unauth": false,
+        "listable_response": "404 NoSuchBucket (identical to unified)",
+        "head_root": "404 NoSuchBucket",
+        "regions_tested": [
+          "fsn1",
+          "nbg1",
+          "hel1"
+        ],
+        "regions_result": "NoSuchBucket in all three",
+        "subresources_result": "identical to unified bucket",
+        "cors_preflight_blockpit_origin": "404 NoSuchBucket, no access-control-* headers",
+        "cors_preflight_evil_origin": "404 NoSuchBucket, no reflection",
+        "keys_discovered": 0,
+        "naming_pattern": "n/a - bucket not resolvable at this probe time"
+      }
+    ],
+    "frontend_role": "Angular 'whitelistedDomainsCors' array matches these strings via String.prototype.includes to STRIP the OAuth2 bearer before the HTTP interceptor sends the request - semantically a bearer-token-strip whitelist, not a CORS whitelist. On today's app the URL is only constructed from a backend-provided downloadUrl so there is no user-controllable path.",
+    "cdn_blockpit_io_note": "cdn.blockpit.io is unrelated - CloudFront+AWS S3 (x-amz-server-side-encryption, x-amz-version-id, via 1.1 cloudfront.net), not Hetzner. Root is 403 AccessDenied (correct posture); images at /images/illustrations/* are public (expected).",
+    "verdict_now": "no finding against these two bucket names - either deleted/renamed since bundle shipped or the strings are substring-matches against longer real bucket names. Live-auth agent must capture GET /report/download/{id} downloadUrl to identify real bucket name, then re-run probe matrix. Hypothetical worst-case if real bucket is public-listable with per-user tax PDFs: AV:N/AC:L/PR:N/UI:N/S:C/C:H ~9.0+ OWASP A01.",
+    "deliverables": [
+      "hetzner/BUCKETS.md",
+      "hetzner/dns.txt",
+      "hetzner/cors-probe.txt",
+      "hetzner/raw/"
+    ]
+  },
+  "openapi_surface": {
+    "specs_file_blockchain": "raw/swagger/blockchain-api.json",
+    "specs_file_financial": "raw/swagger/financial-api.json",
+    "attack_map_file": "openapi/ATTACK-MAP.md",
+    "notes": "Specs are byte-identical in paths+definitions; only host differs. Swagger 2.0 (NSwag/.NET). All 641 operations are GET. 60 definitions. Zero securityDefinitions, zero per-op security. apiKey is a query-string param on 640/641 ops (enforced server-side via 401). The surface is a stateless blockchain-data gateway (66 chains x small catalog) - no user IDs, tenants, PII, admin, discount or auth-lifecycle endpoints.",
+    "counts": {
+      "total_operations": 641,
+      "method_distribution": {
+        "get": 641,
+        "post": 0,
+        "put": 0,
+        "patch": 0,
+        "delete": 0
+      },
+      "unique_tags": 66,
+      "unique_schemas": 60,
+      "unauth_declared_ops": 1,
+      "missing_401_declaration_ops": 7,
+      "classical_idor_candidates": 0,
+      "mass_assignment_candidates": 0,
+      "pii_strict_candidates": 0,
+      "onchain_data_exposure_ops": 231,
+      "admin_endpoints": 0,
+      "destructive_ops": 0,
+      "discount_coupon_ops": 0,
+      "auth_flow_ops": 0,
+      "xpub_ypub_zpub_ops": 34,
+      "batch_array_param_ops": 32,
+      "free_form_object_fields": 3
+    },
+    "key_findings_offline": [
+      "/api/General/Version is the ONLY op the spec declares as apiKey-free. Confirms host reachability + exposes build version.",
+      "6 Elrond + Hedera ops declare NO 401 response (/DeconstructTransaction, /IsValidImportAccount, /GetAccountBalances on each chain). Suggests apiKey check may be absent at runtime on those two chains.",
+      "Hedera_IsValidImportAccount parameter doc uses the Elrond erd1 regex (copy-paste bug). If the backend handler is also copied, Hedera input validation is broken.",
+      "TaxToolEvmTransaction leaks internal integer IDs (kyt_txdb_id int64, kyt_contract_id int32, blockchain_id, currency_id). These are IDOR seeds for sibling cn.blockpit.io / bit-api endpoints that accept the same IDs.",
+      "34 xpub/ypub/zpub endpoints: a single apiKey + a single xpub de-anonymises an entire wallet across all derived addresses.",
+      "/api/General/GetMultichainAddressesByAddressList fans one call into 66 chain RPCs - the most expensive single operation. If apiKey-free, resource abuse at scale.",
+      "ResponseModelOfObject.result and TaxToolToken.details are free-form object fields (empty inline schema). Potential arbitrary-JSON injection channels from upstream RPCs.",
+      "Spec declares schemes:[http] on TLS-only hosts - spec-authoring drift, not a live hole."
+    ],
+    "deliverables": [
+      "openapi/ATTACK-MAP.md",
+      "openapi/path-diff.tsv",
+      "openapi/security-declarations.tsv",
+      "openapi/idor-candidates.tsv",
+      "openapi/mass-assignment-candidates.tsv",
+      "openapi/discount-coupon.tsv",
+      "openapi/auth-flow.tsv",
+      "openapi/pii-exposure.tsv",
+      "openapi/admin-endpoints.tsv",
+      "openapi/destructive-ops.tsv",
+      "openapi/batch-export.tsv",
+      "openapi/privacy-xpub.tsv",
+      "openapi/spec-servers.tsv",
+      "openapi/schemas-summary.tsv",
+      "openapi/priority-ranked.tsv"
+    ]
+  },
+  "netlify_surface": {
+    "locked_hosts_count": 8,
+    "slug_map": {
+      "powerhouse.blockpit.io": "bp-powerhouse",
+      "staging.blockpit.io": "bp-frontend-staging",
+      "cta-staging.blockpit.io": "bp-cta-frontend-staging",
+      "gov-test.blockpit.io": "bp-gov-frontend-test",
+      "test.blockpit.io": "bp-frontend-test",
+      "cta-test.blockpit.io": "bp-cta-frontend-test",
+      "powerhouse-test.blockpit.io": "bp-powerhouse-test",
+      "gov-staging.blockpit.io": "bp-gov-frontend-staging",
+      "app.blockpit.io": "bp-frontend-prod",
+      "gov.blockpit.io": "bp-gov-frontend-prod",
+      "cta.blockpit.io": "bp-cta-frontend-prod"
+    },
+    "slug_discovery_method": "DNS CNAME via Google DoH (raw/cname-doh.txt) - deterministic, no guessing needed",
+    "lock_bypass_summary": "0/8 locked custom-domain hosts bypassed at slug level. Netlify enforces password at the <slug>.netlify.app layer as well (401 identical body, 8296B). Classic 'edge-only lock' misconfig does NOT apply to this account.",
+    "branch_deploy_findings": {
+      "staging--bp-frontend-prod.netlify.app": {
+        "status": 200,
+        "bundle_version": "2.17.1",
+        "net_new_secrets": 0,
+        "note": "old Angular build, env identical to prod app.blockpit.io - no net-new secret, no sourcemap"
+      },
+      "staging--bp-gov-frontend-prod.netlify.app": {
+        "status": 200,
+        "bundle_version": "2.60.5",
+        "net_new_secrets": 0,
+        "net_new_endpoints": 5,
+        "note": "older bp-gov-app build routed through cn.blockpit.io/api instead of gov-api; exposes /cta/v1/* surface not seen in current prod gov bundle"
+      }
+    },
+    "deploy_preview_findings": {
+      "probed": "deploy-preview-{1,10,50,100,200} across all 11 slugs = 55 probes",
+      "result": "all 404 - no preview deploys exposed"
+    },
+    "sourcemap_findings": "none - stripped on every open deploy (bundle tail has no sourceMappingURL comment, .js.map paths SPA-fallback to index.html)",
+    "net_new_endpoints_file": "netlify/new-endpoints.txt",
+    "net_new_endpoints_count": 24,
+    "net_new_hostnames_file": "netlify/new-hostnames.txt",
+    "net_new_secrets_count": 0,
+    "pivot_report": "netlify/NETLIFY-PIVOT.md",
+    "raw_dir": "netlify/raw/",
+    "bundles_dir": "netlify/bundles/"
+  },
+  "auth_surface": {
+    "map_file": "github/AUTH-SURFACE.md",
+    "raw_dir": "raw/signup-probes/",
+    "oidc_dir": "raw/oidc/",
+    "js_greps_dir": "raw/js-greps/",
+    "app_auth_dir": "raw/app-auth/",
+    "session_date": "2026-10-09",
+    "prod_bundle_version": "2.69.24",
+    "netlify_build_id": "6ac8af6291b4a6000860e3ec",
+    "captcha_provider": "turnstile",
+    "captcha_sitekey": "0x4AAAAAABjDn7lbXPdrO7So",
+    "captcha_server_enforced": true,
+    "captcha_protected_endpoints": [
+      "POST /v2/auth/register",
+      "POST /v2/auth/login",
+      "POST /v2/auth/password/reset/request",
+      "POST /v2/auth/password/reset",
+      "POST /v1/integrations",
+      "POST /v2/integrations"
+    ],
+    "captcha_not_gated_endpoints": [
+      "POST /v2/auth/activate",
+      "POST /v2/auth/magicLink/redeem",
+      "POST /v2/auth/handoff",
+      "POST /v2/auth/handoff/redeem",
+      "POST /v2/auth/sso/redeem",
+      "POST /v2/auth/password/change",
+      "POST /v2/auth/email/change",
+      "POST /v2/auth/email/confirm",
+      "POST /v2/auth/2fa",
+      "POST /v2/auth/2fa/verify",
+      "POST /v2/auth/refresh",
+      "POST /v2/auth/logout"
+    ],
+    "email_verification_required_on_signup": true,
+    "session_minting_endpoints_non_captcha": [
+      "/v2/auth/activate (code)",
+      "/v2/auth/magicLink/redeem (code)",
+      "/v2/auth/handoff/redeem (code)",
+      "/v2/auth/sso/redeem (code)"
+    ],
+    "oidc_discovery_published": false,
+    "oauth_token_root": "https://api.blockpit.io/oauth/token",
+    "oauth_client_id": 7,
+    "oauth_client_secret_public": "yne8cq00xogLg4LcIosYMcBkCWMPcF8cZaZfx15B",
+    "minimum_signup_payload": {
+      "url": "https://cn.blockpit.io/api/v2/auth/register",
+      "method": "POST",
+      "content_type": "application/json",
+      "required_fields": [
+        "email",
+        "password",
+        "hasAcceptedTerms:true",
+        "language"
+      ],
+      "optional_fields": [
+        "referralPartner",
+        "registerUrl",
+        "organizationName",
+        "memberName",
+        "firstPromoterReferral",
+        "country",
+        "uuid",
+        "celloReferral"
+      ],
+      "required_header": "cf-turnstile-response",
+      "followup_required": "POST /v2/auth/activate {code}  (email round-trip)"
+    }
+  }
+}

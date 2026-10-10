@@ -1,0 +1,51 @@
+# Employee discovery pivots:
+#
+# Direct bio match on github.com:
+#   pascalc23 -> Pascal Costa, "Backend Developer @ Blockpit Exchange Integrations Team", Linz AT.
+#     Public repos: API-NG-sample-code (betfair fork, Java), kingscape (C#). 
+#     Commit email: mail@pascalcosta.com. Twitter: x.com/pascalc23.
+#     No Blockpit source code in his repos.
+#
+# Commit co-author search in blockpit.io domain:
+#   peter.schoellauf@blockpit.io - appears as Co-authored-by in DAICers org commits:
+#     - monad-developers/validator-info#751 (2026-02-11)
+#     - Layr-Labs/eigendata#77 (2024-08-13)
+#     - Layr-Labs/eigendata#21 (2024-04-08)
+#   DAICers (DAIC Capital) org at daic.capital runs validators for Monad/Cosmos ecosystem.
+#   Peter Schoellauf is a Blockpit staff member working on DAIC validator ops.
+#
+# Legacy cryptotax-team org commits (Blockpit's old brand CryptoTax.io):
+#   rgoeritz = Robert Goeritzer, Villach AT (linkedin.com/in/robertgoeritzer).
+#     Commit email: robert.goeritzer@gmail.com. 7 commits across cryptotax-team and 
+#     related idcryptonet / DeltaBalances forks in 2019-2020.
+#   TonnTamerlan = Oleksii Kopylov / Alexey Kopylov (Ukraine).
+#     Commit email: tonn.tamerlan@gmail.com. 5 commits to cryptotax-team/cryptotax-api-demo
+#     in 2020. Now listed at SpinAI (per GitHub org affiliation).
+#   pushkin-82 = Sergej Putilin.
+#     Commit email: s.putilin.82@gmail.com. 1 commit to cryptotax-team/cryptotax-api-demo
+#     (actualize demos 2020-12-24).
+#   robotdude17 = H Gruschinski. 
+#     Commit email: hgruschinski@gmail.com. Initial commits of cryptotax-team/parser (2018).
+#     No public profile fields.
+#
+# Rejected / low-confidence:
+#   Blockpit (org) at github.com/Blockpit - SEO/squatter: US location, support@blockpit.com
+#     domain (not .io), 1 fresh repo (2026-09-16) repackaging cryptofeed as "blockpit tracker"
+#     with github.io installer. Treat as impersonator, not real company.
+#   blockpitru (org) - empty, no members, no repos.
+#   toschdev - Tobias Schwarz, no Blockpit affiliation; his cryptotax-team/parser-js commit
+#     was via a merged PR, author is a third party.
+#   Tosch110 - empty github account.
+#   marcellkiss = Marcell Kiss, Hungarian Angular contractor (MingoEurope). The repo
+#     2022-04-27-nx-monorepo uses "blockpit-nx-example" as sample app name - likely a
+#     consulting / training artifact mirroring an actual Blockpit NX monorepo structure
+#     (apps/blockpit-app, libs/report, libs/transaction, libs/design-system/atoms+molecules,
+#     storybook, Jest). Confirms frontend architecture pattern but no credentials.
+#
+# Docker Hub blockpit org pushers (hub.docker.com/u/blockpit):
+#   lukasfrank - pushed blockpit/node (2022), blockpit/web php-74 and php-74-memcached
+#     (2021-2022), blockpit/php tags (2022). GitHub lukasfrank is Lukas Frank in
+#     Karlsruhe, SAP/ironcore-dev - possibly same person, cannot confirm.
+#   squeezedlight - 1 push (blockpit/web:php-74-dev, 2021).
+#   florianweinrich - oldest tags blockpit/web:php-72 and blockpit/node:11 (2019).
+#     Not findable on GitHub.

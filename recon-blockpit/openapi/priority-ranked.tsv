@@ -1,0 +1,51 @@
+score	method	path	tag	opId	summary	why
+180	get	/api/General/Version	General	General_Version	Returns actual Version	no apiKey param;no 401 declared
+120	get	/api/Elrond/DeconstructTransaction	Elrond	Elrond_DeconstructTransaction	Returns a specific transaction for an address	no 401 declared;tx-decoding (hex blob)
+120	get	/api/Hedera/DeconstructTransaction	Hedera	Hedera_DeconstructTransaction	Returns a specific transaction for an address	no 401 declared;tx-decoding (hex blob)
+85	get	/api/BitcoinCash/GetTransactionsByXPubKey	BitcoinCash	BitcoinCash_GetTransactionsByXPubKey	Get Transactions for Blockpit Tax Tool by xpub key (BIP44)	xpub/ypub/zpub handling;unbounded crawl;tx/token metadata
+85	get	/api/Bitcoin/GetTransactionsByXPubKey	Bitcoin	Bitcoin_GetTransactionsByXPubKey	Get Transactions for Blockpit Tax Tool by xpub key (BIP44)	xpub/ypub/zpub handling;unbounded crawl;tx/token metadata
+85	get	/api/Bitcoin/GetTransactionsByYPubKey	Bitcoin	Bitcoin_GetTransactionsByYPubKey	Get Transactions for Blockpit Tax Tool by ypub key (BIP49)	xpub/ypub/zpub handling;unbounded crawl;tx/token metadata
+85	get	/api/Bitcoin/GetTransactionsByZPubKey	Bitcoin	Bitcoin_GetTransactionsByZPubKey	Get Transactions for Blockpit Tax Tool by zpub key (BIP84)	xpub/ypub/zpub handling;unbounded crawl;tx/token metadata
+85	get	/api/Dash/GetTransactionsByXPubKey	Dash	Dash_GetTransactionsByXPubKey	Get Transactions for Blockpit Tax Tool by xpub key (BIP44)	xpub/ypub/zpub handling;unbounded crawl;tx/token metadata
+85	get	/api/Dogecoin/GetTransactionsByXPubKey	Dogecoin	Dogecoin_GetTransactionsByXPubKey	Get Transactions for Blockpit Tax Tool by xpub key (BIP44)	xpub/ypub/zpub handling;unbounded crawl;tx/token metadata
+85	get	/api/Litecoin/GetTransactionsByXPubKey	Litecoin	Litecoin_GetTransactionsByXPubKey	Get Transactions for Blockpit Tax Tool by xpub key (BIP44)	xpub/ypub/zpub handling;unbounded crawl;tx/token metadata
+85	get	/api/Litecoin/GetTransactionsByYPubKey	Litecoin	Litecoin_GetTransactionsByYPubKey	Get Transactions for Blockpit Tax Tool by ypub key (BIP49)	xpub/ypub/zpub handling;unbounded crawl;tx/token metadata
+85	get	/api/Litecoin/GetTransactionsByZPubKey	Litecoin	Litecoin_GetTransactionsByZPubKey	Get Transactions for Blockpit Tax Tool by zpub key (BIP84)	xpub/ypub/zpub handling;unbounded crawl;tx/token metadata
+80	get	/api/Elrond/IsValidImportAccount	Elrond	Elrond_IsValidImportAccount	Checks if Account is valid for a depot creation in taxtool	no 401 declared
+80	get	/api/Elrond/GetAccountBalances	Elrond	Elrond_GetAccountBalances	Get balances for all available assets	no 401 declared
+80	get	/api/Hedera/IsValidImportAccount	Hedera	Hedera_IsValidImportAccount	Checks if Account is valid for a depot creation in taxtool	no 401 declared
+80	get	/api/Hedera/GetAccountBalances	Hedera	Hedera_GetAccountBalances	Get balances for all available assets	no 401 declared
+60	get	/api/BitcoinCash/GetBalanceByXPubKey	BitcoinCash	BitcoinCash_GetBalanceByXPubKey	Get Balance (sum of all UTXOs of a extended pubkey) for Blockpit Tax Tool by xpub key (BIP44)	xpub/ypub/zpub handling
+60	get	/api/BitcoinCash/GetTotalAddressesByXPubKey	BitcoinCash	BitcoinCash_GetTotalAddressesByXPubKey	Get receive and change addresses by xpub key (BIP44)	xpub/ypub/zpub handling
+60	get	/api/BitcoinCash/GetAddressesByXPubKey	BitcoinCash	BitcoinCash_GetAddressesByXPubKey	Get addresses by xpub key and derivation path (BIP44)	xpub/ypub/zpub handling
+60	get	/api/Bitcoin/GetBalanceByXPubKey	Bitcoin	Bitcoin_GetBalanceByXPubKey	Get Balance (sum of all UTXOs of a extended pubkey) for Blockpit Tax Tool by xpub key (BIP44)	xpub/ypub/zpub handling
+60	get	/api/Bitcoin/GetBalanceByYPubKey	Bitcoin	Bitcoin_GetBalanceByYPubKey	Get Balance (sum of all UTXOs of a extended pubkey) for Blockpit Tax Tool by ypub key (BIP49)	xpub/ypub/zpub handling
+60	get	/api/Bitcoin/GetBalanceByZPubKey	Bitcoin	Bitcoin_GetBalanceByZPubKey	Get Balance (sum of all UTXOs of a extended pubkey) for Blockpit Tax Tool by ypub key (BIP84)	xpub/ypub/zpub handling
+60	get	/api/Bitcoin/GetTotalAddressesByXPubKey	Bitcoin	Bitcoin_GetTotalAddressesByXPubKey	Get receive and change addresses by xpub key (BIP44)	xpub/ypub/zpub handling
+60	get	/api/Bitcoin/GetAddressesByXPubKey	Bitcoin	Bitcoin_GetAddressesByXPubKey	Get addresses by xpub key and derivation path (BIP44)	xpub/ypub/zpub handling
+60	get	/api/Bitcoin/GetTotalAddressesByYPubKey	Bitcoin	Bitcoin_GetTotalAddressesByYPubKey	Get receive and change addresses by ypub key (BIP49)	xpub/ypub/zpub handling
+60	get	/api/Bitcoin/GetAddressesByYPubKey	Bitcoin	Bitcoin_GetAddressesByYPubKey	Get addresses by ypub key and derivation path (BIP49)	xpub/ypub/zpub handling
+60	get	/api/Bitcoin/GetTotalAddressesByZPubKey	Bitcoin	Bitcoin_GetTotalAddressesByZPubKey	Get receive and change addresses by zpub key (BIP84)	xpub/ypub/zpub handling
+60	get	/api/Bitcoin/GetAddressesByZPubKey	Bitcoin	Bitcoin_GetAddressesByZPubKey	Get addresses by zpub key and derivation path (BIP84)	xpub/ypub/zpub handling
+60	get	/api/Dash/GetBalanceByXPubKey	Dash	Dash_GetBalanceByXPubKey	Get Balance (sum of all UTXOs of a extended pubkey) for Blockpit Tax Tool by xpub key (BIP44)	xpub/ypub/zpub handling
+60	get	/api/Dogecoin/GetBalanceByXPubKey	Dogecoin	Dogecoin_GetBalanceByXPubKey	Get Balance (sum of all UTXOs of a extended pubkey) for Blockpit Tax Tool by xpub key (BIP44)	xpub/ypub/zpub handling
+60	get	/api/Dogecoin/GetTotalAddressesByXPubKey	Dogecoin	Dogecoin_GetTotalAddressesByXPubKey	Get receive and change addresses by xpub key (BIP44)	xpub/ypub/zpub handling
+60	get	/api/Dogecoin/GetAddressesByXPubKey	Dogecoin	Dogecoin_GetAddressesByXPubKey	Get addresses by xpub key and derivation path (BIP44)	xpub/ypub/zpub handling
+60	get	/api/Litecoin/GetBalanceByXPubKey	Litecoin	Litecoin_GetBalanceByXPubKey	Get Balance (sum of all UTXOs of a extended pubkey) for Blockpit Tax Tool by xpub key (BIP44)	xpub/ypub/zpub handling
+60	get	/api/Litecoin/GetBalanceByYPubKey	Litecoin	Litecoin_GetBalanceByYPubKey	Get Balance (sum of all UTXOs of a extended pubkey) for Blockpit Tax Tool by ypub key (BIP49)	xpub/ypub/zpub handling
+60	get	/api/Litecoin/GetBalanceByZPubKey	Litecoin	Litecoin_GetBalanceByZPubKey	Get Balance (sum of all UTXOs of a extended pubkey) for Blockpit Tax Tool by ypub key (BIP84)	xpub/ypub/zpub handling
+60	get	/api/Litecoin/GetTotalAddressesByXPubKey	Litecoin	Litecoin_GetTotalAddressesByXPubKey	Get receive and change addresses by xpub key (BIP44)	xpub/ypub/zpub handling
+60	get	/api/Litecoin/GetAddressesByXPubKey	Litecoin	Litecoin_GetAddressesByXPubKey	Get addresses by xpub key and derivation path (BIP44)	xpub/ypub/zpub handling
+60	get	/api/Litecoin/GetTotalAddressesByYPubKey	Litecoin	Litecoin_GetTotalAddressesByYPubKey	Get receive and change addresses by ypub key (BIP49)	xpub/ypub/zpub handling
+60	get	/api/Litecoin/GetAddressesByYPubKey	Litecoin	Litecoin_GetAddressesByYPubKey	Get addresses by ypub key and derivation path (BIP49)	xpub/ypub/zpub handling
+60	get	/api/Litecoin/GetTotalAddressesByZPubKey	Litecoin	Litecoin_GetTotalAddressesByZPubKey	Get receive and change addresses by zpub key (BIP84)	xpub/ypub/zpub handling
+60	get	/api/Litecoin/GetAddressesByZPubKey	Litecoin	Litecoin_GetAddressesByZPubKey	Get addresses by zpub key and derivation path (BIP84)	xpub/ypub/zpub handling
+40	get	/api/Akash/DeconstructTransaction	Akash	Akash_DeconstructTransaction	Returns a specific transaction for an address	tx-decoding (hex blob)
+40	get	/api/AlephZero/DeconstructTransaction	AlephZero	AlephZero_DeconstructTransaction	Returns a specific transaction for an address	tx-decoding (hex blob)
+40	get	/api/Algorand/DeconstructTransaction	Algorand	Algorand_DeconstructTransaction	Returns a specific transaction for an address	tx-decoding (hex blob)
+40	get	/api/Arbitrum/DeconstructTransaction	Arbitrum	Arbitrum_DeconstructTransaction	Returns a specific transaction for an address	tx-decoding (hex blob)
+40	get	/api/ArbitrumNova/DeconstructTransaction	ArbitrumNova	ArbitrumNova_DeconstructTransaction	Returns a specific transaction for an address	tx-decoding (hex blob)
+40	get	/api/Avalanche/DeconstructTransaction	Avalanche	Avalanche_DeconstructTransaction	Returns a specific transaction for an address	tx-decoding (hex blob)
+40	get	/api/Base/DeconstructTransaction	Base	Base_DeconstructTransaction	Returns a specific transaction for an address	tx-decoding (hex blob)
+40	get	/api/BinanceChain/DeconstructTransaction	BinanceChain	BinanceChain_DeconstructTransaction	Returns a specific transaction for an address	tx-decoding (hex blob)
+40	get	/api/BinanceSmartChain/DeconstructTransaction	BinanceSmartChain	BinanceSmartChain_DeconstructTransaction	Returns a specific transaction for an address	tx-decoding (hex blob)

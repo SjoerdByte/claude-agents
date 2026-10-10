@@ -1,0 +1,10 @@
+HTTP/1.1 200 Connection Established
+
+HTTP/2 401 
+content-type: text/html
+date: Fri, 09 Oct 2026 11:12:30 GMT
+server: Netlify
+strict-transport-security: max-age=31536000
+x-nf-request-id: 01M4G5TP4CFSKBTGK86T6KW82X
+content-length: 3551
+

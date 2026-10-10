@@ -1,0 +1,19 @@
+# slug discovery result - all 11 slugs discovered via DNS CNAME lookups (Google DoH)
+# No educated-guess probing needed. CNAME chain was deterministic.
+# raw/cname-doh.txt holds the full DoH query output.
+#
+# Mapping (custom-domain -> underlying .netlify.app slug):
+powerhouse.blockpit.io          -> bp-powerhouse
+staging.blockpit.io             -> bp-frontend-staging
+cta-staging.blockpit.io         -> bp-cta-frontend-staging
+gov-test.blockpit.io            -> bp-gov-frontend-test
+test.blockpit.io                -> bp-frontend-test
+cta-test.blockpit.io            -> bp-cta-frontend-test
+powerhouse-test.blockpit.io     -> bp-powerhouse-test
+gov-staging.blockpit.io         -> bp-gov-frontend-staging
+app.blockpit.io                 -> bp-frontend-prod
+gov.blockpit.io                 -> bp-gov-frontend-prod
+cta.blockpit.io                 -> bp-cta-frontend-prod
+
+# Netlify public API lookup (api.netlify.com/api/v1/sites?name=<slug>) requires auth (401 Access Denied) - skipped.
+# crt.sh retry: 502 Bad Gateway again - skipped.

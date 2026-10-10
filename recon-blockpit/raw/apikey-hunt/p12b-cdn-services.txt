@@ -1,0 +1,660 @@
+./exploit/probe.js:intercom-auth-GET
+./exploit/probe.js:intercom/auth
+./exploit/probe2.js:intercom-auth-GET
+./exploit/probe2.js:intercom/auth
+./exploit/probe3.js:intercom-auth-GET
+./exploit/probe3.js:intercom/auth
+./exploit/raw/legacy-probe-xvfb/_captured-network.json:intercom/auth
+./exploit/raw/legacy-probe-xvfb/legacy-v1-users-intercom-auth-GET.json:intercom-auth-GET
+./exploit/raw/legacy-probe-xvfb/legacy-v1-users-intercom-auth-GET.json:intercom/auth
+./exploit/raw/legacy-probe/_summary.json:intercom-auth-GET
+./exploit/raw/legacy-probe/_summary.json:intercom/auth
+./exploit/raw/legacy-probe/legacy-v1-users-intercom-auth-GET.json:intercom-auth-GET
+./exploit/raw/legacy-probe/legacy-v1-users-intercom-auth-GET.json:intercom/auth
+./exploit/raw/legacy-probe2/_summary.json:intercom-auth-GET
+./exploit/raw/legacy-probe2/_summary.json:intercom/auth
+./exploit/raw/legacy-probe2/legacy-v1-users-intercom-auth-GET.json:intercom-auth-GET
+./exploit/raw/legacy-probe2/legacy-v1-users-intercom-auth-GET.json:intercom/auth
+./exploit/raw/legacy-probe3/legacy-v1-users-intercom-auth-GET.json:intercom-auth-GET
+./exploit/raw/legacy-probe3/legacy-v1-users-intercom-auth-GET.json:intercom/auth
+./exploit/raw/legacy-probe4/legacy-v1-users-intercom-auth-GET.json:intercom-auth-GET
+./exploit/raw/legacy-probe4/legacy-v1-users-intercom-auth-GET.json:intercom/auth
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12136914
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12136919-how-to-create-an-automatic-exchange-integrat
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12137125
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12137128
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12137132
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12137134
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12137143
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12137143-basics-on-labeling-and-merging-of-transactio
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12137190
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12137190-what-do-tips-mismatched-balance-missing-hist
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12137193
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12137196
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12137207
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/12137255
+./exploit/raw/register-account-1/localstorage-initial.json:intercom.help/blockpit/en/articles/{{id}}
+./exploit/raw/register-account-1/localstorage-initial.json:intercomLink
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12136914
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12136919-how-to-create-an-automatic-exchange-integrat
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12137125
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12137128
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12137132
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12137134
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12137143
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12137143-basics-on-labeling-and-merging-of-transactio
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12137190
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12137190-what-do-tips-mismatched-balance-missing-hist
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12137193
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12137196
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12137207
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/12137255
+./exploit/sessions/account-1/localstorage.json:intercom.help/blockpit/en/articles/{{id}}
+./exploit/sessions/account-1/localstorage.json:intercomLink
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12136914
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12136919-how-to-create-an-automatic-exchange-integrat
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12137125
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12137128
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12137132
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12137134
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12137143
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12137143-basics-on-labeling-and-merging-of-transactio
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12137190
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12137190-what-do-tips-mismatched-balance-missing-hist
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12137193
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12137196
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12137207
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/12137255
+./exploit/sessions/account-1/storage-state.json:intercom.help/blockpit/en/articles/{{id}}
+./exploit/sessions/account-1/storage-state.json:intercomLink
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12136914
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12136919-how-to-create-an-automatic-exchange-integrat
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12137125
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12137128
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12137132
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12137134
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12137143
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12137143-basics-on-labeling-and-merging-of-transactio
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12137190
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12137190-what-do-tips-mismatched-balance-missing-hist
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12137193
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12137196
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12137207
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/12137255
+./exploit/sessions/account-1/tokens-dump.json:intercom.help/blockpit/en/articles/{{id}}
+./exploit/sessions/account-1/tokens-dump.json:intercomLink
+./index.json:Intercom (qd5t49rj), Google GTM-M52JVRC, Sentry self-hosted (sentry.blockpit.io, DSN pro
+./index.json:Intercom chat impersonation.
+./index.json:intercom/auth returns Intercom HMAC - if the HMAC is scoped only by email/userId and not
+./index.json:intercom/auth,licenses,activeYears} GET confirmed-live, auth-gated (401 
+./index.json:intercom/auth} for cross-tenant data leaks and token-lifecycle issues. Raw: exploit/raw/
+./index.json:pusher 
+./index.json:pusher florianweinrich to contractor domain florian-weinrich.com
+./index.json:segments visible in staging-branch bundle only. Enumerate once cn.blockpit.io origin re
+./netlify/bundles/bp-cta-frontend-prod/main-MACCBA7K.js:intercomService.initializeIntercomEvent$.next({userId:t.userId,email:t.email,name:
+./netlify/bundles/bp-cta-frontend-prod/main-MACCBA7K.js:intercomService.logoutIntercomEvent$.next(),this.userService.clearCache()})),Pe$1(this.h
+./netlify/bundles/bp-cta-frontend-prod/main-MACCBA7K.js:intercomService.setLanguageEvent$.next(t))),this.handleLanguageChangeEvent$=Gf(this.lang
+./netlify/bundles/bp-cta-frontend-prod/main-MACCBA7K.js:intercomService=v(cq),this.isCacheReloadingAllowed=sO(),this.isUserLoggedIn$=this.userSe
+./netlify/bundles/bp-frontend-prod/main-C3DOLOTM.js:intercomAppId:
+./netlify/bundles/bp-frontend-prod/main-C3DOLOTM.js:intercomId);ue(),ot$2(C?8:-1)}},dependencies:[RN$1,gX,Iw,Nlt,SG,Mlt,NSe,HSe,iu,Hn,A1t,Fe
+./netlify/bundles/bp-frontend-prod/main-C3DOLOTM.js:intercomId);ue(),ot$2(n?14:-1)}}var Gr=(()=>{class t{DsComponentCorner=Un;DsComponentSiz
+./netlify/bundles/bp-frontend-prod/main-C3DOLOTM.js:intercomId?.toString())(
+./netlify/bundles/bp-gov-frontend-prod/main-6I5V2PU2.js:intercomService.initializeIntercomEvent$.next({userId:e.userId,email:e.email,name:
+./netlify/bundles/bp-gov-frontend-prod/main-6I5V2PU2.js:intercomService.initializeIntercomEvent$.next({userId:t.userId,email:t.email,name:
+./netlify/bundles/bp-gov-frontend-prod/main-6I5V2PU2.js:intercomService.logoutIntercomEvent$.next(),this.userService.clearCache()})),Pe$2(this.h
+./netlify/bundles/bp-gov-frontend-prod/main-6I5V2PU2.js:intercomService.setLanguageEvent$.next(e))),this.handleLanguageChangeEvent$=Gf(this.lang
+./netlify/bundles/bp-gov-frontend-prod/main-6I5V2PU2.js:intercomService.setLanguageEvent$.next(t))),this.handleLanguageChangeEvent$=Gf(this.lang
+./netlify/bundles/bp-gov-frontend-prod/main-6I5V2PU2.js:intercomService=v(cq),this.isCacheReloadingAllowed=sO(),this.isUserLoggedIn$=this.userSe
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment());let e={};this.peekStartsWith(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment());this.peekStartsWith(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment(),e.parseQueryParams(),e.parseFragment())}serialize(n){const e=
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment(){const n=Am(this.remaining);if(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment(){return this.consumeOptional(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment(_,k,b,x,R?rn:s,!0).pipe(T(U=>new hn(a.concat(U.segments),U.children)))})):bf(e)
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment(d,h,g,_?rn:o);return null===b?null:[new Ha(s,b)]}}function pY(t){const n=t.valu
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment(n,e,e.segments,i)}processChildren(n,e){const i=[];for(const s of Object.keys(e.
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment(n,e,i,o){for(const s of n){const r=this.processSegmentAgainstRoute(s,e,i,o);if(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment(n,e,i,o,s,r){return Fi(i).pipe(bc(a=>this.expandSegmentAgainstRoute(n,e,i,a,o,s
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment(n,i,e,i.segments,o,!0)}expandChildren(n,e,i){const o=[];for(const s of Object.k
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment: 
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment;)n=n._sourceSegment,e+=n._segmentIndexShift?n._segmentIndexShift:0;return e-1}f
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment;)n=n._sourceSegment;return n}function F3(t){let n=t,e=n._segmentIndexShift?n._s
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment;return new Dy(s,s===n.root,0)}const i=Lm(t.commands[0])?0:1;return function TG(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment=h,this._lastPathIndex=g,this._resolve=_}get root(){return this._routerState.roo
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment=t,d._segmentIndexShift=
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment=t,i._segmentIndexShift=n.length;for(const s of e)if(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment=t,r._segmentIndexShift=n.length,o[_r(s)]=r}return o}(t,n,i,new hn(e,t.children)
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment=t,r._segmentIndexShift=n.length,{segmentGroup:r,slicedSegments:[]}}if(0===e.len
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segment=t,r._segmentIndexShift=n.length,{segmentGroup:r,slicedSegments:e}}const s=new h
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:SegmentAgainstRoute(n,e,i,o){if(n.redirectTo||!I3(n,e,i,o))return null;let s,r=[],a=[];
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:SegmentAgainstRoute(n,e,i,o,s,r,a){return I3(o,e,s,r)?void 0===o.redirectTo?this.matchS
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:SegmentAgainstRouteUsingRedirect(n,e,i,o,s,r):bf(e):bf(e)}expandSegmentAgainstRouteUsin
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:SegmentAgainstRouteUsingRedirect(n,e,i,o,s,r){const{matched:a,consumedSegments:d,remain
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:SegmentAgainstRouteUsingRedirect(n,e,i,o,s,r)}expandWildCardWithParamsAgainstRouteUsing
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:SegmentGroup(a,r,s);if(null===d)return null;i.push(...d)}const o=L3(i);return function 
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:SegmentGroup(n,a,i,o)}),new hn(s,r)}createSegments(n,e,i,o){return e.map(s=>s.path.star
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:SegmentGroup(n,a,r,s).pipe(T(d=>({segment:d,outlet:s})))}),wm((s,r)=>(s[r.outlet]=r.seg
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:SegmentGroup(n,e,i){return 0===e.segments.length&&e.hasChildren()?this.processChildren(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:SegmentGroup(n,e,i,o){const s=this.createSegments(n,e.segments,i,o);let r={};return $o(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:SegmentGroup(n,e.root,i,o);return new wc(s,this.createQueryParams(e.queryParams,this.ur
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:SegmentGroup(this.ngModule,this.config,n.root,rn).pipe(T(o=>this.createUrlTree(ky(o),n.
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segments(i,s).pipe(Ri(r=>{const a=new hn(r,{});return this.expandSegment(n,a,e,r,o,!1)}
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segments(n,e){let i=[],o=e.root;for(;;){if(i=i.concat(o.segments),0===o.numberOfChildre
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segments(o,_).pipe(Ri(b=>this.expandSegment(n,e,i,b.concat(h),r,!1)))}matchSegmentAgain
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segments,a=S.remainingSegments,s=new Mm(r,S.parameters,Object.freeze(Object.assign({},t
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segments:[],remainingSegments:[],parameters:{},positionalParamSegments:{}};function Fm(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segments:[],remainingSegments:e,parameters:{},positionalParamSegments:{}};const s=(n.ma
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segments:a,remainingSegments:d}=Fm(e,i,o);return r?this.getChildConfig(n,i,o).pipe(Ri(g
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segments:e}}function $m(t,n,e){return(!(t.hasChildren()||n.length>0)||
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segments:h,positionalParamSegments:g}=Fm(e,o,s);if(!a)return bf(e);const _=this.applyRe
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segments:null!==(i=s.posParams)&&void 0!==i?i:{}}}function Rm(t,n,e,i,o=
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:Segments:s.consumed,remainingSegments:e.slice(s.consumed.length),parameters:a,positiona
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segment at index ${n}
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segment cannot have matrix parameters
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segment cannot have parameters: 
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segment:se,public_key:P,trace_id:this.traceId,sample_rate:ge})}}},255:(We,je,Z)=>{
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segment:se}=J&&J.getUser()||{},fe=this.metadata.source;return(0,de.Jr)({environment:Q,r
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segmentGroup,a,i,o)}(h,this.currentUrlTree,e,_,null!=g?g:null)}navigateByUrl(e,i={skipL
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segmentGroup,e=new hn(n.segments,n.children);return this.expandSegmentGroup(this.ngModu
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segmentGroup,e=this.processSegmentGroup(this.config,n,rn);if(null===e)return null;const
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segmentGroup,r.index,s.commands):b3(r.segmentGroup,r.index,s.commands);return wy(n.root
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segmentGroup:S,slicedSegments:x}=Rm(e,a,d,b),k=new hn(S.segments,S.children);if(0===x.l
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segmentGroup:h,slicedSegments:g}=Rm(e,r,a,d.filter(S=>void 0===S.redirectTo),this.relat
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segmentGroup=n,this.processChildren=e,this.index=i}}function b3(t,n,e){if(t||(t=new hn(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segmentGroup=n||null}}class x3{constructor(n){this.urlTree=n}}function bf(t){return wn(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segmentGroup}
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segmentPath)return[...o,s.segmentPath]}return
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segmentPath}function hf(t){return
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments,e)}function s3(t,n,e,i){if(t.segments.length>e.length){const o=t.segments.slic
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments,function NG(t,n,e,i,o,s){const r={};for(const a of i)if($m(t,e,a)&&!o[_r(a)]){
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments,i)}class v3{constructor(n,e,i){if(this.isAbsolute=n,this.numberOfDoubleDots=e,
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments,n.segments)||!Im(t.segments,n.segments,e)||t.numberOfChildren!==n.numberOfChil
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments,o)}}function Iy(t,n,e){const i=t.segments.slice(0,n);let o=0;for(;o<e.length;)
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments,t.children);return s._sourceSegment=t,s._segmentIndexShift=n.length,{segmentGr
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments,{}):i.match&&!t.hasChildren()?Iy(t,n,e):i.match?Om(t,0,o):Iy(t,n,e)}function O
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments,{});{const i=function SG(t){return hf(t[0])?t[0].outlets:{[rn]:t}}(e),o={};ret
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.concat(n.segments),n.children)}return t}(new hn(t.segments,n))}class A3{constr
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.length&&i.hasChildren()?this.expandChildren(n,e,i).pipe(T(s=>new hn([],s))):th
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.length&&t.hasChildren())return Om(t,n,e);const i=function wG(t,n,e){let i=0,o=
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.length),s=e.slice(t.segments.length);return!!(Dc(t.segments,o)&&Im(t.segments,
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.length){const s=new hn(t.segments.slice(0,i.pathIndex),{});return s.children[r
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.length:n.length,r[_r(a)]=d}return Object.assign(Object.assign({},o),r)}(t,n,e,
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.length;){if(i>=e.length)return s;const r=t.segments[o],a=e[i];if(hf(a))break;c
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.length===e.length){if(!Dc(t.segments,e)||!Im(t.segments,e,i))return!1;for(cons
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.length>0?new hn([],{[rn]:n}):n;return new wc(o,e,i)}expandSegmentGroup(n,e,i,o
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.length>0||s.hasChildren())&&(n[i]=s)}return function YG(t){if(1===t.numberOfCh
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.length}return new Dy(i,!1,o-s)}(e.snapshot._urlSegment,e.snapshot._lastPathInd
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.map(n=>d3(n)).join(
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments.slice(i.pathIndex),t.children),Om(s,0,o)}return i.match&&0===o.length?new hn(t
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments=n,this.children=e,this.parent=null,$o(e,(i,o)=>i.parent=this)}hasChildren(){re
+./netlify/bundles/staging--bp-frontend-prod/main.cc7a55659636b2b9.js:segments[n].path,y3(e[0]))),o++;continue}const r=hf(s)?s.outlets[rn]:
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:INTERCOM_HELPER
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Intercom initialiser called with invalid parameters.
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Intercom is setup and running on client-side!
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Intercom token
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Intercom)return window.Intercom(Ae,...Gt);console.warn(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Intercom,ye.boot=Ae=>z(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Intercom;L.intercomSettings&&(L.intercomSettings.installation_type=
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Intercom=Ae=>{if(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Intercom=void 0;const e=b(8384),o=b(1564),z=(Ae,...Gt)=>{if(void 0!==typeof window&&wind
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:IntercomEvent$),this.effects.register(this.handleLogoutIntercomEvent$),this.effects.regi
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:IntercomEvent$=new kn.B,this.logoutIntercomEvent$=new kn.B,this.setLanguageEvent$=new kn
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:IntercomEvent$=this.initializeIntercomEvent$.pipe((0,fi.p)(({isGovernmentUser:G})=>!G&&t
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:IntercomEvent$=this.logoutIntercomEvent$.pipe((0,fi.p)(()=>this.isInitialized()),(0,Pi.M
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:IntercomQueryParam$),this.effects.register(this.handleOpenChatEvent$),this.effects.regis
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:IntercomQueryParam$=this.activatedRoute.queryParams.pipe((0,Yi.n)(G=>this.initStatus$.pi
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:IntercomToken().pipe((0,yt.T)(ct=>({payload:G,windowWidth:ve,token:ct})),(0,fi.p)(({toke
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:IntercomToken(){return this.httpClient.get(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segment());let J={};this.peekStartsWith(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segment());this.peekStartsWith(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segment(),J.parseQueryParams(),J.parseFragment())}serialize(te){const J=
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segment(){const te=xi(this.remaining);if(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segment(){return this.consumeOptional(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segment(te,J,ie,$e,dt,$t,pn){return(0,P.H)(J).pipe((0,me.H)(zn=>this.processSegmentAgai
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segment(te,J,ie,ie.segments,$e,!0,dt).pipe((0,De.T)($t=>$t instanceof Xn?[$t]:[]))}proc
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segment(zr,Hi,Ca,ol,Va?vt:dt,!0,aa).pipe((0,De.T)(vl=>new Xn(aa,vl instanceof Xn?[vl]:[
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:SegmentAgainstRoute(te,$e,ie,dt,$t,zn):this.allowRedirects&&pn?this.expandSegmentAgains
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:SegmentAgainstRoute(te,J,ie,$e,dt,$t){const pn=rl(J,ie,$e,te);return
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:SegmentAgainstRoute(te,J,ie,$e,dt,$t,pn,zn){return Me(ie)===$t||$t!==vt&&Po($e,dt,ie)?v
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:SegmentAgainstRouteUsingRedirect(te,J,ie,$e,dt,$t,pn){const{matched:zn,parameters:Hi,co
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:SegmentGroup(te,J,ie,$e){const dt=this.createSegments(te,J.segments,ie,$e);let $t={};re
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:SegmentGroup(te,J,ie,$e,dt){return 0===ie.segments.length&&ie.hasChildren()?this.proces
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:SegmentGroup(te,J.root,ie,$e);return new rn(dt,this.createQueryParams(J.queryParams,thi
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:SegmentGroup(te,zn,ie,$e)}),new qe(dt,$t)}createSegments(te,J,ie,$e){return J.map(dt=>
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:SegmentGroup(te,zn,pn,$t,$e)}),(0,tn.S)(($t,pn)=>($t.push(...pn),$t)),(0,In.U)(null),fu
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:SegmentGroup(this.injector,this.config,te,vt,J).pipe((0,De.T)(ie=>({children:ie,rootSna
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segments($e,Ca)),(0,Le.Z)(Ca=>this.processSegment(te,ie,J,Ca.concat(va),$t,!1,pn)))}mat
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segments())}}let $=(()=>{class v{constructor(){this.elementRef=(0,g.WQX)(e.aKT),this.se
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segments(te,J){let ie=[],$e=J.root;for(;;){if(ie=ie.concat($e.segments),0===$e.numberOf
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segments:$e.consumed,remainingSegments:J.slice($e.consumed.length),parameters:$t,positi
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segments:$e.posParams??{}}}function Tu(V,te,J,ie){return J.length>0&&function Xd(V,te,J
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segments:V,remainingSegments:[],positionalParamSegments:{}}}(J);if(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segments:[],remainingSegments:J,parameters:{},positionalParamSegments:{}};const $e=(te.
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segments:[],remainingSegments:[],parameters:{},positionalParamSegments:{}};function rl(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segments:va,remainingSegments:Ra}=zn,aa=new ts(va,Ls,Object.freeze({...this.urlTree.que
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segments:zr,positionalParamSegments:Ls,remainingSegments:va}=ma(J,$e,dt);if(!zn)return 
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:Segments=(0,z.EW)(()=>{const d=this.containerWidth();return this.segments().map(S=>({..
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercom-before-login-hint
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercom-messenger-frame
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercom.help/blockpit/articles/${G}
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercom.io
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercom.io/widget/
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercom/auth
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomAuthEndpoint=
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomAuthEndpoint}
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomHelper=(0,g.WQX)(Vp,{optional:!0}),this.appId=
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomHelper?.onShow()}),(0,Vc.onHide)(()=>{this.isChatOpen.set(!1),this.intercomHelpe
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomId:x.intercomId,children:x.children}),qe=x=>(0,$.sFY)(x.type)?{id:x.id,name:x.na
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomId:x.intercomId,image:{url:x.image,alttag:x.name},addressRegex:x.config.address_
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomId:x.intercomId,isPublic:x.isPublic,isCrawlerEnabled:x.isCrawlerEnabled,isCsvImp
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomId:x.intercomId,isPublic:x.isPublic,isUnderMaintenance:x.isUnderMaintenance,slug
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomId:x.intercomId,priorityRank:x.priorityRank}),bn=x=>({overall:x.overall,deactiva
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomId:x.intercomId,type:$.m8V.TAX_TOOL});let Ws=(()=>{class x{constructor(){this.co
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService.initializeIntercomEvent$.next({userId:F.userId,email:F.email,name:
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService.initializeIntercomEvent$.next({userId:de.userId,email:de.email,name:
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService.isInitialized()&&!d.intercomService.visible()?1:-1),e.R7$(),e.vxM(d.envi
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService.isInitialized()&&!d.intercomService.visible()?4:-1),e.R7$(),e.vxM(d.envi
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService.isInitialized()&&!this.intercomService.visible())}isItemDisabled(d){retu
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService.logoutIntercomEvent$.next(),this.userService.clearCache(),this.integrati
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService.logoutIntercomEvent$.next(),this.userService.clearCache()})),this.effect
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService.openArticleEvent$.next({id:ve.toString()}))}static{this.
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService.openChat()}buildNormalizedMenuMap(d,S){return[...d,...S].reduce((w,je)=>
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService.setLanguageEvent$.next(F))),this.handleLanguageChangeEvent$=this.userSer
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService.setLanguageEvent$.next(de))),this.handleLanguageChangeEvent$=this.userSe
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService=(0,g.WQX)($.lSD),this.effects=(0,Ot.J)(),this.trackingService=(0,$.SCr)(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService=(0,g.WQX)(P.lSD),this.DsIconType=A.T1O,this.DsComponentColor=A.woN,this.
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService=(0,g.WQX)(P.lSD),this.effects=(0,oe.J)(),this.isCacheReloadingAllowed=(0
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService=(0,g.WQX)(P.lSD),this.environment=(0,g.WQX)(P.M0L),this.state$=this.stat
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService=(0,g.WQX)(P.lSD),this.offsetService=(0,g.WQX)(P.BKr),this.floatingBarBot
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomService=(0,g.WQX)(Qu),this.helpArticleId=Yl.hFB.required()}openArticle(G){const 
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomSettings)):(L.Intercom=e,z()?o(P.widgetUrl):(document.addEventListener(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomSettings)||void 0===P?void 0:P.app_id);var q=oe.getElementsByTagName(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercomSettings=Object.assign(Object.assign({},In),{api_base:e.regionAPIs.get(Gt)}),(0,
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercom_npm_loader
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:intercom_user_jwt:vs};zo()(jr),(0,Vc.boot)(jr),(0,Vc.onShow)(()=>{this.isChatOpen.set(!0
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segment without checkout.
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segment:!0}}(se));if(fe?se=(0,ml.h)(h,function re(u){return{type:
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segment:this._isStandaloneSpan&&(0,Oi.zU)(this)===this||void 0,segment_id:this._isStand
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentGroup,$t.index,dt.commands):ii($t.segmentGroup,$t.index,dt.commands);return Wi($
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentGroup,pn,J,ie)}function ui(V){return
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentGroup:Ca,slicedSegments:ol}=Tu(J,va,Ra,Hi);if(0===ol.length&&Ca.hasChildren())re
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentGroup:new qe(V.segments,sl(V,J,ie,V.children)),slicedSegments:J}:{segmentGroup:n
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentGroup:new qe(te,Da(ie,new qe(J,V.children))),slicedSegments:[]}:0===J.length&&fu
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentGroup;constructor(te){this.segmentGroup=te||null}}class _l extends Error{urlTree
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentGroup;processChildren;index;constructor(te,J,ie){this.segmentGroup=te,this.proce
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentGroup;return this.match(te).pipe((0,De.T)(({children:J,rootSnapshot:ie})=>{const
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentGroup}
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentId&&!fe.hasCheckout&&br&&ns.log(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentId)return;const _=h.getEarliestTimestamp();_&&_<this._context.initialTimestamp&&
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentId)}function Wd({sessionIdleExpire:u,maxReplayDuration:s,previousSessionId:h},_)
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentId++;s._maybeSaveSession();const H=yield s.eventBuffer.finish();yield xg({replay
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentId:h,eventContext:_,timestamp:I,session:k}){const H=function pv({recordingData:u
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentId:k,eventContext:I,session:s.session,timestamp:_,onError:se=>s.handleException(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentId:u.segmentId||0,sampled:u.sampled,previousSessionId:u.previousSessionId}}funct
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentId?
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentId||cm(u,function hv(u){const s=u.getOptions();return{type:Ns.Custom,timestamp:D
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentPath)return[...$e,dt.segmentPath]}return
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segmentPath}function gi(V){return
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segment_id:h,replay_type:k.sampled},zi=yield function f1(u){return fm.apply(this,argume
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segment_id:h}}),{urls:se,errorIds:fe,traceIds:ze,initialTimestamp:It}=_,Lt=(0,Zt.KU)(),
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments,$e)}}function Rt(V,te,J){const ie=V.segments.slice(0,te);let $e=0;for(;$e<J.le
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments,J)}function Qt(V,te,J,ie){if(V.segments.length>J.length){const $e=V.segments.s
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments,V.children),slicedSegments:J}}function sl(V,te,J,ie){const $e={};for(const dt 
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments,ie)}class Cr{isAbsolute;numberOfDoubleDots;commands;constructor(te,J,ie){if(th
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments,te.segments)||!_n(V.segments,te.segments,J)||V.numberOfChildren!==te.numberOfC
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments,{}):ie.match&&!V.hasChildren()?Rt(V,te,J):ie.match?Qn(V,0,$e):Rt(V,te,J)}funct
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments,{});{const ie=function Fn(V){return gi(V[0])?V[0].outlets:{[vt]:V}}(J),$e={};i
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.concat(te.segments),te.children)}return V}(new qe(V.segments,te))}function Us(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.length&&V.hasChildren())return Qn(V,te,J);const ie=function bi(V,te,J){let ie=
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.length&&dt.hasChildren())for(const[$t,pn]of Object.entries(dt.children))te[$t]
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.length),dt=J.slice(V.segments.length);return!!(Ut(V.segments,$e)&&_n(V.segment
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.length){const dt=Qn(V.children[vt],te,J);return new qe(V.segments,dt.children)
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.length){const dt=new qe(V.segments.slice(0,ie.pathIndex),{});return dt.childre
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.length;){if(ie>=J.length)return dt;const $t=V.segments[$e],pn=J[ie];if(gi(pn))
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.length===J.length){if(!Ut(V.segments,J)||!_n(V.segments,J,ie))return!1;for(con
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.length>0?new qe([],{[vt]:V}):V}function $s(V){const te={};for(const[ie,$e]of O
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.length>0||dt.hasChildren())&&(te[ie]=dt)}return function jo(V){if(1===V.number
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.length}return new mt(ie,!1,$e-dt)}(J,J.segments.length-1+ie,V.numberOfDoubleDo
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.map(te=>Rr(te)).join(
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments.slice(ie.pathIndex),V.children),Qn(dt,0,$e)}return ie.match&&0===$e.length?new
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments:[1,
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments;children;parent=null;constructor(te,J){this.segments=te,this.children=J,Object
+./netlify/bundles/staging--bp-gov-frontend-prod/main.0b52bc33f170eacf.js:segments[te].path,En(J[0]))),$e++;continue}const $t=gi(dt)?dt.outlets[vt]:
+./raw/angular/chunk-BRrDSSZg.js:INTERCOM_HELPER
+./raw/angular/chunk-BRrDSSZg.js:Intercom initialiser called with invalid parameters.
+./raw/angular/chunk-BRrDSSZg.js:Intercom is setup and running on client-side!
+./raw/angular/chunk-BRrDSSZg.js:Intercom token
+./raw/angular/chunk-BRrDSSZg.js:Intercom;n.intercomSettings&&(n.intercomSettings.installation_type=
+./raw/angular/chunk-BRrDSSZg.js:Intercom=nke;Ke.default=Ke.Intercom;var ike=e=>ni(
+./raw/angular/chunk-BRrDSSZg.js:Intercom=void 0;var tke=UJ(),zJ=$J(),ni=(e,...t)=>{if(window.Intercom)return window.Inte
+./raw/angular/chunk-BRrDSSZg.js:IntercomEnabled()),he(()=>this.initStatus.set(nc.INITIALIZING)),Ge(n=>this.fetchIntercom
+./raw/angular/chunk-BRrDSSZg.js:IntercomEnabled(){return!!this.environment.intercomAppId&&[
+./raw/angular/chunk-BRrDSSZg.js:IntercomEvent$),Ve(this.handleLogoutIntercomEvent$),Ve(this.handleScreenWidthChangeEvent
+./raw/angular/chunk-BRrDSSZg.js:IntercomEvent$=new re;logoutIntercomEvent$=new re;setLanguageEvent$=new re;openArticleEv
+./raw/angular/chunk-BRrDSSZg.js:IntercomEvent$=this.initializeIntercomEvent$.pipe(_e(({isGovernmentUser:n})=>!n&&this.is
+./raw/angular/chunk-BRrDSSZg.js:IntercomEvent$=this.logoutIntercomEvent$.pipe(_e(()=>this.isInitialized()),he(()=>{this.
+./raw/angular/chunk-BRrDSSZg.js:IntercomQueryParam$),Ve(this.handleOpenChatEvent$),Ve(this.handleOpenArticleEvent$)}open
+./raw/angular/chunk-BRrDSSZg.js:IntercomQueryParam$=this.activatedRoute.queryParams.pipe(Ge(n=>this.initStatus$.pipe(_e(
+./raw/angular/chunk-BRrDSSZg.js:IntercomToken(){return this.httpClient.get(
+./raw/angular/chunk-BRrDSSZg.js:Segment());let i={};this.peekStartsWith(
+./raw/angular/chunk-BRrDSSZg.js:Segment());this.peekStartsWith(
+./raw/angular/chunk-BRrDSSZg.js:Segment(),n.parseQueryParams(),n.parseFragment())}serialize(t){return
+./raw/angular/chunk-BRrDSSZg.js:Segment(){for(;this.consumeOptional(
+./raw/angular/chunk-BRrDSSZg.js:Segment(){let t=GO(this.remaining);if(t===
+./raw/angular/chunk-BRrDSSZg.js:Segment(t,n,i,i.segments,r,!0,o);return s instanceof Ko?[s]:[]})}processChildren(t,n,i,
+./raw/angular/chunk-BRrDSSZg.js:Segment(u,c,y,v,S?mt:o,!0,h);return new Ko(h,k instanceof Ko?[k]:[])})}getChildConfig(t
+./raw/angular/chunk-BRrDSSZg.js:SegmentAgainstRoute(l._injector??t,n,l,i,r,o,s,a)}catch(c){if(c instanceof Ul||xW(c))co
+./raw/angular/chunk-BRrDSSZg.js:SegmentAgainstRoute(t,n,i,r,o,s){return l(this,null,function*(){if(this.abortSignal.abo
+./raw/angular/chunk-BRrDSSZg.js:SegmentAgainstRoute(t,n,i,r,o,s,a,l$4){return l(this,null,function*(){if(sa(i)!==s&&(s=
+./raw/angular/chunk-BRrDSSZg.js:SegmentAgainstRoute(t,r,i,o,s,l$4);if(this.allowRedirects&&a)return this.expandSegmentA
+./raw/angular/chunk-BRrDSSZg.js:SegmentAgainstRouteUsingRedirect(t,n,i,r,o,s,a){return l(this,null,function*(){let{matc
+./raw/angular/chunk-BRrDSSZg.js:SegmentEnd??!0;return{name:OV,setup(n){if(!jt(n)){de&&J.log(
+./raw/angular/chunk-BRrDSSZg.js:SegmentGroup(t,l,i,r)}),new ln(o,s)}createSegments(t,n,i,r){return n.map(o=>o.path[0]==
+./raw/angular/chunk-BRrDSSZg.js:SegmentGroup(t,n,i,r){let o=this.createSegments(t,n.segments,i,r),s=Object.create(null)
+./raw/angular/chunk-BRrDSSZg.js:SegmentGroup(t,n,i,r,o){return l(this,null,function*(){if(i.segments.length===0&&i.hasC
+./raw/angular/chunk-BRrDSSZg.js:SegmentGroup(t,n.root,i,r),this.createQueryParams(n.queryParams,this.urlTree.queryParam
+./raw/angular/chunk-BRrDSSZg.js:SegmentGroup(t,u,c,l,r);s.push(...d)}let a=OW(s);return wCe(a),a})}processSegment(t,n,i
+./raw/angular/chunk-BRrDSSZg.js:SegmentGroup(this.injector,this.config,t,mt,n),rootSnapshot:n}}catch(i){if(i instanceof
+./raw/angular/chunk-BRrDSSZg.js:SegmentIndex())(
+./raw/angular/chunk-BRrDSSZg.js:SegmentIndex())}}function b2e(e,t){if(e&1&&(I(0,
+./raw/angular/chunk-BRrDSSZg.js:SegmentIndex())}}function g2e(e,t){if(e&1&&(I(0,
+./raw/angular/chunk-BRrDSSZg.js:SegmentIndex())}}function m2e(e,t){if(e&1&&T(0,
+./raw/angular/chunk-BRrDSSZg.js:SegmentSpan
+./raw/angular/chunk-BRrDSSZg.js:SegmentSpan(e){let t=v$();t&&Zs(e,{
+./raw/angular/chunk-BRrDSSZg.js:SegmentSpanEnd
+./raw/angular/chunk-BRrDSSZg.js:SegmentSpanEnded(o=>this._convertSpanToTransaction(o),i);else{let o=this._convertSpanTo
+./raw/angular/chunk-BRrDSSZg.js:Segments(r,h);return this.processSegment(t,i,n,y.concat(p),s,!1,a)})}createSnapshot(t,n
+./raw/angular/chunk-BRrDSSZg.js:Segments(t,n){return l(this,null,function*(){let i=[],r=n.root;for(;;){if(i=i.concat(r.
+./raw/angular/chunk-BRrDSSZg.js:Segments,F.parameters,s),l=yield zE(gCe(n,i,r,t,this.urlSerializer,a,this.abortSignal))
+./raw/angular/chunk-BRrDSSZg.js:Segments:[],remainingSegments:[],parameters:{},positionalParamSegments:{}};function AW(
+./raw/angular/chunk-BRrDSSZg.js:Segments:[],remainingSegments:n,parameters:{},positionalParamSegments:{}};let r=(t.matc
+./raw/angular/chunk-BRrDSSZg.js:Segments:[]}:n.length===0&&_Ce(e,n,i)?{segmentGroup:new ln(e.segments,yCe(e,n,i,e.child
+./raw/angular/chunk-BRrDSSZg.js:Segments:n}:{segmentGroup:new ln(e.segments,e.children),slicedSegments:n}}function yCe(
+./raw/angular/chunk-BRrDSSZg.js:Segments:p,remainingSegments:f}=l,h=this.createSnapshot(t,i,p,d,s),{segmentGroup:y,slic
+./raw/angular/chunk-BRrDSSZg.js:Segments:r.consumed,remainingSegments:n.slice(r.consumed.length),parameters:s,positiona
+./raw/angular/chunk-BRrDSSZg.js:Segments:r.posParams??{}}}function Jz(e,t,n,i,r){return n.length>0&&bCe(e,n,i,r)?{segme
+./raw/angular/chunk-BRrDSSZg.js:Segments:u,positionalParamSegments:d,remainingSegments:p}=RW(n,r,o);if(!l)throw new Ul(
+./raw/angular/chunk-BRrDSSZg.js:Segments:v}=Jz(n,p,f,c,o);if(v.length===0&&y.hasChildren())return new Ko(h,yield this.p
+./raw/angular/chunk-BRrDSSZg.js:intercom-before-login-hint
+./raw/angular/chunk-BRrDSSZg.js:intercom-messenger-frame
+./raw/angular/chunk-BRrDSSZg.js:intercom.help/blockpit/articles/${n}
+./raw/angular/chunk-BRrDSSZg.js:intercom.io
+./raw/angular/chunk-BRrDSSZg.js:intercom.io/widget/
+./raw/angular/chunk-BRrDSSZg.js:intercom/auth
+./raw/angular/chunk-BRrDSSZg.js:intercomAuthEndpoint=
+./raw/angular/chunk-BRrDSSZg.js:intercomAuthEndpoint}
+./raw/angular/chunk-BRrDSSZg.js:intercomHelper=_(GJ,{optional:!0});appId=this.environment.intercomAppId??
+./raw/angular/chunk-BRrDSSZg.js:intercomHelper?.onShow()}),(0,Yi.onHide)(()=>{this.isChatOpen.set(!1),this.intercomHelpe
+./raw/angular/chunk-BRrDSSZg.js:intercomService.openArticleEvent$.next({id:i.toString()}))}static ɵfac=function(i){retu
+./raw/angular/chunk-BRrDSSZg.js:intercomService=_(qJ);helpArticleId=N.required();openArticle(n){let i=this.helpArticleId
+./raw/angular/chunk-BRrDSSZg.js:intercomSettings)):(n.Intercom=Uv,jJ()?aT(t.widgetUrl):(document.addEventListener(
+./raw/angular/chunk-BRrDSSZg.js:intercomSettings)===null||t===void 0?void 0:t.app_id);var o=i.getElementsByTagName(
+./raw/angular/chunk-BRrDSSZg.js:intercomSettings=Object.assign(Object.assign({},i),{api_base:tke.regionAPIs.get(t)}),(0,
+./raw/angular/chunk-BRrDSSZg.js:intercom_npm_loader
+./raw/angular/chunk-BRrDSSZg.js:intercom_user_jwt:l};(0,Yi.default)(c),(0,Yi.boot)(c),(0,Yi.onShow)(()=>{this.isChatOpen
+./raw/angular/chunk-BRrDSSZg.js:segment span reference found on span JSON, cannot compute DSC
+./raw/angular/chunk-BRrDSSZg.js:segment without checkout.
+./raw/angular/chunk-BRrDSSZg.js:segment&&(Lpe(n,a),Ppe(n,t),t.emit(
+./raw/angular/chunk-BRrDSSZg.js:segment&&{[ji]:e.attributes?.[wn]!==
+./raw/angular/chunk-BRrDSSZg.js:segment.id
+./raw/angular/chunk-BRrDSSZg.js:segment.name
+./raw/angular/chunk-BRrDSSZg.js:segment.name.source
+./raw/angular/chunk-BRrDSSZg.js:segment:!0}}function kU(e){return{type:
+./raw/angular/chunk-BRrDSSZg.js:segment:!1,attributes:he$1({},e.data),links:e.links})}function TV(e){let t={},{response
+./raw/angular/chunk-BRrDSSZg.js:segment:Lf(e),attributes:{}}}function pV(e){return
+./raw/angular/chunk-BRrDSSZg.js:segment:Lf(e),status:xC(a),attributes:VM(i,a),links:FM(l)}}return{span_id:t,trace_id:n,
+./raw/angular/chunk-BRrDSSZg.js:segment:Lf(this),status:xC(this._status),attributes:VM(this._attributes,this._status),l
+./raw/angular/chunk-BRrDSSZg.js:segmentGroup,a.index,s.commands):yW(a.segmentGroup,a.index,s.commands);return qO(o,a.se
+./raw/angular/chunk-BRrDSSZg.js:segmentGroup,{children:n,rootSnapshot:i}=yield this.match(t),o=new Ry(
+./raw/angular/chunk-BRrDSSZg.js:segmentGroup;constructor(t){super(),this.segmentGroup=t||null,Object.setPrototypeOf(thi
+./raw/angular/chunk-BRrDSSZg.js:segmentGroup;processChildren;index;constructor(t,n,i){this.segmentGroup=t,this.processC
+./raw/angular/chunk-BRrDSSZg.js:segmentGroup}
+./raw/angular/chunk-BRrDSSZg.js:segmentId!==0||ZR(e,jye(e),!1)}function zye(e){if(!e)return null;try{return e.nodeType=
+./raw/angular/chunk-BRrDSSZg.js:segmentId)return;let i=n.getEarliestTimestamp();i&&i<this._context.initialTimestamp&&(t
+./raw/angular/chunk-BRrDSSZg.js:segmentId++;this._maybeSaveSession();yield a$({replayId:t,recordingData:yield this.even
+./raw/angular/chunk-BRrDSSZg.js:segmentId:e.segmentId||0,sampled:e.sampled,previousSessionId:e.previousSessionId,dirty:
+./raw/angular/chunk-BRrDSSZg.js:segmentId:n,eventContext:i,timestamp:r,session:o}){let a=Gye({recordingData:e,headers:{
+./raw/angular/chunk-BRrDSSZg.js:segmentId:r,eventContext:i,session:this.session,timestamp:n,onError:s=>this.handleExcep
+./raw/angular/chunk-BRrDSSZg.js:segmentId===0&&!a.hasCheckout&&lt&&ct.log(
+./raw/angular/chunk-BRrDSSZg.js:segmentId===0)}function mR({sessionIdleExpire:e,maxReplayDuration:t,previousSessionId:n
+./raw/angular/chunk-BRrDSSZg.js:segmentId===0?
+./raw/angular/chunk-BRrDSSZg.js:segmentNames.clear(),this._context.urls=[]}_updateInitialTimestampFromEventBuffer(){let
+./raw/angular/chunk-BRrDSSZg.js:segmentNames.size<yj&&i.segmentNames.add(n)}function W0e(e){return t=>{e.isEnabled()&&t
+./raw/angular/chunk-BRrDSSZg.js:segmentNames:Array.from(this._context.segmentNames),urls:this._context.urls};return thi
+./raw/angular/chunk-BRrDSSZg.js:segmentNames:new Set,urls:[],initialTimestamp:Date.now(),initialUrl:
+./raw/angular/chunk-BRrDSSZg.js:segmentPath)return[...r,o.segmentPath]}return typeof o!=
+./raw/angular/chunk-BRrDSSZg.js:segmentPath}function My(e){return typeof e==
+./raw/angular/chunk-BRrDSSZg.js:segmentSpan
+./raw/angular/chunk-BRrDSSZg.js:segmentSpan:c}=d;return ye$1(d,[
+./raw/angular/chunk-BRrDSSZg.js:segmentSpan:i})}function Lpe(e,t){Zs(e,TV(t.contexts))}function Zs(e,t){let n=e.attribu
+./raw/angular/chunk-BRrDSSZg.js:segmentSpan:r}=a,o=ye$1(a,[
+./raw/angular/chunk-BRrDSSZg.js:segmentSpan;if(!r){de&&J.warn(
+./raw/angular/chunk-BRrDSSZg.js:segmentSpanCaptureStrategy}var BV=1e3;var Nc=class{constructor(t={}){this._traceId=t.tr
+./raw/angular/chunk-BRrDSSZg.js:segmentWidthPercent(),
+./raw/angular/chunk-BRrDSSZg.js:segmentWidthPercent=ye(()=>100/this.dotCount());blueSegmentIndex=ye(()=>{let n=this.cur
+./raw/angular/chunk-BRrDSSZg.js:segment_id:n}}),{urls:l,errorIds:c,traceIds:u,segmentNames:d,initialTimestamp:p}=i,f=Ae
+./raw/angular/chunk-BRrDSSZg.js:segment_names:d,urls:l,replay_id:t,segment_id:n,replay_type:o.sampled}});if(!k)return l
+./raw/angular/chunk-BRrDSSZg.js:segments()),ue(2),Rl(n.dots())}}var QSt=(()=>{class e{DsComponentDirection=ts;dotCount=
+./raw/angular/chunk-BRrDSSZg.js:segments),r.numberOfChildren===0)return i;if(r.numberOfChildren>1||!r.children[mt])thro
+./raw/angular/chunk-BRrDSSZg.js:segments,i)}var YE=class{isAbsolute;numberOfDoubleDots;commands;constructor(t,n,i){if(t
+./raw/angular/chunk-BRrDSSZg.js:segments,n)}function lW(e,t,n,i){if(e.segments.length>n.length){let r=e.segments.slice(
+./raw/angular/chunk-BRrDSSZg.js:segments,r)}}function L1e(e,t,n){let i=0,r=t,o={match:!1,pathIndex:0,commandIndex:0};fo
+./raw/angular/chunk-BRrDSSZg.js:segments,t.segments)||!HE(e.segments,t.segments,n)||e.numberOfChildren!==t.numberOfChil
+./raw/angular/chunk-BRrDSSZg.js:segments,{}):i.match&&!e.hasChildren()?eN(e,t,n):i.match?xy(e,0,r):eN(e,t,n)}function x
+./raw/angular/chunk-BRrDSSZg.js:segments,{});{let i=N1e(n),r=Object.create(null);if(Object.keys(i).some(o=>o!==mt)&&e.c
+./raw/angular/chunk-BRrDSSZg.js:segments.concat(t.segments),t.children)}return e}function Zc(e){return e instanceof Xo}
+./raw/angular/chunk-BRrDSSZg.js:segments.length),o=n.slice(e.segments.length);return!Gd(e.segments,r)||!HE(e.segments,r
+./raw/angular/chunk-BRrDSSZg.js:segments.length){let o=new ln(e.segments.slice(0,i.pathIndex),{});return o.children[mt]
+./raw/angular/chunk-BRrDSSZg.js:segments.length-1+i,e.numberOfDoubleDots)}function O1e(e,t,n){let i=e,r=t,o=n;for(;o>r;
+./raw/angular/chunk-BRrDSSZg.js:segments.length;){if(i>=n.length)return o;let s=e.segments[r],a=n[i];if(My(a))break;let
+./raw/angular/chunk-BRrDSSZg.js:segments.length===0&&e.hasChildren())return xy(e,t,n);let i=L1e(e,t,n),r=n.slice(i.comm
+./raw/angular/chunk-BRrDSSZg.js:segments.length===0&&o.hasChildren())for(let[s,a]of Object.entries(o.children))GE(t,s,a
+./raw/angular/chunk-BRrDSSZg.js:segments.length===0){let o=xy(e.children[mt],t,n);return new ln(e.segments,o.children)}
+./raw/angular/chunk-BRrDSSZg.js:segments.length===n.length){if(!Gd(e.segments,n)||!HE(e.segments,n,i))return!1;for(let 
+./raw/angular/chunk-BRrDSSZg.js:segments.length>0?new ln([],{[mt]:e}):e}function pW(e){let t=Object.create(null);for(le
+./raw/angular/chunk-BRrDSSZg.js:segments.length>0||o.hasChildren())&&GE(t,i,o)}return M1e(new ln(e.segments,t))}functio
+./raw/angular/chunk-BRrDSSZg.js:segments.length}return new _h(i,!1,r-o)}function N1e(e){return My(e[0])?e[0].outlets:{[
+./raw/angular/chunk-BRrDSSZg.js:segments.map(t=>uW(t)).join(
+./raw/angular/chunk-BRrDSSZg.js:segments.slice(0,t),r=0;for(;r<n.length;){let o=n[r];if(My(o))return new ln(i,P1e(o.out
+./raw/angular/chunk-BRrDSSZg.js:segments.slice(i.pathIndex),e.children),xy(o,0,r)}else return i.match&&r.length===0?new
+./raw/angular/chunk-BRrDSSZg.js:segments;children;parent=null;constructor(t,n){this.segments=t,this.children=n,Object.v
+./raw/angular/chunk-BRrDSSZg.js:segments=ye(()=>Array.from({length:Math.max(this.dotCount()-1,0)}));edgeOffsetPercent=y
+./raw/angular/chunk-BRrDSSZg.js:segments[t];i.push(new Kc(l.path,Zz(n[0]))),r++;continue}let s=My(o)?o.outlets[mt]:
+./raw/angular/chunk-DJtjt4yW.js:intercomId:e.intercomId,children:e.children,duplicateCount:e.duplicateCount});var il=e=>
+./raw/angular/chunk-DJtjt4yW.js:intercomId:e.intercomId,image:{url:e.image,alttag:e.name},addressRegex:e.config.address_
+./raw/angular/chunk-DJtjt4yW.js:intercomId:e.intercomId,isPublic:e.isPublic,isCrawlerEnabled:e.isCrawlerEnabled,isCsvImp
+./raw/angular/chunk-DJtjt4yW.js:intercomId:e.intercomId,isPublic:e.isPublic,isUnderMaintenance:e.isUnderMaintenance,slug
+./raw/angular/chunk-DJtjt4yW.js:intercomId:e.intercomId,priorityRank:e.priorityRank});var Ef=e=>he({},e);var xf=e=>({ove
+./raw/angular/chunk-DJtjt4yW.js:intercomId:e.intercomId,type:XG.TAX_TOOL});var Df=(()=>{class e{competitorResource=_(Ff)
+./raw/angular/chunk-DJtjt4yW.js:intercomService.initializeIntercomEvent$.next({userId:t.userId,email:t.email,name:
+./raw/angular/chunk-DJtjt4yW.js:intercomService.logoutIntercomEvent$.next(),this.userService.clearCache(),this.shopInter
+./raw/angular/chunk-DJtjt4yW.js:intercomService.setLanguageEvent$.next(t)));handleLanguageChangeEvent$=rm$1(this.languag
+./raw/angular/chunk-DJtjt4yW.js:intercomService=_(qJ$1);analyticsService=_(M6t);trackingService=Ake();isCacheReloadingAl
+./raw/angular/chunk-ORXhH1FY.js:Segment.get(Xd(e))??null),Pr$1());constructor(){tc$1(this.state,
+./raw/angular/chunk-ORXhH1FY.js:Segment=If([...this.menuItems,...this.userMenuItems]);state=il(Ef);activeId=this.state.
+./raw/angular/chunk-ORXhH1FY.js:Segments())}}var Dp=50;var cx=(()=>{class t{elementRef=_(qe);segments=N.required();load
+./raw/angular/chunk-ORXhH1FY.js:Segments=ye(()=>{let e=this.containerWidth();return this.segments().map(i=>we$1(he({},i
+./raw/angular/chunk-ORXhH1FY.js:intercomId));ue(),ot(n?4:-1)}}function gu(t,a){if(t&1){let e=Da();He$1(0,
+./raw/angular/chunk-ORXhH1FY.js:intercomId||(e.canIntegrationUploadCSV(nde(6,nu,i.exchange,i.integration))?void 0:i.exch
+./raw/angular/chunk-ORXhH1FY.js:intercomService.isInitialized()&&!e.intercomService.visible()?1:-1),ue(),ot(e.environmen
+./raw/angular/chunk-ORXhH1FY.js:intercomService.isInitialized()&&!e.intercomService.visible()?4:-1),ue(),ot(e.environmen
+./raw/angular/chunk-ORXhH1FY.js:intercomService.isInitialized()&&!this.intercomService.visible());static ɵfac=function(
+./raw/angular/chunk-ORXhH1FY.js:intercomService.openChat()}static ɵfac=function(i){return new(i||t)};static ɵprov=Q({t
+./raw/angular/chunk-ORXhH1FY.js:intercomService=_(qJ);DsIconType=L;DsComponentColor=kt;DsPosition=np;DsComponentSize=Ce;
+./raw/angular/chunk-ORXhH1FY.js:intercomService=_(qJ);environment=_(bt);menuItems=Tf.filter(e=>this.environment.mainMenu
+./raw/angular/chunk-ORXhH1FY.js:intercomService=_(qJ);offsetService=_(dm$1);navigationStateService=_(ji);activeId=this.n
+./raw/angular/chunk-ORXhH1FY.js:segments
+./raw/angular/chunk-ORXhH1FY.js:segments:[1,
+./raw/angular/main-C3DOLOTM.js:intercomAppId:
+./raw/angular/main-C3DOLOTM.js:intercomId);ue(),ot$2(C?8:-1)}},dependencies:[RN$1,gX,Iw,Nlt,SG,Mlt,NSe,HSe,iu,Hn,A1t,Fe
+./raw/angular/main-C3DOLOTM.js:intercomId);ue(),ot$2(n?14:-1)}}var Gr=(()=>{class t{DsComponentCorner=Un;DsComponentSiz
+./raw/angular/main-C3DOLOTM.js:intercomId?.toString())(
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:Segment.get(Xd(e))??null),Mr$1()),ml(this.state,
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:Segment=wg([...this.menuItems,...this.userMenuItems]),this.state=Ia(Ig),this.activeId=t
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:Segments())}}var Dp=50;var cx=(()=>{let o=class o{constructor(){this.elementRef=v(ze),t
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:Segments=be(()=>{let e=this.containerWidth();return this.segments().map(n=>ue(de({},n),
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:intercomId));me(),ft(n?4:-1)}}function hu(i,o){if(i&1){let t=rc$1();je$1(0,
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:intercomId||(t.canIntegrationUploadCSV(Xde(6,nu,e.exchange,e.integration))?void 0:e.exch
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:intercomService.isInitialized()&&!t.intercomService.visible()?1:-1),me(),ft(t.environmen
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:intercomService.isInitialized()&&!t.intercomService.visible()?4:-1),me(),ft(t.environmen
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:intercomService.isInitialized()&&!this.intercomService.visible())}isItemDisabled(e){retu
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:intercomService.openChat()}};o.ɵfac=function(n){return new(n||o)},o.ɵprov=K({token:o,f
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:intercomService=v(cq),this.DsIconType=O,this.DsComponentColor=wt,this.DsPosition=id$1,th
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:intercomService=v(cq),this.environment=v(vt),this.menuItems=kg.filter(e=>this.environmen
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:intercomService=v(cq),this.offsetService=v(eh$1),this.navigationStateService=v(ji),this.
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:segments
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:segments:[1,
+./raw/angular/sub-apps/gov/chunk-BEnN1Kpb.js:segments=L.required(),this.loading=L(!1),this.tooltip=L(null),this.containerWidth=ge(0)
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:INTERCOM_HELPER
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Intercom initialiser called with invalid parameters.
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Intercom is setup and running on client-side!
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Intercom token
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Intercom;n.intercomSettings&&(n.intercomSettings.installation_type=
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Intercom=__e;Ge.default=Ge.Intercom;var C_e=e=>$n(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Intercom=void 0;var b_e=nq(),sq=oq(),$n=(e,...t)=>{if(window.Intercom)return window.Inte
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:IntercomEnabled()),ye(()=>this.initStatus.set(gl.INITIALIZING)),qe(i=>this.fetchIntercom
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:IntercomEnabled(){return!!this.environment.intercomAppId&&[
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:IntercomEvent$),Pe(this.handleLogoutIntercomEvent$),Pe(this.handleScreenWidthChangeEvent
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:IntercomEvent$=new ne,this.logoutIntercomEvent$=new ne,this.setLanguageEvent$=new ne,thi
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:IntercomEvent$=this.initializeIntercomEvent$.pipe(ve(({isGovernmentUser:i})=>!i&&this.is
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:IntercomEvent$=this.logoutIntercomEvent$.pipe(ve(()=>this.isInitialized()),ye(()=>{this.
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:IntercomQueryParam$),Pe(this.handleOpenChatEvent$),Pe(this.handleOpenArticleEvent$)}open
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:IntercomQueryParam$=this.activatedRoute.queryParams.pipe(qe(i=>this.initStatus$.pipe(ve(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:IntercomToken(){return this.httpClient.get(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segment());let i={};this.peekStartsWith(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segment());this.peekStartsWith(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segment(),n.parseQueryParams(),n.parseFragment())}serialize(t){return
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segment(){for(;this.consumeOptional(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segment(){let t=DM(this.remaining);if(t===
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segment(t,n,i,i.segments,r,!0,o);return s instanceof To?[s]:[]})}processChildren(t,n,i,
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segment(u,c,C,E,R?ht:o,!0,g);return new To(g,P instanceof To?[P]:[])})}getChildConfig(t
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentAgainstRoute(l._injector??t,n,l,i,r,o,s,a$6)}catch(c){if(c instanceof ol||RV(c))
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentAgainstRoute(t,n,i,r,o,s){return a(this,null,function*(){if(this.abortSignal.abo
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentAgainstRoute(t,n,i,r,o,s,a$7,l){return a(this,null,function*(){if(As(i)!==s&&(s=
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentAgainstRoute(t,r,i,o,s,l);if(this.allowRedirects&&a$7)return this.expandSegmentA
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentAgainstRouteUsingRedirect(t,n,i,r,o,s,a$8){return a(this,null,function*(){let{ma
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentEnd??!0;return{name:C3,setup(n){if(!Rt(n)){le&&Y.log(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentGroup(t,l,i,r)}),new en(o,s)}createSegments(t,n,i,r){return n.map(o=>o.path[0]==
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentGroup(t,n,i,r){let o=this.createSegments(t,n.segments,i,r),s=Object.create(null)
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentGroup(t,n,i,r,o){return a(this,null,function*(){if(i.segments.length===0&&i.hasC
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentGroup(t,n.root,i,r),this.createQueryParams(n.queryParams,this.urlTree.queryParam
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentGroup(t,u,c,l,r);s.push(...d)}let a=BV(s);return pme(a),a})}processSegment(t,n,i
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentGroup(this.injector,this.config,t,ht,n),rootSnapshot:n}}catch(i){if(i instanceof
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentSpan
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentSpan(e){let t=sP();t&&as(e,{
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentSpanEnd
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:SegmentSpanEnded(o=>this._convertSpanToTransaction(o),i);else{let o=this._convertSpanTo
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segments(r,g);return this.processSegment(t,i,n,C.concat(p),s,!1,a$8)})}createSnapshot(t
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segments(t,n){return a(this,null,function*(){let i=[],r=n.root;for(;;){if(i=i.concat(r.
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segments,G.parameters,s),l=yield wC(rme(n,i,r,t,this.urlSerializer,a,this.abortSignal))
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segments:E}=rV(n,p,f,c,o);if(E.length===0&&C.hasChildren())return new To(g,yield this.p
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segments:[],remainingSegments:[],parameters:{},positionalParamSegments:{}};function PV(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segments:[],remainingSegments:n,parameters:{},positionalParamSegments:{}};let r=(t.matc
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segments:[]}:n.length===0&&lme(e,n,i)?{segmentGroup:new en(e.segments,ome(e,n,i,e.child
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segments:n}:{segmentGroup:new en(e.segments,e.children),slicedSegments:n}}function ome(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segments:p,remainingSegments:f}=l,g=this.createSnapshot(t,i,p,d,s),{segmentGroup:C,slic
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segments:r.consumed,remainingSegments:n.slice(r.consumed.length),parameters:s,positiona
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segments:r.posParams??{}}}function rV(e,t,n,i,r){return n.length>0&&ame(e,n,i,r)?{segme
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:Segments:u,positionalParamSegments:d,remainingSegments:p}=FV(n,r,o);if(!l)throw new ol(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercom-before-login-hint
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercom-messenger-frame
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercom.help/blockpit/articles/${i}
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercom.io
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercom.io/widget/
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercom/auth
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercomAuthEndpoint=
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercomAuthEndpoint}
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercomHelper=v(lq,{optional:!0}),this.appId=this.environment.intercomAppId??
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercomHelper?.onShow()}),(0,Ri.onHide)(()=>{this.isChatOpen.set(!1),this.intercomHelpe
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercomService.openArticleEvent$.next({id:r.toString()}))}};t.ɵfac=function(r){return 
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercomService=v(cq),this.helpArticleId=L.required()}openArticle(i){let r=this.helpArti
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercomSettings)):(n.Intercom=Y0,rq()?yS(t.widgetUrl):(document.addEventListener(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercomSettings)===null||t===void 0?void 0:t.app_id);var o=i.getElementsByTagName(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercomSettings=Object.assign(Object.assign({},i),{api_base:b_e.regionAPIs.get(t)}),(0,
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercom_npm_loader
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:intercom_user_jwt:c};(0,Ri.default)(u),(0,Ri.boot)(u),(0,Ri.onShow)(()=>{this.isChatOpen
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment span reference found on span JSON, cannot compute DSC
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment without checkout.
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment&&(gZ(n,a),yZ(n,t),t.emit(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment&&{[vi]:e.attributes?.[ln]!==
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment.id
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment.name
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment.name.source
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment:!0}}function y9(e){return{type:
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment:!1,attributes:de$1({},e.data),links:e.links})}function h3(e){let t={},{response
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment:Rd(e),attributes:{}}}function e3(e){return
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment:Rd(e),status:zy(a),attributes:Dw(i,a),links:Tw(l)}}return{span_id:t,trace_id:n,
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment:Rd(this),status:zy(this._status),attributes:Dw(this._attributes,this._status),l
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentGroup,a.index,s.commands):EV(a.segmentGroup,a.index,s.commands);return kM(o,a.se
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentGroup,{children:n,rootSnapshot:i}=yield this.match(t),o=new a0(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentGroup;constructor(t){super(),this.segmentGroup=t||null,Object.setPrototypeOf(thi
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentGroup;processChildren;index;constructor(t,n,i){this.segmentGroup=t,this.processC
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentGroup}
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentId!==0||UT(e,Sie(e),!1)}function Iie(e){if(!e)return null;try{return e.nodeType=
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentId)return;let i=n.getEarliestTimestamp();i&&i<this._context.initialTimestamp&&(t
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentId++;this._maybeSaveSession();yield KL({replayId:t,recordingData:yield this.even
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentId:e.segmentId||0,sampled:e.sampled,previousSessionId:e.previousSessionId,dirty:
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentId:n,eventContext:i,timestamp:r,session:o}){let a=xie({recordingData:e,headers:{
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentId:r,eventContext:i,session:this.session,timestamp:n,onError:s=>this.handleExcep
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentId===0&&!a.hasCheckout&&tt&&nt.log(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentId===0)}function rT({sessionIdleExpire:e,maxReplayDuration:t,previousSessionId:n
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentId===0?
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentNames.clear(),this._context.urls=[]}_updateInitialTimestampFromEventBuffer(){let
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentNames.size<oL&&i.segmentNames.add(n)}function Tne(e){return t=>{e.isEnabled()&&$
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentNames:Array.from(this._context.segmentNames),urls:this._context.urls};return thi
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentNames:new Set,urls:[],initialTimestamp:Date.now(),initialUrl:
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentPath)return[...r,o.segmentPath]}return typeof o!=
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentPath}function o0(e){return typeof e==
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentSpan
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentSpan:c}=d;return fe(d,[
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentSpan:i})}function gZ(e,t){as(e,h3(t.contexts))}function as(e,t){let n=e.attribut
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentSpan:r}=a,o=fe(a,[
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentSpan;if(!r){le&&Y.warn(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segmentSpanCaptureStrategy}var T3=1e3;var Il=class{constructor(t={}){this._traceId=t.tr
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment_id:n}}),{urls:l,errorIds:c,traceIds:u,segmentNames:d,initialTimestamp:p}=i,f=Te
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segment_names:d,urls:l,replay_id:t,segment_id:n,replay_type:o.sampled}});if(!P)return t
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments),r.numberOfChildren===0)return i;if(r.numberOfChildren>1||!r.children[ht])thro
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments,i)}var DC=class{isAbsolute;numberOfDoubleDots;commands;constructor(t,n,i){if(t
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments,n)}function fV(e,t,n,i){if(e.segments.length>n.length){let r=e.segments.slice(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments,r)}}function She(e,t,n){let i=0,r=t,o={match:!1,pathIndex:0,commandIndex:0};fo
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments,t.segments)||!CC(e.segments,t.segments,n)||e.numberOfChildren!==t.numberOfChil
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments,{}):i.match&&!e.hasChildren()?PM(e,t,n):i.match?n0(e,0,r):PM(e,t,n)}function n
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments,{});{let i=Ehe(n),r=Object.create(null);if(Object.keys(i).some(o=>o!==ht)&&e.c
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.concat(t.segments),t.children)}return e}function lc(e){return e instanceof xo}
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.length),o=n.slice(e.segments.length);return!Yu(e.segments,r)||!CC(e.segments,r
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.length){let o=new en(e.segments.slice(0,i.pathIndex),{});return o.children[ht]
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.length-1+i,e.numberOfDoubleDots)}function Che(e,t,n){let i=e,r=t,o=n;for(;o>r;
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.length;){if(i>=n.length)return o;let s=e.segments[r],a=n[i];if(o0(a))break;let
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.length===0&&e.hasChildren())return n0(e,t,n);let i=She(e,t,n),r=n.slice(i.comm
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.length===0&&o.hasChildren())for(let[s,a]of Object.entries(o.children))TC(t,s,a
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.length===0){let o=n0(e.children[ht],t,n);return new en(e.segments,o.children)}
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.length===n.length){if(!Yu(e.segments,n)||!CC(e.segments,n,i))return!1;for(let 
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.length>0?new en([],{[ht]:e}):e}function yV(e){let t=Object.create(null);for(le
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.length>0||o.hasChildren())&&TC(t,i,o)}return vhe(new en(e.segments,t))}functio
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.length}return new ff(i,!1,r-o)}function Ehe(e){return o0(e[0])?e[0].outlets:{[
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.map(t=>mV(t)).join(
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.slice(0,t),r=0;for(;r<n.length;){let o=n[r];if(o0(o))return new en(i,whe(o.out
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments.slice(i.pathIndex),e.children),n0(o,0,r)}else return i.match&&r.length===0?new
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments;children;parent=null;constructor(t,n){this.segments=t,this.children=n,Object.v
+./raw/angular/sub-apps/gov/chunk-BRtpo6yl.js:segments[t];i.push(new ac(l.path,nV(n[0]))),r++;continue}let s=o0(o)?o.outlets[ht]:
+./raw/angular/sub-apps/gov/chunk-__yFYnDK.js:intercomId:t.intercomId,children:t.children,duplicateCount:t.duplicateCount});var Hc=t=>
+./raw/angular/sub-apps/gov/chunk-__yFYnDK.js:intercomId:t.intercomId,image:{url:t.image,alttag:t.name},addressRegex:t.config.address_
+./raw/angular/sub-apps/gov/chunk-__yFYnDK.js:intercomId:t.intercomId,isPublic:t.isPublic,isCrawlerEnabled:t.isCrawlerEnabled,isCsvImp
+./raw/angular/sub-apps/gov/chunk-__yFYnDK.js:intercomId:t.intercomId,isPublic:t.isPublic,isUnderMaintenance:t.isUnderMaintenance,slug
+./raw/angular/sub-apps/gov/chunk-__yFYnDK.js:intercomId:t.intercomId,priorityRank:t.priorityRank});var rv=t=>de({},t);var nv=t=>({ove
+./raw/angular/sub-apps/gov/chunk-__yFYnDK.js:intercomId:t.intercomId,type:DW.TAX_TOOL});var Sv=(()=>{let r=class r{constructor(){this
+./raw/angular/sub-apps/gov/chunk-__yFYnDK.js:intercomService.initializeIntercomEvent$.next({userId:i.userId,email:i.email,name:
+./raw/angular/sub-apps/gov/chunk-__yFYnDK.js:intercomService.logoutIntercomEvent$.next(),this.userService.clearCache(),this.shopInter
+./raw/angular/sub-apps/gov/chunk-__yFYnDK.js:intercomService.setLanguageEvent$.next(i))),this.handleLanguageChangeEvent$=Gf$1(this.la
+./raw/angular/sub-apps/gov/chunk-__yFYnDK.js:intercomService=v(cq),this.analyticsService=v(Gkt),this.trackingService=K_e(),this.isCac
+./raw/angular/sub-apps/gov/main-6I5V2PU2.js:intercomService.initializeIntercomEvent$.next({userId:e.userId,email:e.email,name:
+./raw/angular/sub-apps/gov/main-6I5V2PU2.js:intercomService.initializeIntercomEvent$.next({userId:t.userId,email:t.email,name:
+./raw/angular/sub-apps/gov/main-6I5V2PU2.js:intercomService.logoutIntercomEvent$.next(),this.userService.clearCache()})),Pe$2(this.h
+./raw/angular/sub-apps/gov/main-6I5V2PU2.js:intercomService.setLanguageEvent$.next(e))),this.handleLanguageChangeEvent$=Gf(this.lang
+./raw/angular/sub-apps/gov/main-6I5V2PU2.js:intercomService.setLanguageEvent$.next(t))),this.handleLanguageChangeEvent$=Gf(this.lang
+./raw/angular/sub-apps/gov/main-6I5V2PU2.js:intercomService=v(cq),this.isCacheReloadingAllowed=sO(),this.isUserLoggedIn$=this.userSe

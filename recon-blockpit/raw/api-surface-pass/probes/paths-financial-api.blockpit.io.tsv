@@ -1,0 +1,44 @@
+/	404	0		Kestrel	-	-
+/api	404	0		Kestrel	-	-
+/api/v1	404	0		Kestrel	-	-
+/api/v2	404	0		Kestrel	-	-
+/api/v3	404	0		Kestrel	-	-
+/v1	404	0		Kestrel	-	-
+/v2	404	0		Kestrel	-	-
+/api/v1/health	404	0		Kestrel	-	-
+/health	404	0		Kestrel	-	-
+/healthz	404	0		Kestrel	-	-
+/readyz	404	0		Kestrel	-	-
+/status	404	0		Kestrel	-	-
+/ping	404	0		Kestrel	-	-
+/info	404	0		Kestrel	-	-
+/actuator	404	0		Kestrel	-	-
+/actuator/health	404	0		Kestrel	-	-
+/actuator/info	404	0		Kestrel	-	-
+/actuator/env	404	0		Kestrel	-	-
+/actuator/mappings	404	0		Kestrel	-	-
+/swagger	200	2471	text/html; charset=utf-8	Kestrel	-	-
+/swagger-ui	404	0		Kestrel	-	-
+/swagger-ui.html	404	0	text/html	Kestrel	-	-
+/swagger/index.html	200	2471	text/html; charset=utf-8	Kestrel	-	-
+/api-docs	404	0		Kestrel	-	-
+/openapi.json	404	0	application/json	Kestrel	-	-
+/openapi.yaml	404	0		Kestrel	-	-
+/v3/api-docs	404	0		Kestrel	-	-
+/v2/api-docs	404	0		Kestrel	-	-
+/docs	404	0		Kestrel	-	-
+/redoc	404	0		Kestrel	-	-
+/graphql	404	0		Kestrel	-	-
+/metrics	404	0		Kestrel	-	-
+/debug	404	0		Kestrel	-	-
+/debug/pprof	404	0		Kestrel	-	-
+/debug/vars	404	0		Kestrel	-	-
+/env	404	0		Kestrel	-	-
+/.well-known/openid-configuration	404	0		Kestrel	-	-
+/.well-known/oauth-authorization-server	404	0		Kestrel	-	-
+/.well-known/jwks.json	404	0	application/json	Kestrel	-	-
+/oauth/.well-known/openid-configuration	404	0		Kestrel	-	-
+/robots.txt	404	0	text/plain	Kestrel	-	-
+/sitemap.xml	404	0	application/xml	Kestrel	-	-
+/.git/config	404	0		Kestrel	-	-
+/.env	404	0		Kestrel	-	-

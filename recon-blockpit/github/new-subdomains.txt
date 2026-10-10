@@ -1,0 +1,5 @@
+# Subdomains referenced in public GitHub code snippets but NOT in subdomains.txt.
+# (All *.blockpit.io hosts found in code were already in subdomains.txt; nothing new there.)
+# Related Blockpit-controlled hosts outside blockpit.io, discovered via code / docs:
+api-docs.cryptotax.io
+cryptotax.io

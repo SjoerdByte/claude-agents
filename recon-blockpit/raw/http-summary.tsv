@@ -1,0 +1,43 @@
+community.blockpit.io	403	https://community.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef794bb2da52-IAD
+sentry.blockpit.io	403	https://sentry.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef79cac5ec46-IAD
+exchange-monitoring.blockpit.io	403	https://exchange-monitoring.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef79c885d6c9-IAD
+blog.blockpit.io	403	https://blog.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef7a5b60d6c7-IAD
+powerhouse.blockpit.io	401	https://powerhouse.blockpit.io/	text/html	Netlify		
+staging.blockpit.io	401	https://staging.blockpit.io/	text/html	Netlify		
+cn.blockpit.io	403	https://cn.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef7f2bc872e1-IAD
+blockpit.io	200	https://www.blockpit.io/	text/html; charset=utf-8	cloudflare		a47cef8239dc6665-IAD
+app.blockpit.io	200	https://app.blockpit.io/	text/html; charset=UTF-8	Netlify		
+helios.blockpit.io	403	https://helios.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef863b83c943-IAD
+financial-api.blockpit.io	404	https://financial-api.blockpit.io/		Kestrel		
+help.blockpit.io	403	https://help.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef897e6e31bb-IAD
+cta-staging.blockpit.io	401	https://cta-staging.blockpit.io/	text/html	Netlify		
+hub.blockpit.io	403	https://hub.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef8d4e0cad87-IAD
+scim.blockpit.io	403	https://scim.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef8e79d372e7-IAD
+bi.blockpit.io	403	https://bi.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef8eba4ed6c7-IAD
+cdn.blockpit.io	403	https://cdn.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef912f4d9de2-IAD
+exchange.blockpit.io	403	https://exchange.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef953c69f508-IAD
+gov-test.blockpit.io	401	https://gov-test.blockpit.io/	text/html	Netlify		
+gov-api.blockpit.io	403	https://gov-api.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef95de021752-IAD
+www.blockpit.io	200	https://www.blockpit.io/	text/html; charset=utf-8	cloudflare		a47cef9768962539-IAD
+sonar.blockpit.io	403	https://sonar.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef99bfc1c978-IAD
+gate.blockpit.io	403	https://gate.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cef9af958ae14-IAD
+zendesk4.blockpit.io	403	https://zendesk4.blockpit.io/	text/plain; charset=UTF-8	cloudflare		a47cef9e4a231734-IAD
+gov.blockpit.io	200	https://gov.blockpit.io/	text/html; charset=UTF-8	Netlify		
+cta-api.blockpit.io	403	https://cta-api.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cefa39a11acc6-IAD
+test.blockpit.io	401	https://test.blockpit.io/	text/html	Netlify		
+blockchain-api.blockpit.io	404	https://blockchain-api.blockpit.io/		Kestrel		
+helios-test.blockpit.io	403	https://helios-test.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cefa8cffaadf1-IAD
+cta-test.blockpit.io	401	https://cta-test.blockpit.io/	text/html	Netlify		
+powerhouse-test.blockpit.io	401	https://powerhouse-test.blockpit.io/	text/html	Netlify		
+cn1-test.blockpit.io	403	https://cn1-test.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cefafdc7526b4-IAD
+gov-staging.blockpit.io	401	https://gov-staging.blockpit.io/	text/html	Netlify		
+link.blockpit.io	200	https://www.fun.com/	text/html; charset=utf-8			
+cn1.blockpit.io	403	https://cn1.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cefb538ef7ad2-IAD
+cdn-test.blockpit.io	403	https://cdn-test.blockpit.io/	application/xml	AmazonS3	1.1 3e36dd267cb267a1625f6ecf58fe0bd2.cloudfront.net (CloudFront)	
+cta.blockpit.io	200	https://cta.blockpit.io/	text/html; charset=UTF-8	Netlify		
+cn-test.blockpit.io	403	https://cn-test.blockpit.io/	text/html; charset=UTF-8	cloudflare		a47cefb8bd13e762-IAD
+cryptotax.io	200	https://cryptotax.io/	text/html	cloudflare		a47cefbee98a147c-IAD
+api-docs.cryptotax.io	200	https://api-docs.cryptotax.io/	text/html	nginx/1.18.0 (Ubuntu)		
+pm-bounces.blockpit.io	000	https://pm-bounces.blockpit.io/				
+pm-bounces.community.blockpit.io	000	https://pm-bounces.community.blockpit.io/				
+pm-bounces.updates.blockpit.io	000	https://pm-bounces.updates.blockpit.io/				

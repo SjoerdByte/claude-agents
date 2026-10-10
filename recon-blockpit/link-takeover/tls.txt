@@ -1,0 +1,31 @@
+=== link.blockpit.io TLS ===
+issuer=O = Anthropic, CN = Egress Gateway SDS Issuing CA (production)
+subject=CN = *.blockpit.io
+X509v3 Subject Alternative Name: 
+    DNS:link.blockpit.io
+notBefore=Oct  9 11:24:27 2026 GMT
+notAfter=Nov  8 11:25:27 2026 GMT
+
+=== custom-domain.linkdrip.io TLS (direct) ===
+issuer=O = Anthropic, CN = Egress Gateway SDS Issuing CA (production)
+subject=CN = *.linkdrip.io
+X509v3 Subject Alternative Name: 
+    DNS:custom-domain.linkdrip.io
+notBefore=Oct  9 11:24:28 2026 GMT
+notAfter=Nov  8 11:25:28 2026 GMT
+
+=== linkdrip.io TLS ===
+issuer=O = Anthropic, CN = Egress Gateway SDS Issuing CA (production)
+subject=CN = linkdrip.io
+X509v3 Subject Alternative Name: 
+    DNS:linkdrip.io
+notBefore=Oct  9 11:24:28 2026 GMT
+notAfter=Nov  8 11:25:28 2026 GMT
+
+=== app.linkdrip.io TLS ===
+issuer=O = Anthropic, CN = Egress Gateway SDS Issuing CA (production)
+subject=CN = *.linkdrip.io
+X509v3 Subject Alternative Name: 
+    DNS:app.linkdrip.io
+notBefore=Oct  9 11:24:28 2026 GMT
+notAfter=Nov  8 11:25:28 2026 GMT

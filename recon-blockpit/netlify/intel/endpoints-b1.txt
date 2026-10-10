@@ -1,0 +1,7 @@
+"/login"
+"/portfolio"
+"/register"
+"/reports"
+"/transactions"
+"/user/receipts"
+"/user/settings"

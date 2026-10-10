@@ -1,0 +1,14 @@
+./index.json:blockchain-api.blockpit.io
+./index.json:blockchain-api.blockpit.io + financial-api.blockpit.io serve identical 1.1MB swagger spec UNAUTH at /swagger/v1/swagger.json. 641 endpoints across 66 chains, apiKey query-string auth, no RateLimit headers, Access-Control-Allow
+./index.json:blockchain-api.blockpit.io and financial-api.blockpit.io (Server: Kestrel header, Swashbuckle swagger)
+./index.json:blockchain-api.blockpit.io/swagger/v1/swagger.json
+./index.json:financial-api.blockpit.io
+./index.json:financial-api.blockpit.io/swagger/v1/swagger.json
+./raw/api-surface-pass/blockchain-api.blockpit.io-swagger-v1-swagger.json:blockchain-api.blockpit.io
+./raw/api-surface-pass/crtsh-blockpit.json:blockchain-api.blockpit.io
+./raw/api-surface-pass/crtsh-blockpit.json:financial-api.blockpit.io
+./raw/api-surface-pass/financial-api.blockpit.io-swagger-v1-swagger.json:financial-api.blockpit.io
+./raw/api-unauth/blockchain-api_swagger.json:blockchain-api.blockpit.io
+./raw/api-unauth/financial-api_swagger.json:financial-api.blockpit.io
+./raw/swagger/blockchain-api.json:blockchain-api.blockpit.io
+./raw/swagger/financial-api.json:financial-api.blockpit.io

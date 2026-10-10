@@ -1,0 +1,11 @@
+/v0/api
+/v1/clients
+/v1/clients/invite
+/v1/integrations
+/v1/maintenance
+/v1/members
+/v2/auth/login
+/v2/auth/password/reset
+/v2/auth/password/reset/request
+/v2/auth/register
+/v2/integrations

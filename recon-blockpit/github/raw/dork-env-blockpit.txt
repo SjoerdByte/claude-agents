@@ -1,0 +1,39 @@
+# Dorks run (via mcp__github__search_code), zero hits unless noted:
+#
+# "blockpit" filename:.env          -> 0
+# "blockpit" filename:config.yml    -> 0
+# "blockpit" filename:config.json   -> 0  (not run; superseded by env scan)
+# "blockpit" filename:docker-compose.yml -> 0
+# "blockpit" filename:firebase.json -> 0
+# "blockpit" filename:serviceAccount.json -> 0
+# "blockpit" filename:.npmrc        -> 0
+# "blockpit" filename:keystore      -> 0
+# "blockpit" filename:application.yml OR filename:application.properties -> 0
+# "blockpit" filename:environment.prod.ts -> 0
+# "blockpit" filename:environment.ts -> 0  (hits are unrelated projects)
+# "blockpit" id_rsa OR "BEGIN RSA"  -> 0
+# "blockpit" aws_access OR aws_secret OR AKIA -> 0
+# "blockpit" JWT_SECRET OR STRIPE_  -> 0
+# "blockpit" DATABASE_URL OR mongodb+srv OR "postgres://" OR "mysql://" -> 0
+# "blockpit" SENTRY_DSN             -> 0
+# "blockpit" FIREBASE_API_KEY OR firebase.initializeApp -> 0
+# "blockpit" supabase OR "supabase.co" -> 0
+# "blockpit" graphql OR schema.graphql -> 0
+# "blockpit" openapi OR swagger.json -> 0
+# "blockpit.io" extension:env OR extension:yml OR extension:yaml -> 0
+# "api.blockpit.io" (code)          -> 0
+# bit-api / kytapi / cta-api / blockchain-api / financial-api / gov-api .blockpit.io -> 0
+# helios / scim / agent / sentry / jenkins .blockpit.io -> 0
+# elk-taxengine / exchange-monitoring / bp-aml-utilities / bi / data / mautic .blockpit.io -> 0
+#
+# Commit-author search:
+# author-email:@blockpit.io   -> 0
+# author-email:@blockpit.com  -> 0
+# committer-email:@blockpit.io -> 0
+# author-email:@cryptotax.io  -> 0
+#
+# Only hits are third-party integrations and marketing-link references.
+# One useful probe: "blockpit" password | bearer | apikey -> 100+ hits, all 3rd party.
+# Noteworthy single file: iaserveraims/Astryum-hackathon/backend/.env.example
+#   references "Blockpit CryptoTax API (api-docs.cryptotax.io) - JWT bearer",
+#   contact "sales@blockpit.io". No key value present.

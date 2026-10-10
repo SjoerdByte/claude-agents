@@ -1,0 +1,14 @@
+login,name,role,email,source
+pascalc23,Pascal Costa,Backend Developer - Exchange Integrations Team,mail@pascalcosta.com,github bio + public commits (github.com/pascalc23)
+peter.schoellauf@blockpit.io,Peter Schoellauf,Validator operations (DAIC Capital),peter.schoellauf@blockpit.io,co-author in monad-developers/validator-info and Layr-Labs/eigendata commits
+rgoeritz,Robert Goeritzer,Former CryptoTax API dev (Villach AT),robert.goeritzer@gmail.com,cryptotax-team/cryptotax-api-demo commits (2019-2020)
+TonnTamerlan,Oleksii Kopylov / Alexey Kopylov,Former CryptoTax contractor (UA),tonn.tamerlan@gmail.com,cryptotax-team/cryptotax-api-demo commits (2020)
+pushkin-82,Sergej Putilin,Former CryptoTax contractor,s.putilin.82@gmail.com,cryptotax-team/cryptotax-api-demo commit (2020-12)
+robotdude17,H Gruschinski,Former early CryptoTax parser author,hgruschinski@gmail.com,cryptotax-team/parser initial commits (2018)
+Florian Wimmer,Florian Wimmer,CEO & Co-Founder,,blockpit.io/about-blockpit (no github account found)
+Gerd Karlhuber,Gerd Karlhuber,CFO / COO & Co-Founder,,blockpit.io/about-blockpit (no github account found)
+Magnus Berchtold,Magnus Berchtold,CPO & Co-Founder,,blockpit.io/about-blockpit (no github account found)
+Tom Buchsteiner,Tom Buchsteiner,CTO & Co-Founder,,blockpit.io/about-blockpit (no github account found)
+lukasfrank,Lukas Frank (unverified),Possible former Blockpit dev,,Docker Hub pusher on blockpit/node and blockpit/web (2021-2022) - identity match to github.com/lukasfrank (Karlsruhe/SAP) not confirmed
+squeezedlight,SqueezedLight (unverified),Possible former Blockpit dev,,Docker Hub pusher on blockpit/web:php-74-dev (2021)
+florianweinrich,Florian Weinrich (unverified),Possible early Blockpit dev,,Docker Hub pusher on oldest blockpit images (2019) - no github account matches
