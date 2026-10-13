@@ -1,0 +1,11 @@
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 403 Forbidden
+x-amz-bucket-region: eu-west-1
+Server: AmazonS3
+x-amz-request-id: H724A4REWEHK9M60
+x-amz-id-2: 05CCmUTO2nbgTgNSlFZGEUsdYuWzq7T1rceRpHvY/NwAu4V3X1UrzxTz2nHuZMjLhIFjnEDWCEYEZ7c8c5rr6zXBMIPP5S7q
+Content-Type: application/xml
+Transfer-Encoding: chunked
+Date: Tue, 13 Oct 2026 09:04:17 GMT
+

@@ -1,0 +1,11 @@
+HTTP/1.1 200 Connection Established
+
+HTTP/2 404 
+content-type: application/xml
+date: Tue, 13 Oct 2026 09:03:27 GMT
+server: AmazonS3
+x-cache: Error from cloudfront
+via: 1.1 cd1a98ac42a21b663c8fc8cd6f37232e.cloudfront.net (CloudFront)
+x-amz-cf-pop: JFK50-P7
+x-amz-cf-id: ca6n_tQZvON-HCmcd3xzP4jh_rVRICdfNBJPw9Y-PI1ccsTzco_Tew==
+

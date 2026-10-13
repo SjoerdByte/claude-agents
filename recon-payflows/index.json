@@ -10,41 +10,37 @@
     "Leaked secrets on public GitHub (AKIA, DATABASE_URL, firebase, supabase, .env + payflows) - 0 Payflows-SAS-scoped hits",
     "Commits authored or committed from @payflows.io on public repos - 0 (search_commits)",
     "Any new subdomains discoverable via GitHub - 0; all URLs in the only public reference (api-evangelist/payflows) are already in subdomains.txt",
-    "Public GitHub Actions workflows exposing OIDC trust / cloud account IDs - no public repos, cannot inspect"
+    "Public GitHub Actions workflows exposing OIDC trust / cloud account IDs - no public repos, cannot inspect",
+    "pypi.payflows.io S3 bucket enumeration - origin bucket is 'payflows-pypi' in eu-west-1; ListObjectsV2/policy/acl/versioning all 403 AccessDenied, no s3-website config, no public index.html / robots.txt / simple/ / packages/ or any guessed package path (50+ probes, all NoSuchKey). Bucket name is leaked by standard S3 PermanentRedirect XML which is expected CloudFront+S3 behavior and not reportable on its own. Full probe log in raw/pypi/NOTES.md."
   ],
   "open_threads": [
     {
       "priority": 1,
-      "name": "pypi.payflows.io S3 bucket enumeration",
-      "why": "static PyPI index behind CloudFront->S3. 404s expose x-amz-cf-id / RequestId. If origin bucket allows ListObjectsV2, internal package names and versions are enumerable and map directly to the private service inventory, often including creds in setup.py / pyproject.toml."
-    },
-    {
-      "priority": 2,
       "name": "luigi-public-ws.payflows.io / luigi-api-public-ws.payflows.io WebSocket surface",
       "why": "both return 426 Upgrade Required. The '-public-' naming signals these are meant to be reachable without VPN. WS endpoints routinely skip the authorization enforced on HTTP; probe first few envelopes for auth model, message schema, object-ID exposure."
     },
     {
-      "priority": 3,
+      "priority": 2,
       "name": "scim.payflows.io SCIM 2.0 enumeration",
       "why": "SCIM endpoint returns 403 application/json. If GET /scim/v2/Users accepts a weak token or allows filter=userName sw, employee / customer-admin PII enumeration follows directly. High-severity PII and a feed for cross-tenant IDOR."
     },
     {
-      "priority": 4,
+      "priority": 3,
       "name": "payments-prod-docker-lambda.payflows.io / luigi-prod-docker-lambda.payflows.io",
       "why": "Lambda container-image hosts (one 403, one 404). Confirm whether a Lambda Function URL / API Gateway sits in front; look for alternate verbs, trailing slash variants, .well-known, and common handler paths."
     },
     {
-      "priority": 5,
+      "priority": 4,
       "name": "Unleash + ff.payflows.io feature-flag surface",
       "why": "unleash.payflows.io is 200 HTML (admin UI). ff.payflows.io is 200 HTML (likely proxy). Check for default credentials, unauthenticated /api/client/features (returns every flag + segment definition, which leaks hidden endpoints and new product codenames)."
     },
     {
-      "priority": 6,
+      "priority": 5,
       "name": "storybook.payflows.io - Basic auth gated design system",
       "why": "401 Basic Realm='Login'. Low-severity but if credential-stuff succeeds, Storybook typically embeds every private component's props, mocked API responses, and sometimes mocked tokens. Useful recon feed for the Vue front-end."
     },
     {
-      "priority": 7,
+      "priority": 6,
       "name": "CDN-origin IP discovery for api.payflows.io / app.payflows.io",
       "why": "front-end sits behind CloudFront. Pull passive DNS / CT history for direct ALB / EC2 IPs. Direct origin access bypasses WAF per Claude.md attack pattern."
     }
@@ -52,6 +48,6 @@
   "pending_decisions": [
     "whether to request an authenticated test account before the auth surface pass"
   ],
-  "hours_spent": 1.5,
+  "hours_spent": 2.0,
   "findings": []
 }
