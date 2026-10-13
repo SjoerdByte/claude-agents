@@ -1,0 +1,26 @@
+[
+	{
+		"id": "13072813594",
+		"tbs_sha256": "e0307bbe91924a45c1dd1511a947efe2fa57602443817fab66f895cdb64bfbb9",
+		"cert_sha256": "714496308710fddec5b230f9e6265ea9403445d8dd92678f703054ef59194cf5",
+		"dns_names": [
+			"substackcdn.com"
+		],
+		"pubkey_sha256": "0d84abd36b56b6d9e555dce0f2232d5f8c6705a9471c6030a64510e09d7722bb",
+		"not_before": "2025-12-14T00:00:00Z",
+		"not_after": "2027-01-12T23:59:59Z",
+		"revoked": false
+	},
+	{
+		"id": "16009724884",
+		"tbs_sha256": "7ef301889ecf6bc2d7eab11546af3a74e2cf172f7ac707e765aab7c8229a9f35",
+		"cert_sha256": "be69d340faae9a36fb31f163b2b2d1e0766ed83d009ce6db86baf0091efb3eea",
+		"dns_names": [
+			"*.substackcdn.com"
+		],
+		"pubkey_sha256": "c5beb30f49ec37af2ac5677d33a58920a88aba1221d36bf8aede20a5d7c7ad51",
+		"not_before": "2026-07-22T00:00:00Z",
+		"not_after": "2027-02-04T23:59:59Z",
+		"revoked": false
+	}
+]

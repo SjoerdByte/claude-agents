@@ -1,0 +1,2374 @@
+{
+  "total_unique_subdomains": 751,
+  "canonical_subdomains": [
+    "0000000067.substack.com",
+    "00001.substack.com",
+    "0000i.substack.com",
+    "000941613.substack.com",
+    "000alimran.substack.com",
+    "000go8com.substack.com",
+    "000mage.substack.com",
+    "002a.substack.com",
+    "005d.substack.com",
+    "0073.substack.com",
+    "007pandas.substack.com",
+    "007venturepartners.substack.com",
+    "00browsing.substack.com",
+    "00fuzz.substack.com",
+    "00meai.substack.com",
+    "00sacousticcoversplaylistalbum.substack.com",
+    "010000.substack.com",
+    "01001011.substack.com",
+    "0100conferences.substack.com",
+    "01134muxinli.substack.com",
+    "0123.substack.com",
+    "013517.substack.com",
+    "0149.substack.com",
+    "01789573715.substack.com",
+    "01artistdamasks.substack.com",
+    "01batteryleft.substack.com",
+    "01bayarearapegirl.substack.com",
+    "01core.substack.com",
+    "01mia18.substack.com",
+    "01research.substack.com",
+    "01researcher.substack.com",
+    "021021.substack.com",
+    "0210larson.substack.com",
+    "021donecom.substack.com",
+    "021events.substack.com",
+    "021lab.substack.com",
+    "021newsletter.substack.com",
+    "022out022.substack.com",
+    "022sexy.substack.com",
+    "0235.substack.com",
+    "02geek.substack.com",
+    "02latentcubits.substack.com",
+    "02ph3u5.substack.com",
+    "02tenon.substack.com",
+    "0331machinegunner.substack.com",
+    "0346.substack.com",
+    "0347239481207.substack.com",
+    "035a.substack.com",
+    "03octavesplating.substack.com",
+    "0451games.substack.com",
+    "34ai.substack.com",
+    "4thalesh.substack.com",
+    "4tiredfeet.substack.com",
+    "aaronparnas.substack.com",
+    "aboutpm.substack.com",
+    "abouttheadventure9.substack.com",
+    "aboveaverageintelligence.substack.com",
+    "adamodigital.substack.com",
+    "adelas.substack.com",
+    "admin.substack.com",
+    "agilemaui.substack.com",
+    "aiandgames.substack.com",
+    "alationweekly.substack.com",
+    "alexanderconcepcion.substack.com",
+    "alexeyondata.substack.com",
+    "alexkiki.substack.com",
+    "aliciakristina.substack.com",
+    "alishaaf.substack.com",
+    "allthemeta.substack.com",
+    "almuhandis.substack.com",
+    "alpharesearch.substack.com",
+    "amytintera.substack.com",
+    "anandoncricket.substack.com",
+    "andgovcheese.substack.com",
+    "andibartz.substack.com",
+    "andrewsullivan.substack.com",
+    "anitawharris.substack.com",
+    "annaelerihart.substack.com",
+    "annamarieswan.substack.com",
+    "annasulanmasing.substack.com",
+    "annebyrn.substack.com",
+    "antongorbatow.substack.com",
+    "api.substack.com",
+    "app.substack.com",
+    "arasana.substack.com",
+    "argosopentech.substack.com",
+    "arisbookcorner.substack.com",
+    "arnett.substack.com",
+    "arthurspoodle.substack.com",
+    "asqjournal.substack.com",
+    "assaf.substack.com",
+    "asseenonbyochuko.substack.com",
+    "assets.substack.com",
+    "athenadrakou.substack.com",
+    "audreykavanaghdowsett.substack.com",
+    "automaton.substack.com",
+    "avaramieli.substack.com",
+    "avigloz.substack.com",
+    "avriljoywritingdays.substack.com",
+    "ayearofweather.substack.com",
+    "badgerscrossing.substack.com",
+    "barahamonsters.substack.com",
+    "barbarajomcintosh.substack.com",
+    "barharborstory.substack.com",
+    "basinandrangewatch.substack.com",
+    "benjaminaebuehi.substack.com",
+    "benjaminmlavine.substack.com",
+    "berthofman.substack.com",
+    "besthalloweenever.substack.com",
+    "bettor.substack.com",
+    "biggame.substack.com",
+    "bk12232403.substack.com",
+    "blackgirlhappyplanner.substack.com",
+    "blackshaw.substack.com",
+    "blockchainbacker.substack.com",
+    "blocktrend.substack.com",
+    "blog.substack.com",
+    "bluewombat.substack.com",
+    "brianbyexperience.substack.com",
+    "bruceeckel.substack.com",
+    "bucket.substackcdn.com",
+    "bytecode.substack.com",
+    "caffeinefueledmusings.substack.com",
+    "caitlinbebb.substack.com",
+    "calebsaysthings.substack.com",
+    "californiacrown.substack.com",
+    "cameronrwolfe.substack.com",
+    "candyschulman.substack.com",
+    "careers.substack.com",
+    "carlbeijer.substack.com",
+    "carlosmantas.substack.com",
+    "carmenquintans.substack.com",
+    "caroljones222078.substack.com",
+    "catdroool.substack.com",
+    "catsofgomel.substack.com",
+    "cbuscommodore.substack.com",
+    "cdn.substack.com",
+    "cdodiary.substack.com",
+    "chambanaweather.substack.com",
+    "chanda.substack.com",
+    "charadesandsuffering.substack.com",
+    "chaunceygardiner.substack.com",
+    "chinesestorytellers.substack.com",
+    "choosingcoffee.substack.com",
+    "cindymendoza.substack.com",
+    "circlingcircling.substack.com",
+    "clairetakahashi.substack.com",
+    "clarahill.substack.com",
+    "cmp3.substack.com",
+    "cntr.substack.com",
+    "coachvalley.substack.com",
+    "cocreatebycareerbuddy.substack.com",
+    "cocuklar.substack.com",
+    "coffeencandles.substack.com",
+    "comend.substack.com",
+    "commestibile.substack.com",
+    "commuterville.substack.com",
+    "corpseposeyoga.substack.com",
+    "countercraft.substack.com",
+    "courtneymelenchek.substack.com",
+    "courtyardfellowship.substack.com",
+    "creativedispatch.substack.com",
+    "creativehouston.substack.com",
+    "cristinhinkelman.substack.com",
+    "crucialconversations.substack.com",
+    "cryptocoach.substack.com",
+    "cuphalffull.substack.com",
+    "cyberprof.substack.com",
+    "dachu3.substack.com",
+    "dadsavesamerica.substack.com",
+    "dailyquestions.substack.com",
+    "dalyandot.substack.com",
+    "danielcassady.substack.com",
+    "danielkaplan.substack.com",
+    "danielmordue577130.substack.com",
+    "daowser.substack.com",
+    "darrenjdaviscgcs.substack.com",
+    "darrick.substack.com",
+    "dash.substack.com",
+    "dataengineeringcentral.substack.com",
+    "dawn-patrol.substack.com",
+    "debragoldyn.substack.com",
+    "decodingml.substack.com",
+    "deepforest.substack.com",
+    "demiandao.substack.com",
+    "denysewhelan49.substack.com",
+    "deporteolmpico.substack.com",
+    "devdairy.substack.com",
+    "dietidodgwheel.substack.com",
+    "dirtydiggler.substack.com",
+    "discnaburas.substack.com",
+    "docs.substack.com",
+    "doingwestminsterbetter.substack.com",
+    "domcowork.substack.com",
+    "dominickbmgk825.substack.com",
+    "dorislacew.substack.com",
+    "dotleap.substack.com",
+    "dougsimmons.substack.com",
+    "downtime.substack.com",
+    "drbartels.substack.com",
+    "drclarke.substack.com",
+    "drydowndiaries.substack.com",
+    "dvdwltn.substack.com",
+    "e.substack.com",
+    "eatnour.substack.com",
+    "edkako.substack.com",
+    "eduardopuppo.substack.com",
+    "eidolon.substack.com",
+    "email.mg-d0.substack.com",
+    "email.mg-d1.substack.com",
+    "email.mg-pr.substack.com",
+    "email.mg-tx1.substack.com",
+    "email.mg1.substack.com",
+    "email.mg2.substack.com",
+    "email.mg3.substack.com",
+    "email.substack.com",
+    "embedded.substack.com",
+    "emergingmarketskeptico.substack.com",
+    "emeth.substack.com",
+    "emilygriffin.substack.com",
+    "energyvsclimate.substack.com",
+    "engineercodexi.substack.com",
+    "entertainingwithbeth.substack.com",
+    "eotrx.substackcdn.com",
+    "eotrxbb.substackcdn.com",
+    "epichistoryclub.substack.com",
+    "equanimitas.substack.com",
+    "ericanista.substack.com",
+    "erwan.substack.com",
+    "events.substack.com",
+    "example.substack.com",
+    "ez.substack.com",
+    "factoftheday1.substack.com",
+    "faircomment.substack.com",
+    "farrmageddon.substack.com",
+    "felice033hotmailcom.substack.com",
+    "fillingthepail.substack.com",
+    "fishersofmen1.substack.com",
+    "fiveday.substack.com",
+    "fourfourths.substack.com",
+    "francesdellinger.substack.com",
+    "freddiedeboer.substack.com",
+    "fungotropia.substack.com",
+    "gabby5748.substack.com",
+    "gamedevdairy.substack.com",
+    "georgeeckard.substack.com",
+    "georgesaunders.substack.com",
+    "gerardomarti.substack.com",
+    "getkafkanated.substack.com",
+    "ghostsigns.substack.com",
+    "giddle.substack.com",
+    "gmamlet.substack.com",
+    "go.substack.com",
+    "goodmovie.substack.com",
+    "graceatwood.substack.com",
+    "greghauenstein.substack.com",
+    "gregorysholette.substack.com",
+    "griefbacon.substack.com",
+    "growwildcreative.substack.com",
+    "grumpyelephant.substack.com",
+    "hackingchristianity.substack.com",
+    "halfcourthoops.substack.com",
+    "hallmemoriallibrary.substack.com",
+    "hannahsmo.substack.com",
+    "hannewinarsky.substack.com",
+    "hartlifecoach.substack.com",
+    "hauntedhistorychronicles.substack.com",
+    "headsknow.substack.com",
+    "heatherbillings.substack.com",
+    "hedgefield.substack.com",
+    "help.substack.com",
+    "hersinistralview.substack.com",
+    "highlifehighlandranger.substack.com",
+    "hocking.substack.com",
+    "hollisrobbinsanecdotal.substack.com",
+    "hoopvision.substack.com",
+    "howardaveapts14.substack.com",
+    "howtojapanese.substack.com",
+    "hunterharris.substack.com",
+    "hut34project.substack.com",
+    "i.substack.com",
+    "iamtendess.substack.com",
+    "ideaspace.substack.com",
+    "idiotsandpriests.substack.com",
+    "iexistithink.substack.com",
+    "ignacioercole.substack.com",
+    "ilikenetworking.substack.com",
+    "illiamedgarsmith.substack.com",
+    "ilonagoanos.substack.com",
+    "images.substack.com",
+    "importai.substack.com",
+    "inagarten.substack.com",
+    "independentherald.substack.com",
+    "ingest.substack.com",
+    "innotourism.substack.com",
+    "interfor.substack.com",
+    "intrinsiceconomies.substack.com",
+    "investingblog.substack.com",
+    "ipocandy.substack.com",
+    "istewart.substack.com",
+    "iszszidaily.substack.com",
+    "itsaspirituallife.substack.com",
+    "ivarnielsen.substack.com",
+    "jackpoulson.substack.com",
+    "jacobrobertson.substack.com",
+    "jakegreyxx.substack.com",
+    "jameelajamil.substack.com",
+    "jamesmaltby.substack.com",
+    "jamespatterson.substack.com",
+    "janinedetilliocammarata.substack.com",
+    "jastuinpublic.substack.com",
+    "jayceeknight.substack.com",
+    "jeanmaiorino.substack.com",
+    "jeanmarcbenoit.substack.com",
+    "jeffreybecker.substack.com",
+    "jenesasiquoi.substack.com",
+    "jenhyde.substack.com",
+    "jennyjed.substack.com",
+    "jenushewriter.substack.com",
+    "jeremythorpe.substack.com",
+    "jessicaexcellentadventures.substack.com",
+    "jessicahootenwilson208374.substack.com",
+    "jessicareedkraus.substack.com",
+    "jigarsagar.substack.com",
+    "jimacosta.substack.com",
+    "jimmypatino.substack.com",
+    "joannagoddard.substack.com",
+    "johanpregmo.substack.com",
+    "johnebrennan.substack.com",
+    "johnfarrellemf.substack.com",
+    "joinzash.substack.com",
+    "jonawils.substack.com",
+    "journoagenda.substack.com",
+    "julsimon.substack.com",
+    "justinwelsh.substack.com",
+    "justmeijer.substack.com",
+    "kareem.substack.com",
+    "karenkendra.substack.com",
+    "kateymcintosh.substack.com",
+    "katieandraski.substack.com",
+    "keep-substack.com",
+    "kelliestirling.substack.com",
+    "ketointermittentbuy.substack.com",
+    "kevinharkins.substack.com",
+    "kevinjohnson1.substack.com",
+    "kevinodonovan.substack.com",
+    "kevinzamira.substack.com",
+    "kimdepole.substack.com",
+    "konvivial.substack.com",
+    "kurtweldon.substack.com",
+    "kymellis.substack.com",
+    "l.substack.com",
+    "l1beat.substack.com",
+    "latestagecap.substack.com",
+    "latinamericadailybriefing.substack.com",
+    "leandramcohen.substack.com",
+    "lecordonbong.substack.com",
+    "leehornbrook.substack.com",
+    "leftyslefty.substack.com",
+    "liapelli.substack.com",
+    "library.substack.com",
+    "librosparadirectivos.substack.com",
+    "lifewell.substack.com",
+    "ligaproroundup.substack.com",
+    "liliamanda.substack.com",
+    "lindastrologer.substack.com",
+    "lkeprop794.substack.com",
+    "localgamecommunity.substack.com",
+    "localhuman.substack.com",
+    "localizamidia.substack.com",
+    "loganheron.substack.com",
+    "login.substack.com",
+    "logs.substack.com",
+    "loopcircus.substack.com",
+    "louiseleigh.substack.com",
+    "lpuis.substack.com",
+    "lucianomammino.substack.com",
+    "ludospex.substack.com",
+    "lunarbusinessreview.substack.com",
+    "luneholic.substack.com",
+    "m.substack.com",
+    "maconyoubreathe.substack.com",
+    "madskullz.substack.com",
+    "magasin.substack.com",
+    "magoop.substack.com",
+    "mail.substack.com",
+    "makecents.substack.com",
+    "makeworkbetter.substack.com",
+    "manojkizhakumkara.substack.com",
+    "manuelridocci.substack.com",
+    "marasiasimone.substack.com",
+    "marcelcousineau.substack.com",
+    "marcveldhoen.substack.com",
+    "marjdfin.substack.com",
+    "markbonine.substack.com",
+    "marybingham.substack.com",
+    "mateo138736.substack.com",
+    "mattcircus.substack.com",
+    "mattmorris.substack.com",
+    "mattpearce.substack.com",
+    "maxdauber.substack.com",
+    "maximumrevenueminimumeffort.substack.com",
+    "maxonmusic.substack.com",
+    "maxread.substack.com",
+    "maybe.substack.com",
+    "mdowrick.substack.com",
+    "media.substack.com",
+    "medicineofthesoul.substack.com",
+    "megkeller.substack.com",
+    "meliemeliie.substack.com",
+    "melindameshad624076.substack.com",
+    "melindawmoyer.substack.com",
+    "melissabroder.substack.com",
+    "melvinfoo.substack.com",
+    "merchantofideas.substack.com",
+    "merovex.substack.com",
+    "metamask.substack.com",
+    "mg-pr.substack.info",
+    "michaelwilliams2.substack.com",
+    "michaelwolffnyc.substack.com",
+    "michelleuriarau.substack.com",
+    "microchop.substack.com",
+    "microvalue.substack.com",
+    "midcityminute.substack.com",
+    "mikefisch.substack.com",
+    "millies.substack.com",
+    "ministryofpopculture.substack.com",
+    "mirandajuly.substack.com",
+    "mishadavinci.substack.com",
+    "momleft.substack.com",
+    "moniquebae.substack.com",
+    "moremiles2go.substack.com",
+    "mpsct.substack.com",
+    "mrzyglocki.substack.com",
+    "myhunt4health.substack.com",
+    "myownmeanderingexperience.substack.com",
+    "mywoedu.substack.com",
+    "nancy279809.substack.com",
+    "nealbrodskylmft.substack.com",
+    "necessaryfiction.substack.com",
+    "netwebacademy.substack.com",
+    "newsfromhome.substack.com",
+    "niamhmcdermott.substack.com",
+    "nicholasagnoli.substack.com",
+    "nicholasmeriwether.substack.com",
+    "nicolapariswrites.substack.com",
+    "nieuwenarratieven.substack.com",
+    "nikitawalia.substack.com",
+    "nikolay.substack.com",
+    "noodlesandme.substack.com",
+    "nurtureliterary.substack.com",
+    "nusynplex.substack.com",
+    "nutricionconscienteorg.substack.com",
+    "ocanereginaud.substack.com",
+    "ohevie.substack.com",
+    "oldster.substack.com",
+    "omniscience.substack.com",
+    "on.substack.com",
+    "onemicblackhistorypodcast.substack.com",
+    "ontheoutside.substack.com",
+    "open.substack.com",
+    "opendata.substack.com",
+    "orsonsmelles.substack.com",
+    "ottolenghi.substack.com",
+    "owenbartell.substack.com",
+    "owendaviesphoto.substack.com",
+    "owensindler.substack.com",
+    "pages.substack.com",
+    "pamelaanderson.substack.com",
+    "papapasta.substack.com",
+    "patricenperkins.substack.com",
+    "pattismith.substack.com",
+    "paular659368.substack.com",
+    "paulmhiggins.substack.com",
+    "pavenraven.substack.com",
+    "pbs.substack.com",
+    "peopleofproduct.substack.com",
+    "persis581.substack.com",
+    "persisted.substack.com",
+    "pfproject.substack.com",
+    "philipstephens.substack.net",
+    "plantindustrial.substack.com",
+    "pm-bounces.substack.com",
+    "polisloizou.substack.com",
+    "popculturewatch.substack.com",
+    "post.substack.com",
+    "priceless.substack.com",
+    "productbymarcus.substack.com",
+    "projectglitch.substack.com",
+    "prostack.substack.com",
+    "publisher-api.substack.com",
+    "putterpatter.substack.com",
+    "rahulsweekly.substack.com",
+    "randomolivereads.substack.com",
+    "rauchelnekave.substack.com",
+    "raullen.substack.com",
+    "ravisparikh.substack.com",
+    "reader.substack.com",
+    "rebeccagummere.substack.com",
+    "relocateme.substack.com",
+    "reprotruth.substack.com",
+    "retropol.substack.com",
+    "rewriteroutine.substack.com",
+    "richardnorthpatterson.substack.com",
+    "rishikesh.substack.com",
+    "risingup.substack.com",
+    "riskybiznews.substack.com",
+    "robind.substack.com",
+    "robinklowe.substack.com",
+    "rogeriofernandescoronago.substack.com",
+    "root42.substack.com",
+    "rubybhogal.substack.com",
+    "russellpeachman.substack.com",
+    "rzhu.substack.com",
+    "s3.substack.com",
+    "sacredthoughts.substack.com",
+    "sageaftermidnight.substack.com",
+    "sagnew.substack.com",
+    "salvatorebabones.substack.com",
+    "samharris.substack.com",
+    "samkriss.substack.com",
+    "scarcity.substack.com",
+    "scottallenbennett.substack.com",
+    "scratch.substack.net",
+    "scribbleriver.substack.com",
+    "sdpittman.substack.com",
+    "seenpalestine.substack.com",
+    "sempremilan.substack.com",
+    "serbanisme.substack.com",
+    "sethabramson.substack.com",
+    "shell.substack.net",
+    "ship.substack.net",
+    "shyantika.substack.com",
+    "sierraleonehockey.substack.com",
+    "singularintel.substack.com",
+    "sinocism.substack.com",
+    "skymansfollies.substack.com",
+    "smith.substack.com",
+    "sneub.substack.com",
+    "sociallifeofenergy.substack.com",
+    "softwarebits.substack.com",
+    "sophielibrary.substack.com",
+    "sophiewyburd.substack.com",
+    "soulexplorer.substack.com",
+    "soundtrackstoadventure.substack.com",
+    "spymagazine.substack.com",
+    "ssconlinemeetup.substack.com",
+    "static.substack.com",
+    "status.substack.com",
+    "stayintech.substack.com",
+    "stellanstreiffert.substack.com",
+    "stephanieka.substack.com",
+    "stephreindel.substack.com",
+    "stewartsicecream.substack.com",
+    "stinky123.substack.com",
+    "stocksonsunday.substack.com",
+    "stories.substack.com",
+    "studio.substack.net",
+    "stylonylon.substack.com",
+    "substack-custom-domains.com",
+    "substack-staging.com",
+    "substack.cc",
+    "substack.club",
+    "substack.com",
+    "substack.dev",
+    "substack.help",
+    "substack.info",
+    "substack.link",
+    "substack.net",
+    "substack.pub",
+    "substack.recipe",
+    "substack.substack.com",
+    "substackapp.com",
+    "substackcdn.com",
+    "substackcdn.net",
+    "substackinc.com",
+    "substackmail.com",
+    "sueg005.substack.com",
+    "suncruise.substack.com",
+    "sundayletter.substack.com",
+    "sunrisetosunset.substack.com",
+    "support.substack.com",
+    "susanbusch.substack.com",
+    "svic.substack.com",
+    "swaang0.substack.com",
+    "sweetandsimple.substack.com",
+    "sylviag3.substack.com",
+    "taliquethewriter.substack.com",
+    "talkingt0myself.substack.com",
+    "talkliberation.substack.com",
+    "tangle.substack.com",
+    "tarynnergaard.substack.com",
+    "tedthoughts.substack.com",
+    "terrykinsey.substack.com",
+    "tewalker.substack.com",
+    "tftisac.substack.com",
+    "th3build.substack.com",
+    "thearsenalview.substack.com",
+    "thebarrelmke.substack.com",
+    "thebelievecouture.substack.com",
+    "thebharatexperience.substack.com",
+    "thebrand.substack.com",
+    "thebulwark.substack.com",
+    "thecoverstories.substack.com",
+    "thecrowisamessenger.substack.com",
+    "theenthusiast2024.substack.com",
+    "theflywheel.substack.com",
+    "thejwordnz.substack.com",
+    "thekingskid.substack.com",
+    "themoneypal.substack.com",
+    "themurex.substack.com",
+    "theresabrown.substack.com",
+    "therolypoly.substack.com",
+    "theseedwar.substack.com",
+    "thespacenewsletter.substack.com",
+    "theswamphunter.substack.com",
+    "thevectro.substack.com",
+    "theweb3alert.substack.com",
+    "thewonderproject.substack.com",
+    "tieferstaat.substack.com",
+    "tiktikgone.substack.com",
+    "timelessfelixpurat.substack.com",
+    "timothybower.substack.com",
+    "tinabrown.substack.com",
+    "tioquiraiter.substack.com",
+    "tokenstork.substack.com",
+    "tomburnett.substack.com",
+    "tomchatfield.substack.com",
+    "tomleung.substack.com",
+    "tonypatti.substack.com",
+    "torrancestephensphd.substack.com",
+    "tout.substack.com",
+    "tribenotes.substack.com",
+    "trustinsociety.substack.com",
+    "tryingmybest.substack.com",
+    "tundraangels.substack.com",
+    "twentyfourtwo.substack.com",
+    "unapologeticstyle.substack.com",
+    "unix.substack.net",
+    "unpeeled.substack.com",
+    "urepiphany.substack.com",
+    "uv.substack.com",
+    "v.substack.com",
+    "validity.substack.com",
+    "vanjajaja1.substack.com",
+    "veenavasu.substack.com",
+    "viaveritasvita.substack.com",
+    "victoriawilson.substack.com",
+    "vihaansondhi.substack.com",
+    "vijayashreeml.substack.com",
+    "virginiablackburnm.substack.com",
+    "virgulesonore.substack.com",
+    "vlaugustin.substack.com",
+    "vrchurch.substack.com",
+    "wakabayashi.substack.com",
+    "watyler.substack.com",
+    "waynedillon.substack.com",
+    "waywards.substack.com",
+    "wehavethishope.substack.com",
+    "weibuh.substack.com",
+    "whattocook.substack.com",
+    "willballew.substack.com",
+    "willluden.substack.com",
+    "winnietam.substack.com",
+    "wishbear.substack.com",
+    "wishbonekitchen.substack.com",
+    "wkamaubell.substack.com",
+    "womanwriter.substack.com",
+    "worku.substack.com",
+    "writinginthedark.substack.com",
+    "www.adifferentpath.substack.com",
+    "www.alexschemanske.substack.com",
+    "www.andreneves.substack.com",
+    "www.anonstuniva.substack.com",
+    "www.armoxon.substack.com",
+    "www.autoiterative.substack.com",
+    "www.beequammie.substack.com",
+    "www.betucker.substack.com",
+    "www.blogget.substack.com",
+    "www.breaktheinternet.substack.com",
+    "www.cloud.substack.com",
+    "www.dailymiracles.substack.com",
+    "www.daylilies.substack.com",
+    "www.defislate.substack.com",
+    "www.drericding.substack.com",
+    "www.eithersquare.substack.com",
+    "www.emmastraub.substack.com",
+    "www.erisluvi.substack.com",
+    "www.espeluznante.substack.com",
+    "www.fernandamori.substack.com",
+    "www.flashsolver.substack.com",
+    "www.getalby.substack.com",
+    "www.hackmedia.substack.com",
+    "www.headlesscommerce.substack.com",
+    "www.hfmso.substack.com",
+    "www.historyedit.substack.com",
+    "www.iijatracker.substack.com",
+    "www.infinitic.substack.com",
+    "www.jcmartin7872.substack.com",
+    "www.jerryqi.substack.com",
+    "www.jill.substack.com",
+    "www.judgeworks.substack.com",
+    "www.juliekang.substack.com",
+    "www.koandco.substack.com",
+    "www.lacerad.substack.com",
+    "www.lesrefletsdemelusine.substack.com",
+    "www.lsamuelthomas.substack.com",
+    "www.mattsimons.substack.com",
+    "www.meganrhynevcog.substack.com",
+    "www.megjosephson.substack.com",
+    "www.memia.substack.com",
+    "www.mike73f.substack.com",
+    "www.milestonehackers.substack.com",
+    "www.milkplus.substack.com",
+    "www.moniyeoluwa.substack.com",
+    "www.mvpstacking.substack.com",
+    "www.pinchofdirt.substack.com",
+    "www.quinnthompson.substack.com",
+    "www.rationalista.substack.com",
+    "www.rhizomerd.substack.com",
+    "www.ruthfranklin.substack.com",
+    "www.simondlr.substack.com",
+    "www.simonwarner.substack.com",
+    "www.sleepout.substack.com",
+    "www.substack.com",
+    "www.substackcdn.com",
+    "www.terenceshin.substack.com",
+    "www.thehiddenhistory.substack.com",
+    "www.thewanderscape.substack.com",
+    "www.thoughtrefinery.substack.com",
+    "www.tinywerewolves.substack.com",
+    "www.tobicoker.substack.com",
+    "www.twodocsandastack.substack.com",
+    "www.uncaptured.substack.com",
+    "www.valueinvestinganalysis.substack.com",
+    "www.wendyamudd.substack.com",
+    "www.wirbtdas.substack.com",
+    "www.zariletreu.substack.com",
+    "yogamama.substack.com",
+    "your.substack.com",
+    "yourpublication.substack.com",
+    "yourrichbff.substack.com",
+    "yoursite.substack.com",
+    "zacharyroush.substack.com",
+    "zackmast.substack.com",
+    "zarroba.substack.com",
+    "zkmesh.substack.com",
+    "zoomersojourner.substack.com",
+    "zoyavirani.substack.com",
+    "zyncrealtime.substack.com",
+    "zyncrealtime.substack.info"
+  ],
+  "categorized": {
+    "user_publications_count": 670,
+    "api": [
+      "api.substack.com",
+      "publisher-api.substack.com"
+    ],
+    "cdn_media": [
+      "assets.substack.com",
+      "bucket.substackcdn.com",
+      "cdn.substack.com",
+      "i.substack.com",
+      "images.substack.com",
+      "media.substack.com",
+      "s3.substack.com",
+      "static.substack.com",
+      "substackcdn.com",
+      "substackcdn.net",
+      "v.substack.com"
+    ],
+    "corporate": [
+      "admin.substack.com",
+      "blog.substack.com",
+      "careers.substack.com",
+      "dash.substack.com",
+      "docs.substack.com",
+      "events.substack.com",
+      "help.substack.com",
+      "ingest.substack.com",
+      "keep-substack.com",
+      "logs.substack.com",
+      "status.substack.com",
+      "substack-custom-domains.com",
+      "substack.cc",
+      "substack.club",
+      "substack.help",
+      "substackapp.com",
+      "substackinc.com",
+      "substackmail.com",
+      "support.substack.com"
+    ],
+    "staging_dev": [
+      "scratch.substack.net",
+      "shell.substack.net",
+      "substack-staging.com",
+      "substack.dev",
+      "unix.substack.net"
+    ],
+    "email_infra": [
+      "e.substack.com",
+      "email.mg-d0.substack.com",
+      "email.mg-d1.substack.com",
+      "email.mg-pr.substack.com",
+      "email.mg-tx1.substack.com",
+      "email.mg1.substack.com",
+      "email.mg2.substack.com",
+      "email.mg3.substack.com",
+      "email.substack.com",
+      "mail.substack.com",
+      "pm-bounces.substack.com"
+    ],
+    "third_party": [],
+    "unknown": [
+      "app.substack.com",
+      "embedded.substack.com",
+      "eotrx.substackcdn.com",
+      "eotrxbb.substackcdn.com",
+      "example.substack.com",
+      "go.substack.com",
+      "l.substack.com",
+      "library.substack.com",
+      "login.substack.com",
+      "m.substack.com",
+      "mg-pr.substack.info",
+      "on.substack.com",
+      "open.substack.com",
+      "pages.substack.com",
+      "philipstephens.substack.net",
+      "post.substack.com",
+      "prostack.substack.com",
+      "reader.substack.com",
+      "ship.substack.net",
+      "stories.substack.com",
+      "studio.substack.net",
+      "substack.com",
+      "substack.info",
+      "substack.link",
+      "substack.net",
+      "substack.pub",
+      "substack.recipe",
+      "www.substack.com",
+      "www.substackcdn.com",
+      "your.substack.com",
+      "yourpublication.substack.com",
+      "yoursite.substack.com",
+      "zyncrealtime.substack.info"
+    ]
+  },
+  "notable_endpoints": [
+    {
+      "url": "https://admin.substack.com/",
+      "interest": "admin surface",
+      "source": "infra"
+    },
+    {
+      "url": "https://substack.com/api/v1/stripe/account",
+      "interest": "payment/stripe surface",
+      "source": "js"
+    },
+    {
+      "url": "https://cdn.substack.com/image/fetch/<transform>/<url>",
+      "interest": "server-side image proxy SSRF",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://cdn.substack.com/image/fetch/w_1400,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack.com%2Fimg%2Fpodcast%2Fgeneric.png",
+      "interest": "server-side image proxy SSRF",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/api/v1/image",
+      "interest": "SSRF/image parser",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/import/posts",
+      "interest": "SSRF candidate (import)",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/link-metadata",
+      "interest": "SSRF candidate (link unfurl)",
+      "source": "js"
+    },
+    {
+      "url": "https://substackcdn.com/image/fetch/",
+      "interest": "server-side image proxy SSRF",
+      "source": "search_engines"
+    },
+    {
+      "url": "https://substackcdn.com/image/fetch/<transform>/<encoded_url>",
+      "interest": "server-side image proxy SSRF",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/api/v1/post_unlock_token",
+      "interest": "paywall bypass",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/check_subdomain",
+      "interest": "subdomain takeover vector",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/customer_support_mode",
+      "interest": "CS impersonation",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/mfa-login",
+      "interest": "MFA bypass surface",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/mfa-verify",
+      "interest": "MFA bypass surface",
+      "source": "js"
+    },
+    {
+      "url": "http://substack.net:80/projects/database-security/auth/db.sqlite",
+      "interest": "sql file",
+      "source": "wayback"
+    },
+    {
+      "url": "https://staging-thepreamble.vercel.app",
+      "interest": "staging surface",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.cloudflareaccess.com/cdn-cgi/access/login/substack.info",
+      "interest": "cloudflare access SSO gate",
+      "source": "infra"
+    },
+    {
+      "url": "https://substack.com/api/v1/subscriber/add",
+      "interest": "subscriber PII surface",
+      "source": "js"
+    },
+    {
+      "url": "http://substack.net/robots.txt",
+      "interest": "robots",
+      "source": "wayback"
+    },
+    {
+      "url": "https://<slug>.substack.com/api/v1/archive?limit=N",
+      "interest": "unauth archive read",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://<slug>.substack.com/api/v1/posts",
+      "interest": "posts endpoint",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://<slug>.substack.com/api/v1/publication",
+      "interest": "publication API",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://<slug>.substack.com/api/v1/subscription/current",
+      "interest": "subscription PII/IDOR surface",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://<slug>.substack.com/api/v1/user/profile",
+      "interest": "user profile endpoint",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack-post-media.s3.amazonaws.com/public/images/",
+      "interest": "S3 origin",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack-video.s3.amazonaws.com",
+      "interest": "S3 origin",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/.well-known/ai-plugin.json",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.com/.well-known/apple-app-site-association",
+      "interest": "well-known metadata",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/.well-known/assetlinks.json",
+      "interest": "well-known metadata",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/.well-known/nodeinfo",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.com/.well-known/openid-configuration",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.com/.well-known/security.txt",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.com/.well-known/web-identity",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.com/@USER/.well-known/ai-plugin.json",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.com/@USER/.well-known/openid-configuration",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.com/@USER/.well-known/security.txt",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.com/@USER/robots.txt",
+      "interest": "robots",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.com/@USER/sitemap.xml",
+      "interest": "sitemap",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.com/api/v1/comment/draft/pangram_detection",
+      "interest": "comment moderation",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/email-login",
+      "interest": "magic-link auth; user enum",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/firehose",
+      "interest": "realtime event sink",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/firehose/batch",
+      "interest": "realtime event sink",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/forum/channels",
+      "interest": "forum/community",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/gift-article",
+      "interest": "gift / viral surface",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/islands/client/config",
+      "interest": "SSR config over-exposure",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/login",
+      "interest": "auth entrypoint",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/messages/dm/start",
+      "interest": "DM / messaging",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/messages/inbox",
+      "interest": "DM / messaging",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/pangram/report",
+      "interest": "AI detection",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/polymarket/track-view",
+      "interest": "crypto betting integration",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/publication/manifest",
+      "interest": "publication API",
+      "source": "headers_csp"
+    },
+    {
+      "url": "https://substack.com/api/v1/publication/search?query=...",
+      "interest": "publication API",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/api/v1/publications/by-domain",
+      "interest": "custom-domain enumeration",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/reader/bignight/promo",
+      "interest": "reader API",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/reader/feed",
+      "interest": "reader API",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/reader/feed/pub/bulk-subscribe",
+      "interest": "reader API",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/reader/posts",
+      "interest": "reader API",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/reader/profile/invite",
+      "interest": "reader API",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/reader/saved-link",
+      "interest": "reader API",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/reader/signup/just_email",
+      "interest": "reader API",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/reader/signup/pub",
+      "interest": "reader API",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/reader/subscriptions",
+      "interest": "reader API",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/api/v1/realtime/token",
+      "interest": "WS auth",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/reauthenticate/complete",
+      "interest": "step-up auth",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/reauthenticate/start",
+      "interest": "step-up auth",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/subscription",
+      "interest": "subscription PII/IDOR surface",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/subscription/change_plan",
+      "interest": "subscription PII/IDOR surface",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/subscription/reactivate",
+      "interest": "subscription PII/IDOR surface",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/subscription/upgrade_to_bundle",
+      "interest": "subscription PII/IDOR surface",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/user",
+      "interest": "user profile endpoint",
+      "source": "headers_csp"
+    },
+    {
+      "url": "https://substack.com/api/v1/user/profile",
+      "interest": "user profile endpoint",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/viral_gifts/accept_gift_from_link",
+      "interest": "viral gift surface",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/viral_gifts/create_for_email",
+      "interest": "viral gift surface",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/robots.txt",
+      "interest": "robots",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.com/sitemap",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-disc.xml",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-sitemap.xml",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-1.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-2.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-3.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-4.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-5.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-6.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-7.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-index-1.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-index-2.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-index-3.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-index-4.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-index-5.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-index-6.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-index-7.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1-index.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-t1.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-topics.xml",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-1.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-10.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-11.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-12.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-13.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-14.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-15.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-2.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-3.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-4.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-5.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-6.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-7.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-8.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-9.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-1.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-10.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-11.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-12.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-13.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-14.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-15.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-2.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-3.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-4.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-5.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-6.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-7.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-8.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index-9.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt-index.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap-tt.xml.gz",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap.xml",
+      "interest": "sitemap",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-1",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-10",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-100",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-101",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-102",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-103",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-104",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-105",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-106",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-107",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-108",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-109",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-11",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-110",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-111",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-112",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-113",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-114",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-115",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-116",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-117",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-118",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-119",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-12",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-120",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-121",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-122",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-123",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-124",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-125",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-126",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-127",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-128",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-129",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-13",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-130",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-131",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-132",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-133",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-134",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-135",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-136",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-137",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-138",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-139",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-14",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-140",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-141",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-142",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-143",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-144",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-145",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-146",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-147",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-148",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-149",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-15",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-150",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-151",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-152",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-153",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-154",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-155",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-156",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-157",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-158",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-159",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-16",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-160",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-161",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-162",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-163",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-164",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-165",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-166",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-167",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-168",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-169",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-17",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-170",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-171",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-172",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-173",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-174",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-175",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-176",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-177",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-178",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-179",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-18",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-180",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-181",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-182",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/sitemap/publications-183",
+      "interest": "sitemap",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.net/.well-known/ai-plugin.json",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.net/.well-known/assetlinks.json",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.net/.well-known/gpc.json",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.net/.well-known/nodeinfo",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.net/.well-known/openid-configuration",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.net/.well-known/security.txt",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substack.net/sitemap.xml",
+      "interest": "sitemap",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substackcdn.com/api/v1/publication_assets/image.jpg",
+      "interest": "publication API",
+      "source": "wayback"
+    },
+    {
+      "url": "https://www.substack.com/.well-known/assetlinks.json",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://www.substack.com/.well-known/dnt-policy.txt",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://www.substack.com/.well-known/gpc.json",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://www.substack.com/.well-known/trust.txt",
+      "interest": "well-known metadata",
+      "source": "wayback"
+    },
+    {
+      "url": "https://<slug>.substack.com/api/v1/free?nojs=true",
+      "interest": "api v1",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://<slug>.substack.com/api/v1/post/<post_id>/comments",
+      "interest": "api v1",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://api.substack.com/api/v1/audio/upload/<uuid>/src",
+      "interest": "api v1",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/api/v1/am_i_logged_in",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/app_intended_state",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/audio/upload",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/audiogram",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/bulk_signup",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/cookie_preferences",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/email-otp-login/complete",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/experiment_exposure",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/experiment_features",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/feed",
+      "interest": "api v1",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/api/v1/feed/bulk-follow",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/feed/following",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/forgot",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/latex/jpeg",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/live_stream/recording",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/live_streams",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/live_streams/scheduled",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/press_kit/notification",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/reporting/flows",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/send_app_download_link",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/the-free-press/newsletter-preferences-modal",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/thread_media_uploads",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substack.com/api/v1/video/upload",
+      "interest": "api v1",
+      "source": "js"
+    },
+    {
+      "url": "https://substackcdn.com/api/v1/profile/theme/raw_cover_image.jpg",
+      "interest": "api v1",
+      "source": "wayback"
+    },
+    {
+      "url": "http://substack.net:80/projects/database-security/auth",
+      "interest": "other",
+      "source": "wayback"
+    },
+    {
+      "url": "http://substack.net:80/projects/database-security/auth/index.php",
+      "interest": "other",
+      "source": "wayback"
+    },
+    {
+      "url": "https://api.substack.com/feed/podcast/<id>/<hash>.mp3",
+      "interest": "other",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://api.substack.com/publish",
+      "interest": "other",
+      "source": "github"
+    },
+    {
+      "url": "https://bucket.substackcdn.com",
+      "interest": "other",
+      "source": "github"
+    },
+    {
+      "url": "https://cdn.substack.com/",
+      "interest": "other",
+      "source": "infra"
+    },
+    {
+      "url": "https://dash.substack.com/",
+      "interest": "other",
+      "source": "infra"
+    },
+    {
+      "url": "https://go.substack.com/",
+      "interest": "other",
+      "source": "infra"
+    },
+    {
+      "url": "https://keep-substack.com/",
+      "interest": "other",
+      "source": "brand"
+    },
+    {
+      "url": "https://on.substack.com/account",
+      "interest": "other",
+      "source": "search_engines"
+    },
+    {
+      "url": "https://pages.substack.com/",
+      "interest": "other",
+      "source": "search_engines"
+    },
+    {
+      "url": "https://pm-bounces.substack.com/",
+      "interest": "other",
+      "source": "infra"
+    },
+    {
+      "url": "https://publisher-api.substack.com/v1",
+      "interest": "other",
+      "source": "github"
+    },
+    {
+      "url": "https://substack-staging.com/",
+      "interest": "other",
+      "source": "brand"
+    },
+    {
+      "url": "https://substack.cc/",
+      "interest": "other",
+      "source": "brand"
+    },
+    {
+      "url": "https://substack.com/about",
+      "interest": "other",
+      "source": "search_engines"
+    },
+    {
+      "url": "https://substack.com/app",
+      "interest": "other",
+      "source": "search_engines"
+    },
+    {
+      "url": "https://substack.com/explore",
+      "interest": "other",
+      "source": "search_engines"
+    },
+    {
+      "url": "https://substack.com/login",
+      "interest": "other",
+      "source": "search_engines"
+    },
+    {
+      "url": "https://substack.com/news_sitemap.xml",
+      "interest": "other",
+      "source": "public_docs"
+    },
+    {
+      "url": "https://substack.com/signup",
+      "interest": "other",
+      "source": "search_engines"
+    },
+    {
+      "url": "https://substack.substack.com/",
+      "interest": "other",
+      "source": "search_engines"
+    },
+    {
+      "url": "https://substackcdn.com/assets/world_cities_by_country.json",
+      "interest": "other",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substackcdn.com/authors.svg",
+      "interest": "other",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substackcdn.com/bundle/account.HASH.bundle.js",
+      "interest": "other",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substackcdn.com/bundle/account.HASH.css",
+      "interest": "other",
+      "source": "wayback"
+    },
+    {
+      "url": "https://substackcdn.com/icons/substack/favicon.ico",
+      "interest": "other",
+      "source": "brand"
+    },
+    {
+      "url": "https://substackcdn.net/",
+      "interest": "other",
+      "source": "brand"
+    }
+  ],
+  "related_root_domains": [
+    "bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com",
+    "d3b3sm9t19x0yd.cloudfront.net",
+    "keep-substack.com",
+    "livekit-egress-custom-recorder.s3-website-us-east-1.amazonaws.com",
+    "mux-livestream-assets.s3.us-east-1.amazonaws.com",
+    "substack-custom-domains.com",
+    "substack-post-media.s3.amazonaws.com",
+    "substack-staging.com",
+    "substack-video.s3.amazonaws.com",
+    "substack.cc",
+    "substack.cloudflareaccess.com",
+    "substack.club",
+    "substack.com",
+    "substack.dev",
+    "substack.help",
+    "substack.info",
+    "substack.link",
+    "substack.net",
+    "substack.pub",
+    "substack.recipe",
+    "substack.statuspage.io",
+    "substack.zendesk.com",
+    "substackapi.com",
+    "substackapp.com",
+    "substackcdn.com",
+    "substackcdn.net",
+    "substackinc.com",
+    "substackmail.com"
+  ],
+  "technologies": [
+    "AWS ALB stickiness cookies (AWSALBTG/AWSALBTGCORS)",
+    "AWS Application Load Balancer",
+    "AWS CloudFront",
+    "AWS Route53 (awsdns-*)",
+    "AWS S3",
+    "ActivityPub/Fediverse (/.well-known/nodeinfo)",
+    "Android App Links (com.substack.app)",
+    "Atlassian Statuspage (substack.statuspage.io)",
+    "Cloudflare (edge/CDN/WAF)",
+    "Cloudflare Access SSO (substack.cloudflareaccess.com fronts substack.info, substack-staging.com)",
+    "Cloudflare DNS (ali/lee.ns.cloudflare.com)",
+    "Cloudflare Insights",
+    "Cloudflare Turnstile (support.substack.com interstitial)",
+    "Cloudinary",
+    "Datadog Browser RUM",
+    "Datawrapper",
+    "DigitalOcean DNS (ns1/2/3.digitalocean.com for substack.net)",
+    "Envoy mesh (Zendesk origin)",
+    "Express",
+    "FedCM (/.well-known/web-identity)",
+    "Google Tag Manager / GA4",
+    "Google Workspace",
+    "HTTP/3 QUIC (alt-svc h3)",
+    "Heroku Bucketeer S3 add-on (bucketeer-e05bbc84-baa3-437e-9518-adb32be77984)",
+    "LiveKit (livestream recording)",
+    "Loader.io (load-testing on on.substack.com)",
+    "Mailgun (email.mg* managed sending domains; mg-pr=prod, mg-d0/d1=dedicated pools, mg-tx1=transactional, mg1/2/3=shared pools)",
+    "Microsoft 365 (substackinc.com)",
+    "Mux",
+    "Node.js",
+    "OIDC (/.well-known/openid-configuration)",
+    "OpenNode (Bitcoin payments)",
+    "Pangram (AI detection)",
+    "Polymarket integration",
+    "Postmark (pm-bounces.substack.com naming)",
+    "ProseMirror",
+    "Radix UI",
+    "React",
+    "React Router",
+    "Remix",
+    "Segment analytics",
+    "Sentry",
+    "Stripe",
+    "Webpack",
+    "Zendesk (support.substack.com pod=20)",
+    "iOS Universal Links (team 7DGN24C3GR, bundle com.substack.Substack)",
+    "x-powered-by: Express (stack leak)"
+  ]
+}

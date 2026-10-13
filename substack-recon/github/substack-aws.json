@@ -1,0 +1,1 @@
+{"query": "substack AWS_", "total_count": 3736, "note": "Mostly RSS/news aggregator noise. No clear leaks of Substack's own AWS infrastructure. tradingpost repo (jlancaster7/tradingpost) uses AWS Lambda for Substack scraping - might reference substack.com paths."}

@@ -1,0 +1,33 @@
+method	path	tag	opId	summary	params
+get	/api/Avalanche/GetErc20Balances	Avalanche	Avalanche_GetErc20Balances	Get balances for ERC20 Tokens for up to 50 contracts at once	apiKey,address,contractAddresses
+get	/api/Avalanche/GetErc721Balances	Avalanche	Avalanche_GetErc721Balances	Get balances for ERC721 Tokens for up to 50 contracts at once	apiKey,address,contractAddresses
+get	/api/Avalanche/GetErc20BalancesByBodyJArray	Avalanche	Avalanche_GetErc20BalancesByBodyJArray	Get ERC20 balances (based of contractAddresses) of a specific address	apiKey,address,contractAddresses
+get	/api/Avalanche/GetErc721BalancesByBodyJArray	Avalanche	Avalanche_GetErc721BalancesByBodyJArray	Get ERC721 balances (based of contractAddresses) of a specific address	apiKey,address,contractAddresses
+get	/api/BinanceSmartChain/GetErc20Balances	BinanceSmartChain	BinanceSmartChain_GetErc20Balances	Get balances for ERC20 Tokens for up to 50 contracts at once	apiKey,address,contractAddresses
+get	/api/BinanceSmartChain/GetErc721Balances	BinanceSmartChain	BinanceSmartChain_GetErc721Balances	Get balances for ERC721 Tokens for up to 50 contracts at once	apiKey,address,contractAddresses
+get	/api/BinanceSmartChain/GetErc20BalancesByBodyJArray	BinanceSmartChain	BinanceSmartChain_GetErc20BalancesByBodyJArray	Get ERC20 balances (based of contractAddresses) of a specific address	apiKey,address,contractAddresses
+get	/api/BinanceSmartChain/GetErc721BalancesByBodyJArray	BinanceSmartChain	BinanceSmartChain_GetErc721BalancesByBodyJArray	Get ERC721 balances (based of contractAddresses) of a specific address	apiKey,address,contractAddresses
+get	/api/Bitcoin/GetBalanceByAddresses	Bitcoin	Bitcoin_GetBalanceByAddresses	Get Balance of a given address (Paperwallets only!)	apiKey,addresses
+get	/api/Bitcoin/GetTransactionsByAddresses	Bitcoin	Bitcoin_GetTransactionsByAddresses	Get Transactions by a given address (Paperwallets only!)	apiKey,addresses,startblock
+get	/api/Dash/GetBalanceByAddresses	Dash	Dash_GetBalanceByAddresses	Get Balance of a given address (Paperwallets only!)	apiKey,addresses
+get	/api/Dash/GetTransactionsByAddresses	Dash	Dash_GetTransactionsByAddresses	Get Transactions by a given address (Paperwallets only!)	apiKey,addresses,startblock
+get	/api/EthereumClassic/GetErc20Balances	EthereumClassic	EthereumClassic_GetErc20Balances	Get balances for ERC20 Tokens for up to 50 contracts at once	apiKey,address,contractAddresses
+get	/api/EthereumClassic/GetErc721Balances	EthereumClassic	EthereumClassic_GetErc721Balances	Get balances for ERC721 Tokens for up to 50 contracts at once	apiKey,address,contractAddresses
+get	/api/EthereumClassic/GetErc20BalancesByBodyJArray	EthereumClassic	EthereumClassic_GetErc20BalancesByBodyJArray	Get ERC20 balances (based of contractAddresses) of a specific address	apiKey,address,contractAddresses
+get	/api/EthereumClassic/GetErc721BalancesByBodyJArray	EthereumClassic	EthereumClassic_GetErc721BalancesByBodyJArray	Get ERC721 balances (based of contractAddresses) of a specific address	apiKey,address,contractAddresses
+get	/api/Ethereum/GetErc20Balances	Ethereum	Ethereum_GetErc20Balances	Get ERC20 balances (based of contractAddresses - seperated by ',') of a specific address	apiKey,address,contractAddresses
+get	/api/Ethereum/GetErc20BalancesByBodyJArray	Ethereum	Ethereum_GetErc20BalancesByBodyJArray	Get ERC20 balances (based of contractAddresses) of a specific address	apiKey,address,addresses
+get	/api/General/GetMultichainAddressesByAddressList	General	General_GetMultichainAddressesByAddressList		apiKey,blockchainId,addresses
+get	/api/Klaytn/GetErc20Balances	Klaytn	Klaytn_GetErc20Balances	Get balances for ERC20 Tokens for up to 50 contracts at once	apiKey,address,contractAddresses
+get	/api/Klaytn/GetErc721Balances	Klaytn	Klaytn_GetErc721Balances	Get balances for ERC721 Tokens for up to 50 contracts at once	apiKey,address,contractAddresses
+get	/api/Klaytn/GetErc20BalancesByBodyJArray	Klaytn	Klaytn_GetErc20BalancesByBodyJArray	Get ERC20 balances (based of contractAddresses) of a specific address	apiKey,address,contractAddresses
+get	/api/Klaytn/GetErc721BalancesByBodyJArray	Klaytn	Klaytn_GetErc721BalancesByBodyJArray	Get ERC721 balances (based of contractAddresses) of a specific address	apiKey,address,contractAddresses
+get	/api/Polygon/GetErc20Balances	Polygon	Polygon_GetErc20Balances	Get balances for ERC20 Tokens for up to 50 contracts at once	apiKey,address,contractAddresses
+get	/api/Polygon/GetErc721Balances	Polygon	Polygon_GetErc721Balances	Get balances for ERC721 Tokens for up to 50 contracts at once	apiKey,address,contractAddresses
+get	/api/Polygon/GetErc20BalancesByBodyJArray	Polygon	Polygon_GetErc20BalancesByBodyJArray	Get ERC20 balances (based of contractAddresses) of a specific address	apiKey,address,contractAddresses
+get	/api/Polygon/GetErc721BalancesByBodyJArray	Polygon	Polygon_GetErc721BalancesByBodyJArray	Get ERC721 balances (based of contractAddresses) of a specific address	apiKey,address,contractAddresses
+get	/api/SolanaV2/GetTransactions	SolanaV	SolanaV_GetTransactions	Get all transactions for a specific address	apiKey,address,startblock,last_signature
+get	/api/Velas/GetErc20Balances	Velas	Velas_GetErc20Balances	Get balances for ERC20 Tokens for up to 50 contracts at once	apiKey,address,contractAddresses
+get	/api/Velas/GetErc721Balances	Velas	Velas_GetErc721Balances	Get balances for ERC721 Tokens for up to 50 contracts at once	apiKey,address,contractAddresses
+get	/api/Velas/GetErc20BalancesByBodyJArray	Velas	Velas_GetErc20BalancesByBodyJArray	Get ERC20 balances (based of contractAddresses) of a specific address	apiKey,address,contractAddresses
+get	/api/Velas/GetErc721BalancesByBodyJArray	Velas	Velas_GetErc721BalancesByBodyJArray	Get ERC721 balances (based of contractAddresses) of a specific address	apiKey,address,contractAddresses

@@ -1,0 +1,26 @@
+[
+	{
+		"id": "16186759797",
+		"tbs_sha256": "a28d88569c62e1cd441e0032d7ee32df795dbbe72459dcba3871aea5e2e4a741",
+		"cert_sha256": "36b5d7d58d58c5d42b6c06af26d5e232f18bf630645efba76e2fbffc366745b5",
+		"dns_names": [
+			"substack.net"
+		],
+		"pubkey_sha256": "fc30ffe40c72c1b00189289869e789e92dee07607fe8e4547f783f287c156004",
+		"not_before": "2026-07-30T23:52:08Z",
+		"not_after": "2026-10-28T23:52:07Z",
+		"revoked": false
+	},
+	{
+		"id": "17492443321",
+		"tbs_sha256": "df9bf7f0a9758d225b51ac35fc67779637c0073c677057471f22915215dc40f4",
+		"cert_sha256": "61b968049d2c645e7efaea1ad888312c932e1f4946c5a5eba2c459649531df11",
+		"dns_names": [
+			"substack.net"
+		],
+		"pubkey_sha256": "76138376459f487a8faca239f2e5a90cfb159e3f6fced734efb18232b6b930be",
+		"not_before": "2026-09-30T02:30:43Z",
+		"not_after": "2026-12-29T02:30:42Z",
+		"revoked": false
+	}
+]

@@ -1,0 +1,15 @@
+{
+  "domain": "substack.com",
+  "spf": "v=spf1 include:_spf.google.com include:mailgun.org include:mail.zendesk.com ~all",
+  "spf_includes": {
+    "_spf.google.com": "Google Workspace (3P)",
+    "mailgun.org": "Mailgun transactional email (3P - email.mg1.substack.com, email.mg2.substack.com, email.mg-pr.substack.info)",
+    "mail.zendesk.com": "Zendesk support (3P - substackinc.zendesk.com likely)"
+  },
+  "site_verifications_on_substack_com": {
+    "google": ["vQEKLOUDfKNOQAv9W3EUMiRD6e5ibAEPhc2yCzP7big","DAkdykID6WqQM6tT7IfSu9_uB7-qIdB039MA_C3T3eA","FfNIQIxsRHpj3Y7E_d3N6GFqGgWDZ-sfYojqCilwtqE","SXEl7_p4SBszcanSWwVc_3-RFky80c0-94janbeeWI4","4V_X38Yf0J4VJcWFwtG38bOS1nkOWeIWJhticlMgNQE"],
+    "facebook": ["8vbxp2ntmkudc6is3h5r840c9fwo7f"],
+    "tiktok": ["A9XRSo8lWy5CPFJ0bqI04KCpUZGAAq7p","7PgqCAJ52ILLOqf2KELd8uaRfJpuzaLQ"]
+  },
+  "note": "google-site-verification vQEKLOUDfKNOQAv9W3EUMiRD6e5ibAEPhc2yCzP7big ALSO appears on substack.info - strong co-ownership signal"
+}

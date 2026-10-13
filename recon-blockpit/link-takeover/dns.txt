@@ -1,0 +1,64 @@
+[cloudflare 1.1.1.1] link.blockpit.io A: 13.42.74.145; 35.178.63.175
+[cloudflare 1.1.1.1] link.blockpit.io AAAA: (no answer)
+[cloudflare 1.1.1.1] link.blockpit.io CNAME: (no answer)
+[cloudflare 1.1.1.1] link.blockpit.io NS: (no answer)
+[cloudflare 1.1.1.1] link.blockpit.io TXT: (no answer)
+[cloudflare 1.1.1.1] link.blockpit.io MX: (no answer)
+[google 8.8.8.8] link.blockpit.io A: 13.42.74.145; 35.178.63.175
+[google 8.8.8.8] link.blockpit.io AAAA: (no answer)
+[google 8.8.8.8] link.blockpit.io CNAME: (no answer)
+[google 8.8.8.8] link.blockpit.io NS: (no answer)
+[google 8.8.8.8] link.blockpit.io TXT: (no answer)
+[google 8.8.8.8] link.blockpit.io MX: (no answer)
+[quad9 9.9.9.9] link.blockpit.io A: 13.42.74.145; 35.178.63.175
+[quad9 9.9.9.9] link.blockpit.io AAAA: (no answer)
+[quad9 9.9.9.9] link.blockpit.io CNAME: (no answer)
+[quad9 9.9.9.9] link.blockpit.io NS: (no answer)
+[quad9 9.9.9.9] link.blockpit.io TXT: (no answer)
+[quad9 9.9.9.9] link.blockpit.io MX: (no answer)
+
+=== CNAME chain walk ===
+  link.blockpit.io: no CNAME
+
+=== Reverse DNS ===
+  35.178.63.175 -> The DNS query name does not exist: 175.63.178.35.in-addr.arpa.
+  13.42.74.145 -> The DNS query name does not exist: 145.74.42.13.in-addr.arpa.
+
+=== blockpit.io NS/SOA (zone owner) ===
+  blockpit.io NS: (no answer)
+  blockpit.io SOA: (no answer)
+NS: no
+SOA: no
+TXT: no
+--- blockpit.io. NS (ans+auth+add) ---
+--- blockpit.io. SOA (ans+auth+add) ---
+--- blockpit.io. TXT (ans+auth+add) ---
+--- blockpit.io. CNAME (ans+auth+add) ---
+--- blockpit.io. A (ans+auth+add) ---
+blockpit.io. 300 IN A 198.202.211.1
+--- link.blockpit.io. NS (ans+auth+add) ---
+--- link.blockpit.io. SOA (ans+auth+add) ---
+--- link.blockpit.io. TXT (ans+auth+add) ---
+--- link.blockpit.io. CNAME (ans+auth+add) ---
+--- link.blockpit.io. A (ans+auth+add) ---
+link.blockpit.io. 300 IN CNAME custom-domain.linkdrip.io.
+custom-domain.linkdrip.io. 60 IN A 13.42.74.145
+custom-domain.linkdrip.io. 60 IN A 35.178.63.175
+--- linkdrip.io. A ---
+linkdrip.io. 60 IN A 3.170.103.102
+linkdrip.io. 60 IN A 3.170.103.45
+linkdrip.io. 60 IN A 3.170.103.121
+linkdrip.io. 60 IN A 3.170.103.129
+--- custom-domain.linkdrip.io. A ---
+custom-domain.linkdrip.io. 60 IN A 13.42.74.145
+custom-domain.linkdrip.io. 60 IN A 35.178.63.175
+--- www.linkdrip.io. A ---
+www.linkdrip.io. 60 IN A 3.170.103.102
+www.linkdrip.io. 60 IN A 3.170.103.129
+www.linkdrip.io. 60 IN A 3.170.103.121
+www.linkdrip.io. 60 IN A 3.170.103.45
+--- app.linkdrip.io. A ---
+app.linkdrip.io. 60 IN A 3.170.103.121
+app.linkdrip.io. 60 IN A 3.170.103.129
+app.linkdrip.io. 60 IN A 3.170.103.102
+app.linkdrip.io. 60 IN A 3.170.103.45

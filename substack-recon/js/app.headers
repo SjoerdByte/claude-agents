@@ -1,0 +1,27 @@
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+date: Mon, 05 Oct 2026 14:01:04 GMT
+content-type: text/html; charset=utf-8
+cf-ray: a45cf4cce8d4cd01-IAD
+cf-cache-status: DYNAMIC
+cache-control: no-cache
+set-cookie: ab_experiment_sampled=%22false%22; Max-Age=31536000; Domain=substack.com; Path=/; Expires=Tue, 05 Oct 2027 14:01:04 GMT; HttpOnly; Secure; SameSite=Lax
+set-cookie: ab_testing_id=%22214ffa9a-64d6-483b-8983-6c9508036bbc%22; Max-Age=31536000; Domain=substack.com; Path=/; Expires=Tue, 05 Oct 2027 14:01:04 GMT; HttpOnly; Secure; SameSite=Lax
+set-cookie: AWSALBTG=1IPSyqxJ4NM4oC6fq464CtvhuJIArF5n50iBQypsKM8iAiYG7gYlgAx3awCfOz20qPlsH3igwfAjLku5qvyEbBCqjL2a5tpJ/NQGuBrrtZA6wKsDPWSZcP7oQhOprmTj5ed3vBRdcal+PeNsTA5RmKnddb+b187n9zeQgEYb/2/3; Expires=Mon, 12 Oct 2026 14:01:04 GMT; Path=/
+set-cookie: AWSALBTGCORS=1IPSyqxJ4NM4oC6fq464CtvhuJIArF5n50iBQypsKM8iAiYG7gYlgAx3awCfOz20qPlsH3igwfAjLku5qvyEbBCqjL2a5tpJ/NQGuBrrtZA6wKsDPWSZcP7oQhOprmTj5ed3vBRdcal+PeNsTA5RmKnddb+b187n9zeQgEYb/2/3; Expires=Mon, 12 Oct 2026 14:01:04 GMT; Path=/; SameSite=None; Secure
+set-cookie: cookie_storage_key=5b07844c-e9a5-4c83-8be8-8ed113fed14c; Max-Age=7776000; Domain=substack.com; Path=/; Expires=Sun, 03 Jan 2027 14:01:04 GMT; Secure; SameSite=None
+set-cookie: ajs_anonymous_id=%22e88ef26c-ebf5-4951-b7f9-bc79afbe12f7%22; Max-Age=31536000; Domain=substack.com; Path=/; Expires=Tue, 05 Oct 2027 14:01:04 GMT; SameSite=Strict
+set-cookie: visit_id=%7B%22id%22%3A%228e0152bf-e3e3-4c91-ae62-03cd062dd782%22%2C%22timestamp%22%3A%222026-10-05T14%3A01%3A04.810Z%22%7D; Max-Age=1800; Domain=substack.com; Path=/; Expires=Mon, 05 Oct 2026 14:31:04 GMT; HttpOnly; SameSite=Strict
+set-cookie: __cf_bm=RdryD42S3LdZGw33hv2d.CQDPC11PBytGo1eZGy1FdI-1791208864.788979-1.0.1.1-NE3067dIlILwtlBp9BQLbPzkF4aZAQ1JPitk3r8FtFT9.8AlPK40Dk9DimL97LovgOsEj28mM2AsjovAU_Hh6_8ddvLy39Q4jzH7vsp9OpSDdYSlvmh9sKPJibYc5OeI; HttpOnly; SameSite=None; Secure; Path=/; Domain=substack.com; Expires=Mon, 05 Oct 2026 14:31:04 GMT
+x-served-by: Substack
+server: cloudflare
+x-service: web
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+vary: Accept-Encoding
+content-security-policy: frame-ancestors 'self' https://*.substack.com https://substack.com
+x-cluster: substack
+x-deploy: 52a7d37c7f
+x-powered-by: Express
+alt-svc: h3=":443"; ma=86400
+

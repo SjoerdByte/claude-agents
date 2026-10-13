@@ -1,0 +1,30 @@
+{
+  "lane": "github",
+  "confirmed_endpoints": {
+    "api_base_publisher": "https://publisher-api.substack.com/v1",
+    "api_base_frontend": "https://substack.com/api/v1",
+    "cdn_image_base": "https://bucket.substackcdn.com",
+    "auth_cookies": ["substack.sid (connect.sid)", "substack.lli (likely-logged-in JWT)"],
+    "social_post_pattern": "https://${publicationId}.substack.com/api/v1/posts"
+  },
+  "orgs": {
+    "substackinc": {"public_repos": 3, "names": ["universal-constructor", "po2json", "gettext.js"], "only_universal-constructor_active": true},
+    "substack": "unresolvable (username belongs to James Halliday, unrelated)",
+    "substack-inc": "does not exist"
+  },
+  "noteworthy_files_to_deep_read": [
+    "blamouche/Engineering-Forward/substack/substack_cookies.env - contains SUBSTACK_SID and SUBSTACK_LLI JWT values that look live",
+    "substackinc/universal-constructor - internal AI assistant with shell execution tools, may contain internal paths/prompts"
+  ],
+  "no_results_queries": [
+    ".substack.pub (no real subdomain hits)",
+    "ingest.substack.com / events.substack.com / cdn.substack.com (none referenced publicly)",
+    "chat.substack.com / notes.substack.com (none)",
+    "bucket.substackcdn.com direct match (none, but inferred from CDN URLs)"
+  ],
+  "stack_evidence": [
+    "connect-sid cookie -> Express session middleware (confirms Node.js/Express)",
+    "ProseMirror editor references (confirms React frontend)",
+    "AWS Lambda references via @tradingpost/common (3rd-party integration, not Substack-internal)"
+  ]
+}

@@ -1,0 +1,70 @@
+host	scheme	status	server	title	redirect	interesting
+api.substack.com	https	404	cloudflare			xpowered=Express;cookies=3;
+publisher-api.substack.com	https	404	cloudflare			xpowered=Express;cookies=3;
+eotrx.substackcdn.com	https	200	AmazonS3			cfid;no-hsts;
+media.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+i.substack.com	https	404	cloudflare			xpowered=Express;cookies=3;
+assets.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+images.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+cdn.substack.com	https	403	AmazonS3			cfid;no-hsts;auth-403;
+substackcdn.com	https	403	AmazonS3			cfid;no-hsts;auth-403;
+static.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+substackcdn.net	https	403	AmazonS3			cfid;no-hsts;auth-403;
+s3.substack.com	https	404	cloudflare			xpowered=Express;cookies=9;
+v.substack.com	https	404	cloudflare			xpowered=Express;cookies=3;
+blog.substack.com	https	200	cloudflare		https://on.substack.com/	xpowered=Express;cookies=6;
+admin.substack.com	https	200	cloudflare		https://substack.com/sign-in?redirect=https%3A%2F%2Fadmin.substack.com%2F	xpowered=Express;cookies=14;
+careers.substack.com	https	200	cloudflare		https://substack.com/jobs	xpowered=Express;cookies=11;
+events.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+dash.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+docs.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+ingest.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+logs.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+status.substack.com	https	200	AtlassianEdge		https://substack.statuspage.io/	cfid;cookies=3;
+help.substack.com	https	403	cloudflare		https://support.substack.com/hc/en-us	xpowered=Express;cookies=9;auth-403;
+keep-substack.com	https	200	Vercel			xpowered=Next.js;vercel=iad1::iad1::jhcph-1791210532075-47e7549feff2;
+email.mg-d0.substack.com	https	404				no-hsts;
+email.mg-d1.substack.com	https	404				no-hsts;
+support.substack.com	https	403	cloudflare		https://support.substack.com/hc/en-us	cookies=6;auth-403;
+e.substack.com	https	404	cloudflare			xpowered=Express;cookies=3;
+substack.dev	https	404	cloudflare			cfid;no-hsts;
+substack-staging.com	https	200	cloudflare		https://substack.cloudflareaccess.com/cdn-cgi/access/login/substack.info?kid=b64e2221df8c1db4de70fc128a537912ff990886433bb1d2acb0bfe18ce382e5&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjllOWU3NWNhM2IwMDljMjBjMDliNmFjZjcyODI1N2I4MzYxOWQxZTU4NDI3OTZlMjYzMDNkMzA1MTQzODNiYjIifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6ImI2NGUyMjIxZGY4YzFkYjRkZTcwZmMxMjhhNTM3OTEyZmY5OTA4ODY0MzNiYjFkMmFjYjBiZmUxOGNlMzgyZTUiLCJob3N0bmFtZSI6InN1YnN0YWNrLmluZm8iLCJyZWRpcmVjdF91cmwiOiIvIiwic2VydmljZV90b2tlbl9zdGF0dXMiOmZhbHNlLCJpc193YXJwIjpmYWxzZSwiaXNfZ2F0ZXdheSI6ZmFsc2UsImV4cCI6MTc5MTIxMDgzNywibmJmIjoxNzkxMjEwNTM3LCJpYXQiOjE3OTEyMTA1MzcsImF1dGhfc3RhdHVzIjoiTk9ORSIsIm10bHNfYXV0aCI6eyJjZXJ0X2lzc3Vlcl9kbiI6IiIsImNlcnRfc2VyaWFsIjoiIiwiY2VydF9pc3N1ZXJfc2tpIjoiIiwiY2VydF9wcmVzZW50ZWQiOmZhbHNlLCJjb21tb25fbmFtZSI6IiIsImF1dGhfc3RhdHVzIjoiTk9ORSJ9LCJyZWFsX2NvdW50cnkiOiJVUyIsImFwcF9zZXNzaW9uX2hhc2giOiJkNmYyYjgzOTFjZjVmOGI2NjAxZmM2NDRiYjk1ZWZhNWVmNTQ2NjFiMzRkODMwZWI3ZDZmNWVhNzgyYWM1ODk0In0.2q1-hRI3F0gwL_PuwqQ-oFdacb6Xwbtumf9X3e-CCf_SiLk452ZME5xJ34aMMjJS3f0_j5b-TcKNMRKz75o-PC7jHIepzKMcD2tuPSV_ChwvyUidyJm5-fjQMa9IAF6cx7jkLcNFwGwRNXnaAPCvzzI7bXi-yyCl0741Mp-T7YaJFRN9EoUimcPU63vc6ZzDVhNPdGdxTEPciRczrmZRqk4XXXnAlHGeGOib2IzTEGItAVmtLily94cH3YVmGgkyTn0enGUlXB6L3dD1oI8oOj4flhDDoQpRpOYHLwLeTq-Moescv4wVSPcKFCNWTJ9b-7NLpxs36Rrn5yyYmTvcCw&redirect_url=%2F	xpowered=Express;cookies=5;
+substack.cc	https	200	cloudflare		https://substack.com	xpowered=Express;cookies=10;
+curl: (28) Connection timed out after 15002 milliseconds
+substackinc.com	https	ERR				
+email.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+mail.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+email.mg1.substack.com	https	404				cfid;no-hsts;
+email.mg3.substack.com	https	404				cfid;no-hsts;
+email.mg-pr.substack.com	https	404				cfid;no-hsts;
+email.mg2.substack.com	https	404				cfid;no-hsts;
+email.mg-tx1.substack.com	https	404				no-hsts;
+pm-bounces.substack.com	https	404	cloudflare		https://pmbounces.substack.com/	xpowered=Express;cookies=6;
+embedded.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+example.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+login.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+go.substack.com	https	200	cloudflare		https://go.substack.com/welcome	xpowered=Express;cookies=11;
+app.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+m.substack.com	https	404	cloudflare			xpowered=Express;cookies=3;
+l.substack.com	https	404	cloudflare			xpowered=Express;cookies=3;
+library.substack.com	https	200	cloudflare		https://on.substack.com/	xpowered=Express;cookies=6;
+post.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+on.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+pages.substack.com	https	200	cloudflare			no-hsts;cookies=1;
+reader.substack.com	https	200	cloudflare		https://substack.com/inbox	xpowered=Express;cookies=11;
+stories.substack.com	https	200	cloudflare		https://on.substack.com/	xpowered=Express;cookies=6;
+prostack.substack.com	https	200	cloudflare			xpowered=Express;cookies=3;
+open.substack.com	https	200	cloudflare		https://substack.com/	xpowered=Express;cookies=11;
+curl: (35) Recv failure: Connection reset by peer
+studio.substack.net	https	ERR				
+yourpublication.substack.com	https	404	cloudflare			xpowered=Express;cookies=3;
+substack.net	https	200	neocities			
+your.substack.com	https	200	cloudflare		https://substack.com/sign-in?redirect=https%3A%2F%2Fyour.substack.com%2F	xpowered=Express;cookies=11;
+substack.info	https	200	cloudflare		https://substack.cloudflareaccess.com/cdn-cgi/access/login/substack.info?kid=b64e2221df8c1db4de70fc128a537912ff990886433bb1d2acb0bfe18ce382e5&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjllOWU3NWNhM2IwMDljMjBjMDliNmFjZjcyODI1N2I4MzYxOWQxZTU4NDI3OTZlMjYzMDNkMzA1MTQzODNiYjIifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6ImI2NGUyMjIxZGY4YzFkYjRkZTcwZmMxMjhhNTM3OTEyZmY5OTA4ODY0MzNiYjFkMmFjYjBiZmUxOGNlMzgyZTUiLCJob3N0bmFtZSI6InN1YnN0YWNrLmluZm8iLCJyZWRpcmVjdF91cmwiOiIvIiwic2VydmljZV90b2tlbl9zdGF0dXMiOmZhbHNlLCJpc193YXJwIjpmYWxzZSwiaXNfZ2F0ZXdheSI6ZmFsc2UsImV4cCI6MTc5MTIxMDg2MSwibmJmIjoxNzkxMjEwNTYxLCJpYXQiOjE3OTEyMTA1NjEsImF1dGhfc3RhdHVzIjoiTk9ORSIsIm10bHNfYXV0aCI6eyJjZXJ0X2lzc3Vlcl9kbiI6IiIsImNlcnRfc2VyaWFsIjoiIiwiY2VydF9pc3N1ZXJfc2tpIjoiIiwiY2VydF9wcmVzZW50ZWQiOmZhbHNlLCJjb21tb25fbmFtZSI6IiIsImF1dGhfc3RhdHVzIjoiTk9ORSJ9LCJyZWFsX2NvdW50cnkiOiJVUyIsImFwcF9zZXNzaW9uX2hhc2giOiIzOTYzODk2OTBkNWNmNGU5YjYzMTFlNTllZGI1ZmY0NWZhZjk1NGIzNjg1ZWQ1NmRhOThjMTJjZGNmNzU2YzZiIn0.ro3Xp8vuaPvxWFlyIfIc4Z1zZKjlMUQ8Qi4OIooly3EaCjQz090_KkFbHzM_TzsB3LYLn9o3U0rF3g1IB3tscEx75Ztlrh5iJq8Kn6hNpsgtRegMqFQj4V4F_RttyFtfsl_q7J-XNwhDecMbNBikp-BZ5WR-Ir_GdZzE16pcj2fNtqKYcfxTB0D2DpBHoP2se_v8boO1KPndYSSdZujeBLJqrjuZnxPlK4JYoaRdN56De1_TOrj8cM_iCoptctQnK73MtM3MLpgbJEKO42ia-PsjPupwXKAkVhY4WCAs1PUxe7F6yvo27Viu2RM-oqR3nJwToux7-WN5Fxra4yUE3w&redirect_url=%2F	cookies=3;
+substack.substack.com	https	200	cloudflare		https://substack.com/@substack	xpowered=Express;cookies=6;
+substack.com	https	200	cloudflare			xpowered=Express;cookies=8;
+substack.link	https	200	cloudflare		https://substack.com/sign-in?redirect=https%3A%2F%2Fsublink.substack.com%2F	xpowered=Express;cookies=13;
+www.substack.com	https	200	cloudflare		https://substack.com/	xpowered=Express;cookies=13;
+zyncrealtime.substack.info	https	404				no-hsts;
+yoursite.substack.com	https	404	cloudflare			xpowered=Express;cookies=3;
+zyncrealtime.substack.com	https	404				no-hsts;

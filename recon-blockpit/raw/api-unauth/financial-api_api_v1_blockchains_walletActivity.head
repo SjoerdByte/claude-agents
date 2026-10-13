@@ -1,0 +1,7 @@
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 404 Not Found
+Date: Fri, 09 Oct 2026 11:15:31 GMT
+Server: Kestrel
+Content-Length: 0
+

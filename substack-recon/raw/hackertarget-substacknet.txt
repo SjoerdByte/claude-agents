@@ -1,0 +1,2 @@
+substack.net,198.51.233.1
+studio.substack.net,104.131.0.235

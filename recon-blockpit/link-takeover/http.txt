@@ -1,0 +1,470 @@
+=== 1) Default curl HEAD https://link.blockpit.io/ ===
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:24:51 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+
+=== 2) Default curl HEAD http://link.blockpit.io/ ===
+HTTP/1.1 301 Moved Permanently
+location: https://fun.com
+date: Fri, 09 Oct 2026 11:24:52 GMT
+transfer-encoding: chunked
+
+
+=== 3) curl -L -I https://link.blockpit.io/ (follow) ===
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:24:53 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+HTTP/1.1 200 Connection Established
+
+HTTP/2 301 
+date: Fri, 09 Oct 2026 11:24:53 GMT
+content-type: text/html; charset=UTF-8
+location: https://www.fun.com/
+access-control-allow-origin: *
+server: cloudflare
+cf-ray: a47d05837fac332e-IAD
+
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+date: Fri, 09 Oct 2026 11:24:54 GMT
+content-type: text/html; charset=utf-8
+cache-control: public
+access-control-allow-origin: *
+expires: Fri, 09 Oct 2026 11:33:15 GMT
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000
+strict-transport-security: max-age=31536000
+strict-transport-security: max-age=31536000
+strict-transport-security: max-age=31536000
+x-aspnetmvc-version: 5.2
+srv: Vanaheim
+content-security-policy: frame-ancestors 'self' https://*.fun.com
+age: 398
+last-modified: Fri, 09 Oct 2026 11:19:02 GMT
+cf-cache-status: HIT
+server: cloudflare
+cf-ray: a47d0585fbd7e60c-IAD
+
+
+=== 4) Multiple slug HEAD tests ===
+--- HEAD / ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:24:54 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+--- HEAD /test ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:24:55 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+--- HEAD /foo ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:24:56 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+--- HEAD /signup ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:25:01 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+--- HEAD /r/test ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:25:01 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+--- HEAD /l/test ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:25:02 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+--- HEAD /blockpit ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:25:02 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+--- HEAD /bp ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:25:03 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+--- HEAD /abcd ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:25:04 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+--- HEAD /d4f1e2b0-1234-5678-9abc-0a1b2c3d4e5f ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:25:05 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+
+=== 5) UA variations on / ===
+--- UA=curl/8.5 ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:25:05 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+--- UA=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0 Safari/537.36 ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:25:06 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+--- UA=Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1 ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:25:06 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+--- UA=Googlebot/2.1 (+http://www.google.com/bot.html) ---
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:25:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+
+=== 6) HEAD direct against vendor origin custom-domain.linkdrip.io (Host unchanged) ===
+curl: (60) SSL certificate problem: certificate has expired
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
+HTTP/1.1 200 Connection Established
+
+
+=== 7) HEAD against custom-domain.linkdrip.io with Host: link.blockpit.io (confirm vendor is the origin) ===
+HTTP/1.1 200 Connection Established
+
+HTTP/1.1 301 Moved Permanently
+Location: https://fun.com
+Date: Fri, 09 Oct 2026 11:25:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+
+=== 8) HEAD linkdrip.io itself ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 302 
+server: CloudFront
+date: Fri, 09 Oct 2026 11:25:08 GMT
+content-length: 0
+location: https://www.linkdrip.com
+x-cache: LambdaGeneratedResponse from cloudfront
+via: 1.1 362048055e32798c3baf11d093fb4a46.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P2
+x-amz-cf-id: bMqc9PgTlMuQg5odb9J3tbZ8sX6_T-OiTe5ycEk6nrfQkAo2YsZlOg==
+
+
+=== 9) HEAD www.fun.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+date: Fri, 09 Oct 2026 11:25:08 GMT
+content-type: text/html; charset=utf-8
+cache-control: public
+access-control-allow-origin: *
+expires: Fri, 09 Oct 2026 11:33:15 GMT
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000
+strict-transport-security: max-age=31536000
+strict-transport-security: max-age=31536000
+strict-transport-security: max-age=31536000
+x-aspnetmvc-version: 5.2
+srv: Vanaheim
+content-security-policy: frame-ancestors 'self' https://*.fun.com
+age: 413
+last-modified: Fri, 09 Oct 2026 11:19:02 GMT
+cf-cache-status: HIT
+server: cloudflare
+cf-ray: a47d05e14ff5d708-IAD
+
+
+=== 10) First 20KB of https://link.blockpit.io/ followed ===
+
+<!DOCTYPE html>
+
+	<html lang="en" class="no-js no-rcnt fun">
+
+
+<head lang="en">
+	<title>Gifts for Him &amp; Gifts for Her | Toys, Gifts &amp; Clothing | Fun.com</title>
+	
+	
+
+<meta property="og:type" content="website" /><meta property="og:url" content="https://www.fun.com/" /><meta property="og:site_name" content="FUN.com" /><meta name="description" content="Fun.com carries unique gifts and geeky products. Shop Star Wars toys, Funko Pop! Vinyls, gadgets, action figures, collectibles and so much more. What’s fun for you?" /><meta property="og:description" content="Fun.com carries unique gifts and geeky products. Shop Star Wars toys, Funko Pop! Vinyls, gadgets, action figures, collectibles and so much more. What’s fun for you?" /><meta name="keywords" content="fun, toys, funko pop, gifts, clothing, action figures, collectibles, home & office, Star Wars, Batman, Disney Princess" /><meta property="og:image" content="https://images.fun.com/fun-fb.png" /><meta property="og:image:width" content="300" /><meta property="og:image:height" content="300" /><meta property="og:title" content="Gifts for Him & Gifts for Her | Toys, Gifts & Clothing | Fun.com" /><meta property="twitter:card" content="summary" /><meta property="twitter:site" content="FunDotCom_" /><meta property="twitter:title" content="FUN.com" /><meta property="twitter:description" content="Fun.com carries unique gifts and geeky products. Shop Star Wars toys, Funko Pop! Vinyls, gadgets, action figures, collectibles and so much more. What’s fun for you?" /><meta property="twitter:image" content="https://images.fun.com/fun-fb.png" /><meta name="google-site-verification" content="RhEVT9cdiXJibRjZpZUBsfV3SytWRdDQ6UaTtB-xi0I" /><meta name="msvalidate.01" content="C3246C6786D8BFA0095797875E20CB44" /><meta name="wot-verification" content="a84ec836575c5df80f3c" /><meta name="RichRelevanceApiKey" content="40fe16a23e0dd52c" /><meta name="RichRelevanceApiClientKey" content="d2eab12c501b413f" /><meta name="RichRelevanceApiUrl" content="https://integration.richrelevance.com/rrserver/api/rrPlatform/recsForPlacements" />	<meta charset="utf-8" />
+	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta name="language" content="en-us" />
+	<meta name="rating" content="general" />
+	<meta name="distribution" content="global" />
+<link rel="preconnect" href="https://images.fun.com/" crossorigin="anonymous" />	<meta name="facebook-domain-verification" content="ggaupamzmxtoo7db6w8i1j5x6gcews" /><meta property="fb:app_id" content="694847583877748" /><meta name="google-adsense-account" content="ca-pub-5584689471206185" /><meta name="msapplication-config" content="none" /><meta name="p:domain_verify" content="77a62609672e29c3520b300a8f3ef888" /><meta name="p:domain_verify" content="dfe02cdc752a78292178320bfa644657" />	<script type="1bdfb7f3c909ca896c9e07b4-text/javascript">
+		var funVisitorCookieKeyName = 'VISITOR_v1';
+		var funDataPrivacyPolicyCountries = [748,768,790,821,872,880,881,890,923,937,940,943,964,977,982,1008,1014,1025,1073,1084,1085,1090,1110,1126,1132,1147,1523,1166,1262,1263,810,1301,1327,1334,1366,1367,1385,1410,975,1488];var funDataPrivacyPolicyCookieKeyName = 'DATAPRIVACYPOLICY_v1';
+	</script>
+	<script type="1bdfb7f3c909ca896c9e07b4-text/javascript">var fun_CookieDomain = "";</script>
+<script type="1bdfb7f3c909ca896c9e07b4-text/javascript">window.TrackJSSettings = { token: "e80f94dada7040eb8fae21ddc6095ed2", application: "100-159" };</script>	<link rel="canonical" href="https://www.fun.com/" /><link rel="alternate" href="https://www.fun.com/" hreflang="en" /><link rel="alternate" href="https://www.fun.com/" hreflang="x-default" /><link rel="alternate" href="https://www.fun.co.uk/" hreflang="en-gb" /><link rel="alternate" href="https://www.fun.com.au/" hreflang="en-au" />	<script type="1bdfb7f3c909ca896c9e07b4-text/javascript">try {dataLayer = window.dataLayer || [];
+dataLayer.push({"ecomm_pagetype": "home"});
+dataLayer.push({"customer_id": "0"});
+dataLayer.push({"EventID": "113ec88e-bea8-4352-b3c3-af8c0facbc31"});
+dataLayer.push({"ecommerce": {"purchase":{"actionField":{"affiliation":null,"coupon":null,"customerAddressCity":null,"customerAddressLine1":null,"customerAddressLine2":null,"customerAddressState":null,"customerAddressZip":null,"id":null,"revenue":null,"shipping":null,"tax":null},"products":[]}}});dataLayer.push({'consent_mode_regions': 'AD,AT,BE,BG,HR,CY,CZ,DK,EE,FI,FR,GF,DE,GR,GP,HU,IE,IT,LV,LI,LT,LU,MT,MQ,YT,MC,ME,NL,PL,PT,RE,RO,PM,SM,SK,SI,ES,SE,GB,VA'});(function (w, d, s, l, i){w[l] = w[l] || []; w[l].push({'gtm.start':new Date().getTime(), event: 'gtm.js'}); var f = d.getElementsByTagName(s)[0],j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src ='//www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);})(window, document, 'script', 'dataLayer', 'GTM-N7R4LDW');}catch (err) {if (typeof trackJs !== "undefined"){trackJs.track(err);}}</script>	<script type="1bdfb7f3c909ca896c9e07b4-text/javascript">
+		window.Fun = {};
+	</script>
+	<link rel="icon" type="image/x-icon" href="/wwwroot/img/fun/favicon/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/wwwroot/img/fun/favicon/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/wwwroot/img/fun/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/wwwroot/img/fun/favicon/favicon-48x48.png">
+<link rel="manifest" href="/wwwroot/img/fun/favicon/manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#02a7d9">
+<meta name="application-name" content="Fun">
+<link rel="apple-touch-icon" sizes="57x57" href="/wwwroot/img/fun/favicon/apple-touch-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/wwwroot/img/fun/favicon/apple-touch-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/wwwroot/img/fun/favicon/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/wwwroot/img/fun/favicon/apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/wwwroot/img/fun/favicon/apple-touch-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/wwwroot/img/fun/favicon/apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/wwwroot/img/fun/favicon/apple-touch-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/wwwroot/img/fun/favicon/apple-touch-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="167x167" href="/wwwroot/img/fun/favicon/apple-touch-icon-167x167.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/wwwroot/img/fun/favicon/apple-touch-icon-180x180.png">
+<link rel="apple-touch-icon" sizes="1024x1024" href="/wwwroot/img/fun/favicon/apple-touch-icon-1024x1024.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fun">
+<meta name="msapplication-TileColor" content="#fff">
+<meta name="msapplication-TileImage" content="/wwwroot/img/fun/favicon/mstile-144x144.png">
+<meta name="msapplication-config" content="/wwwroot/img/fun/favicon/browserconfig.xml">
+	<link rel="stylesheet" crossorigin href="/wwwroot/dist/fun/css/preload.BxWRn5fv.css">
+
+<link rel="preload" href="/wwwroot/dist/fun/css/preload.BxWRn5fv.css" type="text/css" as="style" crossorigin="anonymous">
+<link rel="preload" href="/wwwroot/dist/fun/font/MonsterFont-Black.X08aQfGo.woff2" type="font/woff2" as="font" crossorigin="anonymous">
+<link rel="preload" href="/wwwroot/dist/fun/font/MonsterFont-Bold.gLLgzYbu.woff2" type="font/woff2" as="font" crossorigin="anonymous">
+<link rel="preload" href="/wwwroot/dist/fun/font/MonsterFont-Medium.DxMzIspZ.woff2" type="font/woff2" as="font" crossorigin="anonymous">
+<link rel="preload" href="/wwwroot/dist/fun/font/MonsterFont-SemiBold.CNclgHUe.woff2" type="font/woff2" as="font" crossorigin="anonymous">
+<link rel="preload" href="/wwwroot/dist/fun/img/fontawesome.CTqznFa9.svg" type="image/svg+xml" as="image">
+
+<script type="1bdfb7f3c909ca896c9e07b4-text/javascript">
+	const convertSVG = (image) =>
+	{
+		if (typeof fetch !== "undefined")
+		{
+			// Get the SVG file from the cache
+			fetch(image.src, { cache: "force-cache" })
+				.then((res) => res.text())
+				.then((data) =>
+				{
+					// Parse the SVG text and turn it into DOM nodes
+					const parser = new DOMParser();
+					const svg = parser
+						.parseFromString(data, "image/svg+xml")
+						.querySelector("svg");
+					const parentNode = image.parentNode;
+
+					if (!svg) return;
+					// Pass along any class or IDs from the parent <img> element
+					if (image.id) svg.id = image.id;
+					if (image.className) svg.setAttribute("class", image.className);
+
+					// Replace the parent <img> with our inline SVG
+					if (parentNode) parentNode.replaceChild(svg, image);
+				})
+				.catch((error) => console.error(error));
+		}
+	};
+</script>
+	
+	
+
+		<script type="application/ld+json">
+				{"@context":"https://schema.org","@type":"WebPage","name":"Gifts for Him & Gifts for Her | Toys, Gifts & Clothing | Fun.com","description":"Fun.com carries unique gifts and geeky products. Shop Star Wars toys, Funko Pop! Vinyls, gadgets, action figures, collectibles and so much more. What’s fun for you?","keywords":"fun, toys, funko pop, gifts, clothing, action figures, collectibles, home & office, Star Wars, Batman, Disney Princess","mainEntity":{"@type":"WebSite","name":"FUN.com","potentialAction":{"@type":"SearchAction","target":"https://www.fun.com/search.aspx?q={search_term_string}","query-input":{"@type":"PropertyValueSpecification","valueName":"search_term_string","valueRequired":true}},"url":"https://www.fun.com/","publisher":{"@type":"Organization","name":"FUN.com","potentialAction":{"@type":"SearchAction","target":"https://www.fun.com/search.aspx?q={search_term_string}","query-input":{"@type":"PropertyValueSpecification","valueName":"search_term_string","valueRequired":true}},"sameAs":["https://www.facebook.com/fundotcom","https://www.Twitter.com/FunDotCom_","https://www.Pinterest.com/fundotcom","https://www.Instagram.com/FunDotCom_","https://www.tiktok.com/@fundotcom_","https://www.youtube.com/channel/UCTvsLXK3bArcs_5ARzA6F2A"],"url":"https://www.fun.com/","address":{"@type":"PostalAddress","addressCountry":"US","addressLocality":"North Mankato","addressRegion":"MN","postalCode":"56003","streetAddress":"2080 Lookout Drive"},"award":["Star Tribune Top Workplaces 2017","Star Tribune Top Workplaces 2015"],"contactPoint":{"@type":"ContactPoint","availableLanguage":"English","contactType":"customer service","telephone":"+1-507-386-8383"},"faxNumber":"+1-507-386-0517","logo":{"@type":"ImageObject","url":"https://www.fun.com/theme/fun/img/org-logo.png"}}}}
+		</script>
+	<div id="footer-script"></div>
+	
+	
+	<script type="1bdfb7f3c909ca896c9e07b4-module" crossorigin src="/wwwroot/dist/fun/js/home.bundle.Cq3mdWsT.js"></script>
+<link rel="modulepreload" crossorigin href="/wwwroot/dist/fun/js/modulepreload-polyfill-chunk.Dezn_h7o.js">
+<link rel="modulepreload" crossorigin href="/wwwroot/dist/fun/js/rolldown-runtime-chunk.CNC7AqOf.js">
+<link rel="modulepreload" crossorigin href="/wwwroot/dist/fun/js/axios-trackjs-chunk.BoEBmc2E.js">
+<link rel="modulepreload" crossorigin href="/wwwroot/dist/fun/js/bootstrap-chunk.C3v8AlnC.js">
+<link rel="modulepreload" crossorigin href="/wwwroot/dist/fun/js/TextResource-chunk.bgloicVr.js">
+<link rel="modulepreload" crossorigin href="/wwwroot/dist/fun/js/preload-helper-chunk.GIZs_65b.js">
+<link rel="modulepreload" crossorigin href="/wwwroot/dist/fun/js/Engagement-chunk.Bpro2Mom.js">
+<link rel="modulepreload" crossorigin href="/wwwroot/dist/fun/js/BasePage-chunk.c33yOmel.js">
+<link rel="stylesheet" crossorigin href="/wwwroot/dist/fun/css/BasePage.tk-XU8_Y.css">
+<link rel="stylesheet" crossorigin href="/wwwroot/dist/fun/css/home.BfjAUiGt.css">
+<link rel="stylesheet" crossorigin href="/wwwroot/dist/fun/css/_Bubbles.B_DWmt9L.css">
+
+	
+
+	
+</head>
+
+<body>
+	<div style="display: none"><script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="1bdfb7f3c909ca896c9e07b4-|49"></script><img src="/wwwroot/dist/fun/img/fontawesome.CTqznFa9.svg" onload="convertSVG(this);" style="display: none;" alt="" /></div>
+<noscript>
+	<iframe src="//www.googletagmanager.com/ns.html?id=GTM-N7R4LDW&amp;ecomm_pagetype=home&amp;customer_id=0&amp;EventID=113ec88e-bea8-4352-b3c3-af8c0facbc31" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
+	
+<div id="fb-root"></div>
+<div role="complementary" aria-label="Site Utilities" class="sites header-row d-none d-lg-block">
+	<a class="visually-hidden visually-hidden-focusable btn btn-primary" href="#main">Skip to main content</a>
+	<div class="container-xxl position-relative">
+		<div class="row">
+			<div class="d-flex justify-content-center align-items-center col-auto p-0 border-start">
+				<button class="btn btn-link py-0 px-3 btn-sites" type="button" disabled>
+					<img alt="Fun.com" aria-label="Go to Fun.com home." src="/wwwroot/img/fun/us/logo.svg" width="57" height="24" />
+				</button>
+			</div>
+			<div class="d-flex justify-content-center align-items-center col-auto p-0 border-start dropdown dropdown-full">
+				<button class="btn btn-link py-0 px-3 btn-sites" type="button" id="funSiteDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<img class="filter-hc-red" width="227" height="28" src="/wwwroot/img/hc/us/logo.svg" alt="HalloweenCostumes.com" />
+				</button>
+				<div class="dropdown-menu" aria-labelledby="funSiteDropdown">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-auto me-4 d-flex align-items-center">
+								<a class="logo" href="https://www.halloweencostumes.com" rel="nofollow"><img class="filter-hc-red" src="/wwwroot/img/hc/us/logo.svg" width="325" height="40" alt="HalloweenCostumes.com" /></a>
+							</div>
+							<div class="col">
+								<a class="text-dark" href="https://www.halloweencostumes.com/halloween-costumes-2026.html" rel="nofollow">New Costumes</a><br />
+								<a class="text-dark" href="https://www.halloweencostumes.com/adult-costumes.html" rel="nofollow">Adult Costumes</a><br />
+								<a class="text-dark" href="https://www.halloweencostumes.com/kids-costumes.html" rel="nofollow">Kids</a><br />
+							</div>
+							<div class="col">
+								<a class="text-dark" href="https://www.halloweencostumes.com/pet-costumes.html" rel="nofollow">Pet</a><br />
+								<a class="text-dark" href="https://www.halloweencostumes.com/sexy-costumes.html" rel="nofollow">Sexy</a><br />
+								<a class="text-dark" href="https://www.halloweencostumes.com/plus-size-costumes.html" rel="nofollow">Plus Size</a><br />
+							</div>
+							<div class="col">
+								<a class="text-dark" href="https://www.halloweencostumes.com/group-costume-ideas.html" rel="nofollow">Groups</a><br />
+								<a class="text-dark" href="https://www.halloweencostumes.com/couple-costume-ideas.html" rel="nofollow">Couples</a><br />
+								<a class="text-dark" href="https://www.halloweencostumes.com/exclusive.html" rel="nofollow">Exclusive</a><br />
+							</div>
+							<div class="col">
+								<a class="text-dark" href="https://www.halloweencostumes.com/halloween-decorations.html" rel="nofollow">Decorations</a><br />
+								<a class="text-dark" href="https://www.halloweencostumes.com/halloween-animatronics.html" rel="nofollow">Animatronics</a><br />
+								<a class="text-dark" href="https://www.halloweencostumes.com/accessories.html" rel="nofollow">Accessories</a><br />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="d-flex justify-content-center align-items-center col border-start text-center lh-1">
+			</div>
+			<div class="d-flex justify-content-center align-items-center col-auto dropdown">
+					<button class="btn btn-link text-left p-0 dropdown-toggle link-dark" type="button" id="intlSiteDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="flag flag-icon flag-icon-us me-3"></span>US</button>
+
+				<div class="dropdown-menu" aria-labelledby="intlSiteDropdown">
+<a class="dropdown-item" href="https://www.fun.co.uk/?utm_source=Flag_On_FUN_US&utm_campaign=FlagSelector" rel="nofollow noopener"><span class="flag flag-icon flag-icon-uk me-3"></span>UK</a><a class="dropdown-item" href="https://www.fun.com.au/?utm_source=Flag_On_FUN_US&utm_campaign=FlagSelector" rel="nofollow noopener"><span class="flag flag-icon flag-icon-au me-3"></span>AU</a>				</div>
+			</div>
+			<div class="d-flex justify-content-center align-items-center col-auto">
+				<a class="link-dark" href="/order-status.aspx"><svg class="svg-inline--fa fa-flip-horizontal me-3 fa-lg" aria-hidden="true"><use xlink:href="#fa-solid-fa-truck" /></svg>Track Your Order</a>
+			</div>
+			<div id="desktopChat" class="d-flex justify-content-center col-auto p-0">
+				
+
+	<div id="stlched" class="dropdown contact contact--head" data-chatid="quiq">
+		<button class="btn btn-secondary text-capitalize h-100 rounded-0 dropdown-toggle contact__launcher" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><svg class="svg-inline--fa me-3" aria-hidden="true"><use xlink:href="#fa-solid-fa-envelope" /></svg>Contact Us</button>
+		<div class="dropdown-menu">
+			<a href="#" role="button" tabindex="0" class="contact__chat dropdown-item disabled"><svg class="svg-inline--fa fa-spin me-3" aria-hidden="true"><use xlink:href="#fa-solid-fa-spinner-third" /></svg><span>Live Chat</span></a>
+			
+		</div>
+	</div>
+
+			</div>
+			<div class="d-flex justify-content-center align-items-center col-auto">
+				<a class="link-dark" href="/frequently-asked-questions.html"><svg class="svg-inline--fa me-3" aria-hidden="true"><use xlink:href="#fa-solid-fa-circle-question" /></svg>Help</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<header>
+	<div class="header-row header-top bg-primary">
+		<div class="container-xxl p-0">
+			<nav class="navbar navbar-dark navbar-expand-lg py-3 px-0 px-lg-3 navbar-top">
+				<button class="btn btn-link navbar__menu border-0 link-white d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offCanvasMenu" aria-controls="offCanvasMenu" aria-label="Show menu">
+					<svg class="svg-inline--fa fa-2x" aria-hidden="true"><use xlink:href="#fa-solid-fa-bars" /></svg>
+				</button>
+				<a class="navbar-brand flex-grow-1 flex-lg-grow-0 text-center" href="/">
+					<img alt="Fun" class="img-fluid h-lg-auto fun-logo ms-0 filter-white" src="/wwwroot/img/fun/us/logo.svg" width="142" height="60" />
+				</a>
+				<div id="searchBar" class="collapse navbar-collapse flex-grow-1 order-2 order-lg-0 px-3 pe-lg-0 px-lg-3 justify-content-lg-center">
+					<form id="frmSearch" action="/search.aspx" class="row g-0 w-100 w-lg-75 pt-3 pt-lg-0" method="get">
+						<div class="col-12 col-sm-auto mb-3 mb-sm-0 border-transparent border-2 border-sm-end">
+							<div class="dropdown dropoption h-100">
+								<button class="btn btn-white border-0 dropdown-toggle w-100 w-sm-auto h-100 fs-sm fw-normal rounded-pill-start text-capitalize px-4" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>All Categories</span></button>
+								<div class="dropdown-menu w-100 w-sm-auto">
+									<label tabindex="0" class="dropdown-item"><input type="radio" class="d-none" name="p" value="" checked="checked" /><span>All Categories</span></label>
+									<label tabindex="0" class="dropdown-item"><input type="radio" class="d-none" name="p" value="15" /><span>Accessories</span></label>
+	curl: (23) Failure writing output to destination
+
+
+=== 11) First 20KB of https://linkdrip.io/ ===
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="image" href="/images/logo/logo.webp" fetchPriority="high"/><link rel="preload" as="image" href="/images/hero/hero-image-large.webp" fetchPriority="high"/><link rel="stylesheet" href="/_next/static/css/15e87215aa996daa.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/css/c10c222f8214ff40.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-71498baf01c3f414.js"/><script src="/_next/static/chunks/fd9d1056-6402681317ea8432.js" async=""></script><script src="/_next/static/chunks/117-8fc26f3f5506b7d2.js" async=""></script><script src="/_next/static/chunks/main-app-6fca1515cee9a03c.js" async=""></script><script src="/_next/static/chunks/bba2d422-ac44e8f818007e9d.js" async=""></script><script src="/_next/static/chunks/878-7182e37b5ac6554b.js" async=""></script><script src="/_next/static/chunks/648-7bdc850e5383fc83.js" async=""></script><script src="/_next/static/chunks/896-fb2b1bc313118d32.js" async=""></script><script src="/_next/static/chunks/app/(site)/layout-dddd3920bb75c20c.js" async=""></script><script src="/_next/static/chunks/864-394c9fa871174bad.js" async=""></script><script src="/_next/static/chunks/app/(site)/template-3fd5ac7d93135cb1.js" async=""></script><script src="/_next/static/chunks/app/(site)/page-24279182b38b2fed.js" async=""></script><title>LinkDrip - The #1 No Code Link Engagement Tool</title><meta name="description" content="Branded links, Analytics and Call-To-Actions. All from a simple, short link. Ensure every URL counts for your marketing, e-commerce, and affiliate strategies."/><meta property="og:title" content="LinkDrip - The #1 No Code Link Engagement Tool"/><meta property="og:description" content="Branded links, Analytics and Call-To-Actions. All from a simple, short link. Ensure every URL counts for your marketing, e-commerce, and affiliate strategies."/><meta property="og:image" content="https://www.linkdrip.com/images/og-image.png"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="LinkDrip - The #1 No Code Link Engagement Tool"/><meta name="twitter:description" content="Branded links, Analytics and Call-To-Actions. All from a simple, short link. Ensure every URL counts for your marketing, e-commerce, and affiliate strategies."/><meta name="twitter:image" content="https://www.linkdrip.com/images/og-image.png"/><link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="256x256"/><script src="/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body><style>#nprogress{pointer-events:none}#nprogress .bar{background:#006BFF;position:fixed;z-index:1600;top: 0;left:0;width:100%;height:3px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:none;opacity:1;-webkit-transform:rotate(3deg) translate(0px,-4px);-ms-transform:rotate(3deg) translate(0px,-4px);transform:rotate(3deg) translate(0px,-4px)}#nprogress .spinner{display:block;position:fixed;z-index:1600;top: 15px;right:15px}#nprogress .spinner-icon{width:18px;height:18px;box-sizing:border-box;border:2px solid transparent;border-top-color:#006BFF;border-left-color:#006BFF;border-radius:50%;-webkit-animation:nprogress-spinner 400ms linear infinite;animation:nprogress-spinner 400ms linear infinite}.nprogress-custom-parent{overflow:hidden;position:relative}.nprogress-custom-parent #nprogress .bar,.nprogress-custom-parent #nprogress .spinner{position:absolute}@-webkit-keyframes nprogress-spinner{0%{-webkit-transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg)}}@keyframes nprogress-spinner{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style><script>!function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if(e){c.add(e|| '')}else{c.add('light');}if(e==='light'||e==='dark'||!e)d.style.colorScheme=e||'light'}catch(t){}}();</script><div class="fixed bottom-4 right-4 z-[99999999] font-[Inter]"><span></span></div><header class="navbar left-0 top-0 z-[100] w-full border-stroke bg-white absolute"><div class="container relative max-w-[1400px]"><div class="flex items-center justify-between"><div class="block py-4 lg:py-0"><a class="block max-w-[145px] sm:max-w-[180px]" href="/"><img alt="Logo" fetchPriority="high" width="173" height="34" decoding="async" data-nimg="1" class="block dark:hidden" style="color:transparent;width:auto;height:auto" src="/images/logo/logo.webp"/></a></div><button class="navbarOpen absolute right-4 top-1/2 z-50 flex h-10 w-10 -translate-y-1/2 flex-col items-center justify-center space-y-[6px] font-bold lg:hidden" aria-label="navbarOpen" name="navbarOpen"><span class="block h-[2px] w-7 bg-black "></span><span class="block h-[2px] w-7 bg-black "></span><span class="block h-[2px] w-7 bg-black "></span></button><div class="hidden menu-wrapper relative justify-between lg:flex"><button class="navbarClose fixed right-10 top-10 z-[9999] flex h-10 w-10 flex-col items-center justify-center font-bold lg:hidden" aria-label="navbarClose" name="navbarClose"><span class="block h-[2px] w-7 rotate-45 bg-black "></span><span class="-mt-[2px] block h-[2px] w-7 -rotate-45 bg-black "></span></button><nav class="fixed left-0 top-0 z-[999] flex h-screen w-full items-center justify-center bg-white bg-opacity-95 text-center backdrop-blur-sm   lg:static lg:h-auto lg:w-max lg:bg-transparent lg:bg-opacity-100 lg:backdrop-blur-none"><ul class="items-center space-y-3 lg:flex lg:space-x-8 lg:space-y-0 xl:space-x-10"><li class="menu-item"><a class="lg:py-7 ud-menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary" href="/#features">Features</a></li><li class="menu-item"><a class="lg:py-7 ud-menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary" href="/pricing">Pricing</a></li><li class="submenu-item menu-item group relative"><a class="lg:py-7 submenu-taggler inline-flex items-center text-base font-medium text-black hover:text-primary group-hover:text-primary dark:text-white dark:hover:text-primary " href="#">Resources<span class="pl-3"><svg width="14" height="8" viewBox="0 0 14 8" class="fill-current "><path d="M6.54564 5.09128L11.6369 0L13.0913 1.45436L6.54564 8L0 1.45436L1.45436 0L6.54564 5.09128Z"></path></svg></span></a><ul class="hidden submenu space-y-5 pt-5 duration-300 lg:invisible lg:absolute lg:top-[120%] lg:block lg:w-[250px] lg:rounded-lg lg:bg-white lg:px-8 lg:pb-5 lg:text-left lg:opacity-0 lg:shadow-card lg:group-hover:visible lg:group-hover:top-full lg:group-hover:opacity-100 dark:lg:border-transparent dark:lg:bg-[#15182A] lg:dark:shadow-card-dark"><li><a class="font-heading inline-flex items-center justify-center text-center text-base text-black hover:text-primary dark:text-white dark:hover:text-primary" href="/blog">Blog</a></li><li><a class="font-heading inline-flex items-center justify-center text-center text-base text-black hover:text-primary dark:text-white dark:hover:text-primary" href="https://docs.linkdrip.com">Docs</a></li></ul></li></ul></nav></div><div class="mr-[60px] flex items-center justify-end lg:mr-0"><a class="hidden px-6 py-[10px] text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary sm:inline-block" href="https://app.linkdrip.com/signin">Sign In</a><a class="hidden rounded-md bg-primary px-[30px] py-[10px] text-base font-medium text-white hover:bg-opacity-90 sm:inline-block" href="https://app.linkdrip.com/signup">Sign Up</a></div></div></div></header><main><div style="opacity:0"><section id="home" class="relative overflow-hidden bg-[url(&#x27;/images/hero/grid.webp&#x27;)] bg-cover bg-repeat pb-[60px] pt-[100px] lg:pt-[300px]"><div class="absolute bottom-0 left-0 right-0 h-[60px] bg-gradient-to-t from-white to-transparent"></div><img alt="Decorative Piece 1" aria-hidden="true" loading="lazy" width="578" height="135" decoding="async" data-nimg="1" class="absolute right-1/2 top-[150px] z-0 hidden w-[500px] -translate-x-[300px] -rotate-12 lg:block" style="color:transparent" src="/images/hero/hero-piece-1.webp"/><img alt="Decorative Piece 3" aria-hidden="true" loading="lazy" width="320" height="320" decoding="async" data-nimg="1" class="absolute right-1/2 top-[400px] z-0 hidden w-[250px] -translate-x-[400px] -rotate-[5deg] lg:block" style="color:transparent" src="/images/hero/hero-piece-3.webp"/><img alt="Decorative Piece 2" aria-hidden="true" loading="lazy" width="575" height="253" decoding="async" data-nimg="1" class="absolute left-1/2 top-[200px] z-0 hidden w-[500px] translate-x-[350px] rotate-12 lg:block" style="color:transparent" src="/images/hero/hero-piece-2.webp"/><div class="container relative z-10 lg:max-w-[1305px] lg:px-10"><div class="-mx-4 flex items-center justify-center"><div class="w-full px-4 lg:w-7/12"><div class="wow fadeInUp mb-12 flex flex-col items-center text-center lg:mb-0 lg:max-w-[700px]" data-wow-delay=".3s"><h1 class="mb-6 text-3xl font-bold leading-tight text-black sm:text-[40px] md:text-[52px] lg:text-[52px] xl:text-[62px]">The #1 No Code<br/><span class="inline bg-primary bg-clip-text text-transparent"> <!-- -->Link Engagement<!-- --> </span>Tool.</h1><p class="mb-10 max-w-[475px] text-base leading-relaxed text-body">Branded links, advanced analytics and Call-To-Actions. All from a simple, <b>short link.</b></p><div class="flex flex-wrap items-center justify-center"><a class="mb-6 inline-flex h-[60px] items-center rounded-lg border-4 border-stroke-primary bg-primary px-[30px] py-[14px] text-white transition duration-150 hover:bg-opacity-90" href="https://app.linkdrip.com/signup">Get started for free <!-- -->-&gt;</a></div></div></div></div><div class="hidden lg:block"><div class="wow fadeInUp relative z-10 mb-10 lg:ml-auto "><img alt="Hero" fetchPriority="high" width="1164" height="686" decoding="async" data-nimg="1" class="mx-auto" style="color:transparent" src="/images/hero/hero-image-large.webp"/></div></div></div><div class="absolute -top-40 right-0 -z-10"><svg width="602" height="1154" viewBox="0 0 602 1154" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.25" filter="url(#filter0_f_26_84)"><circle cx="577" cy="577" r="317" fill="url(#paint0_linear_26_84)"></circle></g><defs><filter id="filter0_f_26_84" x="0" y="0" width="1154" height="1154" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend><feGaussianBlur stdDeviation="130" result="effect1_foregroundBlur_26_84"></feGaussianBlur></filter><linearGradient id="paint0_linear_26_84" x1="183.787" y1="894" x2="970.173" y2="346.491" gradientUnits="userSpaceOnUse"><stop stop-color="#8EA5FE"></stop><stop offset="0.541667" stop-color="#BEB3FD"></stop><stop offset="1" stop-color="#90D1FF"></stop></linearGradient></defs></svg></div><div class="absolute left-0 top-12 -z-10 hidden md:block"><svg width="622" height="1236" viewBox="0 0 622 1236" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.2" filter="url(#filter0_f_26_85)"><circle cx="4" cy="618" r="368" fill="url(#paint0_linear_26_85)"></circle></g><defs><filter id="filter0_f_26_85" x="-614" y="0" width="1236" height="1236" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood><feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend><feGaussianBlur stdDeviation="125" result="effect1_foregroundBlur_26_85"></feGaussianBlur></filter><linearGradient id="paint0_linear_26_85" x1="-364" y1="250" x2="506.12" y2="754.835" gradientUnits="userSpaceOnUse"><stop stop-color="#FF8FE8"></stop><stop offset="1" stop-color="#FFC960"></stop></linearGradient></defs></svg></div></section><section id="features" class="relative z-10 pt-[110px]"><div class="container"><div class="wow fadeInUp mx-auto mb-14 max-w-[690px] text-center lg:mb-[70px]" data-wow-delay=".2s"><h2 class="mb-4 text-3xl font-bold text-black dark:text-white sm:text-4xl md:text-[44px] md:leading-tight">Simple, yet powerful features</h2><p class="text-base text-body">LinkDrip allows you to shorten, customize, and track your links with ease. Our platform is designed to help you get the most out of your links, no matter what you&#x27;re using them for.</p></div></div><div class="container max-w-[1390px]"><div class="rounded-2xl bg-white px-5 pb-14 pt-14 shadow-card dark:bg-dark dark:shadow-card-dark md:pb-1 lg:pb-5 lg:pt-20 xl:px-10"><div class="-mx-4 flex flex-wrap"><div class="w-full px-4 md:w-1/2 lg:w-1/3"><div class="wow fadeInUp group mx-auto mb-[60px] max-w-[310px] text-center" data-wow-delay=".2s"><div class="mx-auto mb-8 flex h-[90px] w-[90px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="44px" width="44px" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="m344 280 88-88m-200 24 64 64M80 320l104-104"></path><circle cx="456" cy="168" r="24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></circle><circle cx="320" cy="304" r="24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></circle><circle cx="208" cy="192" r="24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></circle><circle cx="56" cy="344" r="24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></circle></svg></div><h3 class="mb-4 text-xl font-semibold text-black dark:text-white sm:text-[22px] xl:text-[26px]">Advanced analytics</h3><p class="text-base text-body">Observe and analyse your links performance in real-time. From referrer, device, to the local city of the visitor.</p></div></div><div class="w-full px-4 md:w-1/2 lg:w-1/3"><div class="wow fadeInUp group mx-auto mb-[60px] max-w-[310px] text-center" data-wow-delay=".2s"><div class="mx-auto mb-8 flex h-[90px] w-[90px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="44px" width="44px" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="80" x="336" y="336" rx="8" ry="8"></rect><rect width="64" height="64" x="272" y="272" rx="8" ry="8"></rect><rect width="64" height="64" x="416" y="416" rx="8" ry="8"></rect><rect width="48" height="48" x="432" y="272" rx="8" ry="8"></rect><rect width="48" height="48" x="272" y="432" rx="8" ry="8"></rect><rect width="80" height="80" x="336" y="96" rx="8" ry="8"></rect><rect width="176" height="176" x="288" y="48" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" rx="16" ry="16"></rect><rect width="80" height="80" x="96" y="96" rx="8" ry="8"></rect><rect width="176" height="176" x="48" y="48" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" rx="16" ry="16"></rect><rect width="80" height="80" x="96" y="336" rx="8" ry="8"></rect><rect width="176" height="176" x="48" y="288" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" rx="16" ry="16"></rect></svg></div><h3 class="mb-4 text-xl font-semibold text-black dark:text-white sm:text-[22px] xl:text-[26px]">QR Codes</h3><p class="text-base text-body">Target your offline audience with branded QR Codes. Don&#x27;t print in vain - you can always change the destination.</p></div></div><div class="w-full px-4 md:w-1/2 lg:w-1/3"><div class="wow fadeInUp group mx-auto mb-[60px] max-w-[310px] text-center" data-wow-delay=".2s"><div class="mx-auto mb-8 flex h-[90px] w-[90px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="44px" width="44px" xmlns="http://www.w3.org/2000/svg"><path d="M7.765 1.559a.5.5 0 0 1 .47 0l7.5 4a.5.5 0 0 1 0 .882l-7.5 4a.5.5 0 0 1-.47 0l-7.5-4a.5.5 0 0 1 0-.882z"></path><path d="m2.125 8.567-1.86.992a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882l-1.86-.992-5.17 2.756a1.5 1.5 0 0 1-1.41 0z"></path></svg></div><h3 class="mb-4 text-xl font-semibold text-black dark:text-white sm:text-[22px] xl:text-[26px]">Call-To-Action</h3><p class="text-base text-body">Add a custom Call-To-Action overlay on your destination site. Customize branding, colors, and much more.</p></div></div><div class="w-full px-4 md:w-1/2 lg:w-1/3"><div class="wow fadeInUp group mx-auto mb-[60px] max-w-[310px] text-center" data-wow-delay=".2s"><div class="mx-auto mb-8 flex h-[90px] w-[90px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="44px" width="44px" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke-width="2" d="M13,3 L13,7 L13,3 Z M9,3 L9,7 L9,3 Z M5,3 L5,7 L5,3 Z M1,7 L23,7 L1,7 Z M1,21 L23,21 L23,3 L1,3 L1,21 Z"></path></svg></div><h3 class="mb-4 text-xl font-semibold text-black dark:text-white sm:text-[22px] xl:text-[26px]">Custom domains</h3><p class="text-base text-body">Keep your links on brand and build up domain score by using your own custom domain with LinkDrip.</p></div></div><div class="w-full px-4 md:w-1/2 lg:w-1/3"><div class="wow fadeInUp group mx-auto mb-[60px] max-w-[310px] text-center" data-wow-delay=".2s"><div class="mx-auto mb-8 flex h-[90px] w-[90px] items-center justify-center rounded-3xl bg-gray text-primary duration-300 group-hover:bg-primary group-hover:text-white dark:bg-[#2A2E44] dark:text-white dark:group-hover:bg-primary"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_211_943)"><path d="M11.2535 28.9978C11.5633 28.1197 12.1379 27.3593 12.898 26.8215C13.6581 26.2837 14.5663 25.9949 15.4974 25.9949C16.4286 25.9949 17.3368 26.2837 18.0969 26.8215C18.857 27.3593 19.4316 28.1197 19.7414 28.9978H34.9927V31.9971H19.7414C19.4316 32.8751 18.857 33.6355 18.0969 34.1733C17.3368 34.7112 16.4286 35 15.4974 35C14.5663 35 13.6581 34.7112 12.898 34.1733C12.1379 33.6355 11.5633 32.8751 11.2535 31.9971H5V28.9978H11.2535ZM20.2513 18.5004C20.5611 17.6223 21.1357 16.8619 21.8958 16.3241C22.6559 15.7862 23.5641 15.4974 24.4952 15.4974C25.4264 15.4974 26.3346 15.7862 27.0947 16.3241C27.8548 16.8619 28.4294 17.6223 28.7392 18.5004H34.9927V21.4996H28.7392C28.4294 22.3777 27.8548 23.1381 27.0947 23.6759C26.3346 24.2138 25.4264 24.5026 24.4952 24.5026C23.5641 24.5026 22.6559 24.2138 21.8958 23.6759C21.1357 23.1381 20.5611 22.3777 20.2513 21.4996H5V18.5004H20.2513ZM11.2535 8.00294C11.5633 7.12486 12.1379 6.36449 12.898 5.82666C13.6581 5.28882 14.5663 5 15.4974 5C16.4286 5 17.3368 5.28882 18.0969 5.82666C18.857 6.36449 19.4316 7.12486 19.7414 8.00294H34.9927V11.0022H19.7414C19.4316 11.8803 18.857 12.6407 18.0969 13.1785C17.3368 13.7163 16.4286 14.0051 15.4974 14.0051C14.5663 14.0051 13.6581 13.7163 12.898 13.1785C12.1379 12.6407 11.5633 11.8803 11.2535 11.0022H5V8.00294H11.2535Z" fill="currentColor"></path></g><defs><clipPath id="clip0_211_943"><rect width="40" height="40" fill="white"></rect></clipPath></defs></svg><curl: (23) Failure writing output to destination

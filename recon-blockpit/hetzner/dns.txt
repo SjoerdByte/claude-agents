@@ -1,0 +1,32 @@
+=== ct-unified-generated-reports.fsn1.your-objectstorage.com ===
+A: 88.198.120.64
+AAAA: (none)
+=== ct-wiso-generated-reports.fsn1.your-objectstorage.com ===
+A: 88.198.120.64
+AAAA: (none)
+=== fsn1.your-objectstorage.com ===
+A: 88.198.120.64
+AAAA: (none)
+=== your-objectstorage.com ===
+A: 213.239.246.73
+AAAA: (none)
+
+=== DNS over HTTPS (cloudflare-dns.com) ===
+--- fsn1.your-objectstorage.com SOA ---
+  your-objectstorage.com TTL=3600 TYPE=6 DATA=ns1.your-server.de. postmaster.your-server.de. 2026100704 86400 10800 3600000 3600
+--- fsn1.your-objectstorage.com NS ---
+  your-objectstorage.com TTL=3600 TYPE=6 DATA=ns1.your-server.de. postmaster.your-server.de. 2026100704 86400 10800 3600000 3600
+--- ct-unified-generated-reports.fsn1.your-objectstorage.com CNAME ---
+  your-objectstorage.com TTL=3600 TYPE=6 DATA=ns1.your-server.de. postmaster.your-server.de. 2026100704 86400 10800 3600000 3600
+--- ct-wiso-generated-reports.fsn1.your-objectstorage.com CNAME ---
+  your-objectstorage.com TTL=3600 TYPE=6 DATA=ns1.your-server.de. postmaster.your-server.de. 2026100704 86400 10800 3600000 3600
+--- your-objectstorage.com SOA ---
+  your-objectstorage.com TTL=7200 TYPE=6 DATA=ns1.your-server.de. postmaster.your-server.de. 2026100704 86400 10800 3600000 3600
+--- your-objectstorage.com NS ---
+  your-objectstorage.com TTL=7200 TYPE=2 DATA=ns.second-ns.com.
+  your-objectstorage.com TTL=7200 TYPE=2 DATA=ns1.your-server.de.
+  your-objectstorage.com TTL=7200 TYPE=2 DATA=ns3.second-ns.de.
+--- your-objectstorage.com MX ---
+  your-objectstorage.com TTL=3600 TYPE=6 DATA=ns1.your-server.de. postmaster.your-server.de. 2026100704 86400 10800 3600000 3600
+--- 88.198.120.64.in-addr.arpa PTR ---
+  (no records)

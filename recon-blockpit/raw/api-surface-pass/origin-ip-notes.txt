@@ -1,0 +1,34 @@
+Origin IP investigation summary (2026-10-09)
+
+Reachable Kestrel direct origin:
+  116.202.100.54  Hetzner Finland (hosts blockchain-api.blockpit.io and
+                  financial-api.blockpit.io directly, no CF edge). Confirmed by
+                  curl --resolve blockchain-api.blockpit.io:443:116.202.100.54
+                  returning 200 /api/General/Version version=2.0.9028.21725.
+
+CF-fronted hosts observed:
+  cn.blockpit.io, cta-api.blockpit.io, gov-api.blockpit.io, cn1.blockpit.io,
+  cn-test.blockpit.io, cn1-test.blockpit.io
+  All resolve to 104.20.44.219 and 172.66.157.149 (CF anycast).
+
+Origin IP for cn.blockpit.io: NOT recovered this pass.
+  - crt.sh contains only *.blockpit.io wildcard + 38 per-subdomain certs; no
+    historical CommonName or SAN exposes a Hetzner backend hostname for cn.
+  - Direct probe of 116.202.100.54 with Host: cn.blockpit.io was blocked at CF
+    before reaching the origin (observed server:cloudflare + CF challenge body).
+    This vantage does not have an unproxied internet route that bypasses CF
+    anycast reach for IPs that are also CF-advertised.
+  - All 8 known-reachable API hosts share only two IPs in A records; none of
+    them is the actual Hetzner backend address.
+
+Suggested next-session approaches:
+  - Pull Shodan / Censys for Server: Kestrel + ssl.cert.subject:blockpit.io on
+    non-CF ranges. A match on an *.hetzner.de / Hetzner autonomous system IP
+    serving cn.blockpit.io's self-signed cert would be the origin.
+  - FDNS passive-DNS historical lookup (Rapid7, SecurityTrails) for cn.blockpit.io
+    - may contain a pre-CF A record.
+  - Check if 116.202.100.54 serves cn.blockpit.io as an additional SNI binding
+    (if cn's traffic lands on the same Kestrel app with a different Host route).
+
+No new hosts discovered via SANs: all crt.sh SANs for blockpit.io are already
+in subdomains.txt.

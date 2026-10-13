@@ -1,0 +1,3 @@
+# No new hostnames extractable: egress-proxy MITM strips real SANs.
+# See raw/tls-sans.txt. Re-run SAN probe from direct-TLS environment
+# or use crt.sh JSON output.

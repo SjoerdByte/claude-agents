@@ -1,0 +1,25 @@
+# Keep node_modules and other heavy transient artefacts out of git
+node_modules/
+*.log
+raw/layers/
+
+# Live auth material - never commit
+exploit/sessions/
+**/cookies*.json
+**/tokens*.json
+**/*token*.json
+**/storage-state*.json
+**/localstorage*.json
+**/sessionstorage*.json
+**/oauth-*.headers
+
+# Raw apiKey-hunt grep output may contain live secret values - keep local
+raw/apikey-hunt/env-*.txt
+raw/apikey-hunt/*-full-*.txt
+raw/apikey-hunt/*-prod-*.txt
+raw/apikey-hunt/*prod*.txt
+
+# Live auth credentials from user - never commit
+exploit/sessions/**/credentials.json
+exploit/sessions/**/access-token.txt
+exploit/sessions/**/refresh-token.txt

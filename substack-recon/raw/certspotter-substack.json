@@ -1,0 +1,330 @@
+[
+	{
+		"id": "12938316825",
+		"tbs_sha256": "56a27a1b63b573b209b1c2fbd2a47ad87d85a19650907144f093f60e3c649e53",
+		"cert_sha256": "6308643b1c055fc12a1b5802e1131bf7300d5d6b6248a30bb591e2a2346f574d",
+		"dns_names": [
+			"email.mg-pr.substack.com",
+			"email.mg1.substack.com",
+			"email.mg2.substack.com",
+			"email.mg3.substack.com"
+		],
+		"pubkey_sha256": "b741cdded2f16afc6a954c5b8f4620b9895fa7548f481e6af3e9b49daf66a48e",
+		"not_before": "2025-12-02T00:00:00Z",
+		"not_after": "2026-12-30T23:59:59Z",
+		"revoked": false
+	},
+	{
+		"id": "14407595333",
+		"tbs_sha256": "0f2a487fe5c6f6d727bac0b157727b70d91bf289710133492fae9e03d4347642",
+		"cert_sha256": "1498f5f9a243ef91cf823bd1006bcbe2886f95ebc0a1ac3f4bdd3c9e3321e447",
+		"dns_names": [
+			"zyncrealtime.substack.com"
+		],
+		"pubkey_sha256": "669e9388a9edc2445acd335f980c4beb0585e3b31697115aab1a6be6307a0931",
+		"not_before": "2026-04-07T00:00:00Z",
+		"not_after": "2026-10-21T23:59:59Z",
+		"revoked": false
+	},
+	{
+		"id": "15716556970",
+		"tbs_sha256": "df4465d63328ba4ae2b22163e74c66c9ff0c8daad78f9b83f7ea1060751d062c",
+		"cert_sha256": "6ab157553f36b015a2b6e028a5986b9b71b996f9c8bf57f65408834eeed49407",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "3407b16c4ced1c4d5ba1b845bd219cb3cbf721350371730c9628bc334de5f291",
+		"not_before": "2026-07-06T00:00:00Z",
+		"not_after": "2027-01-19T23:59:59Z",
+		"revoked": false
+	},
+	{
+		"id": "15790103104",
+		"tbs_sha256": "69d3e67cb74096f2cf71297cba793d182fe14a70653a481a1dbabded0aeb68ed",
+		"cert_sha256": "a8b1209bc7d07f6c7294e58148938a4753019e2aae821d950518382900d104c3",
+		"dns_names": [
+			"email.mg-tx1.substack.com"
+		],
+		"pubkey_sha256": "b93fee3a764e47f5c29c2b6a58c2803f2cc99a943a4ae9e062107c55a32578a8",
+		"not_before": "2026-07-10T23:49:29Z",
+		"not_after": "2026-10-08T23:49:28Z",
+		"revoked": false
+	},
+	{
+		"id": "15931112126",
+		"tbs_sha256": "0ebb8a7c0a0821076b9f45a2a882725088df384b63035cab637d235140010eaa",
+		"cert_sha256": "3f3d60496797b40119d81eaae6f9c218bd32c3cd18b10dc7739a44b105df7c81",
+		"dns_names": [
+			"support.substack.com"
+		],
+		"pubkey_sha256": "05375010a371b399fa9a9419d391ea7cb058a8818a1a21e672a71d2caba889ef",
+		"not_before": "2026-07-17T23:43:38Z",
+		"not_after": "2026-10-15T23:43:37Z",
+		"revoked": false
+	},
+	{
+		"id": "16015536406",
+		"tbs_sha256": "c983a293554d407ccdafd4402c16c5d3bd8b9eca215518a957422f372310306a",
+		"cert_sha256": "9138bf26d45d05a82c2d36b88f8d31509f3dfc59366d9fb24395ce05c02dfb3d",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "bc6a929535ea6f9003f727f2d1a4ea62b6a734209c4e800655c3380bfe8ef490",
+		"not_before": "2026-07-22T08:42:07Z",
+		"not_after": "2026-10-20T09:40:45Z",
+		"revoked": false
+	},
+	{
+		"id": "16015538192",
+		"tbs_sha256": "a45b2e8c5329af81f6537086eeecf3adcea25da703f10f7badd5c4d0e0612cd1",
+		"cert_sha256": "f7f63f484e9a4543e158786a29b37af0303d925b35709930fd4c4a69b70472dd",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "e8ed79be4ed96d173d695f9306b7e6782979b4738045e36644acfebac7f55294",
+		"not_before": "2026-07-22T08:42:22Z",
+		"not_after": "2026-10-20T09:42:13Z",
+		"revoked": false
+	},
+	{
+		"id": "16016552011",
+		"tbs_sha256": "9226883d65394b56c13865e486d2da609369dec67a4cda16bea78a6a5c7415be",
+		"cert_sha256": "6ef84242dc109e5930a2abd7e3559562672ccacab16ec33928b5fda2c10b9735",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "464795ac8cd23f88c7bcabd347fa31036864ac9b6901a2c8dd6934feda128bae",
+		"not_before": "2026-07-22T09:54:47Z",
+		"not_after": "2026-10-20T10:54:39Z",
+		"revoked": false
+	},
+	{
+		"id": "16016556042",
+		"tbs_sha256": "7ed5a7ee5f2367e6505f55094101559515b909563d8e8a940c962e9f30e567a8",
+		"cert_sha256": "136933193b22223f89b87ae84772015fc3c6d7d9c1bd3d23077dc6b95aae58c3",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "1a1b7fed5c6e9133c4c83102d73bc21f9fc6270f76c4129cac128c1487e5a20c",
+		"not_before": "2026-07-22T09:54:58Z",
+		"not_after": "2026-10-20T10:54:53Z",
+		"revoked": false
+	},
+	{
+		"id": "16085338926",
+		"tbs_sha256": "efe43ba7933ea9b46a15b3a40408efc1e5a1ccff19a46e2ceeee9c3c72649dd3",
+		"cert_sha256": "d36bc87a78b2590021b8b8cec39d5b5890e27007343400da93acbc7411bd6321",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "9c788f30f5ef48921f080f3f0e9a726886ce79b20e4251df389a1b1e515ecdbd",
+		"not_before": "2026-07-26T00:01:21Z",
+		"not_after": "2026-10-24T00:08:57Z",
+		"revoked": false
+	},
+	{
+		"id": "16085342869",
+		"tbs_sha256": "b353bf74bbbaf5aed3b1ac1eceb41e773e3883429369085a8b2f168914c46bb3",
+		"cert_sha256": "5eff0df81dca5640fc14a6ccf97cd9137a26441e14bf8266279d3a08cd2c3761",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "ade60ea3def891d2f2252b3bb87deb5c18150cea56677fd38bac4af678cde85d",
+		"not_before": "2026-07-26T00:01:33Z",
+		"not_after": "2026-10-24T00:08:58Z",
+		"revoked": false
+	},
+	{
+		"id": "16809425221",
+		"tbs_sha256": "45217a1a08d39fcd420aea3bf3be70fc3ec0938cc02571f2d17385721e4e7f7e",
+		"cert_sha256": "1b22e0d9df3feea46ffe56eb68b1af2bb4a71dcfbf723080bf284a23b182b158",
+		"dns_names": [
+			"pages.substack.com"
+		],
+		"pubkey_sha256": "0ce9e686832a7c353d33d0fc77222c1791f4f837350117d4a04b02eff8d1bf26",
+		"not_before": "2026-08-27T04:07:58Z",
+		"not_after": "2026-11-25T05:06:50Z",
+		"revoked": false
+	},
+	{
+		"id": "16809433576",
+		"tbs_sha256": "316db8d970fd37efed703a97918b9dc595faa6d6c66f818b1497a7d8bc20b41e",
+		"cert_sha256": "b0d29acb6cceb6a304d24b506aa0a37cfccb32ae4f68d2aa0e4e9e7f87597342",
+		"dns_names": [
+			"pages.substack.com"
+		],
+		"pubkey_sha256": "ed488ea8e013e323661ca4e18e6dddd43c398a796ddf85d2360fec9287c8bd93",
+		"not_before": "2026-08-27T04:08:12Z",
+		"not_after": "2026-11-25T05:08:04Z",
+		"revoked": false
+	},
+	{
+		"id": "16809790994",
+		"tbs_sha256": "8b2837d8b3c3975ae9979b3b6c38e57310232545f0b19bc4471752b53eacbc36",
+		"cert_sha256": "b41dab73dce36ec2d4af9f39b29b97c8e15f5c499a42bb837e9face90accb7d1",
+		"dns_names": [
+			"pages.substack.com"
+		],
+		"pubkey_sha256": "bdd6e25a2b7feac97008e8b6e391a29eda60029df2c7f9b33b16f5db56ee0caa",
+		"not_before": "2026-08-27T04:30:57Z",
+		"not_after": "2026-11-25T05:30:53Z",
+		"revoked": false
+	},
+	{
+		"id": "16809826244",
+		"tbs_sha256": "6b92ee631e3c3f319810d6915bf5004ce04b15c8147fb048dd51d0c503663c6d",
+		"cert_sha256": "6c8b21616c37362d6949c94290aa7972bee5b82b47c72e511eaa33cdfbc0b817",
+		"dns_names": [
+			"pages.substack.com"
+		],
+		"pubkey_sha256": "6916a7b9617bdf065a18326ab9dbabeda7f979b664b5339af8e9e53bae08abe1",
+		"not_before": "2026-08-27T04:30:46Z",
+		"not_after": "2026-11-25T05:30:40Z",
+		"revoked": false
+	},
+	{
+		"id": "16949626464",
+		"tbs_sha256": "979df7d1d3190c6f61e62fba4b9675cbf655be62a4709a2c8ce755d792e11531",
+		"cert_sha256": "4201aa6d6c5730a99988dbfb67c013e8bc7c52e81138af0b9060d7d1157aa99e",
+		"dns_names": [
+			"email.mg-d0.substack.com"
+		],
+		"pubkey_sha256": "2954f9d1a4fda8508a9c3c62a04c78718c1f78713419dd9f2fe0cc8d103b3756",
+		"not_before": "2026-09-02T18:41:09Z",
+		"not_after": "2026-12-01T18:41:08Z",
+		"revoked": false
+	},
+	{
+		"id": "16949657221",
+		"tbs_sha256": "64b6d22c6af66abe3ed02965b1d289ef042fd92b9f0cd89223a0969d79e86d71",
+		"cert_sha256": "163edc406970bd25f04fce1acf1e35167f9e5d985700f84353c3ca904ba59740",
+		"dns_names": [
+			"email.mg-d1.substack.com"
+		],
+		"pubkey_sha256": "4eba09474eb13aeaea3f13f63157bd1858dfafdd6764dcc07c1453ce621d1f8d",
+		"not_before": "2026-09-02T18:43:24Z",
+		"not_after": "2026-12-01T18:43:23Z",
+		"revoked": false
+	},
+	{
+		"id": "17036863043",
+		"tbs_sha256": "4a4c9682f385262c9dbb7b6ef33c1d9714450ec0c252dfc3bf327dd366d00465",
+		"cert_sha256": "649a1790ce0da3f964b83fdb65de60aaf5617ae39949bad61030b216cfb1ee0b",
+		"dns_names": [
+			"zyncrealtime.substack.com"
+		],
+		"pubkey_sha256": "8d077a39c31829e683b72124c791bed1c0ce68ec8a65b655ea25af3fe53005f1",
+		"not_before": "2026-09-07T00:00:00Z",
+		"not_after": "2027-03-23T23:59:59Z",
+		"revoked": false
+	},
+	{
+		"id": "17067426366",
+		"tbs_sha256": "45b9d0867b14ebbdba70b0f832e0738f9c6a297cd3527a68809cfffae40cc12d",
+		"cert_sha256": "899a5b3b472feeb5cb3232e1347e5112433803ae6735358e53042b897e0642d4",
+		"dns_names": [
+			"email.mg-tx1.substack.com"
+		],
+		"pubkey_sha256": "33037b0160bd2b665bc7505d07f4af54b233df3b7f51922e3a5c1c1aef2f53a5",
+		"not_before": "2026-09-08T22:51:04Z",
+		"not_after": "2026-12-07T22:51:03Z",
+		"revoked": false
+	},
+	{
+		"id": "17201793115",
+		"tbs_sha256": "2ce5f205ea128b91199e4593ea714cdc03449d59bd6133b1ba8dbc031ea56e27",
+		"cert_sha256": "5080b2329692885f927c7e9152f15b02e249a00cbbd58a1fa467496bd5c60cdf",
+		"dns_names": [
+			"support.substack.com"
+		],
+		"pubkey_sha256": "05375010a371b399fa9a9419d391ea7cb058a8818a1a21e672a71d2caba889ef",
+		"not_before": "2026-09-15T23:43:13Z",
+		"not_after": "2026-12-14T23:43:12Z",
+		"revoked": false
+	},
+	{
+		"id": "17277830770",
+		"tbs_sha256": "36c35918c2d40d96fd414665c03587318ea48d9df772d5857dde303479360d53",
+		"cert_sha256": "0a739b015ccc718e591964bb9ca67d21ff4bc3de95adacbc389971af32527725",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "291d2bdd59f40c109f5ea4a6bcf1be597a10b6b496b2b76e7ea09a7d2cbcfb26",
+		"not_before": "2026-09-19T12:10:30Z",
+		"not_after": "2026-12-18T13:09:14Z",
+		"revoked": false
+	},
+	{
+		"id": "17277833261",
+		"tbs_sha256": "0b7097e94142a0f0e51f26a82a7097cf5b31e6d1334ceea3e31e2fe6f8110fea",
+		"cert_sha256": "d0f79380f7c89c2164a63bee6e8309c657f71b1aebd6875744d3fa234218eb73",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "833b2088f22d6dfc18720898f15d805b87eb10b92ffacec1ca733ed756312af8",
+		"not_before": "2026-09-19T12:10:45Z",
+		"not_after": "2026-12-18T13:10:36Z",
+		"revoked": false
+	},
+	{
+		"id": "17279218384",
+		"tbs_sha256": "a764e1fec9612e822db9207134058f6ff9da7207d3693d87ea6bf7dd4655d351",
+		"cert_sha256": "3375a9e13f3b1f03ca464e919f9119ea65e6d43e9e975154dabd26e7acc7113f",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "218241614a31b95b0929d761c9a73e2645a1ce42920bf83ced13a8c0ecd847d3",
+		"not_before": "2026-09-19T13:44:51Z",
+		"not_after": "2026-12-18T14:44:48Z",
+		"revoked": false
+	},
+	{
+		"id": "17279234761",
+		"tbs_sha256": "61555b0d84ac716dba03a82c27c0a57b2a9c1fd08d4afd0cb66631f20d9b3321",
+		"cert_sha256": "50aa62b1ef2c85ec0a1309768228c0e4452ae04886d6abb90754cf782645d675",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "41237d2159656ff1a442872fde27736c608ba4cdebf75e58f88933627d32fd4d",
+		"not_before": "2026-09-19T13:45:08Z",
+		"not_after": "2026-12-18T14:44:57Z",
+		"revoked": false
+	},
+	{
+		"id": "17384775242",
+		"tbs_sha256": "2da18383e19b18e6744ee70f85d1c6c4eac81dc4b65d9681afd495800632d37f",
+		"cert_sha256": "f8be7ae25712d28e5bf79865e854c6ac39c3f7a95acf52e720bdd063e95c4287",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "006801622bddb4b4b55bc88babe7e9afbf5e805bb25ea0aa35e89f0a35eb2e99",
+		"not_before": "2026-09-24T11:15:09Z",
+		"not_after": "2026-12-22T06:31:53Z",
+		"revoked": false
+	},
+	{
+		"id": "17395995390",
+		"tbs_sha256": "19ca888710566e9ae9a5ad75eb651d1e45edca690708df6e2cbc049fb7625d53",
+		"cert_sha256": "9ab343bde39e769a04795abd58f5c15b7362fead38ae80fdadb1ff88d442b17e",
+		"dns_names": [
+			"*.substack.com",
+			"substack.com"
+		],
+		"pubkey_sha256": "512ee929bad2ccdcd7a354b0456323adcf5d248eccafe25359b017df42459c95",
+		"not_before": "2026-09-25T00:10:44Z",
+		"not_after": "2026-12-22T06:31:54Z",
+		"revoked": false
+	}
+]

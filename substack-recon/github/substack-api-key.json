@@ -1,0 +1,5 @@
+{"query": "SUBSTACK_API_KEY", "total_count": 200, "notable": [
+  "publisher-api.substack.com/v1 (confirmed base URL)",
+  "SUBSTACK_API_KEY_<NAME> pattern (multi-publication)",
+  "connect-sid cookie used as API key"
+]}

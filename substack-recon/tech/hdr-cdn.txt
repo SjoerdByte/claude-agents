@@ -1,0 +1,17 @@
+HTTP/1.1 200 Connection Established
+
+HTTP/2 403 
+content-type: text/html
+content-length: 5672
+last-modified: Fri, 03 Feb 2023 22:02:04 GMT
+etag: "bca1df02a0628fc70e30b2da04196f86"
+x-amz-error-code: AccessDenied
+x-amz-error-message: Access Denied
+date: Mon, 05 Oct 2026 14:14:18 GMT
+server: AmazonS3
+x-cache: Error from cloudfront
+via: 1.1 0e373c2690d6d18d0c88347ad35ba498.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD55-P7
+alt-svc: h3=":443"; ma=86400
+x-amz-cf-id: z52EoKxM-DzI4Axx1log5otxhjk_a8eBXV2Clr_Ie72JdbR8DJDJng==
+

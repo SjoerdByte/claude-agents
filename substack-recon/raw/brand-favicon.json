@@ -1,0 +1,6 @@
+{
+  "favicon_source_url": "https://substackcdn.com/icons/substack/favicon.ico",
+  "md5": "e9af0cb40bf4c51910f2044492920bc8",
+  "shodan_mmh3_favicon_hash": 1879849997,
+  "note": "Use http.favicon.hash:1879849997 as Shodan query to pivot to additional Substack-fronted hosts (not executed - no Shodan API)."
+}

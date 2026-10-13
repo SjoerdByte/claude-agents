@@ -1,0 +1,3 @@
+host	path	method	opId	declaration
+blockchain-api	ROOT	-	-	securityDefinitions=None, security=None
+financial-api	ROOT	-	-	securityDefinitions=None, security=None

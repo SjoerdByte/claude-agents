@@ -1,0 +1,27 @@
+HTTP/1.1 200 Connection Established
+
+HTTP/2 103 
+link: <https://substackcdn.com>; rel=preconnect
+
+HTTP/2 200 
+date: Mon, 05 Oct 2026 14:14:18 GMT
+content-type: text/html; charset=utf-8
+cf-ray: a45d082dcdf8a171-IAD
+cf-cache-status: REVALIDATED
+cache-control: no-cache
+set-cookie: ab_experiment_sampled=%22false%22; Max-Age=31536000; Domain=substack.com; Path=/; Expires=Tue, 05 Oct 2027 14:14:18 GMT; HttpOnly; Secure; SameSite=Lax
+set-cookie: ab_testing_id=%22d87e5adf-021f-4fff-8f83-7ecd84ee9666%22; Max-Age=31536000; Domain=substack.com; Path=/; Expires=Tue, 05 Oct 2027 14:14:18 GMT; HttpOnly; Secure; SameSite=Lax
+set-cookie: __cf_bm=LtvKanjjrioNy_ELlt4GtPE0299JeOLBa0s7tzwdmQk-1791209658.527852-1.0.1.1-5sSC4cXVoIhID8M.Cyc_96d3LBY1VKZB9Dbzy8BZOYg3mGZd1humZMY.dCyP6vx3uce_TIobwupsk4cP3lH3_Ug6YfVMHh6Yk9pnyt82VD94Y3CqV7NerQj6gSo_H_mf; HttpOnly; SameSite=None; Secure; Path=/; Domain=substack.com; Expires=Mon, 05 Oct 2026 14:44:18 GMT
+x-service: web
+link: <https://substackcdn.com>; rel=preconnect
+server: cloudflare
+x-sub: assets
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+vary: Accept-Encoding
+content-security-policy: frame-ancestors 'self' https://*.substack.com https://substack.com
+x-cluster: substack
+x-deploy: 52a7d37c7f
+x-powered-by: Express
+x-served-by: Substack
+alt-svc: h3=":443"; ma=86400
+

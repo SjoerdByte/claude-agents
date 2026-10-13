@@ -1,0 +1,5693 @@
+{
+  "results": [
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "rapturerevelation.blogspot.rs"
+        },
+        "page": {
+          "url": "rapturerevelation.blogspot.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "rapturerevelation.blogspot.rs",
+        "apexDomain": "blogspot.rs",
+        "time": "2026-10-05T13:39:01.801Z",
+        "uuid": "01a10c49-e656-72b9-bf3b-3804bcce1827",
+        "url": "http://rapturerevelation.blogspot.rs/"
+      },
+      "stats": {
+        "uniqIPs": 25,
+        "uniqCountries": 2,
+        "dataLength": 18472274,
+        "encodedDataLength": 6724037,
+        "requests": 317
+      },
+      "page": {
+        "country": "US",
+        "server": "GSE",
+        "redirected": "off-domain",
+        "ip": "142.251.20.132",
+        "apexDomainAgeDays": 1123,
+        "language": "pl",
+        "mimeType": "text/html",
+        "title": "Rapture Revelation",
+        "url": "https://rapturerevelation.blogspot.com/",
+        "tlsValidDays": 83,
+        "tlsAgeDays": 16,
+        "ptr": "bx-in-f132.1e100.net",
+        "domainAgeDays": 1123,
+        "tlsValidFrom": "2026-09-18T20:01:31.000Z",
+        "domain": "rapturerevelation.blogspot.com",
+        "apexDomain": "rapturerevelation.blogspot.com",
+        "asnname": "GOOGLE - Google LLC, US",
+        "asn": "AS15169",
+        "tlsIssuer": "WE2",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10c49-e656-72b9-bf3b-3804bcce1827",
+      "_score": null,
+      "sort": [
+        1791207541801,
+        "01a10c49-e656-72b9-bf3b-3804bcce1827"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10c49-e656-72b9-bf3b-3804bcce1827/",
+      "screenshot": "https://urlscan.io/screenshots/01a10c49-e656-72b9-bf3b-3804bcce1827.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "lucidlonging.com"
+        },
+        "page": {
+          "url": "mayafrost.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.lucidlonging.com",
+        "apexDomain": "lucidlonging.com",
+        "time": "2026-10-05T12:14:54.268Z",
+        "uuid": "01a10bfc-ee80-74ea-8645-de6d877e8c1f",
+        "url": "http://www.lucidlonging.com/"
+      },
+      "stats": {
+        "uniqIPs": 12,
+        "uniqCountries": 4,
+        "dataLength": 8628302,
+        "encodedDataLength": 2848522,
+        "requests": 94
+      },
+      "page": {
+        "country": "NL",
+        "server": "nginx",
+        "redirected": "off-domain",
+        "ip": "35.204.150.5",
+        "apexDomainAgeDays": 1717,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Home | Maya Frost - Creator of Lucid Longing, Founder of Collapse Forward",
+        "url": "https://www.mayafrost.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 53,
+        "ptr": "5.150.204.35.bc.googleusercontent.com",
+        "domainAgeDays": 1717,
+        "tlsValidFrom": "2026-08-13T03:16:02.000Z",
+        "domain": "www.mayafrost.com",
+        "apexDomain": "mayafrost.com",
+        "asnname": "GOOGLE-CLOUD-PLATFORM - Google LLC, US",
+        "asn": "AS396982",
+        "tlsIssuer": "YR2",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10bfc-ee80-74ea-8645-de6d877e8c1f",
+      "_score": null,
+      "sort": [
+        1791202494268,
+        "01a10bfc-ee80-74ea-8645-de6d877e8c1f"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10bfc-ee80-74ea-8645-de6d877e8c1f/",
+      "screenshot": "https://urlscan.io/screenshots/01a10bfc-ee80-74ea-8645-de6d877e8c1f.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "saveku-zip.pages.dev"
+        },
+        "page": {
+          "url": "saveku-zip.pages.dev"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "saveku-zip.pages.dev",
+        "apexDomain": "saveku-zip.pages.dev",
+        "time": "2026-10-05T11:34:32.073Z",
+        "uuid": "01a10bd7-f971-7598-bfc0-3b704c5eca27",
+        "url": "http://saveku-zip.pages.dev/",
+        "tags": [
+          "@phish_report"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 18,
+        "uniqCountries": 2,
+        "dataLength": 6946119,
+        "encodedDataLength": 2425633,
+        "requests": 174
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "172.66.44.173",
+        "apexDomainAgeDays": 72,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Zip File Individually From Browser, 100% Private - Saveku",
+        "url": "https://saveku-zip.pages.dev/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 13,
+        "domainAgeDays": 72,
+        "tlsValidFrom": "2026-09-21T14:54:32.000Z",
+        "domain": "saveku-zip.pages.dev",
+        "apexDomain": "saveku-zip.pages.dev",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10bd7-f971-7598-bfc0-3b704c5eca27",
+      "_score": null,
+      "sort": [
+        1791200072073,
+        "01a10bd7-f971-7598-bfc0-3b704c5eca27"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10bd7-f971-7598-bfc0-3b704c5eca27/",
+      "screenshot": "https://urlscan.io/screenshots/01a10bd7-f971-7598-bfc0-3b704c5eca27.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "5stareducation.co.uk"
+        },
+        "page": {
+          "url": "5stareducation.co.uk"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "5stareducation.co.uk",
+        "apexDomain": "5stareducation.co.uk",
+        "time": "2026-10-05T10:59:18.865Z",
+        "uuid": "01a10baf-c3d8-71b6-a34c-a280f677095b",
+        "url": "http://5stareducation.co.uk/"
+      },
+      "stats": {
+        "uniqIPs": 31,
+        "uniqCountries": 3,
+        "dataLength": 19655909,
+        "encodedDataLength": 7116689,
+        "requests": 496
+      },
+      "page": {
+        "country": "CA",
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "23.227.38.65",
+        "apexDomainAgeDays": 531,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Accredited Online Teaching & Safety Courses UK | 5 Star Education – 5stareducation.co.uk",
+        "url": "https://5stareducation.co.uk/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 35,
+        "ptr": "myshopify.com",
+        "domainAgeDays": 531,
+        "tlsValidFrom": "2026-08-31T08:29:35.000Z",
+        "domain": "5stareducation.co.uk",
+        "apexDomain": "5stareducation.co.uk",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "YE2",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10baf-c3d8-71b6-a34c-a280f677095b",
+      "_score": null,
+      "sort": [
+        1791197958865,
+        "01a10baf-c3d8-71b6-a34c-a280f677095b"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10baf-c3d8-71b6-a34c-a280f677095b/",
+      "screenshot": "https://urlscan.io/screenshots/01a10baf-c3d8-71b6-a34c-a280f677095b.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "marketsondeck.net"
+        },
+        "page": {
+          "url": "marketsondeck.net"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "marketsondeck.net",
+        "apexDomain": "marketsondeck.net",
+        "time": "2026-10-05T10:52:23.766Z",
+        "uuid": "01a10bab-c068-734b-b95a-fd185db28d52",
+        "url": "http://marketsondeck.net/"
+      },
+      "stats": {
+        "uniqIPs": 12,
+        "uniqCountries": 2,
+        "dataLength": 7474039,
+        "encodedDataLength": 2368339,
+        "requests": 89
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "172.67.162.15",
+        "apexDomainAgeDays": 11,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "MarketsOnDeck — The Wire",
+        "url": "https://marketsondeck.net/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 11,
+        "domainAgeDays": 11,
+        "tlsValidFrom": "2026-09-24T03:24:39.000Z",
+        "domain": "marketsondeck.net",
+        "apexDomain": "marketsondeck.net",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10bab-c068-734b-b95a-fd185db28d52",
+      "_score": null,
+      "sort": [
+        1791197543766,
+        "01a10bab-c068-734b-b95a-fd185db28d52"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10bab-c068-734b-b95a-fd185db28d52/",
+      "screenshot": "https://urlscan.io/screenshots/01a10bab-c068-734b-b95a-fd185db28d52.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "thelinkedinengineer.com"
+        },
+        "page": {
+          "url": "thelinkedinengineer.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.thelinkedinengineer.com",
+        "apexDomain": "thelinkedinengineer.com",
+        "time": "2026-10-05T09:57:50.397Z",
+        "uuid": "01a10b7f-6d7b-72ff-a254-8b3bdd174d98",
+        "url": "https://www.thelinkedinengineer.com/",
+        "tags": [
+          "hybridanalysis"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 7,
+        "uniqCountries": 2,
+        "dataLength": 10777734,
+        "encodedDataLength": 3516696,
+        "requests": 253
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "104.18.36.24",
+        "apexDomainAgeDays": 654,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "The LinkedIn Engineer | Giovanni Laganà | Substack",
+        "url": "https://www.thelinkedinengineer.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 4,
+        "domainAgeDays": 654,
+        "tlsValidFrom": "2026-09-30T22:16:27.000Z",
+        "domain": "www.thelinkedinengineer.com",
+        "apexDomain": "thelinkedinengineer.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10b7f-6d7b-72ff-a254-8b3bdd174d98",
+      "_score": null,
+      "sort": [
+        1791194270397,
+        "01a10b7f-6d7b-72ff-a254-8b3bdd174d98"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10b7f-6d7b-72ff-a254-8b3bdd174d98/",
+      "screenshot": "https://urlscan.io/screenshots/01a10b7f-6d7b-72ff-a254-8b3bdd174d98.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "rapturerevelation.blogspot.ch"
+        },
+        "page": {
+          "url": "rapturerevelation.blogspot.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "rapturerevelation.blogspot.ch",
+        "apexDomain": "blogspot.ch",
+        "time": "2026-10-05T09:52:43.920Z",
+        "uuid": "01a10b7a-bc57-7706-8f80-e0222a6119b1",
+        "url": "http://rapturerevelation.blogspot.ch/"
+      },
+      "stats": {
+        "uniqIPs": 30,
+        "uniqCountries": 3,
+        "dataLength": 17729006,
+        "encodedDataLength": 5771772,
+        "requests": 301
+      },
+      "page": {
+        "country": "DE",
+        "server": "GSE",
+        "redirected": "off-domain",
+        "ip": "2a00:1450:4001:c15::84",
+        "apexDomainAgeDays": 1123,
+        "language": "de",
+        "mimeType": "text/html",
+        "title": "Rapture Revelation",
+        "url": "https://rapturerevelation.blogspot.com/",
+        "tlsValidDays": 83,
+        "tlsAgeDays": 16,
+        "domainAgeDays": 1123,
+        "tlsValidFrom": "2026-09-18T20:01:31.000Z",
+        "domain": "rapturerevelation.blogspot.com",
+        "apexDomain": "rapturerevelation.blogspot.com",
+        "asnname": "GOOGLE - Google LLC, US",
+        "asn": "AS15169",
+        "tlsIssuer": "WE2",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10b7a-bc57-7706-8f80-e0222a6119b1",
+      "_score": null,
+      "sort": [
+        1791193963920,
+        "01a10b7a-bc57-7706-8f80-e0222a6119b1"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10b7a-bc57-7706-8f80-e0222a6119b1/",
+      "screenshot": "https://urlscan.io/screenshots/01a10b7a-bc57-7706-8f80-e0222a6119b1.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "rapturerevelation.blogspot.hr"
+        },
+        "page": {
+          "url": "rapturerevelation.blogspot.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "rapturerevelation.blogspot.hr",
+        "apexDomain": "blogspot.hr",
+        "time": "2026-10-05T07:56:08.255Z",
+        "uuid": "01a10b10-003c-74e0-a236-12d29811da17",
+        "url": "http://rapturerevelation.blogspot.hr/"
+      },
+      "stats": {
+        "uniqIPs": 23,
+        "uniqCountries": 2,
+        "dataLength": 17056009,
+        "encodedDataLength": 5552434,
+        "requests": 286
+      },
+      "page": {
+        "country": "US",
+        "server": "GSE",
+        "redirected": "off-domain",
+        "ip": "192.178.183.132",
+        "apexDomainAgeDays": 1123,
+        "language": "de",
+        "mimeType": "text/html",
+        "title": "Rapture Revelation",
+        "url": "https://rapturerevelation.blogspot.com/",
+        "tlsValidDays": 83,
+        "tlsAgeDays": 16,
+        "ptr": "lcfraw-in-f132.1e100.net",
+        "domainAgeDays": 1123,
+        "tlsValidFrom": "2026-09-18T20:01:31.000Z",
+        "domain": "rapturerevelation.blogspot.com",
+        "apexDomain": "rapturerevelation.blogspot.com",
+        "asnname": "GOOGLE - Google LLC, US",
+        "asn": "AS15169",
+        "tlsIssuer": "WE2",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10b10-003c-74e0-a236-12d29811da17",
+      "_score": null,
+      "sort": [
+        1791186968255,
+        "01a10b10-003c-74e0-a236-12d29811da17"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10b10-003c-74e0-a236-12d29811da17/",
+      "screenshot": "https://urlscan.io/screenshots/01a10b10-003c-74e0-a236-12d29811da17.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "dropsitenews.com"
+        },
+        "page": {
+          "url": "dropsitenews.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "dropsitenews.com",
+        "apexDomain": "dropsitenews.com",
+        "time": "2026-10-05T07:37:09.599Z",
+        "uuid": "01a10afe-a293-7649-82ed-41b7f3c6bee4",
+        "url": "http://dropsitenews.com/",
+        "tags": [
+          "tranco_l76g4"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 11,
+        "uniqCountries": 4,
+        "dataLength": 13022061,
+        "encodedDataLength": 4941839,
+        "requests": 282
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "parent-domain",
+        "ip": "188.114.97.3",
+        "apexDomainAgeDays": 912,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Drop Site News | Substack",
+        "url": "https://www.dropsitenews.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 25,
+        "domainAgeDays": 911,
+        "tlsValidFrom": "2026-09-09T21:48:34.000Z",
+        "domain": "www.dropsitenews.com",
+        "umbrellaRank": 800195,
+        "apexDomain": "dropsitenews.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "YE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10afe-a293-7649-82ed-41b7f3c6bee4",
+      "_score": null,
+      "sort": [
+        1791185829599,
+        "01a10afe-a293-7649-82ed-41b7f3c6bee4"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10afe-a293-7649-82ed-41b7f3c6bee4/",
+      "screenshot": "https://urlscan.io/screenshots/01a10afe-a293-7649-82ed-41b7f3c6bee4.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "luxuryretreatsclub.com"
+        },
+        "page": {
+          "url": "luxuryretreatsclub.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "luxuryretreatsclub.com",
+        "apexDomain": "luxuryretreatsclub.com",
+        "time": "2026-10-05T06:03:06.427Z",
+        "uuid": "01a10aa8-865f-73c9-9542-20058578367b",
+        "url": "https://luxuryretreatsclub.com/"
+      },
+      "stats": {
+        "uniqIPs": 13,
+        "uniqCountries": 3,
+        "dataLength": 35618806,
+        "encodedDataLength": 14577496,
+        "requests": 282
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "188.114.97.3",
+        "apexDomainAgeDays": 998,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Luxury Retreats Club | Free Holidays For Influencers",
+        "url": "https://luxuryretreatsclub.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 6,
+        "domainAgeDays": 998,
+        "tlsValidFrom": "2026-09-28T08:13:37.000Z",
+        "domain": "luxuryretreatsclub.com",
+        "apexDomain": "luxuryretreatsclub.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10aa8-865f-73c9-9542-20058578367b",
+      "_score": null,
+      "sort": [
+        1791180186427,
+        "01a10aa8-865f-73c9-9542-20058578367b"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10aa8-865f-73c9-9542-20058578367b/",
+      "screenshot": "https://urlscan.io/screenshots/01a10aa8-865f-73c9-9542-20058578367b.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "meetjolandistadler.online"
+        },
+        "page": {
+          "url": "meetjolandistadler.online"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "meetjolandistadler.online",
+        "apexDomain": "meetjolandistadler.online",
+        "time": "2026-10-05T05:08:46.910Z",
+        "uuid": "01a10a76-c2b3-7721-bd92-01b60b9105e5",
+        "url": "http://meetjolandistadler.online/"
+      },
+      "stats": {
+        "uniqIPs": 6,
+        "uniqCountries": 3,
+        "dataLength": 10575034,
+        "encodedDataLength": 4613259,
+        "requests": 76
+      },
+      "page": {
+        "country": "ZA",
+        "server": "LiteSpeed",
+        "redirected": "https-only",
+        "ip": "102.222.124.22",
+        "apexDomainAgeDays": 384,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Jolandi Stadler | Author",
+        "url": "https://meetjolandistadler.online/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 18,
+        "ptr": "lowkey.aserv.co.za",
+        "domainAgeDays": 384,
+        "tlsValidFrom": "2026-09-16T15:16:55.000Z",
+        "domain": "meetjolandistadler.online",
+        "apexDomain": "meetjolandistadler.online",
+        "asnname": "AFRIHOST SP (PTY) LTD - AFRIHOST SP (PTY) LTD, ZA",
+        "asn": "AS37611",
+        "tlsIssuer": "YR2",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10a76-c2b3-7721-bd92-01b60b9105e5",
+      "_score": null,
+      "sort": [
+        1791176926910,
+        "01a10a76-c2b3-7721-bd92-01b60b9105e5"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10a76-c2b3-7721-bd92-01b60b9105e5/",
+      "screenshot": "https://urlscan.io/screenshots/01a10a76-c2b3-7721-bd92-01b60b9105e5.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "vegranola.com"
+        },
+        "page": {
+          "url": "vegranola.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.vegranola.com",
+        "apexDomain": "vegranola.com",
+        "time": "2026-10-05T02:48:25.012Z",
+        "uuid": "01a109f6-40a7-7101-85b0-9d4f6698bb12",
+        "url": "http://www.vegranola.com/",
+        "tags": [
+          "@phish_report"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 19,
+        "uniqCountries": 3,
+        "dataLength": 37495092,
+        "encodedDataLength": 22452307,
+        "requests": 170
+      },
+      "page": {
+        "country": "US",
+        "server": "Squarespace",
+        "redirected": "https-only",
+        "ip": "198.49.23.144",
+        "apexDomainAgeDays": 2308,
+        "language": "fr",
+        "mimeType": "text/html",
+        "title": "Végranola | L'alimentation végétale sans carence ni frustration",
+        "url": "https://www.vegranola.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 45,
+        "domainAgeDays": 2308,
+        "tlsValidFrom": "2026-08-20T02:52:53.000Z",
+        "domain": "www.vegranola.com",
+        "apexDomain": "vegranola.com",
+        "asnname": "SQUARESPACE - Squarespace, Inc., US",
+        "asn": "AS53831",
+        "tlsIssuer": "YR2",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a109f6-40a7-7101-85b0-9d4f6698bb12",
+      "_score": null,
+      "sort": [
+        1791168505012,
+        "01a109f6-40a7-7101-85b0-9d4f6698bb12"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a109f6-40a7-7101-85b0-9d4f6698bb12/",
+      "screenshot": "https://urlscan.io/screenshots/01a109f6-40a7-7101-85b0-9d4f6698bb12.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "tnxasia.com"
+        },
+        "page": {
+          "url": "tnxasia.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "tnxasia.com",
+        "apexDomain": "tnxasia.com",
+        "time": "2026-10-04T23:56:52.336Z",
+        "uuid": "01a10959-3c81-74f9-86f0-370200e58218",
+        "url": "https://tnxasia.com/"
+      },
+      "stats": {
+        "uniqIPs": 7,
+        "uniqCountries": 2,
+        "dataLength": 10584292,
+        "encodedDataLength": 3356815,
+        "requests": 248
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "parent-domain",
+        "ip": "104.18.36.24",
+        "apexDomainAgeDays": 10,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "tnx asia | Georg Ackermann | Substack",
+        "url": "https://www.tnxasia.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 0,
+        "tlsValidFrom": "2026-10-04T09:52:43.000Z",
+        "domain": "www.tnxasia.com",
+        "apexDomain": "tnxasia.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10959-3c81-74f9-86f0-370200e58218",
+      "_score": null,
+      "sort": [
+        1791158212336,
+        "01a10959-3c81-74f9-86f0-370200e58218"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10959-3c81-74f9-86f0-370200e58218/",
+      "screenshot": "https://urlscan.io/screenshots/01a10959-3c81-74f9-86f0-370200e58218.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "hplfilmfestival.com/hplfilmfestival-portland-or"
+        },
+        "page": {
+          "url": "hplfilmfestival.com/hplfilmfestival-portland-or"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "hplfilmfestival.com",
+        "apexDomain": "hplfilmfestival.com",
+        "time": "2026-10-04T19:43:22.897Z",
+        "uuid": "01a10871-0df2-7167-b610-511f17e6950f",
+        "url": "https://hplfilmfestival.com/hplfilmfestival-portland-or#top"
+      },
+      "stats": {
+        "uniqIPs": 20,
+        "uniqCountries": 4,
+        "dataLength": 18249815,
+        "encodedDataLength": 6591075,
+        "requests": 217
+      },
+      "page": {
+        "country": "US",
+        "server": "nginx/1.10.3 (Ubuntu)",
+        "redirected": "same-domain",
+        "ip": "198.199.116.73",
+        "apexDomainAgeDays": 3077,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "H.P. Lovecraft Film Festival - Portland, OR | H.P. Lovecraft Film Festival & CthulhuCon",
+        "url": "https://hplfilmfestival.com/hplfilmfestival-portland-or",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 47,
+        "domainAgeDays": 3077,
+        "tlsValidFrom": "2026-08-18T12:45:25.000Z",
+        "domain": "hplfilmfestival.com",
+        "apexDomain": "hplfilmfestival.com",
+        "asnname": "DIGITALOCEAN-ASN - DigitalOcean, LLC, US",
+        "asn": "AS14061",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10871-0df2-7167-b610-511f17e6950f",
+      "_score": null,
+      "sort": [
+        1791143002897,
+        "01a10871-0df2-7167-b610-511f17e6950f"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10871-0df2-7167-b610-511f17e6950f/",
+      "screenshot": "https://urlscan.io/screenshots/01a10871-0df2-7167-b610-511f17e6950f.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "amazonunderworld.org"
+        },
+        "page": {
+          "url": "amazonunderworld.org"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "amazonunderworld.org",
+        "apexDomain": "amazonunderworld.org",
+        "time": "2026-10-04T19:36:43.578Z",
+        "uuid": "01a1086b-00d2-75d5-b005-8dae70c0dcf2",
+        "url": "http://amazonunderworld.org/"
+      },
+      "stats": {
+        "uniqIPs": 18,
+        "uniqCountries": 2,
+        "dataLength": 30427042,
+        "encodedDataLength": 9758682,
+        "requests": 275
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "188.114.97.3",
+        "apexDomainAgeDays": 1158,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Amazon Underworld",
+        "url": "https://amazonunderworld.org/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 43,
+        "domainAgeDays": 1158,
+        "tlsValidFrom": "2026-08-21T20:04:27.000Z",
+        "domain": "amazonunderworld.org",
+        "apexDomain": "amazonunderworld.org",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1086b-00d2-75d5-b005-8dae70c0dcf2",
+      "_score": null,
+      "sort": [
+        1791142603578,
+        "01a1086b-00d2-75d5-b005-8dae70c0dcf2"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1086b-00d2-75d5-b005-8dae70c0dcf2/",
+      "screenshot": "https://urlscan.io/screenshots/01a1086b-00d2-75d5-b005-8dae70c0dcf2.png"
+    },
+    {
+      "canonical": {
+        "task": {
+          "url": "authorelodiecolliard.com"
+        },
+        "page": {
+          "url": "authorelodiecolliard.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "automatic",
+        "domain": "www.authorelodiecolliard.com",
+        "apexDomain": "authorelodiecolliard.com",
+        "time": "2026-10-04T19:18:10.476Z",
+        "source": "certstream-suspicious",
+        "uuid": "01a1085a-0e36-7456-b7d7-ec78fc92c2bb",
+        "url": "https://www.authorelodiecolliard.com/"
+      },
+      "stats": {
+        "uniqIPs": 12,
+        "uniqCountries": 3,
+        "dataLength": 16003025,
+        "encodedDataLength": 8964475,
+        "requests": 168
+      },
+      "page": {
+        "country": "US",
+        "server": "cloudflare",
+        "ip": "162.159.138.9",
+        "apexDomainAgeDays": 1121,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Homepage -",
+        "url": "https://www.authorelodiecolliard.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 472,
+        "tlsValidFrom": "2026-10-04T16:27:12.000Z",
+        "domain": "www.authorelodiecolliard.com",
+        "apexDomain": "authorelodiecolliard.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1085a-0e36-7456-b7d7-ec78fc92c2bb",
+      "_score": null,
+      "sort": [
+        1791141490476,
+        "01a1085a-0e36-7456-b7d7-ec78fc92c2bb"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1085a-0e36-7456-b7d7-ec78fc92c2bb/",
+      "screenshot": "https://urlscan.io/screenshots/01a1085a-0e36-7456-b7d7-ec78fc92c2bb.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jwbouchard.com"
+        },
+        "page": {
+          "url": "jwbouchard.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jwbouchard.com",
+        "apexDomain": "jwbouchard.com",
+        "time": "2026-10-04T19:16:10.370Z",
+        "uuid": "01a10858-1c91-728a-80cb-15979c780268",
+        "url": "http://jwbouchard.com/"
+      },
+      "stats": {
+        "uniqIPs": 12,
+        "uniqCountries": 2,
+        "dataLength": 10755647,
+        "encodedDataLength": 4711673,
+        "requests": 132
+      },
+      "page": {
+        "country": "US",
+        "server": "LiteSpeed",
+        "redirected": "https-only",
+        "ip": "145.79.4.140",
+        "apexDomainAgeDays": 3584,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Home - jwbouchard.com",
+        "url": "https://jwbouchard.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 29,
+        "domainAgeDays": 3584,
+        "tlsValidFrom": "2026-09-05T12:47:40.000Z",
+        "domain": "jwbouchard.com",
+        "apexDomain": "jwbouchard.com",
+        "asnname": "AS-HOSTINGER Hostinger International Limited, CY",
+        "asn": "AS47583",
+        "tlsIssuer": "YE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10858-1c91-728a-80cb-15979c780268",
+      "_score": null,
+      "sort": [
+        1791141370370,
+        "01a10858-1c91-728a-80cb-15979c780268"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10858-1c91-728a-80cb-15979c780268/",
+      "screenshot": "https://urlscan.io/screenshots/01a10858-1c91-728a-80cb-15979c780268.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bpleon.com"
+        },
+        "page": {
+          "url": "bpleon.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.bpleon.com",
+        "apexDomain": "bpleon.com",
+        "time": "2026-10-04T17:58:37.227Z",
+        "uuid": "01a10811-404b-77b7-9524-d49b7ed12cd3",
+        "url": "http://www.bpleon.com/",
+        "tags": [
+          "@phish_report"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 13,
+        "uniqCountries": 3,
+        "dataLength": 12115585,
+        "encodedDataLength": 3181218,
+        "requests": 270
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "2606:4700:3031::6815:25f8",
+        "apexDomainAgeDays": 1115,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Brandon Leon",
+        "url": "https://www.bpleon.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 41,
+        "domainAgeDays": 1115,
+        "tlsValidFrom": "2026-08-24T09:30:33.000Z",
+        "domain": "www.bpleon.com",
+        "apexDomain": "bpleon.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10811-404b-77b7-9524-d49b7ed12cd3",
+      "_score": null,
+      "sort": [
+        1791136717227,
+        "01a10811-404b-77b7-9524-d49b7ed12cd3"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10811-404b-77b7-9524-d49b7ed12cd3/",
+      "screenshot": "https://urlscan.io/screenshots/01a10811-404b-77b7-9524-d49b7ed12cd3.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "registrarwidgets.com"
+        },
+        "page": {
+          "url": "registrar.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "registrarwidgets.com",
+        "apexDomain": "registrarwidgets.com",
+        "time": "2026-10-04T17:48:09.156Z",
+        "uuid": "01a10807-afbb-730b-b760-4d67556fc301",
+        "url": "https://registrarwidgets.com/"
+      },
+      "stats": {
+        "uniqIPs": 5,
+        "uniqCountries": 2,
+        "dataLength": 6183759,
+        "encodedDataLength": 1774227,
+        "requests": 58
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "off-domain",
+        "ip": "188.114.97.3",
+        "apexDomainAgeDays": 2290,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Registrar.com | The Authority Layer for AI",
+        "url": "https://registrar.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 26,
+        "domainAgeDays": 2290,
+        "tlsValidFrom": "2026-09-07T22:43:30.000Z",
+        "domain": "registrar.com",
+        "apexDomain": "registrar.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10807-afbb-730b-b760-4d67556fc301",
+      "_score": null,
+      "sort": [
+        1791136089156,
+        "01a10807-afbb-730b-b760-4d67556fc301"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10807-afbb-730b-b760-4d67556fc301/",
+      "screenshot": "https://urlscan.io/screenshots/01a10807-afbb-730b-b760-4d67556fc301.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bagable.com"
+        },
+        "page": {
+          "url": "bagable.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bagable.com",
+        "apexDomain": "bagable.com",
+        "time": "2026-10-04T17:14:26.029Z",
+        "uuid": "01a107e8-c186-7318-a9ef-20d71ccb71f9",
+        "url": "https://bagable.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 2,
+        "dataLength": 12381709,
+        "encodedDataLength": 4731340,
+        "requests": 269
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "parent-domain",
+        "ip": "104.18.36.24",
+        "apexDomainAgeDays": 1327,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Bagable.com | Substack",
+        "url": "https://www.bagable.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 45,
+        "domainAgeDays": 1069,
+        "tlsValidFrom": "2026-08-20T06:53:35.000Z",
+        "domain": "www.bagable.com",
+        "apexDomain": "bagable.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a107e8-c186-7318-a9ef-20d71ccb71f9",
+      "_score": null,
+      "sort": [
+        1791134066029,
+        "01a107e8-c186-7318-a9ef-20d71ccb71f9"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a107e8-c186-7318-a9ef-20d71ccb71f9/",
+      "screenshot": "https://urlscan.io/screenshots/01a107e8-c186-7318-a9ef-20d71ccb71f9.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "marketsondeck.net"
+        },
+        "page": {
+          "url": "marketsondeck.net"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "marketsondeck.net",
+        "apexDomain": "marketsondeck.net",
+        "time": "2026-10-04T13:47:07.735Z",
+        "uuid": "01a1072a-f498-70aa-9898-5e024708498e",
+        "url": "http://marketsondeck.net/"
+      },
+      "stats": {
+        "uniqIPs": 12,
+        "uniqCountries": 2,
+        "dataLength": 7444361,
+        "encodedDataLength": 2278726,
+        "requests": 87
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "172.67.162.15",
+        "apexDomainAgeDays": 10,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "MarketsOnDeck — The Wire",
+        "url": "https://marketsondeck.net/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 10,
+        "domainAgeDays": 10,
+        "tlsValidFrom": "2026-09-24T03:24:39.000Z",
+        "domain": "marketsondeck.net",
+        "apexDomain": "marketsondeck.net",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1072a-f498-70aa-9898-5e024708498e",
+      "_score": null,
+      "sort": [
+        1791121627735,
+        "01a1072a-f498-70aa-9898-5e024708498e"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1072a-f498-70aa-9898-5e024708498e/",
+      "screenshot": "https://urlscan.io/screenshots/01a1072a-f498-70aa-9898-5e024708498e.png"
+    },
+    {
+      "canonical": {
+        "task": {
+          "url": "architectingsecurity.com"
+        },
+        "page": {
+          "url": "architectingsecurity.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "automatic",
+        "domain": "architectingsecurity.com",
+        "apexDomain": "architectingsecurity.com",
+        "time": "2026-10-04T13:02:54.773Z",
+        "source": "certstream-suspicious",
+        "uuid": "01a10702-82ac-708f-ab34-bc1961d9db4d",
+        "url": "https://architectingsecurity.com/"
+      },
+      "stats": {
+        "uniqIPs": 9,
+        "uniqCountries": 3,
+        "dataLength": 10418295,
+        "encodedDataLength": 3164921,
+        "requests": 248
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "2606:4700:4406::ac40:97e8",
+        "apexDomainAgeDays": 4727,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Architecting Security | Substack",
+        "url": "https://architectingsecurity.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 50,
+        "domainAgeDays": 4727,
+        "tlsValidFrom": "2026-08-15T07:12:01.000Z",
+        "domain": "architectingsecurity.com",
+        "apexDomain": "architectingsecurity.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10702-82ac-708f-ab34-bc1961d9db4d",
+      "_score": null,
+      "sort": [
+        1791118974773,
+        "01a10702-82ac-708f-ab34-bc1961d9db4d"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10702-82ac-708f-ab34-bc1961d9db4d/",
+      "screenshot": "https://urlscan.io/screenshots/01a10702-82ac-708f-ab34-bc1961d9db4d.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "wheeliemsadvocate.co.uk"
+        },
+        "page": {
+          "url": "wheeliemsadvocate.co.uk"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "wheeliemsadvocate.co.uk",
+        "apexDomain": "wheeliemsadvocate.co.uk",
+        "time": "2026-10-04T12:59:32.116Z",
+        "uuid": "01a106ff-5bc1-7458-9e8c-d6d3b12f2c44",
+        "url": "http://wheeliemsadvocate.co.uk/"
+      },
+      "stats": {
+        "uniqIPs": 49,
+        "uniqCountries": 6,
+        "dataLength": 26652008,
+        "encodedDataLength": 8829797,
+        "requests": 343
+      },
+      "page": {
+        "country": "GB",
+        "server": "Apache",
+        "redirected": "https-only",
+        "ip": "185.151.30.164",
+        "apexDomainAgeDays": 479,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Wheelie MS Advocate - Powered by Wheels, Driven by Justice",
+        "url": "https://wheeliemsadvocate.co.uk/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 47,
+        "ptr": "185-151-30-164.ptr4.stackcp.net",
+        "domainAgeDays": 479,
+        "tlsValidFrom": "2026-08-18T09:55:43.000Z",
+        "domain": "wheeliemsadvocate.co.uk",
+        "apexDomain": "wheeliemsadvocate.co.uk",
+        "asnname": "TWENTYI 20i Limited, GB",
+        "asn": "AS48254",
+        "tlsIssuer": "YR2",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a106ff-5bc1-7458-9e8c-d6d3b12f2c44",
+      "_score": null,
+      "sort": [
+        1791118772116,
+        "01a106ff-5bc1-7458-9e8c-d6d3b12f2c44"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a106ff-5bc1-7458-9e8c-d6d3b12f2c44/",
+      "screenshot": "https://urlscan.io/screenshots/01a106ff-5bc1-7458-9e8c-d6d3b12f2c44.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "iainlowery.com"
+        },
+        "page": {
+          "url": "iainlowery.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "iainlowery.com",
+        "apexDomain": "iainlowery.com",
+        "time": "2026-10-04T12:37:41.986Z",
+        "uuid": "01a106eb-6443-70fc-96b9-984e1783c291",
+        "url": "http://iainlowery.com/"
+      },
+      "stats": {
+        "uniqIPs": 17,
+        "uniqCountries": 4,
+        "dataLength": 12601052,
+        "encodedDataLength": 2747106,
+        "requests": 160
+      },
+      "page": {
+        "country": "GB",
+        "server": "nginx/1.29.0",
+        "ip": "77.68.64.20",
+        "apexDomainAgeDays": 2339,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Iain Lowery",
+        "url": "http://iainlowery.com/",
+        "ptr": "server77-68-64-20.fasthosts.net.uk",
+        "domainAgeDays": 2339,
+        "domain": "iainlowery.com",
+        "apexDomain": "iainlowery.com",
+        "asnname": "IONOS-AS IONOS SE, DE",
+        "asn": "AS8560",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a106eb-6443-70fc-96b9-984e1783c291",
+      "_score": null,
+      "sort": [
+        1791117461986,
+        "01a106eb-6443-70fc-96b9-984e1783c291"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a106eb-6443-70fc-96b9-984e1783c291/",
+      "screenshot": "https://urlscan.io/screenshots/01a106eb-6443-70fc-96b9-984e1783c291.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jmail.world/thread/36bed70a50b74cfaa1400b2dd257cf91"
+        },
+        "page": {
+          "url": "jmail.world/thread/36bed70a50b74cfaa1400b2dd257cf91"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jmail.world",
+        "apexDomain": "jmail.world",
+        "time": "2026-10-04T11:15:47.997Z",
+        "uuid": "01a106a0-6bc9-715b-bc84-db57979675ee",
+        "url": "https://jmail.world/thread/36bed70a50b74cfaa1400b2dd257cf91?q=https%3A%2F%2Flivetraffic.net%2Flogin%3Frefer%3D119334"
+      },
+      "stats": {
+        "uniqIPs": 21,
+        "uniqCountries": 3,
+        "dataLength": 20263986,
+        "encodedDataLength": 5468820,
+        "requests": 153
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "104.20.26.122",
+        "apexDomainAgeDays": 2390,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Amazon.com Reviews: Jeffrey, did 'Nobody Likes a Cockblock' meet your expectations? Review it on Amazon.com — Epstein Emails",
+        "url": "https://jmail.world/thread/36bed70a50b74cfaa1400b2dd257cf91?q=https%3A%2F%2Flivetraffic.net%2Flogin%3Frefer%3D119334",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 22,
+        "domainAgeDays": 2390,
+        "tlsValidFrom": "2026-09-11T11:31:21.000Z",
+        "domain": "jmail.world",
+        "umbrellaRank": 409628,
+        "apexDomain": "jmail.world",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a106a0-6bc9-715b-bc84-db57979675ee",
+      "_score": null,
+      "sort": [
+        1791112547997,
+        "01a106a0-6bc9-715b-bc84-db57979675ee"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a106a0-6bc9-715b-bc84-db57979675ee/",
+      "screenshot": "https://urlscan.io/screenshots/01a106a0-6bc9-715b-bc84-db57979675ee.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "neuroai.science"
+        },
+        "page": {
+          "url": "neuroai.science"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.neuroai.science",
+        "apexDomain": "neuroai.science",
+        "time": "2026-10-04T10:31:45.571Z",
+        "uuid": "01a10678-1d12-71df-85aa-83dc6a9be08a",
+        "url": "http://www.neuroai.science/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 2,
+        "dataLength": 11511396,
+        "encodedDataLength": 3768436,
+        "requests": 251
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 1417,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "The NeuroAI archive | Patrick Mineault | Substack",
+        "url": "https://www.neuroai.science/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 26,
+        "domainAgeDays": 1130,
+        "tlsValidFrom": "2026-09-07T10:40:34.000Z",
+        "domain": "www.neuroai.science",
+        "apexDomain": "neuroai.science",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10678-1d12-71df-85aa-83dc6a9be08a",
+      "_score": null,
+      "sort": [
+        1791109905571,
+        "01a10678-1d12-71df-85aa-83dc6a9be08a"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10678-1d12-71df-85aa-83dc6a9be08a/",
+      "screenshot": "https://urlscan.io/screenshots/01a10678-1d12-71df-85aa-83dc6a9be08a.png"
+    },
+    {
+      "canonical": {
+        "task": {
+          "url": "yhlqmdlgmoney.com"
+        },
+        "page": {
+          "url": "yhlqmdlgmoney.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "automatic",
+        "domain": "www.yhlqmdlgmoney.com",
+        "apexDomain": "yhlqmdlgmoney.com",
+        "time": "2026-10-04T10:27:39.910Z",
+        "source": "certstream-suspicious",
+        "uuid": "01a10674-3cd8-7539-bcb3-3133ad833e1b",
+        "url": "https://www.yhlqmdlgmoney.com/"
+      },
+      "stats": {
+        "uniqIPs": 13,
+        "uniqCountries": 3,
+        "dataLength": 12491274,
+        "encodedDataLength": 5577597,
+        "requests": 241
+      },
+      "page": {
+        "country": "AE",
+        "server": "cloudflare",
+        "ip": "185.158.133.1",
+        "apexDomainAgeDays": 413,
+        "language": "es",
+        "mimeType": "text/html",
+        "title": "Calculadora YHLQMDLG | Cronograma IF",
+        "url": "https://www.yhlqmdlgmoney.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "ptr": "lovable-app-cd-1-4.p.l5e.io",
+        "domainAgeDays": 413,
+        "tlsValidFrom": "2026-10-04T09:01:59.000Z",
+        "domain": "www.yhlqmdlgmoney.com",
+        "apexDomain": "yhlqmdlgmoney.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10674-3cd8-7539-bcb3-3133ad833e1b",
+      "_score": null,
+      "sort": [
+        1791109659910,
+        "01a10674-3cd8-7539-bcb3-3133ad833e1b"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10674-3cd8-7539-bcb3-3133ad833e1b/",
+      "screenshot": "https://urlscan.io/screenshots/01a10674-3cd8-7539-bcb3-3133ad833e1b.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "sethgillihan.com"
+        },
+        "page": {
+          "url": "sethgillihan.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "sethgillihan.com",
+        "apexDomain": "sethgillihan.com",
+        "time": "2026-10-04T10:06:05.513Z",
+        "uuid": "01a10660-9ca1-7429-9c15-18b2548bca7c",
+        "url": "http://sethgillihan.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 3,
+        "dataLength": 10229302,
+        "encodedDataLength": 3839226,
+        "requests": 93
+      },
+      "page": {
+        "country": "US",
+        "server": "Apache",
+        "redirected": "https-only",
+        "ip": "192.185.144.45",
+        "apexDomainAgeDays": 3617,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Seth J. Gillihan, PhD - Think Act Be | Mindful Cognitive Behavioral Therapy (CBT)",
+        "url": "https://sethgillihan.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 57,
+        "ptr": "192-185-144-45.unifiedlayer.com",
+        "domainAgeDays": 3617,
+        "tlsValidFrom": "2026-08-08T03:32:30.000Z",
+        "domain": "sethgillihan.com",
+        "apexDomain": "sethgillihan.com",
+        "asnname": "ORACLE-BMC-31898 - Oracle Corporation, US",
+        "asn": "AS31898",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10660-9ca1-7429-9c15-18b2548bca7c",
+      "_score": null,
+      "sort": [
+        1791108365513,
+        "01a10660-9ca1-7429-9c15-18b2548bca7c"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10660-9ca1-7429-9c15-18b2548bca7c/",
+      "screenshot": "https://urlscan.io/screenshots/01a10660-9ca1-7429-9c15-18b2548bca7c.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "downthestack.co"
+        },
+        "page": {
+          "url": "downthestack.co"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "downthestack.co",
+        "apexDomain": "downthestack.co",
+        "time": "2026-10-04T09:47:38.631Z",
+        "uuid": "01a1064f-c022-7553-b36c-a1c3a058a86e",
+        "url": "https://downthestack.co/"
+      },
+      "stats": {
+        "uniqIPs": 10,
+        "uniqCountries": 3,
+        "dataLength": 10250416,
+        "encodedDataLength": 3043702,
+        "requests": 243
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "2606:4700:4401::6812:2418",
+        "apexDomainAgeDays": 7,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Down the Stack | tcs | Substack",
+        "url": "https://downthestack.co/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 7,
+        "tlsValidFrom": "2026-10-03T21:59:24.000Z",
+        "domain": "downthestack.co",
+        "apexDomain": "downthestack.co",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1064f-c022-7553-b36c-a1c3a058a86e",
+      "_score": null,
+      "sort": [
+        1791107258631,
+        "01a1064f-c022-7553-b36c-a1c3a058a86e"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1064f-c022-7553-b36c-a1c3a058a86e/",
+      "screenshot": "https://urlscan.io/screenshots/01a1064f-c022-7553-b36c-a1c3a058a86e.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jmail.world/thread/a5eb8f86da09a8cf551d555e7d3de63e"
+        },
+        "page": {
+          "url": "jmail.world/thread/a5eb8f86da09a8cf551d555e7d3de63e"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jmail.world",
+        "apexDomain": "jmail.world",
+        "time": "2026-10-04T09:25:25.154Z",
+        "uuid": "01a1063b-5856-72cb-8793-b47208b99160",
+        "url": "https://jmail.world/thread/a5eb8f86da09a8cf551d555e7d3de63e?q=https%3A%2F%2Fwww.followlike.info%2F%3Fr%3D19384926"
+      },
+      "stats": {
+        "uniqIPs": 14,
+        "uniqCountries": 2,
+        "dataLength": 20344780,
+        "encodedDataLength": 5421811,
+        "requests": 131
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "104.20.26.122",
+        "apexDomainAgeDays": 2390,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Invotek - Amazon Marketplace: How's Your New SENSO ActivBuds Bluetooth Headphones? — Epstein Emails",
+        "url": "https://jmail.world/thread/a5eb8f86da09a8cf551d555e7d3de63e?q=https%3A%2F%2Fwww.followlike.info%2F%3Fr%3D19384926",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 22,
+        "domainAgeDays": 2390,
+        "tlsValidFrom": "2026-09-11T11:31:21.000Z",
+        "domain": "jmail.world",
+        "umbrellaRank": 409628,
+        "apexDomain": "jmail.world",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1063b-5856-72cb-8793-b47208b99160",
+      "_score": null,
+      "sort": [
+        1791105925154,
+        "01a1063b-5856-72cb-8793-b47208b99160"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1063b-5856-72cb-8793-b47208b99160/",
+      "screenshot": "https://urlscan.io/screenshots/01a1063b-5856-72cb-8793-b47208b99160.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "thenewpragmatic.com"
+        },
+        "page": {
+          "url": "thenewpragmatic.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "thenewpragmatic.com",
+        "apexDomain": "thenewpragmatic.com",
+        "time": "2026-10-04T09:17:27.750Z",
+        "uuid": "01a10634-12e6-73ec-ae49-0cf3067551c0",
+        "url": "https://thenewpragmatic.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 2,
+        "dataLength": 10209173,
+        "encodedDataLength": 3003721,
+        "requests": 245
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "parent-domain",
+        "ip": "104.18.36.24",
+        "apexDomainAgeDays": 35,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "The New Pragmatic | Substack",
+        "url": "https://www.thenewpragmatic.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 0,
+        "tlsValidFrom": "2026-10-04T01:46:01.000Z",
+        "domain": "www.thenewpragmatic.com",
+        "apexDomain": "thenewpragmatic.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10634-12e6-73ec-ae49-0cf3067551c0",
+      "_score": null,
+      "sort": [
+        1791105447750,
+        "01a10634-12e6-73ec-ae49-0cf3067551c0"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10634-12e6-73ec-ae49-0cf3067551c0/",
+      "screenshot": "https://urlscan.io/screenshots/01a10634-12e6-73ec-ae49-0cf3067551c0.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "thehumanperimeter.com"
+        },
+        "page": {
+          "url": "thehumanperimeter.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "thehumanperimeter.com",
+        "apexDomain": "thehumanperimeter.com",
+        "time": "2026-10-04T07:57:34.352Z",
+        "uuid": "01a105ea-f178-70d7-86dc-d10aa1eb7b2c",
+        "url": "https://thehumanperimeter.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 2,
+        "dataLength": 10708418,
+        "encodedDataLength": 3368134,
+        "requests": 256
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "parent-domain",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 4,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "The Human Perimeter | Hanson Hosein | Substack",
+        "url": "https://www.thehumanperimeter.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 0,
+        "tlsValidFrom": "2026-10-03T23:17:12.000Z",
+        "domain": "www.thehumanperimeter.com",
+        "apexDomain": "thehumanperimeter.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a105ea-f178-70d7-86dc-d10aa1eb7b2c",
+      "_score": null,
+      "sort": [
+        1791100654352,
+        "01a105ea-f178-70d7-86dc-d10aa1eb7b2c"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a105ea-f178-70d7-86dc-d10aa1eb7b2c/",
+      "screenshot": "https://urlscan.io/screenshots/01a105ea-f178-70d7-86dc-d10aa1eb7b2c.png"
+    },
+    {
+      "canonical": {
+        "task": {
+          "url": "controlplanecapital.com"
+        },
+        "page": {
+          "url": "controlplanecapital.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "automatic",
+        "domain": "controlplanecapital.com",
+        "apexDomain": "controlplanecapital.com",
+        "time": "2026-10-04T07:43:48.311Z",
+        "source": "certstream-suspicious",
+        "uuid": "01a105de-5c17-71f8-8327-2095733633dc",
+        "url": "https://controlplanecapital.com/"
+      },
+      "stats": {
+        "uniqIPs": 10,
+        "uniqCountries": 2,
+        "dataLength": 12410205,
+        "encodedDataLength": 4997857,
+        "requests": 256
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 354,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Control-Plane Capital | Substack",
+        "url": "https://controlplanecapital.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 354,
+        "tlsValidFrom": "2026-10-04T06:22:30.000Z",
+        "domain": "controlplanecapital.com",
+        "apexDomain": "controlplanecapital.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a105de-5c17-71f8-8327-2095733633dc",
+      "_score": null,
+      "sort": [
+        1791099828311,
+        "01a105de-5c17-71f8-8327-2095733633dc"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a105de-5c17-71f8-8327-2095733633dc/",
+      "screenshot": "https://urlscan.io/screenshots/01a105de-5c17-71f8-8327-2095733633dc.png"
+    },
+    {
+      "canonical": {
+        "task": {
+          "url": "blog.joinodin.com/p/reforming-uk-regulation-for-small"
+        },
+        "page": {
+          "url": "blog.joinodin.com/p/reforming-uk-regulation-for-small"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "manual",
+        "domain": "blog.joinodin.com",
+        "apexDomain": "joinodin.com",
+        "time": "2026-10-04T07:33:23.655Z",
+        "uuid": "01a105d4-d6f7-708e-bf09-72095c2ca149",
+        "url": "https://blog.joinodin.com/p/reforming-uk-regulation-for-small"
+      },
+      "stats": {
+        "uniqIPs": 14,
+        "uniqCountries": 3,
+        "dataLength": 9147232,
+        "encodedDataLength": 2703224,
+        "requests": 102
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 2305,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Reforming UK Regulation for Small Funds - by Dan Gray",
+        "url": "https://blog.joinodin.com/p/reforming-uk-regulation-for-small",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 9,
+        "domainAgeDays": 1446,
+        "tlsValidFrom": "2026-09-24T09:10:19.000Z",
+        "domain": "blog.joinodin.com",
+        "apexDomain": "joinodin.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a105d4-d6f7-708e-bf09-72095c2ca149",
+      "_score": null,
+      "sort": [
+        1791099203655,
+        "01a105d4-d6f7-708e-bf09-72095c2ca149"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a105d4-d6f7-708e-bf09-72095c2ca149/",
+      "screenshot": "https://urlscan.io/screenshots/01a105d4-d6f7-708e-bf09-72095c2ca149.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jmail.world/thread/43959a42b8e3e03d2ab29f81744ce5d4"
+        },
+        "page": {
+          "url": "jmail.world/thread/43959a42b8e3e03d2ab29f81744ce5d4"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jmail.world",
+        "apexDomain": "jmail.world",
+        "time": "2026-10-04T06:16:09.684Z",
+        "uuid": "01a1058e-1b68-74bd-ae48-585fd0bbcbc7",
+        "url": "https://jmail.world/thread/43959a42b8e3e03d2ab29f81744ce5d4?q=http%3A%2F%2Ffolllike.com%2F%3F19384926"
+      },
+      "stats": {
+        "uniqIPs": 17,
+        "uniqCountries": 2,
+        "dataLength": 18920495,
+        "encodedDataLength": 5024848,
+        "requests": 131
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "104.20.26.122",
+        "apexDomainAgeDays": 2390,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": ": Delay in shipping your Amazon.com order — Epstein Emails",
+        "url": "https://jmail.world/thread/43959a42b8e3e03d2ab29f81744ce5d4?q=http%3A%2F%2Ffolllike.com%2F%3F19384926",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 22,
+        "domainAgeDays": 2390,
+        "tlsValidFrom": "2026-09-11T11:31:21.000Z",
+        "domain": "jmail.world",
+        "umbrellaRank": 409628,
+        "apexDomain": "jmail.world",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1058e-1b68-74bd-ae48-585fd0bbcbc7",
+      "_score": null,
+      "sort": [
+        1791094569684,
+        "01a1058e-1b68-74bd-ae48-585fd0bbcbc7"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1058e-1b68-74bd-ae48-585fd0bbcbc7/",
+      "screenshot": "https://urlscan.io/screenshots/01a1058e-1b68-74bd-ae48-585fd0bbcbc7.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "democracyproject.org.nz"
+        },
+        "page": {
+          "url": "democracyproject.org.nz"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "democracyproject.org.nz",
+        "apexDomain": "democracyproject.org.nz",
+        "time": "2026-10-04T06:03:48.384Z",
+        "uuid": "01a10582-c8d1-71be-abf4-7c2eba0c6140",
+        "url": "https://democracyproject.org.nz/",
+        "tags": [
+          "@phish_report"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 15,
+        "uniqCountries": 3,
+        "dataLength": 11102301,
+        "encodedDataLength": 4272722,
+        "requests": 275
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "parent-domain",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 320,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "The Democracy Project | Bryce Edwards | Substack",
+        "url": "https://www.democracyproject.org.nz/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 25,
+        "domainAgeDays": 321,
+        "tlsValidFrom": "2026-09-08T22:49:43.000Z",
+        "domain": "www.democracyproject.org.nz",
+        "apexDomain": "democracyproject.org.nz",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10582-c8d1-71be-abf4-7c2eba0c6140",
+      "_score": null,
+      "sort": [
+        1791093828384,
+        "01a10582-c8d1-71be-abf4-7c2eba0c6140"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10582-c8d1-71be-abf4-7c2eba0c6140/",
+      "screenshot": "https://urlscan.io/screenshots/01a10582-c8d1-71be-abf4-7c2eba0c6140.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "democracyproject.org.nz"
+        },
+        "page": {
+          "url": "democracyproject.org.nz"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "democracyproject.org.nz",
+        "apexDomain": "democracyproject.org.nz",
+        "time": "2026-10-04T06:03:46.529Z",
+        "uuid": "01a10582-bde8-7587-885f-7865c7cfb85b",
+        "url": "https://democracyproject.org.nz/",
+        "tags": [
+          "phishing",
+          "drainer",
+          "crypto-scam"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 15,
+        "uniqCountries": 3,
+        "dataLength": 11100759,
+        "encodedDataLength": 4272317,
+        "requests": 275
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "parent-domain",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 320,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "The Democracy Project | Bryce Edwards | Substack",
+        "url": "https://www.democracyproject.org.nz/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 25,
+        "domainAgeDays": 321,
+        "tlsValidFrom": "2026-09-08T22:49:43.000Z",
+        "domain": "www.democracyproject.org.nz",
+        "apexDomain": "democracyproject.org.nz",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10582-bde8-7587-885f-7865c7cfb85b",
+      "_score": null,
+      "sort": [
+        1791093826529,
+        "01a10582-bde8-7587-885f-7865c7cfb85b"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10582-bde8-7587-885f-7865c7cfb85b/",
+      "screenshot": "https://urlscan.io/screenshots/01a10582-bde8-7587-885f-7865c7cfb85b.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "financewithoutfinance.com"
+        },
+        "page": {
+          "url": "financewithoutfinance.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.financewithoutfinance.com",
+        "apexDomain": "financewithoutfinance.com",
+        "time": "2026-10-04T05:54:40.900Z",
+        "uuid": "01a1057a-74e8-7339-9b99-97e653766143",
+        "url": "http://www.financewithoutfinance.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 2,
+        "dataLength": 10770795,
+        "encodedDataLength": 3197696,
+        "requests": 248
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 54,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Finance Without Finance | Rumika Sharma | Substack",
+        "url": "https://www.financewithoutfinance.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 54,
+        "domainAgeDays": 54,
+        "tlsValidFrom": "2026-08-10T23:26:51.000Z",
+        "domain": "www.financewithoutfinance.com",
+        "apexDomain": "financewithoutfinance.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1057a-74e8-7339-9b99-97e653766143",
+      "_score": null,
+      "sort": [
+        1791093280900,
+        "01a1057a-74e8-7339-9b99-97e653766143"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1057a-74e8-7339-9b99-97e653766143/",
+      "screenshot": "https://urlscan.io/screenshots/01a1057a-74e8-7339-9b99-97e653766143.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jmail.world/thread/b68518857dd0bf69cbe0cc7b16b3770e"
+        },
+        "page": {
+          "url": "jmail.world/thread/b68518857dd0bf69cbe0cc7b16b3770e"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jmail.world",
+        "apexDomain": "jmail.world",
+        "time": "2026-10-04T05:28:31.436Z",
+        "uuid": "01a10562-8363-73ca-92d2-8b748871da73",
+        "url": "https://jmail.world/thread/b68518857dd0bf69cbe0cc7b16b3770e?q=https%3A%2F%2F2pink.org%2Fdang-ky%3Fref%3D119334"
+      },
+      "stats": {
+        "uniqIPs": 16,
+        "uniqCountries": 2,
+        "dataLength": 20367196,
+        "encodedDataLength": 5450107,
+        "requests": 135
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "172.66.157.175",
+        "apexDomainAgeDays": 2390,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Amazon.com: Amazon.com order of The Panama Papers: Breaking the Story of How the Rich and Powerful Hide Their Money. — Epstein Emails",
+        "url": "https://jmail.world/thread/b68518857dd0bf69cbe0cc7b16b3770e?q=https%3A%2F%2F2pink.org%2Fdang-ky%3Fref%3D119334",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 22,
+        "domainAgeDays": 2390,
+        "tlsValidFrom": "2026-09-11T11:31:21.000Z",
+        "domain": "jmail.world",
+        "umbrellaRank": 409628,
+        "apexDomain": "jmail.world",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10562-8363-73ca-92d2-8b748871da73",
+      "_score": null,
+      "sort": [
+        1791091711436,
+        "01a10562-8363-73ca-92d2-8b748871da73"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10562-8363-73ca-92d2-8b748871da73/",
+      "screenshot": "https://urlscan.io/screenshots/01a10562-8363-73ca-92d2-8b748871da73.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "fingerlakes1.com"
+        },
+        "page": {
+          "url": "fingerlakes1.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "fingerlakes1.com",
+        "apexDomain": "fingerlakes1.com",
+        "time": "2026-10-04T04:59:28.193Z",
+        "uuid": "01a10547-ea1c-712b-b2c8-23b0fa0ec6ea",
+        "url": "http://fingerlakes1.com/",
+        "tags": [
+          "tranco_l76g4"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 29,
+        "uniqCountries": 2,
+        "dataLength": 14917638,
+        "encodedDataLength": 5137649,
+        "requests": 182
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "parent-domain",
+        "ip": "104.26.9.146",
+        "apexDomainAgeDays": 3440,
+        "language": "de",
+        "mimeType": "text/html",
+        "title": "FingerLakes1.com - News and Information for your life in the Finger Lakes | Fingerlakes1.com",
+        "url": "https://www.fingerlakes1.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 16,
+        "domainAgeDays": 3440,
+        "tlsValidFrom": "2026-09-17T18:21:59.000Z",
+        "domain": "www.fingerlakes1.com",
+        "apexDomain": "fingerlakes1.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10547-ea1c-712b-b2c8-23b0fa0ec6ea",
+      "_score": null,
+      "sort": [
+        1791089968193,
+        "01a10547-ea1c-712b-b2c8-23b0fa0ec6ea"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10547-ea1c-712b-b2c8-23b0fa0ec6ea/",
+      "screenshot": "https://urlscan.io/screenshots/01a10547-ea1c-712b-b2c8-23b0fa0ec6ea.png"
+    },
+    {
+      "canonical": {
+        "task": {
+          "url": "torchandtinder.org"
+        },
+        "page": {
+          "url": "torchandtinder.org"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "automatic",
+        "domain": "www.torchandtinder.org",
+        "apexDomain": "torchandtinder.org",
+        "time": "2026-10-04T04:20:15.812Z",
+        "source": "certstream-suspicious",
+        "uuid": "01a10524-0147-71bf-894e-6b5b802c909b",
+        "url": "https://www.torchandtinder.org/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 2,
+        "dataLength": 10313157,
+        "encodedDataLength": 3822548,
+        "requests": 258
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 586,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Torch & Tinder | Substack",
+        "url": "https://www.torchandtinder.org/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 354,
+        "tlsValidFrom": "2026-10-04T02:55:45.000Z",
+        "domain": "www.torchandtinder.org",
+        "apexDomain": "torchandtinder.org",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10524-0147-71bf-894e-6b5b802c909b",
+      "_score": null,
+      "sort": [
+        1791087615812,
+        "01a10524-0147-71bf-894e-6b5b802c909b"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10524-0147-71bf-894e-6b5b802c909b/",
+      "screenshot": "https://urlscan.io/screenshots/01a10524-0147-71bf-894e-6b5b802c909b.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "testedinicchia.eu"
+        },
+        "page": {
+          "url": "testedinicchia.eu"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "testedinicchia.eu",
+        "apexDomain": "testedinicchia.eu",
+        "time": "2026-10-04T03:55:26.731Z",
+        "uuid": "01a1050d-4924-73e8-b128-cc504f5d42ac",
+        "url": "https://testedinicchia.eu/"
+      },
+      "stats": {
+        "uniqIPs": 15,
+        "uniqCountries": 3,
+        "dataLength": 12978000,
+        "encodedDataLength": 3856739,
+        "requests": 275
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "parent-domain",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 826,
+        "language": "it",
+        "mimeType": "text/html",
+        "title": "Teste di nicchia | Andrea Borruso | Substack",
+        "url": "https://www.testedinicchia.eu/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 826,
+        "tlsValidFrom": "2026-10-03T22:57:59.000Z",
+        "domain": "www.testedinicchia.eu",
+        "apexDomain": "testedinicchia.eu",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1050d-4924-73e8-b128-cc504f5d42ac",
+      "_score": null,
+      "sort": [
+        1791086126731,
+        "01a1050d-4924-73e8-b128-cc504f5d42ac"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1050d-4924-73e8-b128-cc504f5d42ac/",
+      "screenshot": "https://urlscan.io/screenshots/01a1050d-4924-73e8-b128-cc504f5d42ac.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jmail.world/thread/29b5aca91c8c4f2783fc5486f8396b3f"
+        },
+        "page": {
+          "url": "jmail.world/thread/29b5aca91c8c4f2783fc5486f8396b3f"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jmail.world",
+        "apexDomain": "jmail.world",
+        "time": "2026-10-04T03:29:06.121Z",
+        "uuid": "01a104f5-2f0b-7443-9a9f-4b4cdba954d3",
+        "url": "https://jmail.world/thread/29b5aca91c8c4f2783fc5486f8396b3f?q=https%3A%2F%2Fwww.followlike.net%2F%3Fr%3D19384926"
+      },
+      "stats": {
+        "uniqIPs": 15,
+        "uniqCountries": 4,
+        "dataLength": 20268957,
+        "encodedDataLength": 5443101,
+        "requests": 131
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "2606:4700:10::6814:1a7a",
+        "apexDomainAgeDays": 2390,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Amazon.com: Amazon.com order of Discourse on Metaphysics and Other Essays: Discourse on Metaphysics; On the Ultimate Origination of Things; Preface to the New Essays; The Monadology (Hackett Classics)",
+        "url": "https://jmail.world/thread/29b5aca91c8c4f2783fc5486f8396b3f?q=https%3A%2F%2Fwww.followlike.net%2F%3Fr%3D19384926",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 22,
+        "domainAgeDays": 2390,
+        "tlsValidFrom": "2026-09-11T11:31:21.000Z",
+        "domain": "jmail.world",
+        "umbrellaRank": 409628,
+        "apexDomain": "jmail.world",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a104f5-2f0b-7443-9a9f-4b4cdba954d3",
+      "_score": null,
+      "sort": [
+        1791084546121,
+        "01a104f5-2f0b-7443-9a9f-4b4cdba954d3"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a104f5-2f0b-7443-9a9f-4b4cdba954d3/",
+      "screenshot": "https://urlscan.io/screenshots/01a104f5-2f0b-7443-9a9f-4b4cdba954d3.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "economicshelp.org"
+        },
+        "page": {
+          "url": "economicshelp.org"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "economicshelp.org",
+        "apexDomain": "economicshelp.org",
+        "time": "2026-10-04T03:00:46.433Z",
+        "uuid": "01a104db-4241-75de-bffc-0ca8738505e8",
+        "url": "http://economicshelp.org/",
+        "tags": [
+          "tranco_l76g4"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 24,
+        "uniqCountries": 4,
+        "dataLength": 11243786,
+        "encodedDataLength": 3346953,
+        "requests": 191
+      },
+      "page": {
+        "country": "GB",
+        "server": "nginx",
+        "redirected": "parent-domain",
+        "ip": "35.214.8.227",
+        "apexDomainAgeDays": 4700,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Economics Help",
+        "url": "https://www.economicshelp.org/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 10,
+        "ptr": "227.8.214.35.bc.googleusercontent.com",
+        "domainAgeDays": 3806,
+        "tlsValidFrom": "2026-09-23T07:20:23.000Z",
+        "domain": "www.economicshelp.org",
+        "umbrellaRank": 929141,
+        "apexDomain": "economicshelp.org",
+        "asnname": "GOOGLE - Google LLC, US",
+        "asn": "AS15169",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a104db-4241-75de-bffc-0ca8738505e8",
+      "_score": null,
+      "sort": [
+        1791082846433,
+        "01a104db-4241-75de-bffc-0ca8738505e8"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a104db-4241-75de-bffc-0ca8738505e8/",
+      "screenshot": "https://urlscan.io/screenshots/01a104db-4241-75de-bffc-0ca8738505e8.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jmail.world/thread/6ba5fd5195616344462c538a55255cd9"
+        },
+        "page": {
+          "url": "jmail.world/thread/6ba5fd5195616344462c538a55255cd9"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jmail.world",
+        "apexDomain": "jmail.world",
+        "time": "2026-10-04T02:47:14.453Z",
+        "uuid": "01a104ce-d65d-760d-9ba4-0123fcb8c35a",
+        "url": "https://jmail.world/thread/6ba5fd5195616344462c538a55255cd9?q=https%3A%2F%2Fwww.followlike.net%2F%3Fr%3D19384926"
+      },
+      "stats": {
+        "uniqIPs": 21,
+        "uniqCountries": 3,
+        "dataLength": 20220824,
+        "encodedDataLength": 5435058,
+        "requests": 147
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "104.20.26.122",
+        "apexDomainAgeDays": 2390,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Amazon.com: Delivery attempt unsuccessful — Epstein Emails",
+        "url": "https://jmail.world/thread/6ba5fd5195616344462c538a55255cd9?q=https%3A%2F%2Fwww.followlike.net%2F%3Fr%3D19384926",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 22,
+        "domainAgeDays": 2390,
+        "tlsValidFrom": "2026-09-11T11:31:21.000Z",
+        "domain": "jmail.world",
+        "umbrellaRank": 409628,
+        "apexDomain": "jmail.world",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a104ce-d65d-760d-9ba4-0123fcb8c35a",
+      "_score": null,
+      "sort": [
+        1791082034453,
+        "01a104ce-d65d-760d-9ba4-0123fcb8c35a"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a104ce-d65d-760d-9ba4-0123fcb8c35a/",
+      "screenshot": "https://urlscan.io/screenshots/01a104ce-d65d-760d-9ba4-0123fcb8c35a.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "unpackedangles.com"
+        },
+        "page": {
+          "url": "unpackedangles.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "unpackedangles.com",
+        "apexDomain": "unpackedangles.com",
+        "time": "2026-10-04T02:31:06.316Z",
+        "uuid": "01a104c0-1327-7429-98ac-e7f2ffb1adaa",
+        "url": "https://unpackedangles.com/"
+      },
+      "stats": {
+        "uniqIPs": 10,
+        "uniqCountries": 2,
+        "dataLength": 15081126,
+        "encodedDataLength": 4879157,
+        "requests": 128
+      },
+      "page": {
+        "country": "US",
+        "server": "Squarespace",
+        "redirected": "parent-domain",
+        "ip": "198.49.23.144",
+        "apexDomainAgeDays": 1327,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Unpacked Angles",
+        "url": "https://www.unpackedangles.com/",
+        "tlsValidDays": 386,
+        "tlsAgeDays": 236,
+        "domainAgeDays": 2413,
+        "tlsValidFrom": "2026-02-10T00:00:00.000Z",
+        "domain": "www.unpackedangles.com",
+        "apexDomain": "unpackedangles.com",
+        "asnname": "SQUARESPACE - Squarespace, Inc., US",
+        "asn": "AS53831",
+        "tlsIssuer": "DigiCert Global G2 TLS RSA SHA256 2020 CA1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a104c0-1327-7429-98ac-e7f2ffb1adaa",
+      "_score": null,
+      "sort": [
+        1791081066316,
+        "01a104c0-1327-7429-98ac-e7f2ffb1adaa"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a104c0-1327-7429-98ac-e7f2ffb1adaa/",
+      "screenshot": "https://urlscan.io/screenshots/01a104c0-1327-7429-98ac-e7f2ffb1adaa.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "pureinfotech.com/build-29680-windows-11-feature-platforms"
+        },
+        "page": {
+          "url": "pureinfotech.com/build-29680-windows-11-feature-platforms"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "pureinfotech.com",
+        "apexDomain": "pureinfotech.com",
+        "time": "2026-10-04T02:11:53.738Z",
+        "uuid": "01a104ae-7b4b-75af-ab7d-b48bfe00b9bd",
+        "url": "https://pureinfotech.com/build-29680-windows-11-feature-platforms/"
+      },
+      "stats": {
+        "uniqIPs": 28,
+        "uniqCountries": 3,
+        "dataLength": 12293124,
+        "encodedDataLength": 3681230,
+        "requests": 142
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "104.21.14.57",
+        "apexDomainAgeDays": 3484,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Build 29680 for Windows 11 outs with Start visual changes – Feature Platforms - Pureinfotech",
+        "url": "https://pureinfotech.com/build-29680-windows-11-feature-platforms/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 35,
+        "domainAgeDays": 3484,
+        "tlsValidFrom": "2026-08-29T15:21:59.000Z",
+        "domain": "pureinfotech.com",
+        "umbrellaRank": 758185,
+        "apexDomain": "pureinfotech.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a104ae-7b4b-75af-ab7d-b48bfe00b9bd",
+      "_score": null,
+      "sort": [
+        1791079913738,
+        "01a104ae-7b4b-75af-ab7d-b48bfe00b9bd"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a104ae-7b4b-75af-ab7d-b48bfe00b9bd/",
+      "screenshot": "https://urlscan.io/screenshots/01a104ae-7b4b-75af-ab7d-b48bfe00b9bd.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bestcoloringbooksforkids.com"
+        },
+        "page": {
+          "url": "bestcoloringbooksforkids.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bestcoloringbooksforkids.com",
+        "apexDomain": "bestcoloringbooksforkids.com",
+        "time": "2026-10-04T01:57:19.368Z",
+        "uuid": "01a104a1-29ab-733d-a474-9ceb0fb3f126",
+        "url": "http://bestcoloringbooksforkids.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 3,
+        "dataLength": 9904851,
+        "encodedDataLength": 4149809,
+        "requests": 69
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "188.114.96.3",
+        "apexDomainAgeDays": 4,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Coloring & Activity Books for Kids | Best Coloring Books for Kids",
+        "url": "https://bestcoloringbooksforkids.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 1,
+        "domainAgeDays": 4,
+        "tlsValidFrom": "2026-10-03T00:14:27.000Z",
+        "domain": "bestcoloringbooksforkids.com",
+        "apexDomain": "bestcoloringbooksforkids.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a104a1-29ab-733d-a474-9ceb0fb3f126",
+      "_score": null,
+      "sort": [
+        1791079039368,
+        "01a104a1-29ab-733d-a474-9ceb0fb3f126"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a104a1-29ab-733d-a474-9ceb0fb3f126/",
+      "screenshot": "https://urlscan.io/screenshots/01a104a1-29ab-733d-a474-9ceb0fb3f126.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bestdrawingbooks.com"
+        },
+        "page": {
+          "url": "bestdrawingbooks.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bestdrawingbooks.com",
+        "apexDomain": "bestdrawingbooks.com",
+        "time": "2026-10-04T01:50:05.863Z",
+        "uuid": "01a1049a-8815-74fc-9774-89b41025d29d",
+        "url": "http://bestdrawingbooks.com/"
+      },
+      "stats": {
+        "uniqIPs": 14,
+        "uniqCountries": 2,
+        "dataLength": 12849948,
+        "encodedDataLength": 7657773,
+        "requests": 86
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "104.21.48.161",
+        "apexDomainAgeDays": 3542,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Drawing Books for Kids | Step-by-Step, Tracing & Grid | Best Drawing Books",
+        "url": "https://bestdrawingbooks.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 1,
+        "domainAgeDays": 3542,
+        "tlsValidFrom": "2026-10-03T00:12:38.000Z",
+        "domain": "bestdrawingbooks.com",
+        "apexDomain": "bestdrawingbooks.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1049a-8815-74fc-9774-89b41025d29d",
+      "_score": null,
+      "sort": [
+        1791078605863,
+        "01a1049a-8815-74fc-9774-89b41025d29d"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1049a-8815-74fc-9774-89b41025d29d/",
+      "screenshot": "https://urlscan.io/screenshots/01a1049a-8815-74fc-9774-89b41025d29d.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bestcoloringbooksforkids.com"
+        },
+        "page": {
+          "url": "bestcoloringbooksforkids.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.bestcoloringbooksforkids.com",
+        "apexDomain": "bestcoloringbooksforkids.com",
+        "time": "2026-10-04T01:14:14.640Z",
+        "uuid": "01a10479-b973-7320-85be-d20a62e7270c",
+        "url": "http://www.bestcoloringbooksforkids.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 3,
+        "dataLength": 9823831,
+        "encodedDataLength": 4135989,
+        "requests": 67
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "188.114.97.3",
+        "apexDomainAgeDays": 4,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Coloring & Activity Books for Kids | Best Coloring Books for Kids",
+        "url": "https://www.bestcoloringbooksforkids.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 1,
+        "domainAgeDays": 0,
+        "tlsValidFrom": "2026-10-03T00:14:27.000Z",
+        "domain": "www.bestcoloringbooksforkids.com",
+        "apexDomain": "bestcoloringbooksforkids.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10479-b973-7320-85be-d20a62e7270c",
+      "_score": null,
+      "sort": [
+        1791076454640,
+        "01a10479-b973-7320-85be-d20a62e7270c"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10479-b973-7320-85be-d20a62e7270c/",
+      "screenshot": "https://urlscan.io/screenshots/01a10479-b973-7320-85be-d20a62e7270c.png"
+    },
+    {
+      "canonical": {
+        "task": {
+          "url": "manifacture.xyz"
+        },
+        "page": {
+          "url": "manifacture.xyz"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "automatic",
+        "domain": "www.manifacture.xyz",
+        "apexDomain": "manifacture.xyz",
+        "time": "2026-10-04T01:04:38.104Z",
+        "source": "certstream-suspicious",
+        "uuid": "01a10470-e931-72ad-a764-a3cac3e54e44",
+        "url": "https://www.manifacture.xyz/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 2,
+        "dataLength": 10348129,
+        "encodedDataLength": 3150036,
+        "requests": 244
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 601,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Manifacture | Substack",
+        "url": "https://www.manifacture.xyz/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 601,
+        "tlsValidFrom": "2026-10-03T23:43:01.000Z",
+        "domain": "www.manifacture.xyz",
+        "apexDomain": "manifacture.xyz",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10470-e931-72ad-a764-a3cac3e54e44",
+      "_score": null,
+      "sort": [
+        1791075878104,
+        "01a10470-e931-72ad-a764-a3cac3e54e44"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10470-e931-72ad-a764-a3cac3e54e44/",
+      "screenshot": "https://urlscan.io/screenshots/01a10470-e931-72ad-a764-a3cac3e54e44.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bestdrawingbooks.com"
+        },
+        "page": {
+          "url": "bestdrawingbooks.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.bestdrawingbooks.com",
+        "apexDomain": "bestdrawingbooks.com",
+        "time": "2026-10-04T00:28:03.362Z",
+        "uuid": "01a1044f-6f74-75e6-a566-5bc584a95a48",
+        "url": "http://www.bestdrawingbooks.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 2,
+        "dataLength": 13526310,
+        "encodedDataLength": 7821395,
+        "requests": 70
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "104.21.48.161",
+        "apexDomainAgeDays": 3542,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Drawing Books for Kids | Step-by-Step, Tracing & Grid | Best Drawing Books",
+        "url": "https://www.bestdrawingbooks.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 1,
+        "domainAgeDays": 3542,
+        "tlsValidFrom": "2026-10-03T00:12:38.000Z",
+        "domain": "www.bestdrawingbooks.com",
+        "apexDomain": "bestdrawingbooks.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1044f-6f74-75e6-a566-5bc584a95a48",
+      "_score": null,
+      "sort": [
+        1791073683362,
+        "01a1044f-6f74-75e6-a566-5bc584a95a48"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1044f-6f74-75e6-a566-5bc584a95a48/",
+      "screenshot": "https://urlscan.io/screenshots/01a1044f-6f74-75e6-a566-5bc584a95a48.png"
+    },
+    {
+      "canonical": {
+        "task": {
+          "url": "casualfifth.com"
+        },
+        "page": {
+          "url": "casualfifth.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "automatic",
+        "domain": "www.casualfifth.com",
+        "apexDomain": "casualfifth.com",
+        "time": "2026-10-04T00:10:59.445Z",
+        "source": "certstream-suspicious",
+        "uuid": "01a1043f-cc17-7187-825b-26363b148cd5",
+        "url": "https://www.casualfifth.com/"
+      },
+      "stats": {
+        "uniqIPs": 15,
+        "uniqCountries": 2,
+        "dataLength": 14385788,
+        "encodedDataLength": 4986858,
+        "requests": 96
+      },
+      "page": {
+        "country": "US",
+        "server": "ESF",
+        "ip": "142.251.14.121",
+        "apexDomainAgeDays": 1327,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Casual Fifth",
+        "url": "https://www.casualfifth.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "ptr": "pm-in-f121.1e100.net",
+        "domainAgeDays": 2300,
+        "tlsValidFrom": "2026-10-03T22:37:46.000Z",
+        "domain": "www.casualfifth.com",
+        "apexDomain": "casualfifth.com",
+        "asnname": "GOOGLE - Google LLC, US",
+        "asn": "AS15169",
+        "tlsIssuer": "WR3",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1043f-cc17-7187-825b-26363b148cd5",
+      "_score": null,
+      "sort": [
+        1791072659445,
+        "01a1043f-cc17-7187-825b-26363b148cd5"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1043f-cc17-7187-825b-26363b148cd5/",
+      "screenshot": "https://urlscan.io/screenshots/01a1043f-cc17-7187-825b-26363b148cd5.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bienoubien.com"
+        },
+        "page": {
+          "url": "bienoubien.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "time": "2026-10-04T00:06:51.085Z",
+        "uuid": "01a1043c-00de-724e-a554-9c6366d844b8",
+        "url": "http://bienoubien.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 4,
+        "dataLength": 26158620,
+        "encodedDataLength": 3865386,
+        "requests": 207
+      },
+      "page": {
+        "country": "FR",
+        "server": "o2switch-PowerBoost-v3",
+        "redirected": "https-only",
+        "ip": "78.40.11.68",
+        "apexDomainAgeDays": 1934,
+        "language": "fr",
+        "mimeType": "text/html",
+        "title": "Marques engagées et consommation durable | Bien ou Bien",
+        "url": "https://bienoubien.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 45,
+        "domainAgeDays": 1934,
+        "tlsValidFrom": "2026-08-19T07:50:38.000Z",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "asnname": "O2SWITCH O2SWITCH SAS, FR",
+        "asn": "AS50474",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1043c-00de-724e-a554-9c6366d844b8",
+      "_score": null,
+      "sort": [
+        1791072411085,
+        "01a1043c-00de-724e-a554-9c6366d844b8"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1043c-00de-724e-a554-9c6366d844b8/",
+      "screenshot": "https://urlscan.io/screenshots/01a1043c-00de-724e-a554-9c6366d844b8.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "schooleducation.in"
+        },
+        "page": {
+          "url": "schooleducation.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.schooleducation.in",
+        "apexDomain": "schooleducation.in",
+        "time": "2026-10-03T23:44:18.250Z",
+        "uuid": "01a10427-5a49-74bb-b5fd-5b7473481cc2",
+        "url": "http://www.schooleducation.in/"
+      },
+      "stats": {
+        "uniqIPs": 24,
+        "uniqCountries": 4,
+        "dataLength": 22779385,
+        "encodedDataLength": 4341788,
+        "requests": 225
+      },
+      "page": {
+        "country": "US",
+        "server": "DPS/2.0.0+sha-444370c",
+        "redirected": "off-domain",
+        "ip": "13.248.243.5",
+        "apexDomainAgeDays": 2726,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Join Good Schools Alliance for Joyful Collaborative Learning",
+        "url": "https://schooleducation.com/",
+        "tlsValidDays": 198,
+        "tlsAgeDays": 151,
+        "ptr": "a16e665f42988324c.awsglobalaccelerator.com",
+        "domainAgeDays": 2726,
+        "tlsValidFrom": "2026-05-05T18:07:21.000Z",
+        "domain": "schooleducation.com",
+        "apexDomain": "schooleducation.com",
+        "asnname": "AMAZON-02 - Amazon.com, Inc., US",
+        "asn": "AS16509",
+        "tlsIssuer": "GoDaddy TLS Intermediate CA DV - R1v1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10427-5a49-74bb-b5fd-5b7473481cc2",
+      "_score": null,
+      "sort": [
+        1791071058250,
+        "01a10427-5a49-74bb-b5fd-5b7473481cc2"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10427-5a49-74bb-b5fd-5b7473481cc2/",
+      "screenshot": "https://urlscan.io/screenshots/01a10427-5a49-74bb-b5fd-5b7473481cc2.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "2performant.com"
+        },
+        "page": {
+          "url": "2performant.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "2performant.com",
+        "apexDomain": "2performant.com",
+        "time": "2026-10-03T23:41:58.788Z",
+        "uuid": "01a10425-3a39-7061-988d-15737f396e57",
+        "url": "http://2performant.com/",
+        "tags": [
+          "tranco_l76g4"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 32,
+        "uniqCountries": 3,
+        "dataLength": 14530548,
+        "encodedDataLength": 6640584,
+        "requests": 133
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "104.26.4.196",
+        "apexDomainAgeDays": 4908,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "2Performant, makers of BusinessLeague - 2Performant",
+        "url": "https://2performant.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 19,
+        "domainAgeDays": 4908,
+        "tlsValidFrom": "2026-09-14T18:13:50.000Z",
+        "domain": "2performant.com",
+        "umbrellaRank": 162123,
+        "apexDomain": "2performant.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10425-3a39-7061-988d-15737f396e57",
+      "_score": null,
+      "sort": [
+        1791070918788,
+        "01a10425-3a39-7061-988d-15737f396e57"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10425-3a39-7061-988d-15737f396e57/",
+      "screenshot": "https://urlscan.io/screenshots/01a10425-3a39-7061-988d-15737f396e57.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "poems.world"
+        },
+        "page": {
+          "url": "queerpoems.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "poems.world",
+        "apexDomain": "poems.world",
+        "time": "2026-10-03T23:36:09.682Z",
+        "uuid": "01a1041f-e10f-750c-8a4b-fb5886dcf131",
+        "url": "http://poems.world/"
+      },
+      "stats": {
+        "uniqIPs": 16,
+        "uniqCountries": 3,
+        "dataLength": 11143991,
+        "encodedDataLength": 3784416,
+        "requests": 274
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "off-domain",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 317,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Queer Poem-A-Day | Substack",
+        "url": "https://www.queerpoems.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 57,
+        "domainAgeDays": 176,
+        "tlsValidFrom": "2026-08-07T00:13:17.000Z",
+        "domain": "www.queerpoems.com",
+        "apexDomain": "queerpoems.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1041f-e10f-750c-8a4b-fb5886dcf131",
+      "_score": null,
+      "sort": [
+        1791070569682,
+        "01a1041f-e10f-750c-8a4b-fb5886dcf131"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1041f-e10f-750c-8a4b-fb5886dcf131/",
+      "screenshot": "https://urlscan.io/screenshots/01a1041f-e10f-750c-8a4b-fb5886dcf131.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "klabs.ltd"
+        },
+        "page": {
+          "url": "klabs.ltd"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "klabs.ltd",
+        "apexDomain": "klabs.ltd",
+        "time": "2026-10-03T23:09:29.984Z",
+        "uuid": "01a10407-80d2-750f-9651-9bb9a188e4f3",
+        "url": "http://klabs.ltd/"
+      },
+      "stats": {
+        "uniqIPs": 14,
+        "uniqCountries": 4,
+        "dataLength": 9636238,
+        "encodedDataLength": 3017448,
+        "requests": 67
+      },
+      "page": {
+        "country": "DE",
+        "server": "Netlify",
+        "redirected": "https-only",
+        "ip": "35.157.26.135",
+        "apexDomainAgeDays": 531,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Klabs Venture Studios Powered by Kspace Technologies HQ",
+        "url": "https://klabs.ltd/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 6,
+        "ptr": "ec2-35-157-26-135.eu-central-1.compute.amazonaws.com",
+        "domainAgeDays": 531,
+        "tlsValidFrom": "2026-09-27T21:14:51.000Z",
+        "domain": "klabs.ltd",
+        "apexDomain": "klabs.ltd",
+        "asnname": "AMAZON-02 - Amazon.com, Inc., US",
+        "asn": "AS16509",
+        "tlsIssuer": "YE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10407-80d2-750f-9651-9bb9a188e4f3",
+      "_score": null,
+      "sort": [
+        1791068969984,
+        "01a10407-80d2-750f-9651-9bb9a188e4f3"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10407-80d2-750f-9651-9bb9a188e4f3/",
+      "screenshot": "https://urlscan.io/screenshots/01a10407-80d2-750f-9651-9bb9a188e4f3.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "rapturerevelation.blogspot.pt"
+        },
+        "page": {
+          "url": "rapturerevelation.blogspot.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "rapturerevelation.blogspot.pt",
+        "apexDomain": "blogspot.pt",
+        "time": "2026-10-03T22:51:21.586Z",
+        "uuid": "01a103f6-d864-7402-924b-c4fbf6be23b9",
+        "url": "http://rapturerevelation.blogspot.pt/"
+      },
+      "stats": {
+        "uniqIPs": 22,
+        "uniqCountries": 2,
+        "dataLength": 17047176,
+        "encodedDataLength": 5466809,
+        "requests": 288
+      },
+      "page": {
+        "country": "US",
+        "server": "GSE",
+        "redirected": "off-domain",
+        "ip": "142.251.110.132",
+        "apexDomainAgeDays": 1122,
+        "language": "pt",
+        "mimeType": "text/html",
+        "title": "Rapture Revelation",
+        "url": "https://rapturerevelation.blogspot.com/",
+        "tlsValidDays": 83,
+        "tlsAgeDays": 15,
+        "ptr": "bz-in-f132.1e100.net",
+        "domainAgeDays": 1122,
+        "tlsValidFrom": "2026-09-18T20:01:31.000Z",
+        "domain": "rapturerevelation.blogspot.com",
+        "apexDomain": "rapturerevelation.blogspot.com",
+        "asnname": "GOOGLE - Google LLC, US",
+        "asn": "AS15169",
+        "tlsIssuer": "WE2",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a103f6-d864-7402-924b-c4fbf6be23b9",
+      "_score": null,
+      "sort": [
+        1791067881586,
+        "01a103f6-d864-7402-924b-c4fbf6be23b9"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a103f6-d864-7402-924b-c4fbf6be23b9/",
+      "screenshot": "https://urlscan.io/screenshots/01a103f6-d864-7402-924b-c4fbf6be23b9.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "blackvanguardmedia.com"
+        },
+        "page": {
+          "url": "blackvanguardmedia.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.blackvanguardmedia.com",
+        "apexDomain": "blackvanguardmedia.com",
+        "time": "2026-10-03T22:48:38.159Z",
+        "uuid": "01a103e8-182d-75ec-aef4-86001443a92f",
+        "url": "http://www.blackvanguardmedia.com/"
+      },
+      "stats": {
+        "uniqIPs": 11,
+        "uniqCountries": 2,
+        "dataLength": 10883305,
+        "encodedDataLength": 4028934,
+        "requests": 274
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "104.18.36.24",
+        "apexDomainAgeDays": 594,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "The Black Vanguard Media | Substack",
+        "url": "https://www.blackvanguardmedia.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 590,
+        "tlsValidFrom": "2026-10-03T20:13:25.000Z",
+        "domain": "www.blackvanguardmedia.com",
+        "apexDomain": "blackvanguardmedia.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a103e8-182d-75ec-aef4-86001443a92f",
+      "_score": null,
+      "sort": [
+        1791067718159,
+        "01a103e8-182d-75ec-aef4-86001443a92f"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a103e8-182d-75ec-aef4-86001443a92f/",
+      "screenshot": "https://urlscan.io/screenshots/01a103e8-182d-75ec-aef4-86001443a92f.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "mettlewell.com"
+        },
+        "page": {
+          "url": "mettlewell.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.mettlewell.com",
+        "apexDomain": "mettlewell.com",
+        "time": "2026-10-03T22:08:55.426Z",
+        "uuid": "01a103cf-d109-721d-a1d0-15fd3768ccab",
+        "url": "http://www.mettlewell.com/",
+        "tags": [
+          "@phish_report"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 15,
+        "uniqCountries": 2,
+        "dataLength": 9508602,
+        "encodedDataLength": 2821695,
+        "requests": 255
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 1305,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Mettlewell | Substack",
+        "url": "https://www.mettlewell.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 15,
+        "domainAgeDays": 750,
+        "tlsValidFrom": "2026-09-18T04:06:06.000Z",
+        "domain": "www.mettlewell.com",
+        "apexDomain": "mettlewell.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a103cf-d109-721d-a1d0-15fd3768ccab",
+      "_score": null,
+      "sort": [
+        1791065335426,
+        "01a103cf-d109-721d-a1d0-15fd3768ccab"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a103cf-d109-721d-a1d0-15fd3768ccab/",
+      "screenshot": "https://urlscan.io/screenshots/01a103cf-d109-721d-a1d0-15fd3768ccab.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "amazonunderworld.org"
+        },
+        "page": {
+          "url": "amazonunderworld.org"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "amazonunderworld.org",
+        "apexDomain": "amazonunderworld.org",
+        "time": "2026-10-03T21:14:25.490Z",
+        "uuid": "01a1039e-1fb5-7648-bc2e-a5a73d435d27",
+        "url": "https://amazonunderworld.org/"
+      },
+      "stats": {
+        "uniqIPs": 13,
+        "uniqCountries": 2,
+        "dataLength": 31021855,
+        "encodedDataLength": 9994280,
+        "requests": 246
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "188.114.96.3",
+        "apexDomainAgeDays": 1157,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Amazon Underworld",
+        "url": "https://amazonunderworld.org/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 43,
+        "domainAgeDays": 1157,
+        "tlsValidFrom": "2026-08-21T20:04:27.000Z",
+        "domain": "amazonunderworld.org",
+        "apexDomain": "amazonunderworld.org",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1039e-1fb5-7648-bc2e-a5a73d435d27",
+      "_score": null,
+      "sort": [
+        1791062065490,
+        "01a1039e-1fb5-7648-bc2e-a5a73d435d27"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1039e-1fb5-7648-bc2e-a5a73d435d27/",
+      "screenshot": "https://urlscan.io/screenshots/01a1039e-1fb5-7648-bc2e-a5a73d435d27.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "blog.pepite.club"
+        },
+        "page": {
+          "url": "blog.pepite.club"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "blog.pepite.club",
+        "apexDomain": "pepite.club",
+        "time": "2026-10-03T21:00:31.639Z",
+        "uuid": "01a10391-539e-755f-beb4-5bcfcae7ee1e",
+        "url": "http://blog.pepite.club/"
+      },
+      "stats": {
+        "uniqIPs": 15,
+        "uniqCountries": 2,
+        "dataLength": 9934311,
+        "encodedDataLength": 3155536,
+        "requests": 265
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 2339,
+        "language": "fr",
+        "mimeType": "text/html",
+        "title": "Pepite Club | Substack",
+        "url": "https://blog.pepite.club/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 48,
+        "domainAgeDays": 1577,
+        "tlsValidFrom": "2026-08-16T08:49:20.000Z",
+        "domain": "blog.pepite.club",
+        "apexDomain": "pepite.club",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10391-539e-755f-beb4-5bcfcae7ee1e",
+      "_score": null,
+      "sort": [
+        1791061231639,
+        "01a10391-539e-755f-beb4-5bcfcae7ee1e"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10391-539e-755f-beb4-5bcfcae7ee1e/",
+      "screenshot": "https://urlscan.io/screenshots/01a10391-539e-755f-beb4-5bcfcae7ee1e.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jmail.world/thread/15842997e14787db4d3c56b941479ee8"
+        },
+        "page": {
+          "url": "jmail.world/thread/15842997e14787db4d3c56b941479ee8"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jmail.world",
+        "apexDomain": "jmail.world",
+        "time": "2026-10-03T20:49:03.675Z",
+        "uuid": "01a10386-ec36-7284-9a74-f14288370e61",
+        "url": "https://jmail.world/thread/15842997e14787db4d3c56b941479ee8?q=https%3A%2F%2Fwww.followlike.info%2F%3Fr%3D19384926"
+      },
+      "stats": {
+        "uniqIPs": 20,
+        "uniqCountries": 3,
+        "dataLength": 20235406,
+        "encodedDataLength": 5421348,
+        "requests": 146
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "172.66.157.175",
+        "apexDomainAgeDays": 2390,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "J. Epstein: RE: — Epstein Emails",
+        "url": "https://jmail.world/thread/15842997e14787db4d3c56b941479ee8?q=https%3A%2F%2Fwww.followlike.info%2F%3Fr%3D19384926",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 22,
+        "domainAgeDays": 2390,
+        "tlsValidFrom": "2026-09-11T11:31:21.000Z",
+        "domain": "jmail.world",
+        "umbrellaRank": 409628,
+        "apexDomain": "jmail.world",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10386-ec36-7284-9a74-f14288370e61",
+      "_score": null,
+      "sort": [
+        1791060543675,
+        "01a10386-ec36-7284-9a74-f14288370e61"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10386-ec36-7284-9a74-f14288370e61/",
+      "screenshot": "https://urlscan.io/screenshots/01a10386-ec36-7284-9a74-f14288370e61.png"
+    },
+    {
+      "canonical": {
+        "task": {
+          "url": "wethefifth.com"
+        },
+        "page": {
+          "url": "wethefifth.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "automatic",
+        "domain": "www.wethefifth.com",
+        "apexDomain": "wethefifth.com",
+        "time": "2026-10-03T20:43:47.512Z",
+        "source": "certstream-suspicious",
+        "uuid": "01a10382-19c7-7046-9f30-5f4a106be20f",
+        "url": "https://www.wethefifth.com/"
+      },
+      "stats": {
+        "uniqIPs": 20,
+        "uniqCountries": 3,
+        "dataLength": 13280363,
+        "encodedDataLength": 4065790,
+        "requests": 287
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 3638,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "The Fifth Column (A Podcast) | Substack",
+        "url": "https://www.wethefifth.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 3638,
+        "tlsValidFrom": "2026-10-03T19:04:40.000Z",
+        "domain": "www.wethefifth.com",
+        "apexDomain": "wethefifth.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10382-19c7-7046-9f30-5f4a106be20f",
+      "_score": null,
+      "sort": [
+        1791060227512,
+        "01a10382-19c7-7046-9f30-5f4a106be20f"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10382-19c7-7046-9f30-5f4a106be20f/",
+      "screenshot": "https://urlscan.io/screenshots/01a10382-19c7-7046-9f30-5f4a106be20f.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "revenuebestpractices.com"
+        },
+        "page": {
+          "url": "revenuebestpractices.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "revenuebestpractices.com",
+        "apexDomain": "revenuebestpractices.com",
+        "time": "2026-10-03T17:43:49.503Z",
+        "uuid": "01a102dd-5606-7267-ad0a-63d5140813d8",
+        "url": "https://revenuebestpractices.com/"
+      },
+      "stats": {
+        "uniqIPs": 7,
+        "uniqCountries": 2,
+        "dataLength": 10367450,
+        "encodedDataLength": 3106804,
+        "requests": 244
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "parent-domain",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 0,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Revenue Best Practices | Sol Flamberg | Substack",
+        "url": "https://www.revenuebestpractices.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 0,
+        "tlsValidFrom": "2026-10-03T08:51:42.000Z",
+        "domain": "www.revenuebestpractices.com",
+        "apexDomain": "revenuebestpractices.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a102dd-5606-7267-ad0a-63d5140813d8",
+      "_score": null,
+      "sort": [
+        1791049429503,
+        "01a102dd-5606-7267-ad0a-63d5140813d8"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a102dd-5606-7267-ad0a-63d5140813d8/",
+      "screenshot": "https://urlscan.io/screenshots/01a102dd-5606-7267-ad0a-63d5140813d8.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "explorationcrochet.com"
+        },
+        "page": {
+          "url": "explorationcrochet.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "explorationcrochet.com",
+        "apexDomain": "explorationcrochet.com",
+        "time": "2026-10-03T14:34:42.967Z",
+        "uuid": "01a10230-33cf-716d-a7d5-bce6de9dc51c",
+        "url": "http://explorationcrochet.com/",
+        "tags": [
+          "@phish_report"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 2,
+        "dataLength": 11692749,
+        "encodedDataLength": 4299232,
+        "requests": 255
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "104.18.36.24",
+        "apexDomainAgeDays": 739,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Exploration Crochet | Substack",
+        "url": "https://explorationcrochet.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 2,
+        "domainAgeDays": 739,
+        "tlsValidFrom": "2026-10-01T04:07:54.000Z",
+        "domain": "explorationcrochet.com",
+        "apexDomain": "explorationcrochet.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10230-33cf-716d-a7d5-bce6de9dc51c",
+      "_score": null,
+      "sort": [
+        1791038082967,
+        "01a10230-33cf-716d-a7d5-bce6de9dc51c"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10230-33cf-716d-a7d5-bce6de9dc51c/",
+      "screenshot": "https://urlscan.io/screenshots/01a10230-33cf-716d-a7d5-bce6de9dc51c.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bienoubien.com"
+        },
+        "page": {
+          "url": "bienoubien.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "time": "2026-10-03T14:10:16.776Z",
+        "uuid": "01a10219-d2aa-74ca-8ac6-fc96fc123502",
+        "url": "http://bienoubien.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 4,
+        "dataLength": 26165606,
+        "encodedDataLength": 3862534,
+        "requests": 208
+      },
+      "page": {
+        "country": "FR",
+        "server": "o2switch-PowerBoost-v3",
+        "redirected": "https-only",
+        "ip": "78.40.11.68",
+        "apexDomainAgeDays": 1934,
+        "language": "fr",
+        "mimeType": "text/html",
+        "title": "Marques engagées et consommation durable | Bien ou Bien",
+        "url": "https://bienoubien.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 45,
+        "domainAgeDays": 1934,
+        "tlsValidFrom": "2026-08-19T07:50:38.000Z",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "asnname": "O2SWITCH O2SWITCH SAS, FR",
+        "asn": "AS50474",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10219-d2aa-74ca-8ac6-fc96fc123502",
+      "_score": null,
+      "sort": [
+        1791036616776,
+        "01a10219-d2aa-74ca-8ac6-fc96fc123502"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10219-d2aa-74ca-8ac6-fc96fc123502/",
+      "screenshot": "https://urlscan.io/screenshots/01a10219-d2aa-74ca-8ac6-fc96fc123502.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bienoubien.com"
+        },
+        "page": {
+          "url": "bienoubien.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "time": "2026-10-03T13:11:35.136Z",
+        "uuid": "01a101e4-1418-7314-85d5-d089d66130dd",
+        "url": "http://bienoubien.com/"
+      },
+      "stats": {
+        "uniqIPs": 9,
+        "uniqCountries": 3,
+        "dataLength": 26168160,
+        "encodedDataLength": 3863408,
+        "requests": 208
+      },
+      "page": {
+        "country": "FR",
+        "server": "o2switch-PowerBoost-v3",
+        "redirected": "https-only",
+        "ip": "78.40.11.68",
+        "apexDomainAgeDays": 1934,
+        "language": "fr",
+        "mimeType": "text/html",
+        "title": "Marques engagées et consommation durable | Bien ou Bien",
+        "url": "https://bienoubien.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 45,
+        "domainAgeDays": 1934,
+        "tlsValidFrom": "2026-08-19T07:50:38.000Z",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "asnname": "O2SWITCH O2SWITCH SAS, FR",
+        "asn": "AS50474",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a101e4-1418-7314-85d5-d089d66130dd",
+      "_score": null,
+      "sort": [
+        1791033095136,
+        "01a101e4-1418-7314-85d5-d089d66130dd"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a101e4-1418-7314-85d5-d089d66130dd/",
+      "screenshot": "https://urlscan.io/screenshots/01a101e4-1418-7314-85d5-d089d66130dd.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "balancedexplorations.com"
+        },
+        "page": {
+          "url": "balancedexplorations.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "balancedexplorations.com",
+        "apexDomain": "balancedexplorations.com",
+        "time": "2026-10-03T12:18:19.942Z",
+        "uuid": "01a101b3-53a3-73f0-98e7-5b3e0d419433",
+        "url": "http://balancedexplorations.com/",
+        "tags": [
+          "@phish_report"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 7,
+        "uniqCountries": 2,
+        "dataLength": 9375181,
+        "encodedDataLength": 2915168,
+        "requests": 250
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "parent-domain",
+        "ip": "104.18.36.24",
+        "apexDomainAgeDays": 1900,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Balanced Explorations | Caryn Connolly | Substack",
+        "url": "https://www.balancedexplorations.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 54,
+        "domainAgeDays": 1900,
+        "tlsValidFrom": "2026-08-10T03:47:43.000Z",
+        "domain": "www.balancedexplorations.com",
+        "apexDomain": "balancedexplorations.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a101b3-53a3-73f0-98e7-5b3e0d419433",
+      "_score": null,
+      "sort": [
+        1791029899942,
+        "01a101b3-53a3-73f0-98e7-5b3e0d419433"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a101b3-53a3-73f0-98e7-5b3e0d419433/",
+      "screenshot": "https://urlscan.io/screenshots/01a101b3-53a3-73f0-98e7-5b3e0d419433.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bienoubien.com"
+        },
+        "page": {
+          "url": "bienoubien.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "time": "2026-10-03T12:16:29.108Z",
+        "uuid": "01a101b1-a34d-7213-a395-ae2f24bfce25",
+        "url": "http://bienoubien.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 3,
+        "dataLength": 26170493,
+        "encodedDataLength": 3863039,
+        "requests": 208
+      },
+      "page": {
+        "country": "FR",
+        "server": "o2switch-PowerBoost-v3",
+        "redirected": "https-only",
+        "ip": "78.40.11.68",
+        "apexDomainAgeDays": 1933,
+        "language": "fr",
+        "mimeType": "text/html",
+        "title": "Marques engagées et consommation durable | Bien ou Bien",
+        "url": "https://bienoubien.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 45,
+        "domainAgeDays": 1933,
+        "tlsValidFrom": "2026-08-19T07:50:38.000Z",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "asnname": "O2SWITCH O2SWITCH SAS, FR",
+        "asn": "AS50474",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a101b1-a34d-7213-a395-ae2f24bfce25",
+      "_score": null,
+      "sort": [
+        1791029789108,
+        "01a101b1-a34d-7213-a395-ae2f24bfce25"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a101b1-a34d-7213-a395-ae2f24bfce25/",
+      "screenshot": "https://urlscan.io/screenshots/01a101b1-a34d-7213-a395-ae2f24bfce25.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "mindflexing.com.au"
+        },
+        "page": {
+          "url": "mindflexing.com.au"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.mindflexing.com.au",
+        "apexDomain": "mindflexing.com.au",
+        "time": "2026-10-03T12:10:01.348Z",
+        "uuid": "01a101ab-b2b3-7061-a791-c66790be2f7a",
+        "url": "http://www.mindflexing.com.au/"
+      },
+      "stats": {
+        "uniqIPs": 13,
+        "uniqCountries": 2,
+        "dataLength": 10711291,
+        "encodedDataLength": 3860992,
+        "requests": 274
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "104.18.36.24",
+        "apexDomainAgeDays": 1031,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Mind Flexing | Alia Parker | Substack",
+        "url": "https://www.mindflexing.com.au/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 0,
+        "domainAgeDays": 1031,
+        "tlsValidFrom": "2026-10-02T15:48:34.000Z",
+        "domain": "www.mindflexing.com.au",
+        "apexDomain": "mindflexing.com.au",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a101ab-b2b3-7061-a791-c66790be2f7a",
+      "_score": null,
+      "sort": [
+        1791029401348,
+        "01a101ab-b2b3-7061-a791-c66790be2f7a"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a101ab-b2b3-7061-a791-c66790be2f7a/",
+      "screenshot": "https://urlscan.io/screenshots/01a101ab-b2b3-7061-a791-c66790be2f7a.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bienoubien.com"
+        },
+        "page": {
+          "url": "bienoubien.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "time": "2026-10-03T11:15:07.780Z",
+        "uuid": "01a10179-7925-72c8-b682-dc9eaa7f82dd",
+        "url": "http://bienoubien.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 4,
+        "dataLength": 26175372,
+        "encodedDataLength": 3863326,
+        "requests": 209
+      },
+      "page": {
+        "country": "FR",
+        "server": "o2switch-PowerBoost-v3",
+        "redirected": "https-only",
+        "ip": "78.40.11.68",
+        "apexDomainAgeDays": 1933,
+        "language": "fr",
+        "mimeType": "text/html",
+        "title": "Marques engagées et consommation durable | Bien ou Bien",
+        "url": "https://bienoubien.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 45,
+        "domainAgeDays": 1933,
+        "tlsValidFrom": "2026-08-19T07:50:38.000Z",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "asnname": "O2SWITCH O2SWITCH SAS, FR",
+        "asn": "AS50474",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10179-7925-72c8-b682-dc9eaa7f82dd",
+      "_score": null,
+      "sort": [
+        1791026107780,
+        "01a10179-7925-72c8-b682-dc9eaa7f82dd"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10179-7925-72c8-b682-dc9eaa7f82dd/",
+      "screenshot": "https://urlscan.io/screenshots/01a10179-7925-72c8-b682-dc9eaa7f82dd.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "michaelpollan.com"
+        },
+        "page": {
+          "url": "michaelpollan.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "michaelpollan.com",
+        "apexDomain": "michaelpollan.com",
+        "time": "2026-10-03T10:42:24.512Z",
+        "uuid": "01a1015b-8739-766f-8f06-b566c7e97880",
+        "url": "https://michaelpollan.com/"
+      },
+      "stats": {
+        "uniqIPs": 16,
+        "uniqCountries": 2,
+        "dataLength": 16803785,
+        "encodedDataLength": 4965393,
+        "requests": 113
+      },
+      "page": {
+        "country": "US",
+        "server": "nginx",
+        "ip": "199.16.173.42",
+        "apexDomainAgeDays": 3408,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Home - Michael Pollan",
+        "url": "https://michaelpollan.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 3,
+        "domainAgeDays": 3408,
+        "tlsValidFrom": "2026-09-29T16:02:39.000Z",
+        "domain": "michaelpollan.com",
+        "apexDomain": "michaelpollan.com",
+        "asnname": "AUTOMATTIC - Automattic, Inc, US",
+        "asn": "AS2635",
+        "tlsIssuer": "WR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1015b-8739-766f-8f06-b566c7e97880",
+      "_score": null,
+      "sort": [
+        1791024144512,
+        "01a1015b-8739-766f-8f06-b566c7e97880"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1015b-8739-766f-8f06-b566c7e97880/",
+      "screenshot": "https://urlscan.io/screenshots/01a1015b-8739-766f-8f06-b566c7e97880.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jwbouchard.com"
+        },
+        "page": {
+          "url": "jwbouchard.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jwbouchard.com",
+        "apexDomain": "jwbouchard.com",
+        "time": "2026-10-03T10:35:56.259Z",
+        "uuid": "01a10155-9aba-70de-bd7b-69fbb20412ac",
+        "url": "https://jwbouchard.com/"
+      },
+      "stats": {
+        "uniqIPs": 9,
+        "uniqCountries": 3,
+        "dataLength": 11378549,
+        "encodedDataLength": 4871478,
+        "requests": 128
+      },
+      "page": {
+        "country": "US",
+        "server": "LiteSpeed",
+        "ip": "145.79.4.140",
+        "apexDomainAgeDays": 3585,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Home - jwbouchard.com",
+        "url": "https://jwbouchard.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 27,
+        "domainAgeDays": 3585,
+        "tlsValidFrom": "2026-09-05T12:47:40.000Z",
+        "domain": "jwbouchard.com",
+        "apexDomain": "jwbouchard.com",
+        "asnname": "AS-HOSTINGER Hostinger International Limited, CY",
+        "asn": "AS47583",
+        "tlsIssuer": "YE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10155-9aba-70de-bd7b-69fbb20412ac",
+      "_score": null,
+      "sort": [
+        1791023756259,
+        "01a10155-9aba-70de-bd7b-69fbb20412ac"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10155-9aba-70de-bd7b-69fbb20412ac/",
+      "screenshot": "https://urlscan.io/screenshots/01a10155-9aba-70de-bd7b-69fbb20412ac.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bienoubien.com"
+        },
+        "page": {
+          "url": "bienoubien.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "time": "2026-10-03T10:13:17.858Z",
+        "uuid": "01a10140-d725-70e8-bade-89b8916168da",
+        "url": "http://bienoubien.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 4,
+        "dataLength": 26174063,
+        "encodedDataLength": 3865730,
+        "requests": 209
+      },
+      "page": {
+        "country": "FR",
+        "server": "o2switch-PowerBoost-v3",
+        "redirected": "https-only",
+        "ip": "78.40.11.68",
+        "apexDomainAgeDays": 1933,
+        "language": "fr",
+        "mimeType": "text/html",
+        "title": "Marques engagées et consommation durable | Bien ou Bien",
+        "url": "https://bienoubien.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 45,
+        "domainAgeDays": 1933,
+        "tlsValidFrom": "2026-08-19T07:50:38.000Z",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "asnname": "O2SWITCH O2SWITCH SAS, FR",
+        "asn": "AS50474",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10140-d725-70e8-bade-89b8916168da",
+      "_score": null,
+      "sort": [
+        1791022397858,
+        "01a10140-d725-70e8-bade-89b8916168da"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10140-d725-70e8-bade-89b8916168da/",
+      "screenshot": "https://urlscan.io/screenshots/01a10140-d725-70e8-bade-89b8916168da.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "petersinger.info"
+        },
+        "page": {
+          "url": "petersinger.info"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "petersinger.info",
+        "apexDomain": "petersinger.info",
+        "time": "2026-10-03T09:35:50.967Z",
+        "uuid": "01a1011e-2c7e-7449-9d9e-5b0e6c625176",
+        "url": "http://petersinger.info/"
+      },
+      "stats": {
+        "uniqIPs": 19,
+        "uniqCountries": 3,
+        "dataLength": 17754645,
+        "encodedDataLength": 5314143,
+        "requests": 158
+      },
+      "page": {
+        "country": "US",
+        "server": "Squarespace",
+        "redirected": "parent-domain",
+        "ip": "198.185.159.145",
+        "apexDomainAgeDays": 3638,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "PETER SINGER",
+        "url": "https://www.petersinger.info/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 23,
+        "domainAgeDays": 3638,
+        "tlsValidFrom": "2026-09-10T03:45:04.000Z",
+        "domain": "www.petersinger.info",
+        "apexDomain": "petersinger.info",
+        "asnname": "SQUARESPACE - Squarespace, Inc., US",
+        "asn": "AS53831",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1011e-2c7e-7449-9d9e-5b0e6c625176",
+      "_score": null,
+      "sort": [
+        1791020150967,
+        "01a1011e-2c7e-7449-9d9e-5b0e6c625176"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1011e-2c7e-7449-9d9e-5b0e6c625176/",
+      "screenshot": "https://urlscan.io/screenshots/01a1011e-2c7e-7449-9d9e-5b0e6c625176.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "engineeringfm.com"
+        },
+        "page": {
+          "url": "engineeringfm.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "engineeringfm.com",
+        "apexDomain": "engineeringfm.com",
+        "time": "2026-10-03T09:27:30.521Z",
+        "uuid": "01a10116-f20d-756a-bbdf-86e8da7b20e2",
+        "url": "http://engineeringfm.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 3,
+        "dataLength": 10221177,
+        "encodedDataLength": 3025072,
+        "requests": 244
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "parent-domain",
+        "ip": "2606:4700:4406::ac40:97e8",
+        "apexDomainAgeDays": 1326,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "engineering.fm | Substack",
+        "url": "https://www.engineeringfm.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 2,
+        "domainAgeDays": 2,
+        "tlsValidFrom": "2026-10-01T03:55:25.000Z",
+        "domain": "www.engineeringfm.com",
+        "apexDomain": "engineeringfm.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10116-f20d-756a-bbdf-86e8da7b20e2",
+      "_score": null,
+      "sort": [
+        1791019650521,
+        "01a10116-f20d-756a-bbdf-86e8da7b20e2"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10116-f20d-756a-bbdf-86e8da7b20e2/",
+      "screenshot": "https://urlscan.io/screenshots/01a10116-f20d-756a-bbdf-86e8da7b20e2.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bienoubien.com"
+        },
+        "page": {
+          "url": "bienoubien.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "time": "2026-10-03T09:09:12.694Z",
+        "uuid": "01a10106-2afd-71dd-ab03-a9a3ca470f52",
+        "url": "http://bienoubien.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 4,
+        "dataLength": 26169445,
+        "encodedDataLength": 3863183,
+        "requests": 208
+      },
+      "page": {
+        "country": "FR",
+        "server": "o2switch-PowerBoost-v3",
+        "redirected": "https-only",
+        "ip": "78.40.11.68",
+        "apexDomainAgeDays": 1933,
+        "language": "fr",
+        "mimeType": "text/html",
+        "title": "Marques engagées et consommation durable | Bien ou Bien",
+        "url": "https://bienoubien.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 45,
+        "domainAgeDays": 1933,
+        "tlsValidFrom": "2026-08-19T07:50:38.000Z",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "asnname": "O2SWITCH O2SWITCH SAS, FR",
+        "asn": "AS50474",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10106-2afd-71dd-ab03-a9a3ca470f52",
+      "_score": null,
+      "sort": [
+        1791018552694,
+        "01a10106-2afd-71dd-ab03-a9a3ca470f52"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10106-2afd-71dd-ab03-a9a3ca470f52/",
+      "screenshot": "https://urlscan.io/screenshots/01a10106-2afd-71dd-ab03-a9a3ca470f52.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "austinkleon.com"
+        },
+        "page": {
+          "url": "austinkleon.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "austinkleon.com",
+        "apexDomain": "austinkleon.com",
+        "time": "2026-10-03T09:06:55.178Z",
+        "uuid": "01a10104-14c3-7347-abc5-0afed4755ebd",
+        "url": "https://austinkleon.com/"
+      },
+      "stats": {
+        "uniqIPs": 9,
+        "uniqCountries": 3,
+        "dataLength": 7054399,
+        "encodedDataLength": 2486480,
+        "requests": 86
+      },
+      "page": {
+        "country": "US",
+        "server": "nginx",
+        "ip": "104.199.117.222",
+        "apexDomainAgeDays": 4378,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Dont Call it Art is out now! - Austin Kleon",
+        "url": "https://austinkleon.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 58,
+        "ptr": "222.117.199.104.bc.googleusercontent.com",
+        "domainAgeDays": 4378,
+        "tlsValidFrom": "2026-08-05T18:26:11.000Z",
+        "domain": "austinkleon.com",
+        "apexDomain": "austinkleon.com",
+        "asnname": "GOOGLE-CLOUD-PLATFORM - Google LLC, US",
+        "asn": "AS396982",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10104-14c3-7347-abc5-0afed4755ebd",
+      "_score": null,
+      "sort": [
+        1791018415178,
+        "01a10104-14c3-7347-abc5-0afed4755ebd"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10104-14c3-7347-abc5-0afed4755ebd/",
+      "screenshot": "https://urlscan.io/screenshots/01a10104-14c3-7347-abc5-0afed4755ebd.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "birchlerconsulting.ch"
+        },
+        "page": {
+          "url": "birchlerconsulting.ch"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.birchlerconsulting.ch",
+        "apexDomain": "birchlerconsulting.ch",
+        "time": "2026-10-03T08:53:18.708Z",
+        "uuid": "01a100f7-9c1d-724b-90cb-b6bb3e01a21d",
+        "url": "http://www.birchlerconsulting.ch/"
+      },
+      "stats": {
+        "uniqIPs": 19,
+        "uniqCountries": 3,
+        "dataLength": 18959558,
+        "encodedDataLength": 7024140,
+        "requests": 168
+      },
+      "page": {
+        "country": "US",
+        "server": "Squarespace",
+        "redirected": "https-only",
+        "ip": "198.49.23.145",
+        "apexDomainAgeDays": 500,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Career Coaching for International Women in Switzerland | Birchler",
+        "url": "https://www.birchlerconsulting.ch/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 27,
+        "domainAgeDays": 372,
+        "tlsValidFrom": "2026-09-05T15:55:21.000Z",
+        "domain": "www.birchlerconsulting.ch",
+        "apexDomain": "birchlerconsulting.ch",
+        "asnname": "SQUARESPACE - Squarespace, Inc., US",
+        "asn": "AS53831",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a100f7-9c1d-724b-90cb-b6bb3e01a21d",
+      "_score": null,
+      "sort": [
+        1791017598708,
+        "01a100f7-9c1d-724b-90cb-b6bb3e01a21d"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a100f7-9c1d-724b-90cb-b6bb3e01a21d/",
+      "screenshot": "https://urlscan.io/screenshots/01a100f7-9c1d-724b-90cb-b6bb3e01a21d.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "andrewbadr.com"
+        },
+        "page": {
+          "url": "andrewbadr.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "andrewbadr.com",
+        "apexDomain": "andrewbadr.com",
+        "time": "2026-10-03T08:44:17.218Z",
+        "uuid": "01a100ef-5f35-733c-9796-aaaab6c36824",
+        "url": "https://andrewbadr.com/"
+      },
+      "stats": {
+        "uniqIPs": 9,
+        "uniqCountries": 3,
+        "dataLength": 8210030,
+        "encodedDataLength": 2688834,
+        "requests": 97
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "172.67.135.185",
+        "apexDomainAgeDays": 4347,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Andrew Badr",
+        "url": "https://andrewbadr.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 4,
+        "domainAgeDays": 4347,
+        "tlsValidFrom": "2026-09-28T15:42:21.000Z",
+        "domain": "andrewbadr.com",
+        "umbrellaRank": 105313,
+        "apexDomain": "andrewbadr.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a100ef-5f35-733c-9796-aaaab6c36824",
+      "_score": null,
+      "sort": [
+        1791017057218,
+        "01a100ef-5f35-733c-9796-aaaab6c36824"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a100ef-5f35-733c-9796-aaaab6c36824/",
+      "screenshot": "https://urlscan.io/screenshots/01a100ef-5f35-733c-9796-aaaab6c36824.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "birchlerconsulting.ch"
+        },
+        "page": {
+          "url": "birchlerconsulting.ch"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "birchlerconsulting.ch",
+        "apexDomain": "birchlerconsulting.ch",
+        "time": "2026-10-03T08:42:18.237Z",
+        "uuid": "01a100ed-8661-73c4-b05e-1f085cf28a8f",
+        "url": "http://birchlerconsulting.ch/"
+      },
+      "stats": {
+        "uniqIPs": 21,
+        "uniqCountries": 3,
+        "dataLength": 18959218,
+        "encodedDataLength": 6983678,
+        "requests": 168
+      },
+      "page": {
+        "country": "US",
+        "server": "Squarespace",
+        "redirected": "parent-domain",
+        "ip": "198.49.23.145",
+        "apexDomainAgeDays": 500,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Career Coaching for International Women in Switzerland | Birchler",
+        "url": "https://www.birchlerconsulting.ch/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 27,
+        "domainAgeDays": 372,
+        "tlsValidFrom": "2026-09-05T15:55:21.000Z",
+        "domain": "www.birchlerconsulting.ch",
+        "apexDomain": "birchlerconsulting.ch",
+        "asnname": "SQUARESPACE - Squarespace, Inc., US",
+        "asn": "AS53831",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a100ed-8661-73c4-b05e-1f085cf28a8f",
+      "_score": null,
+      "sort": [
+        1791016938237,
+        "01a100ed-8661-73c4-b05e-1f085cf28a8f"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a100ed-8661-73c4-b05e-1f085cf28a8f/",
+      "screenshot": "https://urlscan.io/screenshots/01a100ed-8661-73c4-b05e-1f085cf28a8f.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "snipertrading.club"
+        },
+        "page": {
+          "url": "snipertrading.club/home"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "www.snipertrading.club",
+        "apexDomain": "snipertrading.club",
+        "time": "2026-10-03T08:36:41.138Z",
+        "uuid": "01a100e8-465e-7067-8bd0-c8a5b905ec45",
+        "url": "http://www.snipertrading.club/"
+      },
+      "stats": {
+        "uniqIPs": 21,
+        "uniqCountries": 4,
+        "dataLength": 37110084,
+        "encodedDataLength": 8740895,
+        "requests": 270
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "same-domain",
+        "ip": "2606:4700:440d::ac40:9473",
+        "apexDomainAgeDays": 337,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Feed | Sniper Trading",
+        "url": "https://www.snipertrading.club/home?post_login_redirect=https%3A%2F%2Fwww.snipertrading.club%2F",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 42,
+        "domainAgeDays": 337,
+        "tlsValidFrom": "2026-08-21T21:54:39.000Z",
+        "domain": "www.snipertrading.club",
+        "apexDomain": "snipertrading.club",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a100e8-465e-7067-8bd0-c8a5b905ec45",
+      "_score": null,
+      "sort": [
+        1791016601138,
+        "01a100e8-465e-7067-8bd0-c8a5b905ec45"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a100e8-465e-7067-8bd0-c8a5b905ec45/",
+      "screenshot": "https://urlscan.io/screenshots/01a100e8-465e-7067-8bd0-c8a5b905ec45.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jmail.world/thread/146e09edf1e25c2f67ed068864c09b93"
+        },
+        "page": {
+          "url": "jmail.world/thread/146e09edf1e25c2f67ed068864c09b93"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jmail.world",
+        "apexDomain": "jmail.world",
+        "time": "2026-10-03T08:22:31.995Z",
+        "uuid": "01a100db-740a-7699-a6e0-520efc5f5584",
+        "url": "https://jmail.world/thread/146e09edf1e25c2f67ed068864c09b93?q=https%3A%2F%2Fwww.followlike.net%2F%3Fr%3D19384926"
+      },
+      "stats": {
+        "uniqIPs": 15,
+        "uniqCountries": 4,
+        "dataLength": 20367391,
+        "encodedDataLength": 5443186,
+        "requests": 136
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "2606:4700:10::ac42:9daf",
+        "apexDomainAgeDays": 2389,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Amazon.com: Amazon.com order of John von Neumann: The Scientific Genius Who Pioneered the Modern Computer, Game Theory, Nuclear Deterrence, and Much More. — Epstein Emails",
+        "url": "https://jmail.world/thread/146e09edf1e25c2f67ed068864c09b93?q=https%3A%2F%2Fwww.followlike.net%2F%3Fr%3D19384926",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 21,
+        "domainAgeDays": 2389,
+        "tlsValidFrom": "2026-09-11T11:31:21.000Z",
+        "domain": "jmail.world",
+        "umbrellaRank": 409628,
+        "apexDomain": "jmail.world",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a100db-740a-7699-a6e0-520efc5f5584",
+      "_score": null,
+      "sort": [
+        1791015751995,
+        "01a100db-740a-7699-a6e0-520efc5f5584"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a100db-740a-7699-a6e0-520efc5f5584/",
+      "screenshot": "https://urlscan.io/screenshots/01a100db-740a-7699-a6e0-520efc5f5584.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jmail.world/thread/8088543e83ebfbd9a236d6a6d8b5ab8e"
+        },
+        "page": {
+          "url": "jmail.world/thread/8088543e83ebfbd9a236d6a6d8b5ab8e"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jmail.world",
+        "apexDomain": "jmail.world",
+        "time": "2026-10-03T08:22:08.668Z",
+        "uuid": "01a100db-19a9-757a-8f06-46baf3d82304",
+        "url": "https://jmail.world/thread/8088543e83ebfbd9a236d6a6d8b5ab8e?q=https%3A%2F%2F2pink.org%2Fdang-ky%3Fref%3D119334"
+      },
+      "stats": {
+        "uniqIPs": 18,
+        "uniqCountries": 4,
+        "dataLength": 20285468,
+        "encodedDataLength": 5440721,
+        "requests": 136
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "2606:4700:10::6814:1a7a",
+        "apexDomainAgeDays": 2389,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Amazon.com: Your Amazon.com order has shipped (#114-8331630-5809821) — Epstein Emails",
+        "url": "https://jmail.world/thread/8088543e83ebfbd9a236d6a6d8b5ab8e?q=https%3A%2F%2F2pink.org%2Fdang-ky%3Fref%3D119334",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 21,
+        "domainAgeDays": 2389,
+        "tlsValidFrom": "2026-09-11T11:31:21.000Z",
+        "domain": "jmail.world",
+        "umbrellaRank": 409628,
+        "apexDomain": "jmail.world",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a100db-19a9-757a-8f06-46baf3d82304",
+      "_score": null,
+      "sort": [
+        1791015728668,
+        "01a100db-19a9-757a-8f06-46baf3d82304"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a100db-19a9-757a-8f06-46baf3d82304/",
+      "screenshot": "https://urlscan.io/screenshots/01a100db-19a9-757a-8f06-46baf3d82304.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jmail.world/thread/735c884478910f0609cceb006b3cb57b"
+        },
+        "page": {
+          "url": "jmail.world/thread/735c884478910f0609cceb006b3cb57b"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jmail.world",
+        "apexDomain": "jmail.world",
+        "time": "2026-10-03T08:16:16.565Z",
+        "uuid": "01a100d5-bedc-7228-a851-3fed70e7a4c4",
+        "url": "https://jmail.world/thread/735c884478910f0609cceb006b3cb57b?q=https%3A%2F%2Fwww.followlike.net%2F%3Fr%3D19384926"
+      },
+      "stats": {
+        "uniqIPs": 14,
+        "uniqCountries": 2,
+        "dataLength": 20215961,
+        "encodedDataLength": 5414710,
+        "requests": 123
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "104.20.26.122",
+        "apexDomainAgeDays": 2389,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Amazon.com: Shipping update for your Amazon.com order 114-2451290-5345829 — Epstein Emails",
+        "url": "https://jmail.world/thread/735c884478910f0609cceb006b3cb57b?q=https%3A%2F%2Fwww.followlike.net%2F%3Fr%3D19384926",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 21,
+        "domainAgeDays": 2389,
+        "tlsValidFrom": "2026-09-11T11:31:21.000Z",
+        "domain": "jmail.world",
+        "umbrellaRank": 409628,
+        "apexDomain": "jmail.world",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a100d5-bedc-7228-a851-3fed70e7a4c4",
+      "_score": null,
+      "sort": [
+        1791015376565,
+        "01a100d5-bedc-7228-a851-3fed70e7a4c4"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a100d5-bedc-7228-a851-3fed70e7a4c4/",
+      "screenshot": "https://urlscan.io/screenshots/01a100d5-bedc-7228-a851-3fed70e7a4c4.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bienoubien.com"
+        },
+        "page": {
+          "url": "bienoubien.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "time": "2026-10-03T08:10:22.220Z",
+        "uuid": "01a100d0-5259-73a8-81e4-4a05ef1b9393",
+        "url": "http://bienoubien.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 4,
+        "dataLength": 26168913,
+        "encodedDataLength": 3862818,
+        "requests": 208
+      },
+      "page": {
+        "country": "FR",
+        "server": "o2switch-PowerBoost-v3",
+        "redirected": "https-only",
+        "ip": "78.40.11.68",
+        "apexDomainAgeDays": 1933,
+        "language": "fr",
+        "mimeType": "text/html",
+        "title": "Marques engagées et consommation durable | Bien ou Bien",
+        "url": "https://bienoubien.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 45,
+        "domainAgeDays": 1933,
+        "tlsValidFrom": "2026-08-19T07:50:38.000Z",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "asnname": "O2SWITCH O2SWITCH SAS, FR",
+        "asn": "AS50474",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a100d0-5259-73a8-81e4-4a05ef1b9393",
+      "_score": null,
+      "sort": [
+        1791015022220,
+        "01a100d0-5259-73a8-81e4-4a05ef1b9393"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a100d0-5259-73a8-81e4-4a05ef1b9393/",
+      "screenshot": "https://urlscan.io/screenshots/01a100d0-5259-73a8-81e4-4a05ef1b9393.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "ourhoperising.com"
+        },
+        "page": {
+          "url": "ourhoperising.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "ourhoperising.com",
+        "apexDomain": "ourhoperising.com",
+        "time": "2026-10-03T07:44:25.670Z",
+        "uuid": "01a100b8-7cb5-72da-b318-c08dcbe8787b",
+        "url": "http://ourhoperising.com/"
+      },
+      "stats": {
+        "uniqIPs": 14,
+        "uniqCountries": 3,
+        "dataLength": 16953407,
+        "encodedDataLength": 6853001,
+        "requests": 330
+      },
+      "page": {
+        "country": "AU",
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "103.169.142.0",
+        "apexDomainAgeDays": 3005,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Hope Rising",
+        "url": "https://ourhoperising.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 30,
+        "domainAgeDays": 3005,
+        "tlsValidFrom": "2026-09-02T21:39:00.000Z",
+        "domain": "ourhoperising.com",
+        "apexDomain": "ourhoperising.com",
+        "asnname": "CLOUDFLARESPECTRUM Cloudflare London, LLC, US",
+        "asn": "AS209242",
+        "tlsIssuer": "WR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a100b8-7cb5-72da-b318-c08dcbe8787b",
+      "_score": null,
+      "sort": [
+        1791013465670,
+        "01a100b8-7cb5-72da-b318-c08dcbe8787b"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a100b8-7cb5-72da-b318-c08dcbe8787b/",
+      "screenshot": "https://urlscan.io/screenshots/01a100b8-7cb5-72da-b318-c08dcbe8787b.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bienoubien.com"
+        },
+        "page": {
+          "url": "bienoubien.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "time": "2026-10-03T07:22:39.473Z",
+        "uuid": "01a100a4-a18e-776a-b18b-925a211e62fc",
+        "url": "http://bienoubien.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 4,
+        "dataLength": 26173311,
+        "encodedDataLength": 3861444,
+        "requests": 209
+      },
+      "page": {
+        "country": "FR",
+        "server": "o2switch-PowerBoost-v3",
+        "redirected": "https-only",
+        "ip": "78.40.11.68",
+        "apexDomainAgeDays": 1933,
+        "language": "fr",
+        "mimeType": "text/html",
+        "title": "Marques engagées et consommation durable | Bien ou Bien",
+        "url": "https://bienoubien.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 44,
+        "domainAgeDays": 1933,
+        "tlsValidFrom": "2026-08-19T07:50:38.000Z",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "asnname": "O2SWITCH O2SWITCH SAS, FR",
+        "asn": "AS50474",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a100a4-a18e-776a-b18b-925a211e62fc",
+      "_score": null,
+      "sort": [
+        1791012159473,
+        "01a100a4-a18e-776a-b18b-925a211e62fc"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a100a4-a18e-776a-b18b-925a211e62fc/",
+      "screenshot": "https://urlscan.io/screenshots/01a100a4-a18e-776a-b18b-925a211e62fc.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "wanderlustmentor.com"
+        },
+        "page": {
+          "url": "wanderlustmentor.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "wanderlustmentor.com",
+        "apexDomain": "wanderlustmentor.com",
+        "time": "2026-10-03T07:11:09.414Z",
+        "uuid": "01a10099-f86e-727e-91fc-eac1951c43e1",
+        "url": "https://wanderlustmentor.com/"
+      },
+      "stats": {
+        "uniqIPs": 15,
+        "uniqCountries": 2,
+        "dataLength": 22625569,
+        "encodedDataLength": 15540305,
+        "requests": 216
+      },
+      "page": {
+        "country": "US",
+        "server": "Apache",
+        "redirected": "parent-domain",
+        "ip": "69.163.140.222",
+        "apexDomainAgeDays": 848,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Wanderlust Mentor – Travel, teach, explore",
+        "url": "https://www.wanderlustmentor.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 36,
+        "ptr": "apache2-pat.pdx1-shared-a3-07.dreamhost.com",
+        "domainAgeDays": 846,
+        "tlsValidFrom": "2026-08-28T03:28:46.000Z",
+        "domain": "www.wanderlustmentor.com",
+        "apexDomain": "wanderlustmentor.com",
+        "asnname": "DREAMHOST-AS - New Dream Network, LLC, US",
+        "asn": "AS26347",
+        "tlsIssuer": "YR2",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10099-f86e-727e-91fc-eac1951c43e1",
+      "_score": null,
+      "sort": [
+        1791011469414,
+        "01a10099-f86e-727e-91fc-eac1951c43e1"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10099-f86e-727e-91fc-eac1951c43e1/",
+      "screenshot": "https://urlscan.io/screenshots/01a10099-f86e-727e-91fc-eac1951c43e1.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "ruleinvestmentmedia.com"
+        },
+        "page": {
+          "url": "ruleinvestmentmedia.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "ruleinvestmentmedia.com",
+        "apexDomain": "ruleinvestmentmedia.com",
+        "time": "2026-10-03T06:38:20.430Z",
+        "uuid": "01a1007c-0af4-76af-9844-ba2dad4eef01",
+        "url": "https://ruleinvestmentmedia.com/"
+      },
+      "stats": {
+        "uniqIPs": 24,
+        "uniqCountries": 4,
+        "dataLength": 17497280,
+        "encodedDataLength": 4881659,
+        "requests": 152
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "172.67.155.225",
+        "apexDomainAgeDays": 2110,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Rule Investment Media",
+        "url": "https://ruleinvestmentmedia.com/",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 52,
+        "domainAgeDays": 2110,
+        "tlsValidFrom": "2026-08-11T07:23:43.000Z",
+        "domain": "ruleinvestmentmedia.com",
+        "apexDomain": "ruleinvestmentmedia.com",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a1007c-0af4-76af-9844-ba2dad4eef01",
+      "_score": null,
+      "sort": [
+        1791009500430,
+        "01a1007c-0af4-76af-9844-ba2dad4eef01"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a1007c-0af4-76af-9844-ba2dad4eef01/",
+      "screenshot": "https://urlscan.io/screenshots/01a1007c-0af4-76af-9844-ba2dad4eef01.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "thedailybriefing.io/p/arsenal-contract-news-rice-raya-odegaard-havertz"
+        },
+        "page": {
+          "url": "thedailybriefing.io/p/arsenal-contract-news-rice-raya-odegaard-havertz"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "thedailybriefing.io",
+        "apexDomain": "thedailybriefing.io",
+        "time": "2026-10-03T06:29:29.877Z",
+        "uuid": "01a10073-ec36-77fa-9d58-ba07c72474d9",
+        "url": "https://thedailybriefing.io/p/arsenal-contract-news-rice-raya-odegaard-havertz",
+        "tags": [
+          "@phish_report"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 3,
+        "dataLength": 7960811,
+        "encodedDataLength": 2199356,
+        "requests": 78
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "2606:4700:4406::ac40:97e8",
+        "apexDomainAgeDays": 1172,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Arsenal contract updates on Rice, Raya, Odegaard, Havertz",
+        "url": "https://thedailybriefing.io/p/arsenal-contract-news-rice-raya-odegaard-havertz",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 47,
+        "domainAgeDays": 1172,
+        "tlsValidFrom": "2026-08-16T16:57:13.000Z",
+        "domain": "thedailybriefing.io",
+        "apexDomain": "thedailybriefing.io",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10073-ec36-77fa-9d58-ba07c72474d9",
+      "_score": null,
+      "sort": [
+        1791008969877,
+        "01a10073-ec36-77fa-9d58-ba07c72474d9"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10073-ec36-77fa-9d58-ba07c72474d9/",
+      "screenshot": "https://urlscan.io/screenshots/01a10073-ec36-77fa-9d58-ba07c72474d9.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "thedailybriefing.io/p/arsenal-contract-news-rice-raya-odegaard-havertz"
+        },
+        "page": {
+          "url": "thedailybriefing.io/p/arsenal-contract-news-rice-raya-odegaard-havertz"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "thedailybriefing.io",
+        "apexDomain": "thedailybriefing.io",
+        "time": "2026-10-03T06:29:26.715Z",
+        "uuid": "01a10073-ea3c-70dd-92c9-e6f301e648c0",
+        "url": "https://thedailybriefing.io/p/arsenal-contract-news-rice-raya-odegaard-havertz",
+        "tags": [
+          "phishing",
+          "drainer",
+          "crypto-scam"
+        ]
+      },
+      "stats": {
+        "uniqIPs": 9,
+        "uniqCountries": 3,
+        "dataLength": 8001623,
+        "encodedDataLength": 2230856,
+        "requests": 74
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "2606:4700:4406::ac40:97e8",
+        "apexDomainAgeDays": 1172,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Arsenal contract updates on Rice, Raya, Odegaard, Havertz",
+        "url": "https://thedailybriefing.io/p/arsenal-contract-news-rice-raya-odegaard-havertz",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 47,
+        "domainAgeDays": 1172,
+        "tlsValidFrom": "2026-08-16T16:57:13.000Z",
+        "domain": "thedailybriefing.io",
+        "apexDomain": "thedailybriefing.io",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10073-ea3c-70dd-92c9-e6f301e648c0",
+      "_score": null,
+      "sort": [
+        1791008966715,
+        "01a10073-ea3c-70dd-92c9-e6f301e648c0"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10073-ea3c-70dd-92c9-e6f301e648c0/",
+      "screenshot": "https://urlscan.io/screenshots/01a10073-ea3c-70dd-92c9-e6f301e648c0.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "bienoubien.com"
+        },
+        "page": {
+          "url": "bienoubien.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "time": "2026-10-03T06:13:55.065Z",
+        "uuid": "01a10065-b615-70d9-a3a9-777ca7aed702",
+        "url": "http://bienoubien.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 4,
+        "dataLength": 26206266,
+        "encodedDataLength": 3883168,
+        "requests": 209
+      },
+      "page": {
+        "country": "FR",
+        "server": "o2switch-PowerBoost-v3",
+        "redirected": "https-only",
+        "ip": "78.40.11.68",
+        "apexDomainAgeDays": 1933,
+        "language": "fr",
+        "mimeType": "text/html",
+        "title": "Marques engagées et consommation durable | Bien ou Bien",
+        "url": "https://bienoubien.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 44,
+        "domainAgeDays": 1933,
+        "tlsValidFrom": "2026-08-19T07:50:38.000Z",
+        "domain": "bienoubien.com",
+        "apexDomain": "bienoubien.com",
+        "asnname": "O2SWITCH O2SWITCH SAS, FR",
+        "asn": "AS50474",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10065-b615-70d9-a3a9-777ca7aed702",
+      "_score": null,
+      "sort": [
+        1791008035065,
+        "01a10065-b615-70d9-a3a9-777ca7aed702"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10065-b615-70d9-a3a9-777ca7aed702/",
+      "screenshot": "https://urlscan.io/screenshots/01a10065-b615-70d9-a3a9-777ca7aed702.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "allmodelsarewrong.online"
+        },
+        "page": {
+          "url": "allmodelsarewrong.online"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "allmodelsarewrong.online",
+        "apexDomain": "allmodelsarewrong.online",
+        "time": "2026-10-03T05:43:15.795Z",
+        "uuid": "01a10049-a2d5-7395-9512-9267af583c53",
+        "url": "http://allmodelsarewrong.online/"
+      },
+      "stats": {
+        "uniqIPs": 6,
+        "uniqCountries": 2,
+        "dataLength": 10451792,
+        "encodedDataLength": 3211239,
+        "requests": 247
+      },
+      "page": {
+        "server": "cloudflare",
+        "redirected": "https-only",
+        "ip": "172.64.151.232",
+        "apexDomainAgeDays": 85,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "All Models Are Wrong | Joshua Dávila | Substack",
+        "url": "https://allmodelsarewrong.online/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 29,
+        "domainAgeDays": 85,
+        "tlsValidFrom": "2026-09-03T15:23:18.000Z",
+        "domain": "allmodelsarewrong.online",
+        "apexDomain": "allmodelsarewrong.online",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "YE2",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10049-a2d5-7395-9512-9267af583c53",
+      "_score": null,
+      "sort": [
+        1791006195795,
+        "01a10049-a2d5-7395-9512-9267af583c53"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10049-a2d5-7395-9512-9267af583c53/",
+      "screenshot": "https://urlscan.io/screenshots/01a10049-a2d5-7395-9512-9267af583c53.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "psychofteaching.com"
+        },
+        "page": {
+          "url": "psychofteaching.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "psychofteaching.com",
+        "apexDomain": "psychofteaching.com",
+        "time": "2026-10-03T05:40:01.441Z",
+        "uuid": "01a10046-b166-77f3-8513-7f3219c19693",
+        "url": "http://psychofteaching.com/"
+      },
+      "stats": {
+        "uniqIPs": 8,
+        "uniqCountries": 3,
+        "dataLength": 9430609,
+        "encodedDataLength": 3249124,
+        "requests": 68
+      },
+      "page": {
+        "country": "US",
+        "server": "Google Frontend",
+        "redirected": "https-only",
+        "ip": "34.111.179.208",
+        "apexDomainAgeDays": 50,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "PsychofTeaching",
+        "url": "https://psychofteaching.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 45,
+        "ptr": "208.179.111.34.bc.googleusercontent.com",
+        "domainAgeDays": 50,
+        "tlsValidFrom": "2026-08-18T14:17:01.000Z",
+        "domain": "psychofteaching.com",
+        "apexDomain": "psychofteaching.com",
+        "asnname": "GOOGLE-CLOUD-PLATFORM - Google LLC, US",
+        "asn": "AS396982",
+        "tlsIssuer": "YE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a10046-b166-77f3-8513-7f3219c19693",
+      "_score": null,
+      "sort": [
+        1791006001441,
+        "01a10046-b166-77f3-8513-7f3219c19693"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a10046-b166-77f3-8513-7f3219c19693/",
+      "screenshot": "https://urlscan.io/screenshots/01a10046-b166-77f3-8513-7f3219c19693.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "indiahicks.com"
+        },
+        "page": {
+          "url": "indiahicks.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "indiahicks.com",
+        "apexDomain": "indiahicks.com",
+        "time": "2026-10-03T03:00:02.297Z",
+        "uuid": "01a0ffb4-3050-748d-8d13-f0a81d3b3dc4",
+        "url": "http://indiahicks.com/"
+      },
+      "stats": {
+        "uniqIPs": 13,
+        "uniqCountries": 3,
+        "dataLength": 23041297,
+        "encodedDataLength": 11946814,
+        "requests": 123
+      },
+      "page": {
+        "country": "US",
+        "server": "Squarespace",
+        "redirected": "parent-domain",
+        "ip": "198.185.159.145",
+        "apexDomainAgeDays": 4264,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "India Hicks – Designer, Entrepreneur, Author",
+        "url": "https://www.indiahicks.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 34,
+        "domainAgeDays": 4264,
+        "tlsValidFrom": "2026-08-29T20:33:06.000Z",
+        "domain": "www.indiahicks.com",
+        "apexDomain": "indiahicks.com",
+        "asnname": "SQUARESPACE - Squarespace, Inc., US",
+        "asn": "AS53831",
+        "tlsIssuer": "YR2",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a0ffb4-3050-748d-8d13-f0a81d3b3dc4",
+      "_score": null,
+      "sort": [
+        1790996402297,
+        "01a0ffb4-3050-748d-8d13-f0a81d3b3dc4"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a0ffb4-3050-748d-8d13-f0a81d3b3dc4/",
+      "screenshot": "https://urlscan.io/screenshots/01a0ffb4-3050-748d-8d13-f0a81d3b3dc4.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "sethgillihan.com"
+        },
+        "page": {
+          "url": "sethgillihan.com"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "sethgillihan.com",
+        "apexDomain": "sethgillihan.com",
+        "time": "2026-10-03T02:44:04.102Z",
+        "uuid": "01a0ffa5-9482-7368-abe2-ddf565733211",
+        "url": "https://sethgillihan.com/"
+      },
+      "stats": {
+        "uniqIPs": 10,
+        "uniqCountries": 4,
+        "dataLength": 10230814,
+        "encodedDataLength": 3825554,
+        "requests": 97
+      },
+      "page": {
+        "country": "US",
+        "server": "Apache",
+        "ip": "192.185.144.45",
+        "apexDomainAgeDays": 3616,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "Seth J. Gillihan, PhD - Think Act Be | Mindful Cognitive Behavioral Therapy (CBT)",
+        "url": "https://sethgillihan.com/",
+        "tlsValidDays": 89,
+        "tlsAgeDays": 55,
+        "ptr": "192-185-144-45.unifiedlayer.com",
+        "domainAgeDays": 3616,
+        "tlsValidFrom": "2026-08-08T03:32:30.000Z",
+        "domain": "sethgillihan.com",
+        "apexDomain": "sethgillihan.com",
+        "asnname": "ORACLE-BMC-31898 - Oracle Corporation, US",
+        "asn": "AS31898",
+        "tlsIssuer": "YR1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a0ffa5-9482-7368-abe2-ddf565733211",
+      "_score": null,
+      "sort": [
+        1790995444102,
+        "01a0ffa5-9482-7368-abe2-ddf565733211"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a0ffa5-9482-7368-abe2-ddf565733211/",
+      "screenshot": "https://urlscan.io/screenshots/01a0ffa5-9482-7368-abe2-ddf565733211.png"
+    },
+    {
+      "submitter": {},
+      "canonical": {
+        "task": {
+          "url": "jmail.world/thread/fd63c17a220353b95af108235cb01554"
+        },
+        "page": {
+          "url": "jmail.world/thread/fd63c17a220353b95af108235cb01554"
+        }
+      },
+      "task": {
+        "visibility": "public",
+        "method": "api",
+        "domain": "jmail.world",
+        "apexDomain": "jmail.world",
+        "time": "2026-10-03T02:39:26.279Z",
+        "uuid": "01a0ffa1-5d13-7259-82dc-98412deffb21",
+        "url": "https://jmail.world/thread/fd63c17a220353b95af108235cb01554?q=http%3A%2F%2Ffolllike.com%2F%3F19384926"
+      },
+      "stats": {
+        "uniqIPs": 13,
+        "uniqCountries": 3,
+        "dataLength": 20160440,
+        "encodedDataLength": 5391144,
+        "requests": 125
+      },
+      "page": {
+        "server": "cloudflare",
+        "ip": "2606:4700:10::6814:1a7a",
+        "apexDomainAgeDays": 2389,
+        "language": "en",
+        "mimeType": "text/html",
+        "title": "J. Epstein: Fw: Marina Inventory — Epstein Emails",
+        "url": "https://jmail.world/thread/fd63c17a220353b95af108235cb01554?q=http%3A%2F%2Ffolllike.com%2F%3F19384926",
+        "tlsValidDays": 90,
+        "tlsAgeDays": 21,
+        "domainAgeDays": 2389,
+        "tlsValidFrom": "2026-09-11T11:31:21.000Z",
+        "domain": "jmail.world",
+        "umbrellaRank": 409628,
+        "apexDomain": "jmail.world",
+        "asnname": "CLOUDFLARENET - Cloudflare, Inc., US",
+        "asn": "AS13335",
+        "tlsIssuer": "WE1",
+        "status": "200"
+      },
+      "labels": [],
+      "_id": "01a0ffa1-5d13-7259-82dc-98412deffb21",
+      "_score": null,
+      "sort": [
+        1790995166279,
+        "01a0ffa1-5d13-7259-82dc-98412deffb21"
+      ],
+      "result": "https://urlscan.io/api/v1/result/01a0ffa1-5d13-7259-82dc-98412deffb21/",
+      "screenshot": "https://urlscan.io/screenshots/01a0ffa1-5d13-7259-82dc-98412deffb21.png"
+    }
+  ],
+  "total": 1580,
+  "took": 27,
+  "has_more": false,
+  "search_date_limit_days": 30
+}

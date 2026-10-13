@@ -1,0 +1,8 @@
+DuckDuckGo HTML returned CAPTCHA walls for both initial queries:
+- site:substack.com
+- site:*.substack.com -site:www.substack.com
+No results extractable from DDG.
+
+Bing site:substack.com -site:www.substack.com returned ~92 results but displayed unrelated support domains (Google/Mozilla/Microsoft). No usable substack subdomains surfaced.
+
+Bing site:substackcdn.com returned unrelated pjdick.com results.

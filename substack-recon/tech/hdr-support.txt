@@ -1,0 +1,76 @@
+HTTP/1.1 200 Connection Established
+
+HTTP/2 302 
+date: Mon, 05 Oct 2026 14:14:19 GMT
+content-type: text/html; charset=utf-8
+location: https://support.substack.com/hc
+server: cloudflare
+nel: {"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=JgGvRgrd8JiyxCyn%2FiUhZLVObX8e0Iv%2BPSzp1cXCj6FhljeFL4oe2v%2FHsHoH9Qe6lWzDfTN1xhLLR7TRdNJ8MwxFBdH5lP7KhUr7EGUhYWaPik7yalznX30IhYdNx80mnR5P5AOb"}]}
+x-ua-compatible: IE=edge
+x-zendesk-processed-host-header: support.substack.com
+strict-transport-security: max-age=259200; includeSubDomains
+x-zendesk-origin-server: app-server-69f9f48469-fg7f9
+cache-control: no-cache
+set-cookie: _help_center_session=NWlodVVKZTArcFo1YkIva1Z6NUFWNWJYaXFzaHQxQUkzekQ5TTdubWVWL3RNZDlkc1NhYllnTCs4cU1UekJQRnNIM3ZMMnZtckZKK3RoUzAyN2tTZVE9PS0tcGJVM0VmcE9rUmoyOVBQd1lKQXV2QT09--c383e2a161d9c4208b018706c2ab0d947c8cb468; path=/; secure; httponly; SameSite=None
+set-cookie: __cf_bm=Vg5z_NVM5AUHUXnaKZ1Co4rYKMKue0jsn0CSHgiz9d0-1791209659.46778-1.0.1.1-2xeLLqYFhLDAwNVmCnN3xpmNnx9xVQIA_DCh3FyHWP5vxStantAu9E_tg4IKW7sx3NkqtH21irFld5B_OAvT6dBSHWz9vl0sLJl35pDD9rL1UBjYOv4Ivu6ELZVXTfgM; HttpOnly; SameSite=None; Secure; Path=/; Domain=support.substack.com; Expires=Mon, 05 Oct 2026 14:44:19 GMT
+set-cookie: _cfuvid=FuJxsgJmDAFIITSSBXCbg2x0sNNg8zme9Vomrp5F4Mo-1791209659.46778-1.0.1.1-Mntc4GGeyC5LNKq4TvvIu33aBafHguzFg_6ok9g4xZc; HttpOnly; SameSite=None; Secure; Path=/; Domain=support.substack.com
+x-request-id: a45d0833af80a5b8-SEA
+x-runtime: 0.017987
+x-envoy-upstream-service-time: 26
+zendesk-service: help-center
+x-zendesk-zorg: yes
+via: zorg
+x-envoy-decorator-operation: /
+cf-cache-status: DYNAMIC
+cf-ray: a45d0833af80a5b8-IAD
+
+HTTP/2 301 
+date: Mon, 05 Oct 2026 14:14:19 GMT
+content-type: text/html; charset=utf-8
+location: https://support.substack.com/hc/en-us
+server: cloudflare
+nel: {"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=U8NN4O%2F6%2FgYHPRqxwT0mxfwj7%2Bw9KLnDyusN2oCK37eu5r7jezzzeQm2AZPfMeFcZjhH6t7NdurFoVbzu98o0Whg0rsWVmoiqweqpB6gDmM9kPYf0nd1Yjq6ziPixokNJFe69L4H"}]}
+x-ua-compatible: IE=edge
+x-envoy-decorator-operation: /hc
+content-language: en-us
+x-frame-options: SAMEORIGIN
+set-cookie: __cf_bm=UVjKDSlW1uoJ2em3FlqHNVkNRVCwY6FjqT159yQ.Bbg-1791209659.6428003-1.0.1.1-qgHKZ2aefa8dSZvVWRWFDSGxxFjcps.G52buHcjfVnOOXDyEPO1qjU5q9Bea2ATYtCoOUp89qsXeX1o_CCNxPtSCKRf.dWHRpP6ggKIPu__aO4XbW0iiwfU7B6MUfQ0D; HttpOnly; SameSite=None; Secure; Path=/; Domain=support.substack.com; Expires=Mon, 05 Oct 2026 14:44:19 GMT
+set-cookie: _cfuvid=HJ3VopjJb9JYaESZeTlELjHJ2r_jDA8ommAd4Ctq_F0-1791209659.6428003-1.0.1.1-FP6mwDCIczaQsvIkt8yrG13kZrCX4skDnn9.PSuvEtc; HttpOnly; SameSite=None; Secure; Path=/; Domain=support.substack.com
+cache-control: max-age=0, public
+strict-transport-security: max-age=259200; includeSubDomains
+x-zendesk-origin-server: app-server-69f9f48469-dkzf8
+x-request-id: a45d0834bad5a5b8-SEA
+x-runtime: 0.025257
+x-envoy-upstream-service-time: 30
+zendesk-service: help-center
+x-zendesk-zorg: yes
+protocol: HTTP/1.1 always
+via: zorg
+cf-cache-status: DYNAMIC
+cf-ray: a45d0834bad5a5b8-IAD
+
+HTTP/2 403 
+date: Mon, 05 Oct 2026 14:14:19 GMT
+content-type: text/html; charset=UTF-8
+content-length: 5413
+accept-ch: Sec-CH-UA-Bitness, Sec-CH-UA-Arch, Sec-CH-UA-Full-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform, Sec-CH-UA, UA-Bitness, UA-Arch, UA-Full-Version, UA-Mobile, UA-Model, UA-Platform-Version, UA-Platform, UA
+cf-mitigated: challenge
+content-security-policy: default-src 'none'; script-src 'nonce-nCWsFMiMLS7nmEfe7nMaEq' 'unsafe-eval' https://challenges.cloudflare.com; script-src-attr 'none'; style-src 'unsafe-inline'; img-src 'self' https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; frame-src 'self' https://challenges.cloudflare.com blob:; child-src 'self' https://challenges.cloudflare.com blob:; worker-src blob:; form-action http: https:; base-uri 'self'
+server: cloudflare
+critical-ch: Sec-CH-UA-Bitness, Sec-CH-UA-Arch, Sec-CH-UA-Full-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform, Sec-CH-UA, UA-Bitness, UA-Arch, UA-Full-Version, UA-Mobile, UA-Model, UA-Platform-Version, UA-Platform, UA
+cross-origin-embedder-policy: require-corp
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+origin-agent-cluster: ?1
+permissions-policy: accelerometer=(),camera=(),clipboard-read=(),clipboard-write=(),geolocation=(),gyroscope=(),hid=(),magnetometer=(),microphone=(),payment=(),publickey-credentials-get=(),screen-wake-lock=(),serial=(),sync-xhr=(),usb=(),xr-spatial-tracking=*
+referrer-policy: same-origin
+server-timing: chlray;desc="a45d0835ce13a5b8"
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+set-cookie: __cf_bm=J6U3LTenDRgIVmVvbhafbQq_FvXZG3khMX5_poTpKiU-1791209659.806258-1.0.1.1-L5wv1zvnQReQwciwS55AAa8eGFDEjX3WGduXNWLNJIh5XG1Uh7HZO.geeFOpO7wh4TlrQqkbrE2qbJwE4177gsW0_iTM84btJxq0fnPURN0gz9BaBE1z2GrxG7FdF2kK; HttpOnly; SameSite=None; Secure; Path=/; Domain=support.substack.com; Expires=Mon, 05 Oct 2026 14:44:19 GMT
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=fSLS%2F02I%2BT%2Fyn222RDIH7IBuBS8CWlkxSa8sa27eOaGbU8tLKP2abSzJgBp83FUq36sbSwD7nvQ5Z9PbMffy73Rny6X38I2CUasA56VKRQytX8%2FyDhEss5lxLo9XJfq5LaOapmoK"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}
+cf-ray: a45d0835ce13a5b8-IAD
+

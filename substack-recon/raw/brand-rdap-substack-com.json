@@ -1,0 +1,8 @@
+{
+  "domain": "substack.com",
+  "nameservers": ["ALI.NS.CLOUDFLARE.COM", "LEE.NS.CLOUDFLARE.COM"],
+  "registrar": "Amazon Registrar, Inc.",
+  "registration_date": "2010-04-27T18:02:41Z",
+  "expiration_date": "2030-04-27",
+  "abuse_contact": {"phone": "+1.2024422253", "email": "trustandsafety@support.aws.com"}
+}

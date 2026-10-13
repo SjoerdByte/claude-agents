@@ -1,0 +1,37 @@
+# CSP Breakdown — substack.com family (observed 2026-10-05)
+
+## substack.com (/, /home, /sign-in, /app, /admin)
+content-security-policy: frame-ancestors 'self' https://*.substack.com https://substack.com
+
+Notes:
+- Only a frame-ancestors directive is set. No connect-src, script-src, img-src,
+  default-src, or style-src is declared. This is a very permissive posture —
+  the browser falls back to its defaults for everything except framing.
+- Framing is allowed only from substack.com and *.substack.com; third-party
+  sites cannot iframe substack pages (anti-clickjacking posture is OK).
+
+## api.substack.com
+content-security-policy: frame-ancestors 'self' https://*.substack.com https://substack.com
+(responds HTTP/2 404 at /, Cloudflare in front, x-powered-by: Express)
+
+## on.substack.com
+content-security-policy: frame-ancestors 'self' https://*.substack.com https://substack.com
+(Cloudflare in front, x-sub: on, x-service: web, Express)
+
+## Additional non-CSP security-relevant headers (observed on substack.com):
+- Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+- x-powered-by: Express                 (fingerprint — tells attackers the stack)
+- x-cluster: substack
+- x-deploy: 52a7d37c7f                  (deploy/commit identifier — rotate)
+- x-service: web
+- x-served-by: Substack
+- Set-Cookie: AWSALBTG / AWSALBTGCORS   (AWS Application Load Balancer target-group stickiness)
+- Set-Cookie: __cf_bm                   (Cloudflare bot management)
+- Set-Cookie: ab_experiment_sampled, ab_testing_id, cookie_storage_key,
+             ajs_anonymous_id (Segment anonymous id), visit_id
+
+## Implications for recon
+- CSP is NOT constraining what the SPA may call: egress inventory must come
+  from JS bundles (done — see grep-aggregated.txt).
+- AWS ALB + Cloudflare edge + Express origin confirmed from headers.
+- Segment analytics is in use (ajs_anonymous_id cookie).

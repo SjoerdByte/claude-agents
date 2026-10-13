@@ -1,0 +1,8 @@
+{
+  "domain": "substackcdn.com",
+  "nameservers": ["NS-1445.AWSDNS-52.ORG","NS-1936.AWSDNS-50.CO.UK","NS-946.AWSDNS-54.NET","NS-98.AWSDNS-12.COM"],
+  "registrar": "Amazon Registrar, Inc.",
+  "registration_date": "2022-04-12T17:23:27Z",
+  "expiration_date": "2027-04-12",
+  "abuse_contact": {"phone": "+1.2024422253", "email": "trustandsafety@support.aws.com"}
+}

@@ -1,0 +1,1 @@
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"cdn.substack.com","type":16}],"Answer":[{"name":"cdn.substack.com","type":5,"TTL":300,"data":"d3b3sm9t19x0yd.cloudfront.net."}],"Authority":[{"name":"d3b3sm9t19x0yd.cloudfront.net","type":6,"TTL":60,"data":"ns-128.awsdns-16.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400"}]}

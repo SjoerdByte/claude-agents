@@ -1,0 +1,18 @@
+# NOTE: All TLS certificates presented to this container are issued by:
+#   O = Anthropic, CN = Egress Gateway SDS Issuing CA (production)
+# with validity ~30 days, SAN = the requested hostname only.
+# The outbound HTTPS proxy performs TLS MITM; we cannot see the real
+# upstream certificate SANs or issuers through openssl s_client in this
+# environment. This is an environment limitation, not a Blockpit fact.
+#
+# For CT-log based SAN enumeration, run:
+#   curl 'https://crt.sh/?q=%25.blockpit.io&output=json'
+#   curl 'https://crt.sh/?q=blockpit.io&output=json'
+#   curl 'https://crt.sh/?q=cryptotax.io&output=json'
+# from an environment with direct TLS. crt.sh returned 502 both times
+# this session (crt.sh-side nginx 502, not our proxy).
+#
+# What we CAN tell: every live host responded with a cert whose single
+# SAN matched the requested hostname (because the proxy fabricates per-
+# request SNI-matched leaf certs). Cert expiry and issuer therefore
+# cannot be used as findings here.

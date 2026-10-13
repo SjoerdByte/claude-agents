@@ -1,0 +1,40 @@
+# Hostnames referenced in Netlify-pivoted bundles.
+# Compared against existing recon-blockpit/subdomains.txt + angular/new-subdomains.txt.
+# All are already known - nothing truly new on the hostname front.
+
+# Already known:
+#   api.blockpit.io, cn.blockpit.io, cdn.blockpit.io, gate.blockpit.io,
+#   gov-api.blockpit.io, cta-api.blockpit.io, help.blockpit.io, sentry.blockpit.io,
+#   agent.blockpit.io, app.blockpit.io
+#
+# External / third-party referenced by bundles:
+#   assets.cello.so                           (bp-frontend-prod staging - Cello referral SDK)
+#   api-iam.intercom.io / .eu / .au           (bp-gov-frontend-prod staging)
+#   widget.intercom.io                        (bp-gov-frontend-prod staging)
+#   challenges.cloudflare.com                 (Turnstile)
+#   fonts.googleapis.com / fonts.gstatic.com  (Google Fonts)
+#   www.googletagmanager.com                  (GTM-M52JVRC)
+#   cdn.firstpromoter.com                     (FirstPromoter referral)
+#   cdn.jsdelivr.net                          (remixicon CDN)
+#   uploads-ssl.webflow.com                   (Webflow asset host)
+#   blockpit.b-cdn.net                        (BunnyCDN for wordpress images)
+#
+# netlify.app slugs (deterministic CNAME map, see slug-guesses.txt):
+bp-powerhouse.netlify.app
+bp-frontend-staging.netlify.app
+bp-cta-frontend-staging.netlify.app
+bp-gov-frontend-test.netlify.app
+bp-frontend-test.netlify.app
+bp-cta-frontend-test.netlify.app
+bp-powerhouse-test.netlify.app
+bp-gov-frontend-staging.netlify.app
+bp-frontend-prod.netlify.app
+bp-gov-frontend-prod.netlify.app
+bp-cta-frontend-prod.netlify.app
+
+# Branch deploys with public (unauthed) 200:
+staging--bp-frontend-prod.netlify.app
+staging--bp-gov-frontend-prod.netlify.app
+master--bp-frontend-prod.netlify.app          (identical to bp-frontend-prod/ root)
+master--bp-gov-frontend-prod.netlify.app      (identical to bp-gov-frontend-prod/ root)
+master--bp-cta-frontend-prod.netlify.app      (identical to bp-cta-frontend-prod/ root)
