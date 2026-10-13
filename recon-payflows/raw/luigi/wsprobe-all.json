@@ -1,0 +1,5546 @@
+[
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": null,
+    "url": "wss://luigi-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "soap",
+    "url": "wss://luigi-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "mqtt",
+    "url": "wss://luigi-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 400,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/events",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": null,
+    "url": "wss://luigi-api-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "soap",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-public-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-public-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/ws",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/stream",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/events",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/events",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/events",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/events",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/events",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/events",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/events",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/events",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/events",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/events",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/events",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/sub",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": null,
+    "url": "wss://luigi-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "soap",
+    "url": "wss://luigi-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "mqtt",
+    "url": "wss://luigi-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/ws",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/ws",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/websocket",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/socket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/api/ws",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/api/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/v1/ws",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/v1/ws",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/stream",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/stream",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/stream",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/events",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/events",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/events",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/events",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/events",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/events",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/events",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/events",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/events",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/events",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/events",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/events",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/sub",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/sub",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/sub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/pubsub",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/pubsub",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/mqtt",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/mqtt",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/graphql",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/graphql",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/signalr",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/signalr",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": null,
+    "url": "wss://luigi-api-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "graphql-ws",
+    "url": "wss://luigi-api-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "graphql-transport-ws",
+    "url": "wss://luigi-api-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "v10.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "v11.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "v12.stomp",
+    "url": "wss://luigi-api-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "wamp.2.json",
+    "url": "wss://luigi-api-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "soap",
+    "url": "wss://luigi-api-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "ocpp1.6",
+    "url": "wss://luigi-api-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "mqttv3.1",
+    "url": "wss://luigi-api-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  },
+  {
+    "host": "luigi-api-ws.payflows.io",
+    "path": "/socket.io/?EIO=4&transport=websocket",
+    "subproto": "mqtt",
+    "url": "wss://luigi-api-ws.payflows.io/socket.io/?EIO=4&transport=websocket",
+    "status": "http_rejected",
+    "http_status": 403,
+    "detail": "AttributeError:'Headers' object has no attribute 'raw'"
+  }
+]

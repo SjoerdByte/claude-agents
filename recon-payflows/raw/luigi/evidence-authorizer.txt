@@ -1,0 +1,105 @@
+### 1a. luigi-public-ws.payflows.io / — no params
+curl: (28) Operation timed out after 8004 milliseconds with 0 bytes received
+HTTP/1.1 200 Connection Established
+
+
+
+### 1b. luigi-public-ws.payflows.io / — bad conv_id (not UUID)
+HTTP/1.1 200 Connection Established
+
+HTTP/2 500 
+date: Tue, 13 Oct 2026 09:58:09 GMT
+content-type: application/json; charset=UTF-8
+content-length: 36
+x-amz-apigw-id: FLULsFlCjoEERnw=
+
+badly formed hexadecimal UUID string
+
+### 1c. luigi-public-ws.payflows.io / — valid UUID, no token
+HTTP/1.1 200 Connection Established
+
+HTTP/2 400 
+date: Tue, 13 Oct 2026 09:58:09 GMT
+content-type: application/json; charset=UTF-8
+content-length: 25
+x-amz-apigw-id: FLULzGJjjoEEpBA=
+
+JWT not found in request.
+
+### 1d. luigi-public-ws.payflows.io / — token missing kid
+HTTP/1.1 200 Connection Established
+
+HTTP/2 500 
+date: Tue, 13 Oct 2026 09:58:10 GMT
+content-type: application/json; charset=UTF-8
+content-length: 5
+x-amz-apigw-id: FLUL6GJnDoEEosg=
+
+'kid'
+
+### 1e. luigi-public-ws.payflows.io / — token with unknown kid
+HTTP/1.1 200 Connection Established
+
+HTTP/2 500 
+date: Tue, 13 Oct 2026 09:58:10 GMT
+content-type: application/json; charset=UTF-8
+content-length: 33
+x-amz-apigw-id: FLUL_GqKDoEEoNg=
+
+Public key not found in jwks.json
+
+### 2a. luigi-api-public-ws.payflows.io / — no params
+HTTP/1.1 200 Connection Established
+
+HTTP/2 400 
+date: Tue, 13 Oct 2026 09:58:11 GMT
+content-type: application/json; charset=UTF-8
+content-length: 68
+x-amz-apigw-id: FLUMFFsWjoEEsxA=
+
+{"statusCode": 400, "body": "Conversation ID not found in request."}
+
+### 2b. luigi-api-public-ws.payflows.io / — bad conv_id
+HTTP/1.1 200 Connection Established
+
+HTTP/2 500 
+date: Tue, 13 Oct 2026 09:58:11 GMT
+content-type: application/json; charset=UTF-8
+content-length: 67
+x-amz-apigw-id: FLUMJFg_DoEEm4A=
+
+{"statusCode": 500, "body": "badly formed hexadecimal UUID string"}
+
+### 2c. luigi-api-public-ws.payflows.io / — valid UUID, no token
+HTTP/1.1 200 Connection Established
+
+HTTP/2 400 
+date: Tue, 13 Oct 2026 09:58:12 GMT
+content-type: application/json; charset=UTF-8
+content-length: 56
+x-amz-apigw-id: FLUMNFAVDoEEEZA=
+
+{"statusCode": 400, "body": "JWT not found in request."}
+
+### 2d. luigi-api-public-ws.payflows.io / — token missing kid
+HTTP/1.1 200 Connection Established
+
+HTTP/2 500 
+date: Tue, 13 Oct 2026 09:58:12 GMT
+content-type: application/json; charset=UTF-8
+content-length: 36
+x-amz-apigw-id: FLUMSFlkDoEEEng=
+
+{"statusCode": 500, "body": "'kid'"}
+
+### 2e. luigi-api-public-ws.payflows.io / — token with unknown kid
+HTTP/1.1 200 Connection Established
+
+HTTP/2 500 
+date: Tue, 13 Oct 2026 09:58:12 GMT
+content-type: application/json; charset=UTF-8
+content-length: 64
+x-amz-apigw-id: FLUMWE0BjoEEKcw=
+
+{"statusCode": 500, "body": "Public key not found in jwks.json"}
+

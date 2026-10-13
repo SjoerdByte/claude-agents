@@ -1,0 +1,55 @@
+### A_no_params — https://luigi-public-ws.payflows.io/
+HTTP/1.1 200 Connection Established
+
+HTTP/2 400 
+date: Tue, 13 Oct 2026 09:58:33 GMT
+content-type: application/json; charset=UTF-8
+content-length: 37
+x-amz-apigw-id: FLUPkF2_DoEEl4g=
+
+Conversation ID not found in request.
+
+### B_bad_conv_id — https://luigi-public-ws.payflows.io/?conversation_id=not-a-uuid
+HTTP/1.1 200 Connection Established
+
+HTTP/2 500 
+date: Tue, 13 Oct 2026 09:58:35 GMT
+content-type: application/json; charset=UTF-8
+content-length: 36
+x-amz-apigw-id: FLUP0Eh8DoEEHlg=
+
+badly formed hexadecimal UUID string
+
+### C_valid_uuid_no_token — https://luigi-public-ws.payflows.io/?conversation_id=00000000-0000-0000-0000-000000000000
+HTTP/1.1 200 Connection Established
+
+HTTP/2 400 
+date: Tue, 13 Oct 2026 09:58:36 GMT
+content-type: application/json; charset=UTF-8
+content-length: 25
+x-amz-apigw-id: FLUQDE-qjoEEN4Q=
+
+JWT not found in request.
+
+### D_token_missing_kid — https://luigi-public-ws.payflows.io/?conversation_id=00000000-0000-0000-0000-000000000000&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0In0.c3PtdOtF-W_6xcDa6I9DAwN2oWMy_bRN5nMy6Pq_U-8
+HTTP/1.1 200 Connection Established
+
+HTTP/2 500 
+date: Tue, 13 Oct 2026 09:58:38 GMT
+content-type: application/json; charset=UTF-8
+content-length: 5
+x-amz-apigw-id: FLUQSHDLjoEESvw=
+
+'kid'
+
+### E_token_unknown_kid — https://luigi-public-ws.payflows.io/?conversation_id=00000000-0000-0000-0000-000000000000&token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im5vbmV4aXN0ZW50LWtpZC0wMDAwMDAwMCJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNzAwMDAwMDAwfQ.AAAA
+HTTP/1.1 200 Connection Established
+
+HTTP/2 500 
+date: Tue, 13 Oct 2026 09:58:39 GMT
+content-type: application/json; charset=UTF-8
+content-length: 33
+x-amz-apigw-id: FLUQiGAKjoEEWWQ=
+
+Public key not found in jwks.json
+

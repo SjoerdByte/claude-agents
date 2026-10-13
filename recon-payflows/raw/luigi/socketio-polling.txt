@@ -1,0 +1,36 @@
+=== luigi-public-ws.payflows.io /socket.io/?EIO=4&transport=polling ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 426 
+date: Tue, 13 Oct 2026 09:49:36 GMT
+content-length: 0
+sec-websocket-version: 13
+
+
+=== luigi-api-public-ws.payflows.io /socket.io/?EIO=4&transport=polling ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 426 
+date: Tue, 13 Oct 2026 09:49:38 GMT
+content-length: 0
+sec-websocket-version: 13
+
+
+=== luigi-ws.payflows.io /socket.io/?EIO=4&transport=polling ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 426 
+date: Tue, 13 Oct 2026 09:49:38 GMT
+content-length: 0
+sec-websocket-version: 13
+
+
+=== luigi-api-ws.payflows.io /socket.io/?EIO=4&transport=polling ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 426 
+date: Tue, 13 Oct 2026 09:49:38 GMT
+content-length: 0
+sec-websocket-version: 13
+
+

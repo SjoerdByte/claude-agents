@@ -1,7 +1,7 @@
 {
   "target": "payflows.io",
   "authorization": "written permission from CEO Pauline Glikman",
-  "scope_note": "Everything under *.payflows.io plus vendor-hosted infra that runs their code or stores their data. Subdomain list in subdomains.txt. Known stack: VueJS front-end; AWS (S3, CloudFront, Lambda) for infra per infra fingerprint; Unleash feature flags; internal PyPI mirror. GitHub source is fully private.",
+  "scope_note": "Everything under *.payflows.io plus vendor-hosted infra that runs their code or stores their data. Subdomain list in subdomains.txt. Known stack: VueJS front-end; AWS (S3, CloudFront, Lambda, API Gateway WebSocket, Cognito User Pool + Identity Pool eu-west-1:d1d858d9-a60d-456e-9321-0745dacfac45) for infra; Unleash feature flags; internal PyPI mirror. GitHub source is fully private.",
   "ruled_out": [
     "Public GitHub org has any code - github.com/payflows is held but has zero public repos and zero public members",
     "DockerHub org 'payflows' or variants - all 404, search returns 0 results",
@@ -11,43 +11,56 @@
     "Commits authored or committed from @payflows.io on public repos - 0 (search_commits)",
     "Any new subdomains discoverable via GitHub - 0; all URLs in the only public reference (api-evangelist/payflows) are already in subdomains.txt",
     "Public GitHub Actions workflows exposing OIDC trust / cloud account IDs - no public repos, cannot inspect",
-    "pypi.payflows.io S3 bucket enumeration - origin bucket is 'payflows-pypi' in eu-west-1; ListObjectsV2/policy/acl/versioning all 403 AccessDenied, no s3-website config, no public index.html / robots.txt / simple/ / packages/ or any guessed package path (50+ probes, all NoSuchKey). Bucket name is leaked by standard S3 PermanentRedirect XML which is expected CloudFront+S3 behavior and not reportable on its own. Full probe log in raw/pypi/NOTES.md."
+    "pypi.payflows.io S3 bucket enumeration - origin bucket is 'payflows-pypi' in eu-west-1; ListObjectsV2/policy/acl/versioning all 403 AccessDenied, no s3-website config, no public index.html / robots.txt / simple/ / packages/ or any guessed package path (50+ probes, all NoSuchKey). Bucket name is leaked by standard S3 PermanentRedirect XML which is expected CloudFront+S3 behavior and not reportable on its own. Full probe log in raw/pypi/NOTES.md.",
+    "luigi-public-ws.payflows.io / luigi-api-public-ws.payflows.io direct WS compromise - both are AWS API Gateway WebSocket endpoints; only path '/' reaches the application; every WS Upgrade is intercepted by a Python Lambda authorizer that demands conversation_id (UUID) + token (JWT with kid-based JWKS lookup); 616 probes across 14 paths x 11 subprotocols produced zero 101 handshakes; see F001. No unauth data access, no introspection, no object-ID queries reachable. One low-sev info-disclosure logged (F001). Non-public counterparts luigi-ws / luigi-api-ws gate at the API Gateway itself with SigV4; no application reached."
   ],
   "open_threads": [
     {
       "priority": 1,
-      "name": "luigi-public-ws.payflows.io / luigi-api-public-ws.payflows.io WebSocket surface",
-      "why": "both return 426 Upgrade Required. The '-public-' naming signals these are meant to be reachable without VPN. WS endpoints routinely skip the authorization enforced on HTTP; probe first few envelopes for auth model, message schema, object-ID exposure."
-    },
-    {
-      "priority": 2,
       "name": "scim.payflows.io SCIM 2.0 enumeration",
       "why": "SCIM endpoint returns 403 application/json. If GET /scim/v2/Users accepts a weak token or allows filter=userName sw, employee / customer-admin PII enumeration follows directly. High-severity PII and a feed for cross-tenant IDOR."
     },
     {
-      "priority": 3,
+      "priority": 2,
       "name": "payments-prod-docker-lambda.payflows.io / luigi-prod-docker-lambda.payflows.io",
       "why": "Lambda container-image hosts (one 403, one 404). Confirm whether a Lambda Function URL / API Gateway sits in front; look for alternate verbs, trailing slash variants, .well-known, and common handler paths."
     },
     {
-      "priority": 4,
+      "priority": 3,
       "name": "Unleash + ff.payflows.io feature-flag surface",
       "why": "unleash.payflows.io is 200 HTML (admin UI). ff.payflows.io is 200 HTML (likely proxy). Check for default credentials, unauthenticated /api/client/features (returns every flag + segment definition, which leaks hidden endpoints and new product codenames)."
     },
     {
-      "priority": 5,
+      "priority": 4,
       "name": "storybook.payflows.io - Basic auth gated design system",
       "why": "401 Basic Realm='Login'. Low-severity but if credential-stuff succeeds, Storybook typically embeds every private component's props, mocked API responses, and sometimes mocked tokens. Useful recon feed for the Vue front-end."
     },
     {
-      "priority": 6,
+      "priority": 5,
       "name": "CDN-origin IP discovery for api.payflows.io / app.payflows.io",
       "why": "front-end sits behind CloudFront. Pull passive DNS / CT history for direct ALB / EC2 IPs. Direct origin access bypasses WAF per Claude.md attack pattern."
+    },
+    {
+      "priority": 6,
+      "name": "Cognito self-signup + luigi WS post-auth exploration",
+      "why": "The Cognito User Pool backing app.payflows.io (identity pool eu-west-1:d1d858d9-a60d-456e-9321-0745dacfac45 confirmed in bundle) likely allows self-signup. A valid-signature Cognito JWT would let us test whether the luigi public WS authorizer scopes conversation_id to the token's tenant/user. This requires the 'request a test account' reserved decision in Claude.md and is pending user approval."
     }
   ],
   "pending_decisions": [
-    "whether to request an authenticated test account before the auth surface pass"
+    "whether to request an authenticated test account before the auth surface pass - needed to escalate luigi WS beyond the info-disclosure finding and to attempt SCIM / Unleash authenticated checks"
   ],
-  "hours_spent": 2.0,
-  "findings": []
+  "hours_spent": 3.0,
+  "findings": [
+    {
+      "id": "F001",
+      "endpoint": "wss://luigi-public-ws.payflows.io/ and wss://luigi-api-public-ws.payflows.io/",
+      "method": "WS CONNECT",
+      "severity": "Low",
+      "cvss": "3.1 (AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N)",
+      "owasp": "A05:2021 Security Misconfiguration (CWE-209, CWE-754)",
+      "status": "unverified",
+      "summary": "Public Luigi WS Lambda authorizer leaks Python exception strings ('badly formed hexadecimal UUID string', \"'kid'\", 'Public key not found in jwks.json') and the full pre-auth model to any unauthenticated client.",
+      "file": "findings/F001-luigi-ws-authorizer-info-disclosure.md"
+    }
+  ]
 }
