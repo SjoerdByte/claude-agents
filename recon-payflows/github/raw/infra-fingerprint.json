@@ -1,0 +1,35 @@
+{
+  "note": "Fingerprint-only HEAD/initial-GET to confirm what GitHub recon could not surface. No deep probing.",
+  "cdn_vs_origin": {
+    "pypi.payflows.io": {
+      "status": 404,
+      "server": "AmazonS3",
+      "via": "CloudFront",
+      "x_amz_cf_pop": "IAD61-P11",
+      "evidence": "S3 NoSuchKey XML on / and /simple/; CloudFront headers present",
+      "implication": "Static PyPI index served from S3 via CloudFront. Bucket name hidden by CF; worth attempting list-type=2 against the origin and probing known package-name shapes."
+    }
+  },
+  "websocket_services_426": [
+    "luigi-ws.payflows.io",
+    "luigi-api-ws.payflows.io",
+    "luigi-public-ws.payflows.io",
+    "luigi-api-public-ws.payflows.io"
+  ],
+  "docker_lambda_hosts": {
+    "payments-prod-docker-lambda.payflows.io": "403",
+    "luigi-prod-docker-lambda.payflows.io": "404",
+    "payflows-prod-docker-lambda.payflows.io": "no response / tunnel failed"
+  },
+  "notable_services": {
+    "scim.payflows.io": "403 application/json - SCIM provisioning",
+    "unleash.payflows.io": "200 text/html - Unleash feature-flag UI",
+    "ff.payflows.io": "200 text/html - likely Unleash front-end or FF proxy",
+    "storybook.payflows.io": "401 Basic auth",
+    "status.payflows.io": "connection timed out (statuspage.io hosted?)",
+    "support.payflows.io": "502",
+    "blog.payflows.io": "404",
+    "pages.payflows.io": "404",
+    "certification.payflows.io": "200 text/html"
+  }
+}

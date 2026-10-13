@@ -1,0 +1,17 @@
+{
+  "pypi": {
+    "user_payflows": "exists? page uses client-side rendering; API /simple/ not probed server-side (needs real client). Direct JSON for packages 'payflows', 'payflows-core', 'payflows-sdk', 'payflows-client', 'luigi-payflows', 'pyflows-io' all return 404.",
+    "mystix": {"exists": true, "author": "Rowan Lindsay", "email": "development@rowanlindsay.com", "note": "UNRELATED - domain-specific language"},
+    "fawkes": {"exists": true, "author": "Shawn Shan", "email": "shawnshan@cs.uchicago.edu", "note": "UNRELATED - privacy tool from UChicago"}
+  },
+  "dockerhub": {
+    "user_payflows": "404 User not found",
+    "variants_404": ["payflowsio", "payflows-io", "payflowsdev", "payflows-dev", "payflowsprod", "payflows-prod"],
+    "search_payflows": "0 results"
+  },
+  "npm": {
+    "search_text_payflows": "total=0 hits",
+    "search_text_payflows.io": "total=0 hits",
+    "user_pages_403": "npm /~user pages all 403 from the proxy; registry.npmjs.org search is authoritative"
+  }
+}

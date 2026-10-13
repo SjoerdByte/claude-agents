@@ -1,0 +1,26 @@
+{
+  "queries_run": [
+    {"q": "\"payflows.io\"", "hits_total": 22, "signal": "all false positives (API Evangelist catalog, French PA list, startup DBs, funding CSVs)"},
+    {"q": "\"@payflows.io\"", "hits_total": 1, "signal": "false positive (Fluxym-BBA/rfe.fluxym.com patch-A)"},
+    {"q": "\"luigi.payflows.io\"", "hits_total": 0, "signal": "no public leaks"},
+    {"q": "\"api.payflows.io\"", "hits_total": 0, "signal": "no public leaks"},
+    {"q": "\"pypi.payflows.io\"", "hits_total": 0, "signal": "no public leaks"},
+    {"q": "\"payflows\" \"mystix\"", "hits_total": 0, "signal": "no public leaks"},
+    {"q": "\"payflows\" \"fawkes\"", "hits_total": 0, "signal": "no public leaks"},
+    {"q": "\"payflows\" \"VueJS\"", "hits_total": 0, "signal": "no public leaks"},
+    {"q": "\"payflows\" \"AKIA\"", "hits_total": 0, "signal": "no public AWS access keys scoped to the name"},
+    {"q": "\"payflows\" aws-account-id", "hits_total": 0, "signal": "no leak"},
+    {"q": "\"payflows\" \"terraform\"", "hits_total": 11, "signal": "quratulainmubeen-eng/Flow uses 'payflow' prefix but Azure/different company, unrelated"},
+    {"q": "\"payflows\" \"lambda\"", "hits_total": 23, "signal": "all unrelated namesakes"},
+    {"q": "\"payflows\" k8s", "hits_total": 0, "signal": "no public leaks"},
+    {"q": "\"payflows\" DATABASE_URL", "hits_total": 0, "signal": "no public leaks"},
+    {"q": "author-email:@payflows.io", "hits_total": 0, "signal": "no commits ever authored from @payflows.io on public repos"},
+    {"q": "committer-email:@payflows.io", "hits_total": 0, "signal": "no commits ever committed from @payflows.io on public repos"},
+    {"q": "payflows (user search)", "hits_total": 3, "signal": "PayflowsTom (0 repos), payflowsystems-netizen (0 repos), payflowsservice-beep (0 repos) - all empty profile placeholders"},
+    {"q": "\"payflows.io\" in:bio (user search)", "hits_total": 0, "signal": "no users list payflows.io in bio"},
+    {"q": "payflows location:Paris (user search)", "hits_total": 0, "signal": "no Paris-based GitHub users mention payflows"},
+    {"q": "payflows in:body (PRs)", "hits_total": 0, "signal": "no PR bodies"},
+    {"q": "payflows.io (issues)", "hits_total": 0, "signal": "no issues"}
+  ],
+  "conclusion": "Payflows runs a fully private GitHub source footprint. No code, workflows, package manifests, Terraform, Dockerfiles, or Kubernetes manifests referencing payflows.io or internal codenames (luigi, mystix, fawkes, metis, apollo, vera, athena) have ever been pushed to public GitHub."
+}

@@ -1,0 +1,4 @@
+# No new subdomains discovered via GitHub recon.
+# Rationale: Payflows runs a fully private GitHub footprint. Zero code hits for any payflows.io hostname.
+# Every URL in the only public reference (api-evangelist/payflows) is already in subdomains.txt.
+# Session: 2026-10-13
