@@ -1,0 +1,73 @@
+{
+  "target": "wert.io",
+  "authorization": "Written permission from CEO George Basiladze",
+  "scope_note": "wert.io registrable domain and all subdomains listed by the user. First-party vendor-hosted infra (CloudFront, S3 holding Wert data, AWS ELB in eu-central-1, GitHub Pages for javascript.wert.io, Tally.so for onboarding.wert.io, Render for docs.wert.io, Intercom for support.wert.io) counts as in-scope per the scope clarification. Scanning was read-only, no exploitation.",
+  "ruled_out": [
+    "Firebase/Supabase/Google Cloud: not used by Wert's stack (no Firebase keys, Firestore endpoints, or GCS buckets found in JS).",
+    "SPA path 200s on /.env, /.git/config, /package.json etc. on partner.wert.io / sandbox.wert.io / issuing.wert.io: confirmed to be nginx-style SPA fallback serving index.html, not real file disclosure.",
+    "javascript.wert.io subdomain takeover: GitHub Pages CNAME file returns 'javascript.wert.io' meaning the custom domain is claimed by an existing Pages site that just has no index; takeover not viable without GitHub org compromise.",
+    "widget.wert.io 302 responses on arbitrary paths: redirect to /v2/<path>, this is intentional path versioning not a leak.",
+    "Sentry DSN found in widget JS: public by design (noted but not a finding).",
+    "cards-api-green.wert.io: observed in CT logs but currently NXDOMAIN, no live surface."
+  ],
+  "open_threads": [
+    {
+      "id": "T1-otc-ns-delegation-takeover",
+      "severity_hint": "high",
+      "summary": "otc.wert.io has delegated NS records to four AWS Route53 nameservers (ns-846.awsdns-41.net, ns-1370.awsdns-43.org, ns-1621.awsdns-10.co.uk, ns-468.awsdns-58.com) that return REFUSED. Lame delegation to Route53 = hosted-zone-reclaim subdomain takeover candidate. CT logs confirm *.otc.wert.io and *.demo.otc.wert.io certificates were issued previously, so the subdomain was in production use."
+    },
+    {
+      "id": "T2-cards-sourcemaps",
+      "severity_hint": "medium",
+      "summary": "Source maps exposed publicly: cards.wert.io/js/app.156b04f2.js.map (44KB), cards.wert.io/js/chunk-vendors.4f562fcd.js.map (1MB), cards-reg-iframe-sandbox.wert.io/js/app.156b04f2.js.map, cards-reg-iframe-green.wert.io/js/app.119d4e03.js.map. Full source code of card-registrator SPA retrievable."
+    },
+    {
+      "id": "T3-cards-api-metrics-public",
+      "severity_hint": "medium",
+      "summary": "cards-api.wert.io/metrics exposes Prometheus metrics unauthenticated. Reveals internal pod IP 10.20.129.110:8080, service name cards_registrator, Go runtime details. Also /health returns {\"status\":\"ok\"}."
+    },
+    {
+      "id": "T4-widget-api-cors-mix",
+      "severity_hint": "low",
+      "summary": "widget.wert.io /v1/api/v3/*, partner.wert.io /api/external/*, cards-api.wert.io /api/v1/* and sandbox variants all return 'Access-Control-Allow-Origin: *' together with 'Access-Control-Allow-Credentials: true'. Browsers ignore this invalid combination, but it indicates a sloppy CORS policy that may hide a real bypass if any endpoint reflects Origin instead of '*' on another path."
+    },
+    {
+      "id": "T5-cards-partner-register-prevalidation",
+      "severity_hint": "low",
+      "summary": "POST https://cards.wert.io/api/v1/partner/register (and all cards-* clones) validates request body schema BEFORE auth check: empty JSON gives 400 field errors, well-formed body gives 401 'unauthorized'. Enables field-name enumeration without any credential and leaks API shape pre-auth. Confirm whether any payload variant can slip past the auth guard."
+    },
+    {
+      "id": "T6-widget-session-ssid",
+      "severity_hint": "medium",
+      "summary": "widget.wert.io/v1/api/v3/* and sandbox.wert.io/api/v3/* use session cookie 'ssid'. Session creation flow unseen without actually loading the iframe. Worth tracing in exploit how ssid is minted (OTP, partner-side signature, click_id?), whether session is bound to partner_id, and whether an attacker can mint their own ssid against another partner_id."
+    },
+    {
+      "id": "T7-widget-OTP-bypass-sandbox",
+      "severity_hint": "info",
+      "summary": "Docs state sandbox accepts any 4-digit OTP; any phone number works. Sandbox-only quirk documented, but confirms test-mode auth and gives trivial login into a sandbox partner account for cross-flow testing."
+    },
+    {
+      "id": "T8-prod-admin-ingress-blocked",
+      "severity_hint": "unknown",
+      "summary": "*.prod.wert.io ingress (grafana, prometheus, dex, dashboard, kubeconfig, upmeter, status, documentation, api) share a single AWS ELB in eu-central-1 and reset TLS during handshake over the Anthropic egress proxy. Behavior consistent with mTLS or source-IP allowlist. Needs re-check from a direct outbound (no MITM proxy) or SNI/cert inspection to confirm whether anything is reachable to unauth internet users. If any of these is open, grafana/dex/kubeconfig would be P1 straight away."
+    },
+    {
+      "id": "T9-onboarding-tally-dangling",
+      "severity_hint": "low",
+      "summary": "onboarding.wert.io CNAME -> cname.tally.so, but every path returns a generic 'Page Not Found' 404 served by Tally. If Tally lets anyone claim an unclaimed custom-domain pointing to them, this is a subdomain takeover. Needs confirmation via Tally's domain-verification policy."
+    },
+    {
+      "id": "T10-widget-526-origin-broken",
+      "severity_hint": "info",
+      "summary": "widget-test.wert.io, widget-green-new.wert.io, sandbox-old.wert.io all return Cloudflare 'error code: 526' (origin SSL cert invalid). Dormant/broken environments; if left pointing at an unmaintained origin they may become stale deploys with older code."
+    },
+    {
+      "id": "T11-webhook-docs-no-signing",
+      "severity_hint": "info",
+      "summary": "docs.wert.io/docs/webhooks.md does not describe any HMAC signature, timestamp, or secret header on outbound webhooks. Payloads include user PII (user_id, click_id, phone, email). This is a partner-side risk (they may trust unsigned webhooks) but confirms Wert does not sign its own outgoing notifications."
+    }
+  ],
+  "pending_decisions": [],
+  "hours_spent": 1.5,
+  "findings": []
+}
