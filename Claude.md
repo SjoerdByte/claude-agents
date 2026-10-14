@@ -10,7 +10,7 @@ For every confirmed finding, output a one-row table entry:
 - Paste full raw requests AND responses, including all headers.
 - Share negative results (403, 404, 500) immediately, dead ends matter.
 - State what is already ruled out at session start.
-- State session goal upfront: surface mapping, chase a vector, or write report.
+- State session goal upfront: surface mapping, chase a vector, write report, or full pipeline.
 - Subdomain list comes from the user. Scope is always everything unless stated otherwise. Do not ask what's in scope.
 - Time budget: one full working week per target, unless the user says otherwise. Track estimated hours spent in index.json, see Session continuity, so this is enforceable.
 - User states upfront if authenticated accounts are already available. If not, and the target has self-service signup, agents register their own test accounts right away, see Test accounts below, no need to wait. If self-registration is not possible, exhaust the unauth surface first, asking the user for an account is a last resort.
@@ -22,6 +22,11 @@ For every confirmed finding, output a one-row table entry:
 If the target has a self-service signup flow, create test accounts directly, do not pause to ask. Use peter.bjorn75@gmail.com as the base address, or peter.bjorn75+{specific-use-case}@gmail.com for additional accounts, so each one is tagged by what it is for. If signup requires picking an account type or role, such as organizer versus attendee, or patient versus provider, create one of each relevant type right away, since that is what cross-account and cross-tenant testing needs.
 
 This only falls back to asking the user when self-service signup is not available, for example when an account must be provisioned by the target's own staff, requires a paid plan, or needs a verification step that cannot be automated. In that case ask, do not try to work around it.
+
+## Full pipeline sessions
+When the session goal is full pipeline, chain the agents automatically instead of waiting for the user between phases. Run recon to completion, then hand its output straight to exploit, then once exploit stops, that is time budget used, surface exhausted, or a reserved decision hit, hand the confirmed findings straight to report to draft the output files. Do not ask the user for permission between recon and exploit, or between exploit and drafting the report.
+
+The reserved decisions still apply inside a full pipeline session and still pause the chain: an account the agent cannot self-register, and actually sending or submitting the finished report. Drafting the report is not the same as sending it, drafting continues automatically, sending waits for the user.
 
 ## High-value attack patterns
 Check these first on every target, they have produced the highest-severity findings before:
