@@ -160,51 +160,55 @@ Disable public ListBucket permission. Review and restrict GetObject permissions.
 
 ---
 
-## FINDING 4: Exposed Dex OIDC Provider with Open Device Code Flow
+## FINDING 4: Exposed Dex OIDC Providers with Open Device Code Flow (2 Instances)
 
 Severity: HIGH (CVSS 7.3)
 Category: Authentication Misconfiguration (CWE-287)
-Endpoint: https://dex.stg.rootz.com
+Endpoints: https://dex.stg.rootz.com, https://dex.dev.rootz.com
 
 ### Description
 
-A Dex OIDC identity provider is publicly accessible on the staging environment. It exposes full OIDC discovery metadata, JWKS signing keys, and allows unauthenticated generation of device authorization codes that could be used in phishing attacks to steal Kubernetes access tokens.
+Two Dex OIDC identity providers are publicly accessible on staging and dev environments, both on raw AWS IPs without any WAF protection (unlike other Rootz services behind Cloudflare). They expose full OIDC discovery metadata, JWKS signing keys, and allow unauthenticated generation of device authorization codes that could be used in phishing attacks to steal Kubernetes access tokens. Both instances also have implicit grant type and plain PKCE enabled, widening the attack surface.
 
 ### Evidence
 
-OIDC Discovery:
-- https://dex.stg.rootz.com/.well-known/openid-configuration returns full OIDC metadata
+Staging instance (dex.stg.rootz.com, IP: 108.133.177.4):
+- OIDC discovery at /.well-known/openid-configuration
 - Issuer: https://dex.stg.rootz.com
-- Supported grant types: authorization_code, implicit, refresh_token, device_code
-- Scopes: openid, email, groups, profile, offline_access
-- Only connector: Google
-
-OAuth Client Discovered:
+- Grant types: authorization_code, implicit, refresh_token, device_code
+- Connector: Google SSO
 - client_id: wohTei2hiQu1
 - redirect_uri: https://login.stg.rootz.com/callback
+- 5 RSA signing keys in JWKS
+
+Dev instance (dex.dev.rootz.com, IP: 18.202.129.211):
+- Same OIDC capabilities as staging
+- Connector: GitLab (gitlab.rootz.com as upstream IdP)
+- GitLab OAuth client_id: 33cd8790c14a9f932782eaf1a2243877860811df5da245e1e15a88a418eec918
+- Same client_id (wohTei2hiQu1) for K8s token generation
+- redirect_uri: https://login.dev.rootz.com/callback
+- 5 RSA signing keys in JWKS (different from staging)
+
+Both instances:
 - No client_secret required for device code flow
+- POST to /device/code generates valid device codes without authentication
+- Device codes expire in 300 seconds (5 minutes)
+- No Cloudflare WAF, no rate limiting, no bot protection
 
-Device Code Flow (no authentication required):
-- POST to /device/code with client_id=wohTei2hiQu1 generates valid device codes
-- Response includes device_code, user_code (format: XXXX-XXXX), verification_uri
-- Codes expire in 300 seconds (5 minutes)
-
-JWKS (5 RSA public signing keys):
-- https://dex.stg.rootz.com/keys returns all signing keys
-
-Linked Application:
-- login.stg.rootz.com is a "Generate Kubernetes Token" web application (dex-k8s-authenticator)
-- This confirms the Dex instance is used for Kubernetes cluster authentication
+Linked Applications:
+- login.stg.rootz.com and login.dev.rootz.com are "Generate Kubernetes Token" web applications (dex-k8s-authenticator)
 
 ### Impact
 
-- Device code phishing: An attacker generates a device code, tricks a rootz employee into visiting the verification URL and approving it via Google SSO, then exchanges the device code for tokens granting Kubernetes cluster access
+- Device code phishing: An attacker generates a device code, tricks a rootz employee into visiting the verification URL and approving it via Google SSO or GitLab, then exchanges the device code for tokens granting Kubernetes cluster access
+- GitLab OAuth client_id disclosure on dev instance enables targeted OAuth attacks against the self-hosted GitLab
+- No WAF protection means brute-force and automated attacks face no resistance
+- Implicit grant type enables token theft via referrer leakage
 - JWKS disclosure: Public signing keys could assist in token forgery if private keys are ever compromised
-- Staging environment mapping: Full OIDC configuration reveals authentication architecture
 
 ### Remediation
 
-Restrict access to dex.stg.rootz.com and login.stg.rootz.com to internal/VPN networks. Disable the device_code grant type if not required. Require client_secret for all OAuth flows. Consider IP allowlisting on the ALB.
+Restrict access to dex.stg.rootz.com, dex.dev.rootz.com, login.stg.rootz.com, and login.dev.rootz.com to internal/VPN networks. Place behind Cloudflare or another WAF. Disable the device_code and implicit grant types if not required. Require client_secret for all OAuth flows. Consider IP allowlisting on the ALB.
 
 ---
 
