@@ -5,7 +5,7 @@ Scope: rootz.com, wheelz.com, and all subdomains
 
 ## Executive Summary
 
-This assessment identified 10 confirmed vulnerabilities across the rootz.com and wheelz.com attack surface. The most critical finding is an actively exploited subdomain takeover on e2e.infra.rootz.com. Several other high-severity issues were found including unauthenticated Prometheus metrics on 7 servers (including a payment service), a publicly listable and readable S3 bucket, and an exposed OIDC identity provider with open device code flow.
+This assessment identified 11 confirmed vulnerabilities across the rootz.com and wheelz.com attack surface. The most critical finding is an actively exploited subdomain takeover on e2e.infra.rootz.com. Several other high-severity issues were found including unauthenticated Prometheus metrics on 7 servers (including a payment service), a publicly listable and readable S3 bucket, and an exposed OIDC identity provider with open device code flow.
 
 ## Technology Stack Identified
 
@@ -230,36 +230,42 @@ Disable public ListBucket permission on the S3 bucket.
 
 ---
 
-## FINDING 6: CORS Misconfiguration on frontendapi.rootz.com
+## FINDING 6: CORS Misconfiguration with Internal Header Disclosure on frontendapi.rootz.com
 
 Severity: MEDIUM (CVSS 6.1)
 Category: Security Misconfiguration (CWE-942)
 Endpoint: https://frontendapi.rootz.com
+Also affects: s-frontendapi.rootz.com (identical behavior)
 
 ### Description
 
-The main frontend API returns wildcard CORS headers combined with credentials support:
-- access-control-allow-origin: *
+The main frontend API returns wildcard CORS headers combined with credentials support on all paths:
+- access-control-allow-origin: * (static wildcard, not origin-reflecting)
 - access-control-allow-credentials: true
 - access-control-expose-headers: *
+- access-control-allow-methods: GET,POST,PUT,DELETE,OPTIONS
+- access-control-max-age: 1800
 
-While browsers ignore credentials with a wildcard origin (per CORS spec), this configuration indicates the API may reflect specific Origin values in other contexts. The API also reveals a multi-tenant architecture (returning "Missing tenant" on /api and /api/v1).
+Exploit testing confirmed ACAO is a static wildcard (does not reflect arbitrary Origin values), so credential theft via CORS is not directly exploitable due to browser protections. However, the CORS preflight response reveals internal header names used for API routing.
 
 ### Evidence
 
-- GET /api returns 401 "Missing tenant" with wildcard CORS
+OPTIONS /api/v1 with Origin: https://evil.com returns:
+- access-control-allow-headers: Content-Type,Authorization,X-Authorization,X-Tenant,X-SiteJurisdiction,X-Domain,X-Requested-With
+- Internal headers disclosed: X-Tenant (tenant routing), X-Authorization (secondary auth), X-SiteJurisdiction (regulatory context), X-Domain (domain routing)
 - server-timing header present (performance data exposure)
-- API serves multiple casino brands through a single endpoint
 
 ### Impact
 
-- If the API reflects specific Origin values instead of wildcard for authenticated requests, cross-origin data theft is possible
-- Multi-tenant architecture may have tenant isolation issues
+- Internal API architecture disclosed via CORS preflight headers
+- X-Authorization header reveals a secondary authentication mechanism
+- X-SiteJurisdiction header reveals jurisdiction-based access control exists
+- Any unauthenticated API response is readable from any origin
 - server-timing disclosure aids in timing-based attacks
 
 ### Remediation
 
-Replace wildcard CORS with an explicit allowlist of trusted origins. Remove access-control-allow-credentials when using wildcard origin. Remove server-timing from production responses.
+Replace wildcard CORS with an explicit allowlist of trusted origins. Remove access-control-allow-credentials when using wildcard origin. Remove server-timing from production responses. Restrict CORS preflight to only reveal necessary headers.
 
 ---
 
@@ -432,6 +438,40 @@ Implement rate limiting on the /auth/login endpoint (e.g., 5 attempts per minute
 
 ---
 
+## FINDING 11: Tenant/Brand Enumeration via X-Tenant Header
+
+Severity: LOW (CVSS 5.3)
+Category: Information Disclosure (CWE-204)
+Endpoint: GET https://frontendapi.rootz.com/api/v1
+Also affects: s-frontendapi.rootz.com
+
+### Description
+
+The API uses the X-Tenant header for multi-tenant routing and returns differential error messages that allow unauthenticated enumeration of active brand tenants. Valid/active tenants return HTTP 404 "404 Not Found" (tenant accepted, route not found), while invalid/inactive tenants return HTTP 401 "Invalid tenant", and missing headers return HTTP 401 "Missing tenant".
+
+### Evidence
+
+Active tenants confirmed: wheelz, wildz, caxino, spinz, chipz, flamez, berriez, speedz, beazt, tuplaus
+Inactive/invalid tenants: rootz, blingi, megagewinn, lemonz
+
+Request with valid tenant:
+- GET /api/v1 with X-Tenant: wheelz returns HTTP 404 "404 Not Found"
+
+Request with invalid tenant:
+- GET /api/v1 with X-Tenant: rootz returns HTTP 401 "Invalid tenant"
+
+### Impact
+
+- Unauthenticated enumeration of all active brand tenants on the platform
+- Reveals which brands are active vs decommissioned (business intelligence)
+- Aids in targeting specific tenants for further attacks
+
+### Remediation
+
+Return consistent error responses regardless of tenant validity. Use a generic "Unauthorized" message for both missing and invalid tenant values.
+
+---
+
 ## CVSS SUMMARY
 
 | # | Finding | CVSS | Severity |
@@ -446,5 +486,6 @@ Implement rate limiting on the /auth/login endpoint (e.g., 5 attempts per minute
 | 8 | Missing Security Headers www.rootz.com | 5.3 | MEDIUM |
 | 9 | Permissive CSP uptime.rootz.com | 4.3 | LOW-MEDIUM |
 | 10 | Missing Rate Limiting on Login uptime.rootz.com | 5.3 | MEDIUM |
+| 11 | Tenant/Brand Enumeration frontendapi.rootz.com | 5.3 | LOW |
 
 ## END OF REPORT
