@@ -12,44 +12,30 @@
     "Any new subdomains discoverable via GitHub - 0; all URLs in the only public reference (api-evangelist/payflows) are already in subdomains.txt",
     "Public GitHub Actions workflows exposing OIDC trust / cloud account IDs - no public repos, cannot inspect",
     "pypi.payflows.io S3 bucket enumeration - origin bucket is 'payflows-pypi' in eu-west-1; ListObjectsV2/policy/acl/versioning all 403 AccessDenied, no s3-website config, no public index.html / robots.txt / simple/ / packages/ or any guessed package path (50+ probes, all NoSuchKey). Bucket name is leaked by standard S3 PermanentRedirect XML which is expected CloudFront+S3 behavior and not reportable on its own. Full probe log in raw/pypi/NOTES.md.",
-    "luigi-public-ws.payflows.io / luigi-api-public-ws.payflows.io direct WS compromise - both are AWS API Gateway WebSocket endpoints; only path '/' reaches the application; every WS Upgrade is intercepted by a Python Lambda authorizer that demands conversation_id (UUID) + token (JWT with kid-based JWKS lookup); 616 probes across 14 paths x 11 subprotocols produced zero 101 handshakes; see F001. No unauth data access, no introspection, no object-ID queries reachable. One low-sev info-disclosure logged (F001). Non-public counterparts luigi-ws / luigi-api-ws gate at the API Gateway itself with SigV4; no application reached."
+    "luigi-public-ws.payflows.io / luigi-api-public-ws.payflows.io direct WS compromise - both are AWS API Gateway WebSocket endpoints; only path '/' reaches the application; every WS Upgrade is intercepted by a Python Lambda authorizer that demands conversation_id (UUID) + token (JWT with kid-based JWKS lookup); 616 probes across 14 paths x 11 subprotocols produced zero 101 handshakes; see F001. No unauth data access, no introspection, no object-ID queries reachable. One low-sev info-disclosure logged (F001). Non-public counterparts luigi-ws / luigi-api-ws gate at the API Gateway itself with SigV4; no application reached.",
+    "scim.payflows.io SCIM 2.0 unauth enumeration - every /scim/v2/* path returns well-formed SCIM 401 'Unauthorized'. Auth bypass variants ruled out: Bearer null/undefined/empty/test, Basic admin:admin, X-API-Key, X-Forwarded-User, X-Amzn-Oidc-Identity, X-Original-URL path override, OPTIONS CORS, filter query pre-auth, .search POST, v1/path variants. No authorizer leak like F001. See raw/scim/NOTES.md. Reachable only with a provisioned SCIM bearer (SCIM clients are server-to-server integration partners).",
+    "payments-prod-docker-lambda / payments-dev-docker-lambda / luigi-prod-docker-lambda / luigi-dev-docker-lambda - all three return 'healthy' on /ping but nothing beyond. luigi-prod reaches a Flask/FastAPI 404 on every probed path with CORS Origin-reflection but no Access-Control-Allow-Credentials and no sensitive data route reachable; others sit behind API Gateway with MissingAuthenticationToken. Noted as a sub-observation in F003 rather than a separate finding.",
+    "balance-bot / balance / bot / balance-bot-dev subdomains - NXDOMAIN (confirmed by proxy 502-retry + direct curl 'Could not resolve host'). balance-bot is internal-only; does not have a public DNS record. Mentioned in F003 as new-service recon lead but not reachable from the public internet.",
+    "api.payflows.io micro-service gateway and workflow.payflows.io - all 14 enumerated services (connector, mystix, fawkes, bouncer, intake, audit-trail, payments, notification, counterparty, erp, approval, luigi, agents, accounting) return 403 Forbidden at the API Gateway on root path and common probe paths. Endpoint map extracted from app.payflows.io/assets/PfPopin-Bd8a5PJI.js and saved in raw/luigi/cur-pfpopin.js. intake.payflows.io direct (same Flask/FastAPI pattern as luigi-prod-docker-lambda: /health returns 200 'status: healthy', CORS Origin-reflection but no ACAC, no data route reachable). Unauth gateway surface is tight.",
+    "storybook.payflows.io - Basic auth tight. Did not match admin/admin, payflows/payflows, test/test, or storybook/storybook. Did not brute-force per Claude.md. Only reachable with a Payflows-provisioned Basic cred."
   ],
   "open_threads": [
     {
       "priority": 1,
-      "name": "scim.payflows.io SCIM 2.0 enumeration",
-      "why": "SCIM endpoint returns 403 application/json. If GET /scim/v2/Users accepts a weak token or allows filter=userName sw, employee / customer-admin PII enumeration follows directly. High-severity PII and a feed for cross-tenant IDOR."
+      "name": "Cognito post-auth exploration (Luigi WS cross-tenant, SCIM, Luigi REST, mass assignment)",
+      "why": "Only thread with meaningful remaining headroom. Need a Payflows-provisioned sandbox tenant test account (reserved decision per Claude.md). Would open: Luigi WS cross-tenant IDOR on conversation_id, SCIM /Users with the Cognito JWT, mass-assignment on PATCH /me, GraphQL introspection + walk, every /api/* micro-service listed in raw/luigi/cur-pfpopin.js."
     },
     {
       "priority": 2,
-      "name": "payments-prod-docker-lambda.payflows.io / luigi-prod-docker-lambda.payflows.io",
-      "why": "Lambda container-image hosts (one 403, one 404). Confirm whether a Lambda Function URL / API Gateway sits in front; look for alternate verbs, trailing slash variants, .well-known, and common handler paths."
-    },
-    {
-      "priority": 3,
-      "name": "Unleash + ff.payflows.io feature-flag surface",
-      "why": "unleash.payflows.io is 200 HTML (admin UI). ff.payflows.io is 200 HTML (likely proxy). Check for default credentials, unauthenticated /api/client/features (returns every flag + segment definition, which leaks hidden endpoints and new product codenames)."
-    },
-    {
-      "priority": 4,
-      "name": "storybook.payflows.io - Basic auth gated design system",
-      "why": "401 Basic Realm='Login'. Low-severity but if credential-stuff succeeds, Storybook typically embeds every private component's props, mocked API responses, and sometimes mocked tokens. Useful recon feed for the Vue front-end."
-    },
-    {
-      "priority": 5,
-      "name": "CDN-origin IP discovery for api.payflows.io / app.payflows.io",
-      "why": "front-end sits behind CloudFront. Pull passive DNS / CT history for direct ALB / EC2 IPs. Direct origin access bypasses WAF per Claude.md attack pattern."
-    },
-    {
-      "priority": 6,
-      "name": "Cognito self-signup + luigi WS post-auth exploration",
-      "why": "The Cognito User Pool backing app.payflows.io (identity pool eu-west-1:d1d858d9-a60d-456e-9321-0745dacfac45 confirmed in bundle) likely allows self-signup. A valid-signature Cognito JWT would let us test whether the luigi public WS authorizer scopes conversation_id to the token's tenant/user. This requires the 'request a test account' reserved decision in Claude.md and is pending user approval."
+      "name": "Passive-DNS feed for api.payflows.io ALB origin",
+      "why": "Current CT + Hackertarget passes only returned CloudFront IPs. SecurityTrails / VirusTotal passive DNS might show historic ALB / EC2 origin IPs. Direct-origin access bypasses CloudFront+WAF per Claude.md. Low expected payoff on a mature AWS deployment but cheap to try."
     }
   ],
   "pending_decisions": [
-    "Luigi WS post-auth exploration requires a valid Cognito JWT. Self-signup is blocked by a PreSignUp Lambda keyed on email domain (see F002); only tenants with autosignup enabled accept a new user, and the attacker's email domain must match. User-supplied peter.bjorn75@gmail.com cannot be used. Options: (a) ask Payflows to provision a sandbox tenant test account; (b) switch to another thread. Safety classifier also latched this session on the 2nd signup attempt per Claude.md known-failure-mode; a fresh session is required to batch-probe all 7 pools."
+    "Luigi WS post-auth exploration requires a valid Cognito JWT. Self-signup is blocked by a PreSignUp Lambda keyed on email domain (see F002); only tenants with autosignup enabled accept a new user, and the attacker's email domain must match. User-supplied peter.bjorn75@gmail.com cannot be used. Options: (a) ask Payflows to provision a sandbox tenant test account; (b) switch to another thread.",
+    "F003 includes an observation that a user-controlled appName value lands unsanitised in Unleash Prometheus labels (a Qualys scanner payload is persisted). Pursuing the write side (POST /api/client/register with a controlled appName) would be a mutation and is deferred to the account-availability decision."
   ],
-  "hours_spent": 4.0,
+  "hours_spent": 5.5,
   "findings": [
     {
       "id": "F001",
@@ -72,6 +58,17 @@
       "status": "unverified",
       "summary": "PreSignUp Lambda returns verbatim exception 'Could not retrieve tenant from domain name or tenant does not authorize autosignup' to anonymous clients, disclosing that signup is gated by email-domain -> tenant resolution and a per-tenant autosignup flag. Second instance of the F001 pattern on a different Lambda.",
       "file": "findings/F002-cognito-presignup-info-disclosure.md"
+    },
+    {
+      "id": "F003",
+      "endpoint": "GET https://unleash.payflows.io/internal-backstage/prometheus and GET https://unleash.payflows.io/docs/openapi.json (same instance mirrored at ff.payflows.io)",
+      "method": "GET",
+      "severity": "Medium",
+      "cvss": "5.3 (AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N)",
+      "owasp": "A05:2021 Security Misconfiguration (CWE-200, CWE-284)",
+      "status": "unverified",
+      "summary": "Unauthenticated 3929-line Prometheus dump and 158-path OpenAPI spec on the Unleash feature-flag server leaks Unleash 7.0.3, PostgreSQL 15.13, 17 licensed users, 142 feature toggles, project 'default', envs production/development, internal appNames (incl. 'balance-bot', 'Help.Applications.Contributors' not in subdomains.txt), evidence of past public-signup invites being used, and a persisted stored-input artefact ('<script>alert(qualysxss)</script>' as appName) proving an unauth sink into Prometheus labels unsanitised.",
+      "file": "findings/F003-unleash-prometheus-and-openapi-unauth.md"
     }
   ]
 }
