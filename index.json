@@ -45,7 +45,8 @@
     "raw_lab1_batch3.txt",
     "raw_stg_batch1.txt",
     "raw_stg_batch2.txt",
-    "raw_infra_batch1.txt"
+    "raw_infra_batch1.txt",
+    "exploit_frontendapi.md"
   ],
   "ruled_out": [
     "wheelz.com is not WordPress (wp-login.php returns same CF challenge as everything else)",
@@ -87,7 +88,11 @@
     "gitlab.infra.rootz.com - TLS handshake reset, not accessible externally",
     "cf-proxied.infra.rootz.com - 503 'CF Proxied' behind AWS ELB, backend down",
     "Dex redirect_uri validation - confirmed working at connector callback stage (returns 400 'Unregistered redirect_uri' for evil.com)",
-    "CORS on dex.stg.rootz.com and login.stg.rootz.com - no CORS headers returned, secure by default"
+    "CORS on dex.stg.rootz.com and login.stg.rootz.com - no CORS headers returned, secure by default",
+    "frontendapi.rootz.com API route discovery - 100+ paths tested (GET/POST/PUT/DELETE, /api/v1/*, /api/v2/*, /v1/*, root-level, Prometheus-derived paths, framework paths, docs endpoints), all return 404 with valid tenant. API routes are not discoverable without frontend JS (blocked by Cloudflare challenge).",
+    "frontendapi.rootz.com tenant via path/query/Host - tenant is ONLY read from X-Tenant header, not from URL path, query params, or Host header",
+    "frontendapi.rootz.com CORS credential theft - ACAO:* combined with ACAC:true is blocked by browsers for credentialed requests (browser mitigation), not directly exploitable for cookie/session theft",
+    "content.rootz.com and s-content.rootz.com with X-Tenant header - still returns 500 {} regardless of tenant"
   ],
   "open_threads": [
     {
@@ -163,11 +168,15 @@
     {
       "id": "T7",
       "priority": 7,
-      "title": "frontendapi.rootz.com multi-tenant API with wildcard CORS and tenant auth bypass potential",
-      "detail": "Multi-tenant API returns 401 'Missing tenant' on /api and /api/v1. Has wildcard CORS (access-control-allow-origin: *) with access-control-allow-credentials: true. Once valid tenant identifier is found, this is the primary API surface for the casino platform. Tenant isolation bypass, IDOR, or auth bypass are high-priority test areas.",
+      "status": "tested",
+      "title": "frontendapi.rootz.com - tenant enumeration and CORS info leak confirmed, API routes not discoverable",
+      "detail": "TESTED: X-Tenant header identified as tenant mechanism via CORS preflight leak and differential error responses. Valid tenants (wheelz, wildz, caxino, spinz, chipz, flamez, berriez, speedz, beazt, tuplaus) return 404; invalid ones (rootz, blingi, megagewinn, lemonz) return 401 'Invalid tenant'. CORS misconfiguration confirmed: ACAO:* + ACAC:true + expose-headers:* on all responses. Preflight leaks allowed headers (Authorization, X-Authorization, X-Tenant, X-SiteJurisdiction, X-Domain). /healthz returns 200 OK without auth. Extensive path enumeration (100+ paths, 5 HTTP methods, 3 API versions) found NO discoverable routes. s-frontendapi.rootz.com is identical. Further testing requires frontend JS access (blocked by Cloudflare challenge).",
+      "findings_confirmed": ["tenant-enumeration-via-x-tenant", "cors-wildcard-with-credentials", "cors-header-information-disclosure"],
       "endpoints": [
-        "https://frontendapi.rootz.com/api",
-        "https://frontendapi.rootz.com/api/v1"
+        "https://frontendapi.rootz.com/api/v1",
+        "https://frontendapi.rootz.com/healthz",
+        "https://s-frontendapi.rootz.com/api/v1",
+        "https://s-frontendapi.rootz.com/healthz"
       ]
     },
     {
@@ -184,7 +193,7 @@
       "id": "T9",
       "priority": 9,
       "title": "content.rootz.com and s-content.rootz.com broken Cloudflare Workers",
-      "detail": "Both return HTTP 500 with empty JSON body ({}) for all paths. Cloudflare Workers with cf-placement remote-LHR and local-ORD. Allows GET/HEAD/POST/OPTIONS. Backend appears misconfigured or disconnected. POST method acceptance on a content API may indicate a writable API surface.",
+      "detail": "Both return HTTP 500 with empty JSON body ({}) for all paths, including with X-Tenant header. Cloudflare Workers with cf-placement remote-LHR and local-ORD. Allows GET/HEAD/POST/OPTIONS. Backend appears misconfigured or disconnected.",
       "endpoints": [
         "https://content.rootz.com/",
         "https://s-content.rootz.com/"
@@ -231,8 +240,8 @@
     "cdn_waf": "Cloudflare (wheelz.com, API subdomains, internal tools, CMS, S3 proxying) + BunnyCDN (www.rootz.com corporate site)",
     "zero_trust": "Cloudflare Access (backoffice, grafana, gitlab, superset, all lab1 CMS endpoints behind rootz.cloudflareaccess.com)",
     "corporate_site": "WordPress + Kadence theme + Kadence Blocks Pro + RankMath SEO, BunnyCDN Edge Scripting v1.40.30, OpenResty origin",
-    "casino_frontend": "Cloudflare managed challenge (bot protection), multi-tenant architecture",
-    "api_layer": "frontendapi.rootz.com (multi-tenant, Cloudflare), wsapi.rootz.com (WebSocket, Cloudflare)",
+    "casino_frontend": "Cloudflare managed challenge (bot protection), multi-tenant architecture via X-Tenant header",
+    "api_layer": "frontendapi.rootz.com (multi-tenant via X-Tenant header, Cloudflare), s-frontendapi.rootz.com (identical shadow/staging), wsapi.rootz.com (WebSocket, Cloudflare). Allowed CORS headers: Authorization, X-Authorization, X-Tenant, X-SiteJurisdiction, X-Domain, X-Requested-With",
     "backend_language": "Go 1.27.1 (game servers)",
     "cms": "CMS behind Cloudflare Access on lab1.rootz.com, static CMS content served from S3 (s-cms-*.rootz.com)",
     "storage": "AWS S3 (eu-west-1) for assets, game assets, CMS content, CDN. Cloudflare R2 for static brand content (static-*-r2.rootz.com)",
@@ -247,7 +256,8 @@
     "internal_networking": "Kubernetes (rootz-platform namespace, port 7777). Staging uses Dex OIDC + dex-k8s-authenticator for cluster auth",
     "auth": "Token-based (WebSocket API), tenant-based (frontend API), Dex OIDC with Google connector (staging k8s)",
     "architecture": "Multi-tenant, microservices (per-game-provider servers), AWS eu-west-1",
-    "brands": ["Rootz", "Wheelz", "Wildz", "Caxino", "Chipz", "Spinz", "Flamez", "Beazt", "Berriez", "Blingi", "Speedz", "Tuplaus", "Lemonz"]
+    "brands_active": ["Wheelz", "Wildz", "Caxino", "Chipz", "Spinz", "Flamez", "Beazt", "Berriez", "Speedz", "Tuplaus"],
+    "brands_inactive": ["Rootz", "Blingi", "Megagewinn", "Lemonz"]
   },
   "service_versions": {
     "pragmatic-server": "1.4.10",
@@ -263,7 +273,7 @@
   "security_posture": {
     "www_rootz_com": "WEAK - No HSTS, no CSP, no X-Frame-Options, no X-Content-Type-Options",
     "www_wheelz_com": "STRONG - Full Cloudflare challenge, HSTS preload, strict CSP, all CORS/COEP/COOP headers",
-    "frontendapi_rootz_com": "MODERATE - Wildcard CORS with credentials, no security headers, but tenant auth required",
+    "frontendapi_rootz_com": "MODERATE - Wildcard CORS with credentials (browser-mitigated), tenant enumeration possible via differential error messages, no security headers, but routes require auth. CORS preflight leaks internal header names.",
     "internal_tools": "STRONG - Cloudflare Access gate with RSA-signed JWTs, strict CSP, DENY framing",
     "uptime_rootz_com": "MODERATE - HSTS present but CSP allows unsafe-inline/unsafe-eval",
     "s3_buckets": "WEAK - assets.rootz.com and s-game-assets.rootz.com have public listing enabled. assets.rootz.com also allows public file reads. e2e.infra.rootz.com is actively compromised.",
