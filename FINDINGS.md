@@ -5,7 +5,7 @@ Scope: rootz.com, wheelz.com, and all subdomains
 
 ## Executive Summary
 
-This assessment identified 11 confirmed vulnerabilities across the rootz.com and wheelz.com attack surface. The most critical finding is an actively exploited subdomain takeover on e2e.infra.rootz.com. Several other high-severity issues were found including unauthenticated Prometheus metrics on 7 servers (including a payment service), a publicly listable and readable S3 bucket, and an exposed OIDC identity provider with open device code flow.
+This assessment identified 12 confirmed vulnerabilities across the rootz.com and wheelz.com attack surface. The most critical finding is an actively exploited subdomain takeover on e2e.infra.rootz.com. Several other high-severity issues were found including unauthenticated Prometheus metrics on 7 servers (including a payment service), a publicly listable and readable S3 bucket, and an exposed OIDC identity provider with open device code flow.
 
 ## Technology Stack Identified
 
@@ -472,6 +472,46 @@ Return consistent error responses regardless of tenant validity. Use a generic "
 
 ---
 
+## FINDING 12: WordPress Origin URL Disclosure via RankMath JSON-LD
+
+Severity: MEDIUM (CVSS 5.8)
+Category: Information Disclosure / Security Architecture Bypass (CWE-200)
+Endpoint: https://www.rootz.com/rootz-alusta/
+
+### Description
+
+The RankMath SEO plugin embeds JSON-LD structured data in page HTML. On the /rootz-alusta/ page, the Person entity's sameAs field reveals the Simply Static Studio origin WordPress URL: wp-ay95mtke8lh8t09.onstatic.studio. The entire BunnyCDN static site architecture is designed to hide the WordPress origin (wp-login.php, wp-json, xmlrpc.php all return 404 through CDN). This disclosure completely bypasses that protection.
+
+### Evidence
+
+JSON-LD in page source contains:
+- "sameAs": ["https://wp-ay95mtke8lh8t09.onstatic.studio"]
+
+The origin is directly accessible:
+- /.static-studio/client-login returns 200 with a functional email + 6-digit OTP login form
+- /wp-admin/ redirects (302) to the same SSO login
+- Login JavaScript discloses backend API: https://api.static.studio/functions/v1/client-login
+- CSP on origin reveals infrastructure: connect-src https://api.static.studio https://*.supabase.co
+- WordPress is currently offline (503, started on-demand during editing sessions)
+
+Additionally, two WordPress user accounts are disclosed in JSON-LD:
+- Username "admin" with Gravatar SHA256: 780330e9a5b456081e6b63a928c1ea8f0c5d2756f274e675b372098a377f1f7e (on /rootz-alusta/)
+- Username "qizyxmnn2e" with Gravatar SHA256: 28a8c9b4223937e4cc7bf21d53a3d939284b91f78209e2ad858c0658d9a24222 (on /)
+
+### Impact
+
+- Attacker can bypass the entire CDN security layer by targeting the origin directly
+- When WordPress is online during editing sessions, the full WordPress attack surface (REST API, login, admin) is accessible at the origin URL
+- "admin" username confirms default administrator account is in use
+- Gravatar SHA256 hashes could be reversed to discover admin email addresses
+- Origin infrastructure details disclosed (Supabase, Static Studio API)
+
+### Remediation
+
+Remove the sameAs field from RankMath JSON-LD configuration or replace it with the public CDN URL. Restrict origin access via IP allowlisting or authentication. Remove default "admin" username. Strip Gravatar hashes from JSON-LD output.
+
+---
+
 ## CVSS SUMMARY
 
 | # | Finding | CVSS | Severity |
@@ -487,5 +527,6 @@ Return consistent error responses regardless of tenant validity. Use a generic "
 | 9 | Permissive CSP uptime.rootz.com | 4.3 | LOW-MEDIUM |
 | 10 | Missing Rate Limiting on Login uptime.rootz.com | 5.3 | MEDIUM |
 | 11 | Tenant/Brand Enumeration frontendapi.rootz.com | 5.3 | LOW |
+| 12 | WordPress Origin URL Disclosure via RankMath | 5.8 | MEDIUM |
 
 ## END OF REPORT
