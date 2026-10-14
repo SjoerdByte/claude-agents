@@ -1,0 +1,42 @@
+### REQUESTS (four consecutive HEAD requests across two hosts) ###
+
+(1) HEAD https://platform.finmid.com/
+(2) HEAD https://platform.finmid.com/
+(3) HEAD https://platform.finmid-staging.com/
+(4) HEAD https://platform.finmid-staging.com/
+
+### RESPONSE HEADERS (shared across all four; CSP excerpt) ###
+
+HTTP/2 200
+content-type: text/html
+content-length: 3256
+server: AmazonS3
+x-frame-options: DENY
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-rAnd0m' https://auth.finmid.com/ https://platform.gateway.finmid.com/ https://*.posthog.com/; img-src 'self' https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://rsms.me https://*.posthog.com/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://rsms.me; connect-src 'self' https://platform.gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://auth.finmid.com/ https://*.posthog.com/; frame-src 'self' https://auth.finmid.com/ https://analytics.finmid-staging.com/ https://analytics.finmid.com/;
+strict-transport-security: max-age=604800
+
+### EXTRACTED NONCE VALUES ###
+
+prod fetch 1: 'nonce-rAnd0m'
+prod fetch 2: 'nonce-rAnd0m'
+staging fetch 1: 'nonce-rAnd0m'
+staging fetch 2: 'nonce-rAnd0m'
+
+### INDEX.HTML EXCERPT (no inline <script nonce="..."> currently uses the nonce) ###
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    ...
+    <script src="/env.js"></script>
+    <script type="module" crossorigin src="/assets/index-9W6uP03B.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BBIlFE1f.css">
+  </head>
+  ...
+</html>
+
+The source list `'nonce-rAnd0m'` is therefore pure dead code today but will whitelist any attacker-injected `<script nonce="rAnd0m">...</script>` the moment any HTML injection appears in the SPA (markdown render, SSR string, third-party widget, Keycloak-side redirect error echo, etc).
+
+### REPRODUCE ###
+curl -sI "https://platform.finmid.com/" | grep -i content-security-policy | grep -oE "'nonce-[^']+'"
+curl -sI "https://platform.finmid-staging.com/" | grep -i content-security-policy | grep -oE "'nonce-[^']+'"

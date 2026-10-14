@@ -1,0 +1,104 @@
+### DISCOVERY ###
+
+The production SPA at https://platform.finmid.com/ ships a CSP that whitelists https://analytics.finmid-staging.com/ in frame-src:
+
+  content-security-policy: ... frame-src 'self' https://auth.finmid.com/ https://analytics.finmid-staging.com/ https://analytics.finmid.com/;
+
+That exposed the previously-undocumented finmid-staging.com apex.
+
+### DNS RESOLUTION (unauth, via Python socket.gethostbyname) ###
+
+finmid-staging.com                   -> 18.160.200.97
+www.finmid-staging.com               -> 18.160.200.46
+analytics.finmid-staging.com         -> 63.184.231.49
+auth.finmid-staging.com              -> 63.186.195.142
+platform.finmid-staging.com          -> 108.159.227.12
+api.finmid-staging.com               -> 63.186.195.142
+gateway.finmid-staging.com           -> 63.184.231.49
+platform.gateway.finmid-staging.com  -> 52.57.97.60
+sandbox.gateway.finmid-staging.com   -> 63.184.231.49
+webhooks.finmid-staging.com          -> 52.57.97.60
+short.bolt.finmid-staging.com        -> 63.186.195.142
+b2b-payments.finmid-staging.com      -> 18.172.122.38
+zeos.finmid-staging.com              -> 3.168.51.4
+docs.finmid-staging.com              -> 3.167.183.6
+apply.finmid-staging.com             -> 3.170.152.40
+maintenance.finmid-staging.com       -> 18.160.213.4
+(sandbox / docs-v2 / vpn / link all NXDOMAIN)
+
+### STATUS CODES ON THE 10 HOSTS WITHOUT BASIC AUTH ###
+
+200  https://platform.finmid-staging.com/              CloudFront SPA, serves React app and /env.js
+403  https://auth.finmid-staging.com/                  Envoy fronting Keycloak; /auth/realms/platform/.well-known/openid-configuration -> 200
+403  https://analytics.finmid-staging.com/             Envoy fronting Metabase; /api/session/properties -> 200 (F004)
+403  https://api.finmid-staging.com/                   Envoy fronting Capital API; /api/v1/capital/businesses/{id} -> 401
+404  https://gateway.finmid-staging.com/               Envoy fronting merchant gateway; same shape as prod
+403  https://platform.gateway.finmid-staging.com/      Envoy fronting platform admin gateway
+404  https://sandbox.gateway.finmid-staging.com/       Envoy fronting sandbox gateway
+404  https://webhooks.finmid-staging.com/              Envoy ingress
+404  https://short.bolt.finmid-staging.com/            Envoy fronting staging Shlink
+200  https://b2b-payments.finmid-staging.com/          CloudFront SPA, 877-byte index
+200  https://maintenance.finmid-staging.com/           Static maintenance page
+
+### STATUS CODES ON THE 5 HOSTS *WITH* BASIC AUTH (shows policy inconsistency) ###
+
+401 Basic realm="Auth required"  https://finmid-staging.com/
+401 Basic realm="Auth required"  https://www.finmid-staging.com/
+401 Basic realm="Auth required"  https://apply.finmid-staging.com/
+401 Basic realm="Auth required"  https://docs.finmid-staging.com/
+401 Basic realm="Auth required"  https://zeos.finmid-staging.com/
+
+### PROOF: platform.finmid-staging.com env.js ###
+
+$ curl -s https://platform.finmid-staging.com/env.js
+window._env_ = {
+  ENV: 'staging',
+  KEYCLOAK_URL: 'https://auth.finmid-staging.com/auth',
+  KEYCLOAK_REALM: 'platform',
+  KEYCLOAK_CLIENT_ID: 'platform-ui',
+  SENTRY_DSN: 'https://a8842a34fedb4583a6206f5ca8822606@o1053131.ingest.sentry.io/6771581',
+  SENTRY_RATE: 1.0,
+  GATEWAY_URL: 'https://platform.gateway.finmid-staging.com',
+  BACKOFFICE_SANDBOX_URL: 'https://backoffice.ops.staging.finmid.io',
+  FORMAT_MONEY_DEFAULT_MINIMUM_FRACTION_DIGITS: 2,
+  POSTHOG_KEY: 'phc_yAikBwmVcfMeSO4ozsg8nuQVP901j2rQ8oO4Vv69BaQ',
+};
+
+### PROOF: auth.finmid-staging.com OIDC config (fetched, 200 OK) ###
+
+$ curl -s https://auth.finmid-staging.com/auth/realms/platform/.well-known/openid-configuration | jq '{issuer,grant_types_supported}'
+{
+  "issuer": "https://auth.finmid-staging.com/auth/realms/platform",
+  "grant_types_supported": [
+    "authorization_code",
+    "client_credentials",
+    "implicit",
+    "password",
+    "refresh_token",
+    "urn:ietf:params:oauth:grant-type:device_code",
+    "urn:ietf:params:oauth:grant-type:jwt-bearer",
+    "urn:ietf:params:oauth:grant-type:token-exchange",
+    "urn:ietf:params:oauth:grant-type:uma-ticket",
+    "urn:openid:params:grant-type:ciba"
+  ]
+}
+
+### PROOF: api.finmid-staging.com leaks backend auth-library error on bad bearer ###
+
+$ curl -s https://api.finmid-staging.com/api/v1/capital/businesses/1 -H "Authorization: Bearer test"
+Jwt is not in the form of Header.Payload.Signature with two dots and 3 sections
+
+$ curl -sI https://api.finmid-staging.com/api/v1/capital/businesses/1 -H "Authorization: Bearer test" | head
+HTTP/2 401
+date: Wed, 14 Oct 2026 20:27:38 GMT
+content-type: text/plain
+content-length: 79
+www-authenticate: Bearer realm="https://api.finmid-staging.com/api/v1/capital/businesses/1", error="invalid_token"
+content-security-policy: connect-src 'self' https://auth.ops.staging.finmid.io; default-src 'none'; frame-ancestors 'none'; img-src 'self' data:; script-src 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'
+
+### REPRODUCE (one-liner) ###
+
+for h in platform.finmid-staging.com auth.finmid-staging.com analytics.finmid-staging.com api.finmid-staging.com platform.gateway.finmid-staging.com sandbox.gateway.finmid-staging.com webhooks.finmid-staging.com b2b-payments.finmid-staging.com short.bolt.finmid-staging.com maintenance.finmid-staging.com apply.finmid-staging.com docs.finmid-staging.com zeos.finmid-staging.com www.finmid-staging.com finmid-staging.com; do
+  echo -n "$(curl -so /dev/null -w %{http_code} --max-time 8 https://$h/) $h"
+  echo
+done

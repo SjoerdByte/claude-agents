@@ -1,0 +1,41 @@
+### REQUEST ###
+GET /api/session/properties HTTP/2
+Host: analytics.finmid-staging.com
+User-Agent: curl/8.x
+Accept: */*
+
+### RESPONSE HEADERS ###
+HTTP/2 200
+date: Wed, 14 Oct 2026 20:30:31 GMT
+content-type: application/json;charset=utf-8
+x-frame-options: DENY
+x-xss-protection: 1; mode=block
+last-modified: Wed, 14 Oct 2026 20:30:31 GMT
+strict-transport-security: max-age=31536000
+set-cookie: metabase.DEVICE=9801bc96-4a5e-42e0-93f5-582dcdf663db; HttpOnly; Path=/; Expires=Sun, 14 Oct 2046 20:30:31 GMT; SameSite=None; Secure
+x-permitted-cross-domain-policies: none
+cache-control: max-age=0, no-cache, must-revalidate, proxy-revalidate
+x-content-type-options: nosniff
+content-security-policy: font-src *; script-src 'self' https://maps.google.com https://accounts.google.com    'sha256-9uFLu5CG8mWlvx0LK6lgendCxUX57TuWk3wkgZpBeWU=' 'sha256-isH538cVBUY8IMlGYGbWtBwr+cGqkc4mN6nLcA7lUjE=' 'sha256-3N2Z+Nu++/yNMVHIl863JigVmt2Nr9gt2doEMJT2Wzk='; style-src 'self' 'nonce-OKCo1DHXzy'   https://accounts.google.com; manifest-src 'self'; connect-src 'self' https://accounts.google.com metabase.us10.list-manage.com   ; img-src * 'self' data:; frame-src 'self' youtube.com *.youtube.com youtu.be *.youtu.be loom.com *.loom.com vimeo.com *.vimeo.com docs.google.com calendar.google.com airtable.com *.airtable.com typeform.com *.typeform.com canva.com *.canva.com codepen.io *.codepen.io figma.com *.figma.com grafana.com *.grafana.com miro.com *.miro.com excalidraw.com *.excalidraw.com notion.com *.notion.com atlassian.com *.atlassian.com trello.com *.trello.com asana.com *.asana.com gist.github.com linkedin.com *.linkedin.com twitter.com *.twitter.com x.com *.x.com; default-src 'none'; child-src 'self' https://accounts.google.com;  frame-ancestors 'none';
+expires: Tue, 03 Jul 2001 06:00:00 GMT
+x-envoy-upstream-service-time: 33
+strict-transport-security: max-age=31536000; includeSubDomains
+
+### RESPONSE BODY (trimmed to critical fields; full body ~70KB) ###
+{
+  "setup-token": "868359f8-6915-45e9-9ab3-fe5dfb3b81cc",
+  "has-user-setup": true,
+  "version": {"date": "2025-06-20", "tag": "v0.54.14", "hash": "c142fcd"},
+  "site-url": "http://metabase-external.ops.staging.finmid.io",
+  "site-locale": "en",
+  "analytics-uuid": "a02c26df-25ac-40e0-8144-ac6d6b26af10",
+  "instance-creation": "2022-06-29T15:57:39.20Z",
+  "google-auth-client-id": "492228515835-alshdsgmdib7q98nu4p5fi4hkg72m741.apps.googleusercontent.com",
+  "enable-password-login": true,
+  "password-complexity": {"total": 6, "digit": 1},
+  "ldap-enabled": false
+  (... other engine metadata ...)
+}
+
+### REPRODUCE ###
+curl -sD- "https://analytics.finmid-staging.com/api/session/properties" | head -n 20
