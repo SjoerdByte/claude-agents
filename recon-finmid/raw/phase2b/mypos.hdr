@@ -1,0 +1,23 @@
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 19:42:51 GMT
+last-modified: Wed, 14 Oct 2026 17:14:05 GMT
+etag: "5e4c7fad6efd705bba53a1dec67ad389"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: xNkA7Qua.IV9tPCdPXOWdjxC9vtPqh5H
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 e030eb9e2523dd8af200ce39f28ca642.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD55-P3
+x-amz-cf-id: TrtL1U5dbM_L3Dv6dkr324p6TtDFzK6GrKDc-Y1polEZsfLtdAk-Qg==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://* *; frame-src https://pay.gocardless.com
+x-content-type-options: nosniff
+strict-transport-security: max-age=604800
+permission-policy: accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=(), clipboard-read=(), clipboard-write=(self), gamepad=(), speaker-selection=(), conversion-measurement=(), focus-without-user-activation=(), hid=(), idle-detection=(), interest-cohort=(), serial=(), sync-script=(), trust-token-redemption=(), unload=(), window-placement=(), vertical-scroll=()
+

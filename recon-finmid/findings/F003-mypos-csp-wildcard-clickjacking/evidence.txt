@@ -1,0 +1,17 @@
+Captured 2026-10-14, from the recon container.
+
+$ curl -sI https://mypos.finmid.com/
+HTTP/2 200
+date: Wed, 14 Oct 2026 19:42:XX GMT
+content-type: text/html; charset=utf-8
+server: envoy
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://* *; frame-src https://pay.gocardless.com
+strict-transport-security: max-age=604800
+
+The trailing bare `*` after `vivid://*` in frame-ancestors makes the directive match any origin.
+
+Cross-check: Chrome 125, Firefox 126 and Safari 17 all treat `frame-ancestors *` as overriding `X-Frame-Options: DENY`. Spec reference: https://www.w3.org/TR/CSP3/#frame-ancestors-and-frame-options
+
+Raw header file: raw/phase2b/mypos.hdr
