@@ -1,0 +1,72 @@
+Subject: Responsible Disclosure: Medium vulnerabilities on finmid.com
+
+Dear finmid Security Team,
+
+I would like to responsibly disclose four security issues I identified on finmid.com and its subdomains. All testing was conducted without creating or modifying any customer-side state. No signup, invite, payment, or persistent account was created during this research. All proofs below were obtained from unauthenticated endpoints that return the quoted data to any internet client.
+
+CSP frame-ancestors wildcard enabling clickjacking on the MyPOS merchant portal (Medium, CVSS 5.4)
+
+Endpoint: https://mypos.finmid.com/
+
+The Content-Security-Policy header served on every response for mypos.finmid.com declares a frame-ancestors directive that ends with a bare "*" wildcard after three legitimate embedders (merchant.wolt.com, business.vivid.money, vivid://*). Per CSP level 3 semantics the "*" keyword matches any origin, so the entire source list collapses into a permissive one. A co-set X-Frame-Options: DENY header is present but is explicitly superseded by frame-ancestors in Chrome, Firefox, Safari and Edge, so it provides no residual protection. The practical result is that any attacker-controlled page on the internet can embed mypos.finmid.com in an iframe and perform UI-redress or drag-and-drop attacks against a MyPOS merchant who visits the attacker page while logged in. For a payment and financing portal the in-session actions likely include payout bank-account changes, API key generation, member invitations and financing offer approvals, each of which is a plausible clickjacking target.
+
+Proof:
+curl -sI https://mypos.finmid.com/ | grep -i content-security-policy
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://* *; frame-src https://pay.gocardless.com
+
+Recommended fix: remove the trailing "*" from the frame-ancestors directive, leaving only the three intended embedders ("frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://*;"). After the CSP is correct, the redundant X-Frame-Options: DENY header can be dropped to avoid signalling two conflicting intents.
+
+Metabase setup-token exposed unauthenticated on analytics.finmid.com (Medium, CVSS 5.3)
+
+Endpoint: GET https://analytics.finmid.com/api/session/properties
+
+The Metabase instance at analytics.finmid.com returns a JSON body containing "setup-token": "a5701f14-69da-44b2-a1c8-8eb61f200a2b" from an unauthenticated request, together with "has-user-setup": true, "analytics-uuid", and a plain-HTTP internal site URL "http://metabase-external.ops.live.finmid.io". The setup-token value is the pre-condition that CVE-2023-38646 relies on for pre-authentication remote code execution via /api/setup/validate, which is a known Metabase vulnerability fixed in versions above 0.54.14. During testing /api/setup/validate was blocked at the Envoy edge for every bypass variant I tried (trailing slash, double slash, URL-encoded %2f, case variants, matrix parameter, /api/setup/user mirrors), so the RCE path was not currently reachable from the public internet. The leak itself remains a defense-in-depth problem: the setup-token should not be served after setup is complete, and the current situation is one Envoy allowlist change away from full pre-auth RCE on the analytics host. The leaked plain-HTTP internal site URL is a separate smaller information-disclosure issue (internal hostname and non-HTTPS transport).
+
+Proof:
+curl -s https://analytics.finmid.com/api/session/properties | python3 -c "import sys,json; d=json.load(sys.stdin); print('setup-token =', d.get('setup-token')); print('has-user-setup =', d.get('has-user-setup')); print('site-url =', d.get('site-url'))"
+setup-token = a5701f14-69da-44b2-a1c8-8eb61f200a2b
+has-user-setup = True
+site-url = http://metabase-external.ops.live.finmid.io
+
+Recommended fix: upgrade Metabase to a release that no longer serves setup-token after initial setup (the issue is fixed in Metabase versions above 0.54.14; current stable is 0.55.x or 0.56.x), move the internal site URL off plain-HTTP, and retain the Envoy allowlist on /api/setup/validate as a secondary layer rather than a primary one.
+
+Metabase setup-token exposed unauthenticated on analytics.finmid-staging.com (Medium, CVSS 5.3)
+
+Endpoint: GET https://analytics.finmid-staging.com/api/session/properties
+
+The staging Metabase instance at analytics.finmid-staging.com reproduces the same leak with a different token value and no Basic Auth gate in front of it (several other staging hosts do have Basic Auth, this one does not). The staging and production hosts therefore share the same root cause, which suggests the issue should be fixed in the shared infrastructure template rather than per environment.
+
+Proof:
+curl -s https://analytics.finmid-staging.com/api/session/properties | python3 -c "import sys,json; d=json.load(sys.stdin); print('setup-token =', d.get('setup-token')); print('has-user-setup =', d.get('has-user-setup'))"
+setup-token = 868359f8-6915-45e9-9ab3-fe5dfb3b81cc
+has-user-setup = True
+
+Recommended fix: apply the production fix across the infrastructure template so prod and staging move together, and add Basic Auth (or a comparable gate) in front of analytics.finmid-staging.com to match the gate already present on other staging hosts.
+
+Production source maps exposed on platform.finmid.com and wamo.finmid.com (Medium, CVSS 5.3)
+
+Endpoints:
+https://platform.finmid.com/assets/index-C1IItZL0.js.map
+https://wamo.finmid.com/assets/index-C02z4SAG.js.map
+
+Both production SPAs ship their Vite-generated source maps alongside the minified bundle. Each map includes the "sourcesContent" field, so the entire first-party TypeScript source tree is served to any unauthenticated client. On platform.finmid.com this is 821 TS files totalling about 1.97 MB; on wamo.finmid.com the exposed source is about 2.2 MB. The exposed source reveals, among other things, the complete backend API shape (including the Webhook response object whose documented schema contains plaintext authUsername, authPassword and signatureSecret fields), the full /payables-financing/public/* v1/v2/v3 route tree, the publicSignup five-step state machine, Capital merchant-impersonation deep-link routes, and a handful of internal JIRA ticket IDs embedded in comments. A full regex sweep of both files for live secrets (JWTs, AWS AKIA, Stripe sk_/pk_, GitHub ghp_, Slack xoxb/xoxp, Google AIza, Mapbox pk., Sentry auth tokens, Segment write keys, service-account JSON) returned no hits, so this is information disclosure of code and API shape, not a leaked-credential issue.
+
+Proof:
+curl -sI https://platform.finmid.com/assets/index-C1IItZL0.js.map | head -3
+HTTP/2 200
+server: AmazonS3
+content-type: application/json
+
+curl -s https://platform.finmid.com/assets/index-C1IItZL0.js.map | python3 -c "import sys,json; d=json.load(sys.stdin); print('sources =', len(d['sources'])); print('has sourcesContent =', 'sourcesContent' in d); print('first source =', d['sources'][0])"
+sources = 821
+has sourcesContent = True
+first source = ../../../../node_modules/@babel/runtime/helpers/esm/arrayLikeToArray.js
+
+Recommended fix: stop deploying .js.map files to production for both platform.finmid.com and wamo.finmid.com. In Vite this is a one-line change (build.sourcemap set to false, or to "hidden" if the maps should still be generated for internal Sentry uploads but not served to clients). After the fix, confirm that CloudFront no longer serves the existing map files, and consider rotating any secrets that happened to live in older bundles even if the current sweep came back clean.
+
+I would like to ask whether finmid runs a bug bounty program or has a formal disclosure policy. If so, I would appreciate information on how to coordinate with it. If not, I am happy to discuss recognition on an informal basis. I am also happy to re-verify any of the four findings once a fix is deployed, and to coordinate on disclosure timelines if that is useful on your side.
+
+Let me know if you'd like any additional details or clarification from my side, I'm open to any and all questions.
+
+Kind regards,
+Sjoerd
