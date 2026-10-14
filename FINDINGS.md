@@ -5,7 +5,7 @@ Scope: rootz.com, wheelz.com, and all subdomains
 
 ## Executive Summary
 
-This assessment identified 9 confirmed vulnerabilities across the rootz.com and wheelz.com attack surface. The most critical finding is an actively exploited subdomain takeover on e2e.infra.rootz.com. Several other high-severity issues were found including unauthenticated Prometheus metrics on 7 servers (including a payment service), a publicly listable and readable S3 bucket, and an exposed OIDC identity provider with open device code flow.
+This assessment identified 10 confirmed vulnerabilities across the rootz.com and wheelz.com attack surface. The most critical finding is an actively exploited subdomain takeover on e2e.infra.rootz.com. Several other high-severity issues were found including unauthenticated Prometheus metrics on 7 servers (including a payment service), a publicly listable and readable S3 bucket, and an exposed OIDC identity provider with open device code flow.
 
 ## Technology Stack Identified
 
@@ -398,6 +398,40 @@ Reveals application structure: /app/, /api/, /metrics/, /internal/, /account/, /
 
 ---
 
+## FINDING 10: Missing Rate Limiting on Login Brute-Force Endpoint
+
+Severity: MEDIUM (CVSS 5.3)
+Category: Identification and Authentication Failures (CWE-307)
+Endpoint: POST https://uptime.rootz.com/auth/login
+
+### Description
+
+The password-protected status page login endpoint accepts unlimited consecutive failed login attempts with no rate limiting, account lockout, CAPTCHA, or progressive delay. Verified with 20+ consecutive failed attempts on the same session, all returning HTTP 200 with identical error responses and no degradation. The API endpoints on the same application do implement rate limiting (headers: ratelimit-policy: 5; w=1, x-ratelimit-limit: 60), confirming this is a gap specifically in the login endpoint. The status page identifier (pspUrl: nrGScIojHM) is disclosed in the HTML source as a hidden form field, reducing the attack to password-only brute force.
+
+### Evidence
+
+Request (attempt 15 of 20):
+- POST /auth/login with pspPassword=attempt15&pspUrl=nrGScIojHM
+- Headers: X-Requested-With: XMLHttpRequest, Content-Type: application/x-www-form-urlencoded
+- Response: HTTP 200, {"success":false,"message":"Wrong password."}
+- No rate-limit headers present on login endpoint
+- API endpoints on same app return ratelimit-policy and x-ratelimit-limit headers
+
+Additional information leakage:
+- Differential error messages: "Wrong password" for valid pspUrl vs implicit failure for invalid pspUrl
+- pspUrl value disclosed in page HTML source
+
+### Impact
+
+- Brute-force attack on the shared status page password to access internal monitoring data (service names, uptime/downtime history, response times, incident details)
+- pspUrl enumeration possible via differential error messages
+
+### Remediation
+
+Implement rate limiting on the /auth/login endpoint (e.g., 5 attempts per minute per IP). Add progressive delays or temporary lockout after failed attempts. Consider adding CAPTCHA after a threshold of failures.
+
+---
+
 ## CVSS SUMMARY
 
 | # | Finding | CVSS | Severity |
@@ -411,5 +445,6 @@ Reveals application structure: /app/, /api/, /metrics/, /internal/, /account/, /
 | 7 | K8s Token Generator Missing Headers | 5.3 | MEDIUM |
 | 8 | Missing Security Headers www.rootz.com | 5.3 | MEDIUM |
 | 9 | Permissive CSP uptime.rootz.com | 4.3 | LOW-MEDIUM |
+| 10 | Missing Rate Limiting on Login uptime.rootz.com | 5.3 | MEDIUM |
 
 ## END OF REPORT
