@@ -1,0 +1,173 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/sellersService/sellersService.ts =====
+
+import {
+  CheckSellerExists_GatewayResponse,
+  CreateSeller_GatewayRequest,
+  CreateSeller_GatewayResponse,
+  EditSeller_GatewayRequest,
+  EditSeller_GatewayResponse,
+  GetFrequentSellers_GatewayRequest,
+  GetFrequentSellers_GatewayResponse,
+  GetSellerById_GatewayRequest,
+  GetSellerById_GatewayResponse,
+  GetSellerStats_ApiResponse,
+  GetSellerStats_GatewayRequest,
+  GetSellerStats_GatewayResponse,
+  GetSellerUseCase,
+  GetSellers_GatewayRequest,
+  GetSellers_GatewayResponse,
+  SuspendSeller_GatewayRequest,
+  SuspendSeller_GatewayResponse,
+  sellerStatus,
+} from '@finmid/distributor-types';
+
+import { gatewayService } from '../gatewayService';
+import { getUserCounterStats } from '../getCounterStats';
+
+const extendedGatewayService = gatewayService.injectEndpoints({
+  endpoints: (builder) => ({
+    getSellers: builder.query<
+      GetSellers_GatewayResponse,
+      GetSellers_GatewayRequest | void
+    >({
+      query: (params: GetSellers_GatewayRequest = {}) => ({
+        url: `api/sellers`,
+        params,
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.map(({ externalId }) => ({
+                type: 'Sellers' as const,
+                externalId,
+              })),
+              'Sellers',
+            ]
+          : ['Sellers'],
+    }),
+
+    getFrequentSellers: builder.query<
+      GetFrequentSellers_GatewayResponse,
+      GetFrequentSellers_GatewayRequest
+    >({
+      query: (params: GetFrequentSellers_GatewayRequest) => ({
+        url: `api/frequent-sellers`,
+        params,
+      }),
+    }),
+
+    getSellerById: builder.query<
+      GetSellerById_GatewayResponse,
+      GetSellerById_GatewayRequest
+    >({
+      query: ({ externalId }: GetSellerById_GatewayRequest) =>
+        `api/sellers/${externalId}`,
+      providesTags: (result, error, { externalId }) => [
+        { type: 'Sellers', id: externalId },
+      ],
+    }),
+
+    getSellerUseCase: builder.query<
+      GetSellerUseCase.GatewayResponse,
+      GetSellerUseCase.GatewayRequest
+    >({
+      query: ({ externalId }: GetSellerUseCase.GatewayRequest) =>
+        `api/sellers/${externalId}/use-case`,
+    }),
+
+    createSeller: builder.mutation<
+      CreateSeller_GatewayResponse,
+      CreateSeller_GatewayRequest
+    >({
+      query: (seller: CreateSeller_GatewayRequest) => ({
+        url: `api/sellers`,
+        method: 'POST',
+        body: seller,
+      }),
+      invalidatesTags: ['Sellers', 'SellersStats'],
+    }),
+
+    createTestSeller: builder.mutation<
+      CreateSeller_GatewayResponse,
+      CreateSeller_GatewayRequest
+    >({
+      query: (seller: CreateSeller_GatewayRequest) => ({
+        url: 'api/test-sellers',
+        method: 'POST',
+        body: seller,
+      }),
+      invalidatesTags: ['Sellers', 'SellersStats'],
+    }),
+
+    suspendSeller: builder.mutation<
+      SuspendSeller_GatewayResponse,
+      SuspendSeller_GatewayRequest
+    >({
+      query: ({ externalId, reason }) => ({
+        url: `api/sellers/${externalId}/suspend`,
+        method: 'PUT',
+        body: {
+          reason,
+        },
+      }),
+      invalidatesTags: ['Sellers', 'SellersStats'],
+    }),
+
+    editSeller: builder.mutation<
+      EditSeller_GatewayResponse,
+      EditSeller_GatewayRequest
+    >({
+      query: ({ externalId, ...request }) => ({
+        url: `api/sellers/${externalId}`,
+        method: 'PATCH',
+        body: request,
+      }),
+      invalidatesTags: ['Sellers'],
+    }),
+
+    checkSellerExists: builder.query<CheckSellerExists_GatewayResponse, string>(
+      {
+        query: (externalId) => `api/sellers/${externalId}/exists`,
+      },
+    ),
+
+    getSellersStats: builder.query<
+      GetSellerStats_GatewayResponse,
+      GetSellerStats_GatewayRequest
+    >({
+      query: ({ search }) => ({
+        url: 'api/sellers/stats',
+        params: { search },
+      }),
+      transformResponse: ({
+        statusDistribution,
+      }: GetSellerStats_ApiResponse) => {
+        return getUserCounterStats({
+          statusDistribution,
+          displayedStatusList: sellerStatus,
+        });
+      },
+      providesTags: ['SellersStats'],
+    }),
+  }),
+});
+
+export const {
+  useGetSellersQuery,
+  useLazyGetSellersQuery,
+  useGetFrequentSellersQuery,
+  useGetSellerByIdQuery,
+  useLazyGetSellerByIdQuery,
+  useCreateSellerMutation,
+  useCreateTestSellerMutation,
+  useSuspendSellerMutation,
+  useEditSellerMutation,
+  useGetSellersStatsQuery,
+  useLazyCheckSellerExistsQuery,
+  useLazyGetSellersStatsQuery,
+  useGetSellerUseCaseQuery,
+  useLazyGetSellerUseCaseQuery,
+} = extendedGatewayService;
+

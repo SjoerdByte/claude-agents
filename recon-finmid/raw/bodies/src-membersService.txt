@@ -1,0 +1,67 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/membersService/membersService.ts =====
+
+import { ChangeMfaMethod, GetMember, Member } from '@finmid/distributor-types';
+
+import { gatewayService } from '../gatewayService';
+
+import { InviteMemberRequest, InviteMemberResponse } from './types';
+
+const extendedGatewayService = gatewayService.injectEndpoints({
+  endpoints: (builder) => ({
+    getMembers: builder.query<Member[], void>({
+      query: () => ({
+        url: 'api/members',
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Members' as const, id })),
+              'Members',
+            ]
+          : ['Members'],
+    }),
+    getMember: builder.query<GetMember.GatewayResponse, string>({
+      query: (userId) => ({
+        url: `/api/members/${userId}`,
+      }),
+      providesTags: (result, error, id) => [{ type: 'Sellers', id }],
+    }),
+    inviteMember: builder.mutation<InviteMemberResponse, InviteMemberRequest>({
+      query: (body) => ({
+        url: '/api/members',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Members'],
+    }),
+    removeMember: builder.mutation<void, string>({
+      query: (memberId) => ({
+        url: '/api/members',
+        method: 'DELETE',
+        params: {
+          memberId,
+        },
+      }),
+      invalidatesTags: ['Members'],
+    }),
+    changeMfaMethod: builder.mutation<void, ChangeMfaMethod.GatewayRequest>({
+      query: ({ userId, method }) => ({
+        url: `/api/members/${userId}/second-factor-method`,
+        method: 'PUT',
+        body: { method },
+      }),
+    }),
+  }),
+});
+
+export const {
+  useGetMembersQuery,
+  useLazyGetMembersQuery,
+  useGetMemberQuery,
+  useInviteMemberMutation,
+  useRemoveMemberMutation,
+  useChangeMfaMethodMutation,
+} = extendedGatewayService;
+

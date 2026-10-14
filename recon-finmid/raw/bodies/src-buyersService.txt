@@ -1,0 +1,252 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/buyersService/buyersService.ts =====
+
+import {
+  CreateBuyer_GatewayRequest,
+  CreateBuyer_GatewayResponse,
+  GetBuyerById_GatewayRequest,
+  GetBuyerById_GatewayResponse,
+  GetBuyers_GatewayRequest,
+  GetBuyers_GatewayResponse,
+  SuspendBuyer_GatewayRequest,
+  SuspendBuyer_GatewayResponse,
+  EditBuyer_GatewayRequest,
+  EditBuyer_GatewayResponse,
+  CheckBuyerExists_GatewayResponse,
+  GetBuyerStats_GatewayResponse,
+  GetBuyerStats_GatewayRequest,
+  GetBuyerStats_ApiResponse,
+  GetFrequentBuyers_GatewayResponse,
+  GetFrequentBuyers_GatewayRequest,
+  RequestLimitIncrease,
+  GetBuyerTasks,
+  UploadBuyerDocuments,
+  GetBuyerLimit,
+  buyerStatus,
+  ReactivateBuyer,
+} from '@finmid/distributor-types';
+
+import { gatewayService } from '../gatewayService';
+import { getUserCounterStats } from '../getCounterStats';
+
+export const extendedGatewayService = gatewayService.injectEndpoints({
+  endpoints: (builder) => ({
+    getBuyers: builder.query<
+      GetBuyers_GatewayResponse,
+      GetBuyers_GatewayRequest | void
+    >({
+      query: (params: GetBuyers_GatewayRequest = {}) => ({
+        url: `api/buyers`,
+        params,
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.map(({ externalId }) => ({
+                type: 'Buyers' as const,
+                externalId,
+              })),
+              'Buyers',
+            ]
+          : ['Buyers'],
+    }),
+
+    getFrequentBuyers: builder.query<
+      GetFrequentBuyers_GatewayResponse,
+      GetFrequentBuyers_GatewayRequest
+    >({
+      query: (params: GetFrequentBuyers_GatewayRequest) => ({
+        url: `api/frequent-buyers`,
+        params,
+      }),
+    }),
+
+    getBuyerById: builder.query<
+      GetBuyerById_GatewayResponse,
+      GetBuyerById_GatewayRequest
+    >({
+      query: ({ externalId, scope }) => ({
+        url: `api/buyers/${externalId}`,
+        params: { scope },
+      }),
+      providesTags: (result, error, { externalId }) => [
+        { type: 'Buyers', id: externalId },
+      ],
+    }),
+
+    createBuyer: builder.mutation<
+      CreateBuyer_GatewayResponse,
+      CreateBuyer_GatewayRequest
+    >({
+      query: (buyer) => ({
+        url: `api/buyers`,
+        method: 'POST',
+        body: buyer,
+      }),
+      invalidatesTags: ['Buyers', 'BuyersStats'],
+    }),
+
+    createTestBuyer: builder.mutation<
+      CreateBuyer_GatewayResponse,
+      CreateBuyer_GatewayRequest
+    >({
+      query: (buyer: CreateBuyer_GatewayRequest) => ({
+        url: 'api/test-buyers',
+        method: 'POST',
+        body: buyer,
+      }),
+      invalidatesTags: ['Buyers', 'BuyersStats'],
+    }),
+
+    editBuyer: builder.mutation<
+      EditBuyer_GatewayResponse,
+      EditBuyer_GatewayRequest
+    >({
+      query: ({ externalId, ...request }) => ({
+        url: `api/buyers/${externalId}`,
+        method: 'PATCH',
+        body: request,
+      }),
+      invalidatesTags: ['Buyers'],
+    }),
+
+    suspendBuyer: builder.mutation<
+      SuspendBuyer_GatewayResponse,
+      SuspendBuyer_GatewayRequest
+    >({
+      query: ({ externalId, reason }) => ({
+        url: `api/buyers/${externalId}/suspend`,
+        method: 'PUT',
+        body: { reason },
+      }),
+      invalidatesTags: ['Buyers', 'BuyersStats'],
+    }),
+
+    checkBuyerExists: builder.query<CheckBuyerExists_GatewayResponse, string>({
+      query: (externalId: string) => `api/buyers/${externalId}/exists`,
+    }),
+
+    getBuyersStats: builder.query<
+      GetBuyerStats_GatewayResponse,
+      GetBuyerStats_GatewayRequest
+    >({
+      query: ({ search }) => ({
+        url: 'api/buyers/stats',
+        params: { search },
+      }),
+      transformResponse: ({
+        statusDistribution,
+      }: GetBuyerStats_ApiResponse) => {
+        return getUserCounterStats({
+          statusDistribution,
+          displayedStatusList: buyerStatus,
+        });
+      },
+      providesTags: ['BuyersStats'],
+    }),
+
+    getBuyerLimit: builder.query<
+      GetBuyerLimit.GatewayResponse,
+      GetBuyerLimit.GatewayRequest
+    >({
+      query: ({ externalId, currency }) => ({
+        url: `api/buyers/${externalId}/limit`,
+        params: { currency },
+      }),
+      providesTags: (_, __, { externalId }) => [
+        { type: 'BuyersLimits', id: externalId },
+      ],
+    }),
+
+    requestLimitIncrease: builder.mutation<
+      RequestLimitIncrease.GatewayResponse,
+      RequestLimitIncrease.GatewayRequest
+    >({
+      query: ({ externalId, ...payload }) => ({
+        url: `api/buyers/${externalId}/limit-increase`,
+        method: 'POST',
+        body: payload,
+      }),
+      invalidatesTags: (result, _, { externalId }) => {
+        if (result?.instantApproval) {
+          return [
+            { type: 'BuyersLimits', id: externalId },
+            { type: 'Buyers', id: externalId },
+            { type: 'BuyersTasks', id: externalId },
+            'Tasks',
+          ];
+        }
+
+        return [];
+      },
+    }),
+
+    getBuyerTasks: builder.query<
+      GetBuyerTasks.GatewayResponse,
+      GetBuyerTasks.GatewayRequest
+    >({
+      query: ({ externalId, status }) => ({
+        url: `api/buyers/${externalId}/tasks`,
+        params: { status },
+      }),
+      providesTags: (_, __, { externalId }) => [
+        { type: 'BuyersTasks', id: externalId },
+      ],
+    }),
+
+    uploadBuyerDocuments: builder.mutation<
+      void,
+      UploadBuyerDocuments.GatewayRequest
+    >({
+      query: ({ files, externalId }) => {
+        const formData = new FormData();
+        files.forEach((file) => formData.append('files', file));
+
+        return {
+          url: `api/buyers/documents/upload`,
+          method: 'POST',
+          body: formData,
+          params: {
+            externalId,
+          },
+        };
+      },
+      invalidatesTags: (_, __, { externalId }) => [
+        { type: 'BuyersTasks', id: externalId },
+        'Tasks',
+        'Documents',
+      ],
+    }),
+
+    reactivateBuyer: builder.mutation<void, ReactivateBuyer.GatewayRequest>({
+      query: ({ externalId }) => ({
+        url: `api/buyers/${externalId}/reactivate`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Buyers', 'BuyersStats'],
+    }),
+  }),
+});
+
+export const {
+  useGetBuyersQuery,
+  useLazyGetBuyersQuery,
+  useGetFrequentBuyersQuery,
+  useGetBuyerByIdQuery,
+  useLazyGetBuyerByIdQuery,
+  useGetBuyerLimitQuery,
+  useCreateBuyerMutation,
+  useCreateTestBuyerMutation,
+  useEditBuyerMutation,
+  useGetBuyerTasksQuery,
+  useSuspendBuyerMutation,
+  useLazyCheckBuyerExistsQuery,
+  useGetBuyersStatsQuery,
+  useLazyGetBuyerTasksQuery,
+  useLazyGetBuyersStatsQuery,
+  useRequestLimitIncreaseMutation,
+  useUploadBuyerDocumentsMutation,
+  useReactivateBuyerMutation,
+} = extendedGatewayService;
+

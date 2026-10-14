@@ -1,0 +1,13 @@
+=== demo-distributor.finmid.com ===
+=== justeat.apply.finmid.com ===
+=== external-ops.finmid.com ===
+=== platform-s3.finmid.com ===
+=== app.finmid.com ===
+=== status.finmid.com ===
+=== jet.apply.finmid.com ===
+=== xentral.finmid.com ===
+=== blog.finmid.com ===
+=== merchant-info-webapp-resources.finmid.com ===
+=== auth.xentral.finmid.com ===
+=== demo.finmid.com ===
+=== onboarding.finmid.com ===

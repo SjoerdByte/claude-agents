@@ -1,0 +1,116 @@
+{
+  "target": "finmid.com",
+  "authorization": "written permission from CEO Max Schertel",
+  "scope_note": "Everything under *.finmid.com plus vendor-hosted infra that runs their code or stores their data. Full subdomain list in subdomains.txt. Known stack per fingerprinting: React (Vite builds) + Keycloak on auth.finmid.com + Envoy edge + Java backends; marketing site on Astro v4; docs on ReadMe.com; VPN=Pritunl; BI=Metabase v0.54.14; URL shortener=Shlink; email outbound=Postmark + Plain; CDN=AWS CloudFront everywhere.",
+  "ruled_out": [
+    "demo-distributor.finmid.com, justeat.apply.finmid.com, jet.apply.finmid.com, external-ops.finmid.com, platform-s3.finmid.com, app.finmid.com, status.finmid.com, xentral.finmid.com, auth.xentral.finmid.com, blog.finmid.com, merchant-info-webapp-resources.finmid.com, demo.finmid.com, onboarding.finmid.com, astro.finmid.com, ui.app.finmid.com, onboarding-resources.finmid.com - all NXDOMAIN (CT history only, no live DNS, no CNAME to cloud = no takeover candidate)",
+    "Firebase/Google OAuth client ID at analytics.finmid.com Metabase (778870797189-13musunads3b2o8mf4sacnspdkb0sh9e.apps.googleusercontent.com) - public OIDC client ID per CLAUDE.md non-finding",
+    "PostHog project keys in env.js files - public frontend keys",
+    "Sentry DSNs in env.js files - public frontend DSNs",
+    "webapp-resources.finmid.com S3 bucket listing - 403 AccessDenied, standard CF+S3 config, no misconfig",
+    "Keycloak admin console, account console, dynamic client registration, non-platform realms (master/merchants/apply/capital) - all blocked at Envoy with 403 'RBAC: access denied' (re-verified 2026-10-14)",
+    "Metabase /api/user, /api/dashboard/*, /api/geojson (SSRF), /api/setup/validate, /api/public/*, /api/health, /api/activity, /api/util/stats, /api/database, /api/collection, and all tested Envoy-bypass variants (trailing slash, double slash, %2F, case-change, matrix param, /api/setup/user) - all blocked at Envoy 403 before reaching Metabase (re-verified 2026-10-14)",
+    "Open redirect on auth.finmid.com /auth/realms/platform/.../auth with redirect_uri=https://evil.example - Keycloak returned HTTP 400 Bad Request (correct behaviour, invalid_redirect_uri)"
+  ],
+  "open_threads": [
+    {
+      "priority": 1,
+      "name": "publicSignupService /signup/* token-chain",
+      "why": "5-step unauth signup flow bound to single ?token= param on gateway.finmid.com. GET /signup/status?token=... returned 404 from the agent proxy (ambiguous: either route not registered or token-missing is a 404). The real tests (POST bodies, state-machine replay, OTP oracle, mass-assignment on /signup/profile) require POST, which WebFetch can't do in the current unauth phase. BLOCKED: needs manual curl or Burp. Full endpoint shape in raw/bodies/src-publicSignup.txt."
+    },
+    {
+      "priority": 1,
+      "name": "Capital /api/capital/merchants/{internalBusinessId}/get-link merchant impersonation",
+      "why": "GET /api/webhooks, /api/api-keys, /api/members, /api/capital/* all returned 403 on platform.gateway.finmid.com without auth (verified 2026-10-14). BLOCKED on authenticated test accounts; promote to F003 once a distributor session is available."
+    },
+    {
+      "priority": 1,
+      "name": "External Capital API api.finmid.com IDOR on {business_id}, {credit_id}, {document_id}",
+      "why": "GET /api/v1/capital/businesses/1 and /api/v1/capital/offers/active returned 401 Unauthorized (expected). BLOCKED on an authorised test Bearer key; promote to F00x once Max issues a sandbox key."
+    },
+    {
+      "priority": 1,
+      "name": "Platform /api/webhooks response leaks plaintext credentials",
+      "why": "Source map (F002) confirms the response schema: {url, authUsername, authPassword, signatureSecret}. If GET /api/webhooks crosses tenants, you own partner webhook creds. BLOCKED on an authenticated distributor session."
+    },
+    {
+      "priority": 2,
+      "name": "Metabase analytics.finmid.com v0.54.14 - setup-token leak + Envoy whitelist audit",
+      "why": "CONFIRMED as F001 - setup-token exposed via /api/session/properties. Envoy currently blocks /api/setup/validate and all tested bypass variants, so the CVE-2023-38646 RCE path is NOT currently reachable. Needs a second pass if Envoy config ever changes."
+    },
+    {
+      "priority": 2,
+      "name": "Buyer/seller /{externalId}/exists enumeration + /stats search leakage",
+      "why": "platform.gateway.finmid.com returned 403 unauth as expected; gateway.finmid.com returned 404 (route not registered on merchant gateway). BLOCKED on authenticated distributor session."
+    },
+    {
+      "priority": 2,
+      "name": "/api/members and /api/members/{userId}/second-factor-method mass-assignment & MFA bypass",
+      "why": "BLOCKED on authenticated test accounts."
+    },
+    {
+      "priority": 2,
+      "name": "Keycloak ROPC enabled on platform realm + HS* algs accepted",
+      "why": "Verified via /.well-known/openid-configuration: grants list includes password + jwt-bearer + token-exchange; id_token_signing_alg_values_supported includes HS256/384/512 alongside RS/PS/ES. Confirms the attack SURFACE; alg-confusion impact needs a downstream backend endpoint that validates with an insufficient alg allowlist, which requires an authenticated session to probe. BLOCKED pending test account."
+    },
+    {
+      "priority": 2,
+      "name": "payables-financing/public/* v1/v2/v3 endpoints at gateway.finmid.com",
+      "why": "All GETs returned 404 Not Found from the agent proxy. Ambiguous: either route requires POST or requires an auth header to even register. BLOCKED on manual POST probes / Burp."
+    },
+    {
+      "priority": 3,
+      "name": "Public source map leak - platform.finmid.com and wamo.finmid.com",
+      "why": "CONFIRMED as F002 - both .js.map files reachable live, full first-party TypeScript source leaked."
+    },
+    {
+      "priority": 3,
+      "name": "mypos.finmid.com CSP frame-ancestors contains trailing wildcard (vivid://* *)",
+      "why": "WebFetch strips response headers, so the CSP header could not be re-verified from this phase. BLOCKED on manual curl -I; recon's observation stands as plausible but un-reconfirmed this session."
+    },
+    {
+      "priority": 3,
+      "name": "Shlink short.bolt.finmid.com - fingerprinted but Envoy-blocked",
+      "why": "No change this session."
+    },
+    {
+      "priority": 4,
+      "name": "sandbox.finmid.com - simulation endpoints + env-isolation audit",
+      "why": "Returned 401 unauth as expected. BLOCKED on sandbox Bearer key."
+    },
+    {
+      "priority": 3,
+      "name": "CORS misconfiguration on api.finmid.com / gateway.finmid.com (Origin reflection + credentials)",
+      "why": "WebFetch cannot send custom Origin headers or inspect response headers. BLOCKED on manual curl / Burp."
+    }
+  ],
+  "pending_decisions": [
+    "Needs authenticated test accounts (distributor + merchant) from Max before any P1 thread (webhooks IDOR, merchants/get-link, members, buyers/exists oracle, Capital API IDOR, Keycloak alg-confusion) can be verified end-to-end. The two confirmed findings this phase (F001 Metabase token leak, F002 source map leak) are both unauth-reachable and did not need accounts.",
+    "Phase-2 was effectively capped by the sandbox blocking shell/curl this session (WebFetch GET-only). All POST-dependent probes (/signup/*, payables-financing, CORS reflection, JWT alg-confusion) deferred to a session where bash is available."
+  ],
+  "hours_spent": 3.0,
+  "findings": [
+    {
+      "id": "F001",
+      "slug": "metabase-setup-token-leak",
+      "status": "confirmed",
+      "severity": "P2/Medium",
+      "cvss": "5.3 AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+      "owasp": "A05:2021 Security Misconfiguration",
+      "endpoint": "GET https://analytics.finmid.com/api/session/properties",
+      "impact": "Unauthenticated read of Metabase setup-token (a5701f14-69da-44b2-a1c8-8eb61f200a2b) which is the pre-condition for CVE-2023-38646 pre-auth RCE via /api/setup/validate; also leaks plain-HTTP internal site-url http://metabase-external.ops.live.finmid.io, analytics-uuid, SSO config. Envoy currently blocks /api/setup/validate (confirmed on 8 bypass variants) so RCE is not currently reachable, but it is a single Envoy whitelist line away.",
+      "path": "findings/F001-metabase-setup-token-leak/"
+    },
+    {
+      "id": "F002",
+      "slug": "public-source-maps",
+      "status": "confirmed",
+      "severity": "P3/Medium",
+      "cvss": "5.3 AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+      "owasp": "A05:2021 Security Misconfiguration (CWE-540 / CWE-200)",
+      "endpoint": "GET https://platform.finmid.com/assets/index-C1IItZL0.js.map, GET https://wamo.finmid.com/assets/index-C02z4SAG.js.map",
+      "impact": "Full first-party TypeScript source for distributor admin SPA (821 TS files, 1.97 MB) and merchant financing SPA (2.2 MB) exposed to unauthenticated clients with sourcesContent. Reveals backend API shape incl. Webhook object schema returning plaintext authUsername/authPassword/signatureSecret, the whole payables-financing/public/* v1/v2/v3 route tree, the publicSignup 5-step state machine, Capital merchant-impersonation deep-link routes, internal JIRA ticket IDs. No hard-coded live secrets inside the maps.",
+      "path": "findings/F002-public-source-maps/"
+    }
+  ]
+}

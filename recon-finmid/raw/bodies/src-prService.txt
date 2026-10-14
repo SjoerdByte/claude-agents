@@ -1,0 +1,467 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/paymentRequestsServices/partialPayoutsService.ts =====
+
+import {
+  CalculatePayoutValues,
+  CreatePayout,
+  GetPaymentRequestPayouts,
+} from '@finmid/distributor-types';
+
+import { gatewayService } from '../gatewayService';
+
+const extendedGatewayService = gatewayService.injectEndpoints({
+  endpoints: (builder) => ({
+    createPayout: builder.mutation<
+      CreatePayout.GatewayResponse,
+      CreatePayout.GatewayRequest
+    >({
+      query: ({ paymentRequestId, ...payload }) => ({
+        url: `api/payment-requests/${paymentRequestId}/payouts`,
+        method: 'POST',
+        body: payload,
+      }),
+      invalidatesTags: (response, _, arg) => {
+        if (response) {
+          return [
+            { type: 'PaymentRequests', id: arg.paymentRequestId },
+            'PaymentRequests',
+            'PaymentRequestStatusLogs',
+            'Payouts',
+          ];
+        }
+        return [];
+      },
+    }),
+
+    getPaymentRequestPayouts: builder.query<
+      GetPaymentRequestPayouts.GatewayResponse,
+      string
+    >({
+      query: (paymentRequestId) => ({
+        url: `api/payment-requests/${paymentRequestId}/payouts`,
+      }),
+      providesTags: ['Payouts'],
+    }),
+
+    calculatePayoutValues: builder.mutation<
+      CalculatePayoutValues.GatewayResponse,
+      CalculatePayoutValues.GatewayRequest
+    >({
+      query: ({ intentId, ...payload }) => {
+        let url = `api/payment-requests/payouts/calculation`;
+        if (intentId) {
+          url = `${url}?intentId=${intentId}`;
+        }
+        return {
+          url,
+          method: 'POST',
+          body: payload,
+        };
+      },
+    }),
+  }),
+});
+
+export const {
+  useCreatePayoutMutation,
+  useGetPaymentRequestPayoutsQuery,
+  useCalculatePayoutValuesMutation,
+} = extendedGatewayService;
+
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/paymentRequestsServices/paymentRequestsCsvService.ts =====
+
+import { CheckCsvFile } from '@finmid/distributor-types';
+
+import { gatewayService } from '../gatewayService';
+
+const extendedGatewayService = gatewayService.injectEndpoints({
+  endpoints: (builder) => ({
+    checkPaymentRequestsCsvFile: builder.mutation<
+      CheckCsvFile.GatewayResponse,
+      CheckCsvFile.GatewayRequest
+    >({
+      query: ({ file }) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        return {
+          url: `api/payment-requests/csv`,
+          method: 'POST',
+          body: formData,
+        };
+      },
+    }),
+    getPaymentRequestsCsvTemplate: builder.query<string, void>({
+      query: () => ({
+        url: `api/payment-requests/csv/template`,
+      }),
+    }),
+  }),
+});
+
+export const {
+  useCheckPaymentRequestsCsvFileMutation,
+  useGetPaymentRequestsCsvTemplateQuery,
+} = extendedGatewayService;
+
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/paymentRequestsServices/paymentRequestsService.ts =====
+
+import {
+  CalculateFeeOverride,
+  CalculateFees,
+  CheckPaymentRequestExists,
+  CheckPaymentRequestNewFees,
+  ClosePaymentRequest,
+  CreatePaymentRequest,
+  GetPaymentRequest,
+  GetPaymentRequestDocuments,
+  GetPaymentRequests,
+  GetPaymentRequestLogs,
+  GetPaymentRequestsStats,
+  GetPaymentRequestTasks,
+  UpdatePaymentRequest,
+  GetBuyersPaymentRequests,
+  GetSellersPaymentRequests,
+  GetPaymentRequestStatusLogsList,
+  CreatePaymentRequestsBulk,
+  CheckInvoiceNumberExists,
+  CheckPaymentRequest,
+} from '@finmid/distributor-types';
+
+import { gatewayService } from '../gatewayService';
+import { getPaymentRequestCounterStats } from '../getCounterStats';
+
+const extendedGatewayService = gatewayService.injectEndpoints({
+  endpoints: (builder) => ({
+    calculateFeeOverride: builder.mutation<
+      CalculateFeeOverride.GatewayResponse,
+      CalculateFeeOverride.GatewayRequest
+    >({
+      query: (body) => ({
+        url: 'api/payment-requests/calculator/fee-override',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    calculateFees: builder.mutation<
+      CalculateFees.GatewayResponse,
+      CalculateFees.GatewayRequest
+    >({
+      query: (body) => ({
+        url: 'api/payment-requests/calculate-fees',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    cancelPaymentRequest: builder.mutation<
+      GetPaymentRequest.GatewayResponse,
+      string
+    >({
+      query: (paymentRequestId) => ({
+        url: `api/payment-requests/${paymentRequestId}/cancel`,
+        method: 'PUT',
+      }),
+      invalidatesTags: [
+        'PaymentRequests',
+        'PaymentRequestStatusLogs',
+        'PaymentRequestStats',
+        'BuyersPaymentRequests',
+        'SellersPaymentRequests',
+      ],
+    }),
+
+    checkPaymentRequestNewFees: builder.mutation<
+      CheckPaymentRequestNewFees.GatewayResponse,
+      CheckPaymentRequestNewFees.GatewayRequest
+    >({
+      query: (body) => ({
+        url: 'api/payment-requests/check-new-fees',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    checkPaymentRequest: builder.mutation<
+      CheckPaymentRequest.GatewayResponse,
+      CheckPaymentRequest.GatewayRequest
+    >({
+      query: (body) => ({
+        url: 'api/payment-requests/check',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    checkPaymentRequestExists: builder.query<
+      CheckPaymentRequestExists.GatewayResponse,
+      string
+    >({
+      query: (paymentRequestId) => ({
+        url: `api/payment-requests/${paymentRequestId}/exists`,
+      }),
+    }),
+
+    checkInvoiceNumberExists: builder.query<
+      CheckInvoiceNumberExists.GatewayResponse,
+      string
+    >({
+      query: (invoiceNumber) => ({
+        url: `api/payment-requests/invoiceNumber/exists`,
+        params: { invoiceNumber },
+      }),
+    }),
+
+    createPaymentRequest: builder.mutation<
+      CreatePaymentRequest.GatewayResponse,
+      CreatePaymentRequest.GatewayRequest
+    >({
+      query: (payload) => ({
+        url: 'api/payment-requests',
+        method: 'POST',
+        body: payload,
+      }),
+      invalidatesTags: [
+        'PaymentRequests',
+        'PaymentRequestStats',
+        'BuyersPaymentRequests',
+        'SellersPaymentRequests',
+      ],
+    }),
+
+    createPaymentRequestsBulk: builder.mutation<
+      CreatePaymentRequestsBulk.GatewayResponse,
+      CreatePaymentRequestsBulk.GatewayRequest
+    >({
+      query: (payload) => ({
+        url: 'api/payment-requests/bulk',
+        method: 'POST',
+        body: payload,
+      }),
+      invalidatesTags: [
+        'PaymentRequests',
+        'PaymentRequestStats',
+        'BuyersPaymentRequests',
+        'SellersPaymentRequests',
+      ],
+    }),
+
+    getPaymentRequests: builder.query<
+      GetPaymentRequests.GatewayResponse,
+      GetPaymentRequests.GatewayRequest | void
+    >({
+      query: (params: GetPaymentRequests.GatewayRequest = {}) => ({
+        url: 'api/payment-requests',
+        params,
+      }),
+      providesTags: ['PaymentRequests'],
+    }),
+
+    getPaymentRequestLogs: builder.query<
+      GetPaymentRequestLogs.GatewayResponse,
+      string
+    >({
+      query: (paymentRequestId) => ({
+        url: `api/payment-requests/${paymentRequestId}/log`,
+      }),
+      providesTags: ['PaymentRequestLogs'],
+    }),
+
+    getPaymentRequestStatusLogsList: builder.query<
+      GetPaymentRequestStatusLogsList.GatewayResponse,
+      string
+    >({
+      query: (paymentRequestId) => ({
+        url: `api/payment-requests/${paymentRequestId}/status-log`,
+      }),
+      providesTags: ['PaymentRequestStatusLogs'],
+    }),
+
+    getPaymentRequestsStats: builder.query<
+      GetPaymentRequestsStats.GatewayResponse,
+      GetPaymentRequestsStats.GatewayRequest
+    >({
+      query: (params) => ({
+        url: 'api/payment-requests/stats',
+        params,
+      }),
+      transformResponse: (response: GetPaymentRequestsStats.APIResponse) => {
+        return getPaymentRequestCounterStats(response);
+      },
+      providesTags: ['PaymentRequestStats'],
+    }),
+
+    getBuyersPaymentRequests: builder.query<
+      GetBuyersPaymentRequests.GatewayResponse,
+      GetBuyersPaymentRequests.GatewayRequest
+    >({
+      query: ({ externalId }) => ({
+        url: 'api/payment-requests/buyers',
+        params: { externalBuyerIds: externalId, limit: 100 },
+      }),
+      transformResponse: (response: GetPaymentRequests.GatewayResponse) => {
+        return response.data;
+      },
+      providesTags: ['BuyersPaymentRequests'],
+    }),
+
+    getSellersPaymentRequests: builder.query<
+      GetSellersPaymentRequests.GatewayResponse,
+      GetSellersPaymentRequests.GatewayRequest
+    >({
+      query: ({ externalId }) => ({
+        url: 'api/payment-requests/sellers',
+        params: { externalSellerIds: externalId, limit: 100 },
+      }),
+      transformResponse: (response: GetPaymentRequests.GatewayResponse) => {
+        return response.data;
+      },
+      providesTags: ['SellersPaymentRequests'],
+    }),
+
+    getPaymentRequestById: builder.query<
+      GetPaymentRequest.GatewayResponse,
+      string
+    >({
+      query: (paymentRequestId) => ({
+        url: `api/payment-requests/${paymentRequestId}`,
+      }),
+      providesTags: (_, __, paymentRequestId) => [
+        { type: 'PaymentRequests', id: paymentRequestId },
+      ],
+    }),
+
+    getPaymentRequestTasks: builder.query<
+      GetPaymentRequestTasks.GatewayResponse,
+      string
+    >({
+      query: (paymentRequestId) => ({
+        url: `api/payment-requests/${paymentRequestId}/tasks`,
+      }),
+      providesTags: (_, __, paymentRequestId) => [
+        { type: 'PaymentRequestsTasks', id: paymentRequestId },
+      ],
+    }),
+
+    simulateClosePaymentRequest: builder.mutation<
+      ClosePaymentRequest.GatewayResponse,
+      string
+    >({
+      query: (paymentRequestId) => ({
+        url: `api/payment-requests/${paymentRequestId}/close`,
+        method: 'POST',
+      }),
+      invalidatesTags: [
+        'PaymentRequestLogs',
+        'PaymentRequests',
+        'PaymentRequestStatusLogs',
+        'PaymentRequestStats',
+        'BuyersPaymentRequests',
+        'SellersPaymentRequests',
+      ],
+    }),
+
+    updatePaymentRequestOptional: builder.mutation<
+      UpdatePaymentRequest.GatewayResponse,
+      UpdatePaymentRequest.GatewayRequest
+    >({
+      query: ({
+        paymentRequestId,
+        invoiceDueDate,
+        invoiceNumber,
+        maxInvoiceDueDate,
+      }) => ({
+        url: `api/payment-requests/${paymentRequestId}/update`,
+        method: 'PATCH',
+        body: {
+          invoiceDueDate,
+          maxInvoiceDueDate,
+          invoiceNumber,
+        },
+      }),
+      invalidatesTags: (response, _, arg) => {
+        if (response) {
+          return [
+            { type: 'PaymentRequests', id: arg.paymentRequestId },
+            'PaymentRequests',
+            'BuyersPaymentRequests',
+            'SellersPaymentRequests',
+          ];
+        }
+        return [];
+      },
+    }),
+
+    getPaymentRequestDocuments: builder.query<
+      GetPaymentRequestDocuments.GatewayResponse,
+      string
+    >({
+      query: (paymentRequestId) => ({
+        url: `api/payment-requests/${paymentRequestId}/documents`,
+      }),
+      providesTags: (_, __, paymentRequestId) => [
+        { type: 'Documents', id: paymentRequestId },
+      ],
+    }),
+
+    uploadPaymentRequestDocuments: builder.mutation<
+      void,
+      {
+        paymentRequestId: string;
+        files: File[];
+      }
+    >({
+      query: ({ files, paymentRequestId }) => {
+        const formData = new FormData();
+        files.forEach((file) => formData.append('files', file));
+
+        return {
+          url: `api/payment-requests/documents/upload`,
+          method: 'POST',
+          body: formData,
+          params: {
+            paymentRequestId,
+          },
+        };
+      },
+      invalidatesTags: (_, __, { paymentRequestId }) => [
+        { type: 'PaymentRequestsTasks', id: paymentRequestId },
+        'Tasks',
+        'Documents',
+      ],
+    }),
+  }),
+});
+
+export const {
+  useCalculateFeeOverrideMutation, // TODO rename useConvertFeesToPercentage
+  useCalculateFeesMutation,
+  useGetBuyersPaymentRequestsQuery,
+  useGetSellersPaymentRequestsQuery,
+  useCancelPaymentRequestMutation,
+  useCheckPaymentRequestNewFeesMutation,
+  useCreatePaymentRequestMutation,
+  useCreatePaymentRequestsBulkMutation,
+  useGetPaymentRequestsStatsQuery,
+  useGetPaymentRequestsQuery,
+  useGetPaymentRequestLogsQuery,
+  useGetPaymentRequestTasksQuery,
+  useLazyCheckPaymentRequestExistsQuery,
+  useLazyCheckInvoiceNumberExistsQuery,
+  useLazyGetPaymentRequestByIdQuery,
+  useLazyGetPaymentRequestsStatsQuery,
+  useSimulateClosePaymentRequestMutation,
+  useUpdatePaymentRequestOptionalMutation,
+  useGetPaymentRequestByIdQuery,
+  useGetPaymentRequestDocumentsQuery,
+  useGetPaymentRequestStatusLogsListQuery,
+  useUploadPaymentRequestDocumentsMutation,
+  useCheckPaymentRequestMutation,
+} = extendedGatewayService;
+

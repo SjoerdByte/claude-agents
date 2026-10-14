@@ -1,0 +1,80 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/publicSignupService/publicSignupService.ts =====
+
+import { publicLiveGatewayService } from '../publicLiveGatewayService';
+
+import {
+  CreatePhoneChallengeRequest,
+  GetUserProfileResponse,
+  PhoneChallengeResponse,
+  SetPasswordRequest,
+  VerifyPhoneChallengeRequest,
+  UpdateMemberProfileRequest,
+  UpdateMemberProfileResponse,
+} from './types';
+
+const extendedGatewayService = publicLiveGatewayService.injectEndpoints({
+  endpoints: (builder) => ({
+    getUser: builder.query<GetUserProfileResponse, string>({
+      query: (token) => ({
+        url: '/signup/status',
+        params: { token },
+      }),
+    }),
+    updateMemberProfile: builder.mutation<
+      UpdateMemberProfileResponse,
+      UpdateMemberProfileRequest
+    >({
+      query: ({ token, ...memberData }) => ({
+        url: '/signup/profile',
+        params: { token },
+        method: 'POST',
+        body: memberData,
+      }),
+    }),
+    createPhoneChallenge: builder.mutation<
+      PhoneChallengeResponse,
+      CreatePhoneChallengeRequest
+    >({
+      query: ({ token, ...phoneDetails }) => ({
+        url: '/signup/create-phone-challenge',
+        params: { token },
+        method: 'POST',
+        body: phoneDetails,
+      }),
+    }),
+    verifyPhoneChallenge: builder.mutation<
+      PhoneChallengeResponse,
+      VerifyPhoneChallengeRequest
+    >({
+      query: ({ token, verificationCode }) => ({
+        url: '/signup/verify-phone-challenge',
+        params: { token },
+        method: 'POST',
+        body: {
+          verificationCode,
+        },
+      }),
+    }),
+    setPassword: builder.mutation<void, SetPasswordRequest>({
+      query: ({ token, password }) => ({
+        url: '/signup/password',
+        params: { token },
+        method: 'POST',
+        body: {
+          password,
+        },
+      }),
+    }),
+  }),
+});
+
+export const {
+  useGetUserQuery,
+  useUpdateMemberProfileMutation,
+  useCreatePhoneChallengeMutation,
+  useVerifyPhoneChallengeMutation,
+  useSetPasswordMutation,
+} = extendedGatewayService;
+

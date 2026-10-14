@@ -1,0 +1,42 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/apiKeysService.ts =====
+
+import { ApiKey } from '@finmid/distributor-types';
+
+import { gatewayService } from './gatewayService';
+
+export type CreatedApiToken = ApiKey;
+
+const extendedGatewayService = gatewayService.injectEndpoints({
+  endpoints: (builder) => ({
+    getApiTokens: builder.query<ApiKey[], void>({
+      query: () => ({ url: 'api/api-keys' }),
+      providesTags: ['ApiKeys'],
+    }),
+
+    createApiToken: builder.mutation<CreatedApiToken, string>({
+      query: (name) => ({
+        url: 'api/api-keys',
+        method: 'POST',
+        body: { name },
+      }),
+      invalidatesTags: ['ApiKeys'],
+    }),
+
+    deleteApiToken: builder.mutation<void, string>({
+      query: (apiTokenPrefix: string) => ({
+        url: `api/api-keys/${apiTokenPrefix}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['ApiKeys'],
+    }),
+  }),
+});
+
+export const {
+  useGetApiTokensQuery,
+  useCreateApiTokenMutation,
+  useDeleteApiTokenMutation,
+} = extendedGatewayService;
+

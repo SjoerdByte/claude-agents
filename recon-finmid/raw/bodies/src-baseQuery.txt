@@ -1,0 +1,37 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/helpers/baseQuery.ts =====
+
+import { ENVIRONMENT, fromEnvironment } from '@finmid/environment';
+import { fetchBaseQuery } from '@reduxjs/toolkit/query';
+
+import { BaseQueryType } from './BaseQuery.type';
+import { createBaseQuery } from './createBaseQuery';
+import { prepareHeaders } from './prepareHeaders';
+
+const legacySandboxUrl = fromEnvironment('GATEWAY_SANDBOX_URL', {
+  required: false,
+});
+const legacyLiveUrl = fromEnvironment('GATEWAY_LIVE_URL', {
+  required: false,
+});
+
+export const GATEWAY_URL =
+  fromEnvironment('GATEWAY_URL', {
+    required: false,
+  }) ?? (ENVIRONMENT === 'live' ? legacyLiveUrl : legacySandboxUrl);
+
+if (GATEWAY_URL == null) {
+  // should throw -- remove this after nearest deployment, as well as GATEWAY_SANDBOX_URL and GATEWAY_LIVE_URL
+  fromEnvironment('GATEWAY_URL');
+}
+
+export const baseQuery: BaseQueryType = async (args, api, extraOptions) => {
+  const baseQuery = fetchBaseQuery({
+    baseUrl: GATEWAY_URL,
+    prepareHeaders,
+  });
+
+  return createBaseQuery(baseQuery)(args, api, extraOptions);
+};
+

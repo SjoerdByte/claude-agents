@@ -1,0 +1,72 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/distributorService.ts =====
+
+import {
+  Platform,
+  GetDistributorBalanceResponse,
+  GetDistributorCurrenciesResponse,
+  GetFeatureFlag,
+  GetDistributorAttributesResponse,
+} from '@finmid/distributor-types';
+
+import { gatewayService } from './gatewayService';
+
+export type DistributorRequest = string;
+
+export type DistributorResponse = Platform;
+
+type DistributorLockResponse = {
+  bnplSandboxOnlyMode: boolean;
+};
+
+const extendedGatewayService = gatewayService.injectEndpoints({
+  endpoints: (builder) => ({
+    getDistributor: builder.query<DistributorResponse, void>({
+      query: () => 'api/distributor',
+    }),
+    getDistributorCurrencies: builder.query<
+      GetDistributorCurrenciesResponse,
+      void
+    >({
+      query: () => 'api/distributor/currencies',
+      providesTags: ['Currencies'],
+    }),
+    getFeatureFlagStatus: builder.query<GetFeatureFlag.GatewayResponse, string>(
+      {
+        query: (featureFlag) => `api/distributor/${featureFlag}`,
+      },
+    ),
+    getDistributorAttributes: builder.query<
+      GetDistributorAttributesResponse,
+      void
+    >({
+      query: () => 'api/distributor/attributes',
+    }),
+
+    getDistributorBalance: builder.query<GetDistributorBalanceResponse, void>({
+      query: () => 'api/distributor/balance',
+    }),
+    getLiveDistributor: builder.query<DistributorResponse, void>({
+      query: () => 'api/distributor',
+    }),
+    getLiveDistributorLock: builder.query<DistributorLockResponse, void>({
+      query: () => 'api/distributor/lock',
+    }),
+  }),
+});
+
+export const {
+  useGetDistributorQuery,
+  useGetFeatureFlagStatusQuery,
+  useGetDistributorCurrenciesQuery,
+  useLazyGetDistributorCurrenciesQuery,
+  useGetDistributorAttributesQuery,
+
+  useGetDistributorBalanceQuery,
+
+  // live distributor hooks
+  useLazyGetLiveDistributorQuery,
+  useGetLiveDistributorLockQuery,
+} = extendedGatewayService;
+

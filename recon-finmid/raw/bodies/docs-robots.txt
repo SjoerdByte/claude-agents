@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /*/api-next
+Disallow: /cdn-cgi/
+Disallow: /edit/
+Disallow: /*/edit/
+Disallow: /suggested-edits/
+Disallow: /login
+Disallow: /logout
+# LLM Information: https://docs.finmid.com/llms.txt

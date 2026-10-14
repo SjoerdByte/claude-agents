@@ -1,0 +1,54 @@
+HTTP/1.1 200 Connection Established
+
+HTTP/2 302 
+date: Wed, 14 Oct 2026 17:32:15 GMT
+content-type: text/plain; charset=utf-8
+access-control-allow-origin: *
+cache-control: s-maxage=1800, stale-if-error=900
+set-cookie: __cf_bm=6zzE4E_GeG9Y8gDcyHdKjqtLbfMfmC7XPZCMsAGusY4-1791999134.9944918-1.0.1.1-F.blTMPxRE_nktUxt_AMznDs5M4s3X0dUe7Jr7Tfn2NkO7_eLu8KWGQOU3whPjcgGGyA56IMDvfiRXS2PpgxgexufR0ttAVSP1T7Yia3Z0b7EBgwTEusHh3CB0x6nc0L; HttpOnly; SameSite=None; Secure; Path=/; Domain=docs.finmid.com; Expires=Wed, 14 Oct 2026 18:02:15 GMT
+content-language: en
+link: <https://docs.finmid.com/.well-known/api-catalog>; rel="api-catalog", <https://docs.finmid.com>; rel="service-doc", <https://docs.finmid.com/.well-known/agent-skills/index.json>; rel="agent-skills"
+location: /404
+rndr-id: bb4161b9-30dd-4e27
+server: cloudflare
+strict-transport-security: max-age=31536000
+vary: Accept, Accept-Encoding
+vary: Accept-Encoding
+x-content-type-options: nosniff
+x-dns-prefetch-control: off
+x-download-options: noopen
+x-frame-options: Deny
+x-ratelimit-limit: 100
+x-ratelimit-remaining: 99
+x-ratelimit-reset: 1791999137
+x-render-origin-server: Render
+x-xss-protection: 1; mode=block
+cf-cache-status: BYPASS
+cf-ray: a4a85281b8091216-IAD
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Wed, 14 Oct 2026 17:32:15 GMT
+content-type: text/html; charset=utf-8
+cache-control: s-maxage=1800, stale-if-error=900
+set-cookie: __cf_bm=KMKopJwSnBme47rGk.2.DveW1C2.Ydu0FnYPJxJBsh4-1791999135.3487113-1.0.1.1-qzE8HiJMr3gbGAEbLDRmcfdNy1yqxsCoVvVem73ojSpzIONWfW1lZep3ikQmU6mzEB6dJJ7zrGG2cIyqiB_VB_sfL991PU44c.PfU9GfhBNlgbwVcDiwcPv3TXYKnfc8; HttpOnly; SameSite=None; Secure; Path=/; Domain=docs.finmid.com; Expires=Wed, 14 Oct 2026 18:02:15 GMT
+content-language: en
+link: <https://docs.finmid.com/.well-known/api-catalog>; rel="api-catalog", <https://docs.finmid.com>; rel="service-doc", <https://docs.finmid.com/.well-known/agent-skills/index.json>; rel="agent-skills", <https://docs.finmid.com/.well-known/api-catalog>; rel="api-catalog", <https://docs.finmid.com>; rel="service-doc", <https://docs.finmid.com/.well-known/agent-skills/index.json>; rel="agent-skills", <https://cdn.readme.io>; rel=preconnect, <https://cdn.readme.io>; rel=dns-prefetch, <https://cdn.readme.io/public/hub/web/main.653ada2ba3d7cee9dd03.css>; rel=preload; as=style, <https://cdn.readme.io/public/hub/web/Containers-EndUserContainer.aec39b624707989fbe23.css>; rel=preload; as=style, <https://cdn.readme.io/public/hub/web/ui-styles.73ca7892be18535c527d.css>; rel=preload; as=style, <https://cdn.readme.io/public/hub/web/Header.6adac57c3992ff6f7240.css>; rel=preload; as=style, <https://cdn.readme.io/public/hub/web/PageNotFound.12d5d39d22d6c1d0a300.css>; rel=preload; as=style, <https://cdn.readme.io/public/hub/web/Footer.769aa3e9fc194cc963d9.css>; rel=preload; as=style
+rndr-id: 48e16d22-d926-4893
+server: cloudflare
+strict-transport-security: max-age=31536000
+vary: Accept-Encoding
+x-content-type-options: nosniff
+x-dns-prefetch-control: off
+x-download-options: noopen
+x-frame-options: Deny
+x-ratelimit-limit: 100
+x-ratelimit-remaining: 98
+x-ratelimit-reset: 1791999122
+x-render-origin-server: Render
+x-xss-protection: 1; mode=block
+age: 14
+cf-cache-status: HIT
+cf-ray: a4a85283ef721216-IAD
+alt-svc: h3=":443"; ma=86400
+

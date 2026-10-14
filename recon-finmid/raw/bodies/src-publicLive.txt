@@ -1,0 +1,20 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/publicLiveGatewayService.ts =====
+
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+import { GATEWAY_URL } from './helpers';
+
+/**
+ * This API is used for public pages: live gateway and no Keycloak token sent in headers.
+ */
+export const publicLiveGatewayService = createApi({
+  reducerPath: 'publicLiveGatewayService',
+  // baseQuery: livePublicBaseQuery,
+  baseQuery: fetchBaseQuery({
+    baseUrl: GATEWAY_URL,
+  }),
+  endpoints: () => ({}),
+});
+

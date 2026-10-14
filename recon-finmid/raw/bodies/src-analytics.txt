@@ -1,0 +1,39 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/analyticsService.ts =====
+
+import { TBLCurrency, GetIframeUrls } from '@finmid/distributor-types';
+
+import { gatewayService } from './gatewayService';
+
+export type AnalyticsRequest = {
+  target: 'dashboard' | 'question';
+  currency?: TBLCurrency;
+};
+
+export type AnalyticsResponse = {
+  INVOICES: string;
+  BUYERS_AND_SELLERS: string;
+  FEES: string;
+  GENERAL: string;
+};
+
+const extendedGatewayService = gatewayService.injectEndpoints({
+  endpoints: (builder) => ({
+    getIframeUrls: builder.query<
+      GetIframeUrls.GatewayResponse,
+      GetIframeUrls.GatewayRequest
+    >({
+      query: ({ currency }) => ({
+        url: 'api/analytics-dashboard',
+        params: {
+          currency,
+        },
+      }),
+      providesTags: ['Analytics'],
+    }),
+  }),
+});
+
+export const { useGetIframeUrlsQuery } = extendedGatewayService;
+

@@ -1,0 +1,38 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/helpers/createBaseQuery.ts =====
+
+import { ENVIRONMENT } from '@finmid/environment';
+import { sharedRoutes } from '@finmid/tbl-webapps/routes';
+import { FetchBaseQueryMeta } from '@reduxjs/toolkit/query';
+
+import { BaseQueryType } from './BaseQuery.type';
+
+function isUnauthorized(meta?: FetchBaseQueryMeta) {
+  return meta && meta.response && meta.response.status === 401;
+}
+
+function isForbidden(meta?: FetchBaseQueryMeta) {
+  return meta && meta.response && meta.response.status === 403;
+}
+
+export const createBaseQuery = (baseQuery: BaseQueryType) => {
+  const baseQueryWithReauth: BaseQueryType = async (
+    args,
+    api,
+    extraOptions,
+  ) => {
+    const result = await baseQuery(args, api, extraOptions);
+
+    if (isUnauthorized(result.meta) || isForbidden(result.meta)) {
+      if (ENVIRONMENT !== 'live') {
+        console.log('baseQuery.ts: user unauthorized, logging out');
+      }
+      window.location.replace(sharedRoutes.logout);
+    }
+
+    return result;
+  };
+  return baseQueryWithReauth;
+};
+

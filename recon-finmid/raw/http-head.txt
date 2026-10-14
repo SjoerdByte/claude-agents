@@ -1,0 +1,726 @@
+=== finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 304204
+accept-ranges: bytes
+server: AmazonS3
+last-modified: Tue, 13 Oct 2026 16:27:07 GMT
+x-amz-version-id: 2VqHp5QEZtr1ZaB7BpRQDjcu3rxBChKR
+x-amz-server-side-encryption: AES256
+date: Wed, 14 Oct 2026 16:23:37 GMT
+etag: "f130ed0877f4863cac56ed604d6e80ed"
+x-cache: RefreshHit from cloudfront
+via: 1.1 491eed8806756bcb1c9eb958ecf7ed5a.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD55-P9
+x-amz-cf-id: ZiGMSqKUpckvUXJv1SMGZX14wOwXa0wF_dA1KQcZPQfWuZbpBGiKag==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' https://*.googletagmanager.com/gtag/ https://snap.licdn.com/ 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' 'sha256-WN0hqek1jEauhlhWVVXeQPa5BD3f0rsMdmwSZtw1Cys=' 'sha256-eIXWvAmxkr251LJZkjniEK5LcPF3NkapbJepohwYRIc=' 'sha256-3hTNTthnl6z+LyRNkCUyqclSZXSGJ/AegDlj9oNl1os=' 'sha256-Bz9pOLZT9tR0mirkeZuNvntGwt4m497n6xp1uGQX4k0=' 'sha256-JEFsP7rVHf95KYKkFWCnDDsGS1bEya2F9DGDfK/wVlo='; style-src 'self' 'sha256-l73rpQXRpv1S4nLTJhCizONbPP4hkXSqI+ZejHOcH98=' 'sha256-KrifqqDYLB1l/jzuKbr4bONdOaeLUpBuUd6Scu7NU+I=' 'sha256-vv9IoKo7BSLbWcUHr3tNmfNVmm5L/9Cfn2H6LMk7/ow=' 'sha256-zlK6SsMHlT2oK1TmQ8My3nO85uuSnjOFcYyZQ4+9EME=' 'sha256-A9GdPr/TM2V1HnU7+dJejaI4ga4QjSohOPdgW2/sd6o=' 'sha256-pUAQcXqhWfMGLGVvZmlNjvuzMkvB2b9Da75/aILqsOA=' 'sha256-w29nxI1sZrGV8++Vdj3CTUmYClg+zccpqpOFiqItxHI=' 'sha256-egaQ5KvhWwSKtP7lORO2ZVFQ8MS+/KoR/YLHymNhWXI=' 'sha256-g4Qvuqrlb986Wlbglw6FYBHP8W/zk04G5p/TkClOMmU=' 'sha256-Xin4UZb5Ztu4dBLj8XACZdFaFCucoGEg0T2mimQ8o3Q=' fonts.googleapis.com; font-src 'self' data: fonts.googleapis.com fonts.gstatic.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://px.ads.linkedin.com/ https://*.ingest.us.sentry.io https://72poeb7km6ohdftfmhb6an5vla0gdbgd.lambda-url.eu-central-1.on.aws/; img-src 'self' https://*.google-analytics.com https://*.googletagmanager.com https://px.ads.linkedin.com/ data:
+x-content-type-options: nosniff
+
+=== www.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 304204
+accept-ranges: bytes
+server: AmazonS3
+last-modified: Tue, 13 Oct 2026 16:27:07 GMT
+x-amz-version-id: 2VqHp5QEZtr1ZaB7BpRQDjcu3rxBChKR
+x-amz-server-side-encryption: AES256
+date: Wed, 14 Oct 2026 16:23:37 GMT
+etag: "f130ed0877f4863cac56ed604d6e80ed"
+x-cache: Hit from cloudfront
+via: 1.1 e8ac579de7fc88986153d8653adf92fc.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD55-P9
+x-amz-cf-id: gQEVJfMZrV9ptMOaJiehyU79NT9C02sA2r5Grr2WRX0t_KwZszUeQQ==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' https://*.googletagmanager.com/gtag/ https://snap.licdn.com/ 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' 'sha256-WN0hqek1jEauhlhWVVXeQPa5BD3f0rsMdmwSZtw1Cys=' 'sha256-eIXWvAmxkr251LJZkjniEK5LcPF3NkapbJepohwYRIc=' 'sha256-3hTNTthnl6z+LyRNkCUyqclSZXSGJ/AegDlj9oNl1os=' 'sha256-Bz9pOLZT9tR0mirkeZuNvntGwt4m497n6xp1uGQX4k0=' 'sha256-JEFsP7rVHf95KYKkFWCnDDsGS1bEya2F9DGDfK/wVlo='; style-src 'self' 'sha256-l73rpQXRpv1S4nLTJhCizONbPP4hkXSqI+ZejHOcH98=' 'sha256-KrifqqDYLB1l/jzuKbr4bONdOaeLUpBuUd6Scu7NU+I=' 'sha256-vv9IoKo7BSLbWcUHr3tNmfNVmm5L/9Cfn2H6LMk7/ow=' 'sha256-zlK6SsMHlT2oK1TmQ8My3nO85uuSnjOFcYyZQ4+9EME=' 'sha256-A9GdPr/TM2V1HnU7+dJejaI4ga4QjSohOPdgW2/sd6o=' 'sha256-pUAQcXqhWfMGLGVvZmlNjvuzMkvB2b9Da75/aILqsOA=' 'sha256-w29nxI1sZrGV8++Vdj3CTUmYClg+zccpqpOFiqItxHI=' 'sha256-egaQ5KvhWwSKtP7lORO2ZVFQ8MS+/KoR/YLHymNhWXI=' 'sha256-g4Qvuqrlb986Wlbglw6FYBHP8W/zk04G5p/TkClOMmU=' 'sha256-Xin4UZb5Ztu4dBLj8XACZdFaFCucoGEg0T2mimQ8o3Q=' fonts.googleapis.com; font-src 'self' data: fonts.googleapis.com fonts.gstatic.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://px.ads.linkedin.com/ https://*.ingest.us.sentry.io https://72poeb7km6ohdftfmhb6an5vla0gdbgd.lambda-url.eu-central-1.on.aws/; img-src 'self' https://*.google-analytics.com https://*.googletagmanager.com https://px.ads.linkedin.com/ data:
+x-content-type-options: nosniff
+
+=== o1.ptr9561.finmid.com ===
+curl: (35) Recv failure: Connection reset by peer
+HTTP/1.1 200 Connection Established
+
+
+=== prox.finmid.com ===
+curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to prox.finmid.com:443 
+HTTP/1.1 200 Connection Established
+
+
+=== o3.ptr6384.finmid.com ===
+curl: (28) Connection timed out after 10002 milliseconds
+HTTP/1.1 200 Connection Established
+
+
+=== auth.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 403 
+date: Wed, 14 Oct 2026 16:23:55 GMT
+content-type: text/plain
+content-length: 19
+x-envoy-upstream-service-time: 1
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains
+
+
+=== lieferando.apply.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 564
+server: AmazonS3
+last-modified: Mon, 31 Aug 2026 12:07:18 GMT
+x-amz-server-side-encryption: AES256
+x-amz-version-id: WrYZYnq6CLTESKFXmaQJfkae3ejVjiRk
+accept-ranges: bytes
+date: Wed, 14 Oct 2026 16:23:57 GMT
+etag: "85e08a8fcdaafe22c5295908538b99ca"
+x-cache: RefreshHit from cloudfront
+via: 1.1 3e36dd267cb267a1625f6ecf58fe0bd2.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P12
+x-amz-cf-id: N2g1oLL19x29gvR0cCVZNySAp_YQzETFlgXXZUNZ8_nXzKEYq3njSw==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com https://*.finapi.io https://code.tidio.co https://widget-v4.tidiochat.com; img-src 'self' data: https://webapp-resources.finmid.com https://ssl.gstatic.com https://www.gstatic.com https://onboarding-resources.finmid.com https://cdnjs.cloudflare.com https://*.finapi.io https://tidio-images-messenger.s3.amazonaws.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com https://*.finapi.io; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://widget-v4.tidiochat.com; connect-src 'self' https://api.locize.app https://gateway.finmid.com https://o1053131.ingest.sentry.io https://*.posthog.com https://*.finapi.io https://api-v2.tidio.co wss://api-v2.tidio.co https://socket.tidio.co wss://socket.tidio.co; frame-src 'self'; media-src 'self' https://widget-v4.tidiochat.com;
+x-content-type-options: nosniff
+
+=== b2b-payments.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 877
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:23:57 GMT
+last-modified: Wed, 14 Oct 2026 15:51:56 GMT
+etag: "d83a22a1acb5e5f2a0c543d70e3030c0"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: ZqCHdiPr2QYqEmtItCPojlmbVZIzEKY1
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 31341771a4bfa40d7b1f61883ffb56c6.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD12-P1
+x-amz-cf-id: 1HKyzMjRQtUMT1LiuwA_C2NbGsUkTWR92fySmaKUC8YYT_e1FNOWwg==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' https://api.eng.live.finmid.io/; img-src 'self' https://ssl.gstatic.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://o1053131.ingest.sentry.io/ https://platform.gateway.finmid.com/;
+x-content-type-options: nosniff
+
+=== lieferando.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 564
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:23:58 GMT
+last-modified: Mon, 31 Aug 2026 12:07:18 GMT
+etag: "85e08a8fcdaafe22c5295908538b99ca"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: WrYZYnq6CLTESKFXmaQJfkae3ejVjiRk
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 b97ae744144c7c472752110c480bad34.cloudfront.net (CloudFront)
+x-amz-cf-pop: ORD58-P5
+x-amz-cf-id: _-heLMvBgQHQ0Igb_igLOHSdsj6Pwb7btOlp3u4Xd9LY6bKiMeWopg==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com https://*.finapi.io https://code.tidio.co https://widget-v4.tidiochat.com; img-src 'self' data: https://webapp-resources.finmid.com https://ssl.gstatic.com https://www.gstatic.com https://onboarding-resources.finmid.com https://cdnjs.cloudflare.com https://*.finapi.io https://tidio-images-messenger.s3.amazonaws.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com https://*.finapi.io; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://widget-v4.tidiochat.com; connect-src 'self' https://api.locize.app https://gateway.finmid.com https://o1053131.ingest.sentry.io https://*.posthog.com https://*.finapi.io https://api-v2.tidio.co wss://api-v2.tidio.co https://socket.tidio.co wss://socket.tidio.co; frame-src 'self'; media-src 'self' https://widget-v4.tidiochat.com;
+x-content-type-options: nosniff
+
+=== short.bolt.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 404 
+date: Wed, 14 Oct 2026 16:23:58 GMT
+content-type: text/html; charset=utf-8
+content-length: 1428
+x-request-id: 92428c26-4582-47c5-b0b7-56afadb56e15
+x-envoy-upstream-service-time: 241
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains
+
+
+=== plain-bounces.finmid.com ===
+curl: (35) Recv failure: Connection reset by peer
+HTTP/1.1 200 Connection Established
+
+
+=== docs.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 302 
+date: Wed, 14 Oct 2026 16:24:05 GMT
+content-type: text/plain; charset=utf-8
+cache-control: s-maxage=1800, stale-if-error=900
+content-language: en
+link: <https://docs.finmid.com/.well-known/api-catalog>; rel="api-catalog", <https://docs.finmid.com>; rel="service-doc", <https://docs.finmid.com/.well-known/agent-skills/index.json>; rel="agent-skills"
+location: /docs
+rndr-id: bacb86b6-d04a-4cde
+server: cloudflare
+strict-transport-security: max-age=31536000
+vary: Accept, Accept-Encoding
+vary: Accept-Encoding
+x-content-type-options: nosniff
+x-dns-prefetch-control: off
+x-download-options: noopen
+x-frame-options: Deny
+x-ratelimit-limit: 100
+x-ratelimit-remaining: 99
+
+=== everypay.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:07 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 b6d3c8159ae3de02f9219eb71093bbe2.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD55-P6
+x-amz-cf-id: WDDqN9a_R0OUQbn_epd7ez7_gBkxEGDszznKhiM3umEpQcsvpUYXYw==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://* https://dashboard.everypay.gr; frame-src https://pay.gocardless.com
+x-content-type-options: nosniff
+
+=== teya.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:08 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 5e868b55b502623cfa1c1fa31e1c91c8.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P12
+x-amz-cf-id: h_asdvheS0h5LRqXHEDN6uybnOpQ0uk4ZSp-yLSn8Ptlx7f_HIqF-g==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://* https://business.teya.com; frame-src https://pay.gocardless.com
+x-content-type-options: nosniff
+
+=== allo.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:08 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 9c8544e991dd5d4ceb7b80db32a66436.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P15
+x-amz-cf-id: s3XFFd0fLtj4dMit1Uakj62uVK9_yFElY6KFNT8R0d_VkVEVpxSX8g==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://*; frame-src https://pay.gocardless.com
+x-content-type-options: nosniff
+
+=== docs-v2.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 401 
+server: CloudFront
+date: Wed, 14 Oct 2026 16:24:08 GMT
+content-length: 0
+www-authenticate: Basic realm="Auth required"
+x-cache: FunctionGeneratedResponse from cloudfront
+via: 1.1 1f133079dc1c94415e666e3b032459fe.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD55-P5
+x-amz-cf-id: LHnzy6N6I0kHLpjOGFiKdi5ScbvQflxFjBaEU8C4rSH4SRHX41tSlg==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'
+x-content-type-options: nosniff
+strict-transport-security: max-age=604800
+permission-policy: accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=(), clipboard-read=(), clipboard-write=(self), gamepad=(), speaker-selection=(), conversion-measurement=(), focus-without-user-activation=(), hid=(), idle-detection=(), interest-cohort=(), serial=(), sync-script=(), trust-token-redemption=(), unload=(), window-placement=(), vertical-scroll=()
+
+
+=== wamo.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:09 GMT
+last-modified: Mon, 04 May 2026 06:54:31 GMT
+etag: "77a0e18d12c287332d81826b0afd3237"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: wRLNBTC_IprsdHTtxXNyZGZbZyGVCtr1
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 4b2cbcedfc72ded592f892c812d50fc0.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD55-P10
+x-amz-cf-id: FRwGNxefTmk63pik7TwCBe_EYy7Z2r3eF1UTYXQmfjU-yTqC8aaWQg==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self' https://cdn.plaid.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://*.js.stripe.com https://js.stripe.com https://cdn.plaid.com/link/v2/stable/link-initialize.js; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://api.locize.app/ https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://api.stripe.com https://production.plaid.com/ https://*.s3.eu-central-1.amazonaws.com/; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://*; frame-src https://*.js.stripe.com https://js.stripe.com https://cdn.plaid.com/
+x-content-type-options: nosniff
+
+=== o2.ptr7079.finmid.com ===
+curl: (28) Connection timed out after 10002 milliseconds
+HTTP/1.1 200 Connection Established
+
+
+=== analytics.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 403 
+date: Wed, 14 Oct 2026 16:24:19 GMT
+content-type: text/plain
+content-length: 19
+x-envoy-upstream-service-time: 1
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains
+
+
+=== zeos.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 1839
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:20 GMT
+last-modified: Wed, 14 Oct 2026 15:51:48 GMT
+etag: "4499be210c9d8a3990504f61c3b06710"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: aNb3b411gyKCROswIwUNo1T4XgmRNXRM
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 abf0dd48fffc7f5cf9aab730f88497b2.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD89-P3
+x-amz-cf-id: D7z4LiArozbt4H1LTQfzSxV__QrCSK2u3K7gaF53zPA172wC-PGPzg==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.posthog.com/ https://*.i.posthog.com/; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/ https://*.posthog.com/ https://*.i.posthog.com/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://o1053131.ingest.sentry.io/ https://gateway.finmid.com/ https://*.posthog.com/ https://*.i.posthog.com/
+x-content-type-options: nosniff
+
+=== apply.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 564
+server: AmazonS3
+last-modified: Mon, 31 Aug 2026 12:07:18 GMT
+x-amz-server-side-encryption: AES256
+x-amz-version-id: WrYZYnq6CLTESKFXmaQJfkae3ejVjiRk
+accept-ranges: bytes
+date: Wed, 14 Oct 2026 16:23:57 GMT
+etag: "85e08a8fcdaafe22c5295908538b99ca"
+x-cache: Hit from cloudfront
+via: 1.1 5e868b55b502623cfa1c1fa31e1c91c8.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P12
+x-amz-cf-id: Z_BxhNTW3dispA02-viiLrhFZTpc9Bv8QOprrtv3K_G_a8ehRSSh3w==
+age: 24
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com https://*.finapi.io https://code.tidio.co https://widget-v4.tidiochat.com; img-src 'self' data: https://webapp-resources.finmid.com https://ssl.gstatic.com https://www.gstatic.com https://onboarding-resources.finmid.com https://cdnjs.cloudflare.com https://*.finapi.io https://tidio-images-messenger.s3.amazonaws.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com https://*.finapi.io; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://widget-v4.tidiochat.com; connect-src 'self' https://api.locize.app https://gateway.finmid.com https://o1053131.ingest.sentry.io https://*.posthog.com https://*.finapi.io https://api-v2.tidio.co wss://api-v2.tidio.co https://socket.tidio.co wss://socket.tidio.co; frame-src 'self'; media-src 'self' https://widget-v4.tidiochat.com;
+
+=== glovo.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:08 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Hit from cloudfront
+via: 1.1 42821c7336e5cd754f4b8d141b41a412.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P15
+x-amz-cf-id: TVdVZyMtIVCX2vDW0TlVVu_kz8ihKVYBofEFvTs6TQBNp5dIX7z0fw==
+age: 13
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://*; frame-src https://pay.gocardless.com
+
+=== foody.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:21 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 f958a7ff273f1fbe2d4c89cc6e059db8.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P11
+x-amz-cf-id: RLImqm0jkEHpMgGdqxnqO8Id2Qk8Cu6X2MCt1PkQ_YK-mSaxRDDS4Q==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://* https://partner.foodora.com https://partner-app.e-food.gr https://partner-app.foody.com.cy; frame-src https://pay.gocardless.com
+x-content-type-options: nosniff
+
+=== platform.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 3256
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:22 GMT
+last-modified: Wed, 14 Oct 2026 15:52:24 GMT
+etag: "a5f5244e9945eccd095d9e7f04086036"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: eBqtLUCCH6tni3teervaZt8T9EbO6JiE
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 64de29cb6a7b7bcab60fef77017140a4.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P5
+x-amz-cf-id: MGZnTJPq5uGp38ZVKC6xu-aORDXa0QOJbJxNeXftTmPeqS40SGF5cA==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-rAnd0m' https://auth.finmid.com/ https://platform.gateway.finmid.com/ https://*.posthog.com/; img-src 'self' https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://rsms.me https://*.posthog.com/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://rsms.me; connect-src 'self' https://platform.gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://auth.finmid.com/ https://*.posthog.com/; frame-src 'self' https://auth.finmid.com/ https://analytics.finmid-staging.com/ https://analytics.finmid.com/;
+x-content-type-options: nosniff
+
+=== capital.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:08 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Hit from cloudfront
+via: 1.1 08912cba606a40fd0b431fbd32184aec.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P15
+x-amz-cf-id: WJhyTIw6dw2bxZfieTIS1qkr_ipvsxGlkGbduTLRCTkrmS2isk0X1A==
+age: 14
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://*; frame-src https://pay.gocardless.com
+
+=== bolt.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:08 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Hit from cloudfront
+via: 1.1 71ef67708396c311b716d7bd3b3699e2.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P15
+x-amz-cf-id: yQeyvJd_II8ITIO2v1UNlgmcz06OXIM7q1uq7Ul4Zboe_farALTcNg==
+age: 14
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://*; frame-src https://pay.gocardless.com
+
+=== bolt-vehicle-solutions.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 878
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:23 GMT
+last-modified: Wed, 14 Oct 2026 15:51:51 GMT
+etag: "ba1197bce5437c5b8d07c0a02a2bba7b"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: WeSLd9KRVEyz4GvQAL96qxNeMloaSaHK
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 706506e0f04ed7e828cf58bf39306b16.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P8
+x-amz-cf-id: zFfXZRqpDgqyTY_GONgDTuvF8vxPuaefTM4XIMrltl92C4Ma-Y84dg==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.posthog.com/ https://*.i.posthog.com/; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/ https://*.posthog.com/ https://*.i.posthog.com/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://o1053131.ingest.sentry.io/ https://gateway.finmid.com/ https://*.posthog.com/ https://*.i.posthog.com/
+x-content-type-options: nosniff
+
+=== guesty.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:08 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Hit from cloudfront
+via: 1.1 71ef67708396c311b716d7bd3b3699e2.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P15
+x-amz-cf-id: sCOX2sAyJg-6oYoYo8Uy_tgLZxQdLQkn7kOGcxelZdu8sM18rYr3NQ==
+age: 15
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://*; frame-src https://pay.gocardless.com
+
+=== webapp-resources.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 403 
+content-type: application/xml
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:22 GMT
+x-cache: Error from cloudfront
+via: 1.1 6f3546b6b501aaa8c1b4750231158188.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD89-P1
+x-amz-cf-id: JgklJ8-v5iBOHBFDd0kInJg8YTYvUYxyXA_MQ5nGXMCOyj4tGKIJEw==
+
+
+=== sandbox.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 403 
+date: Wed, 14 Oct 2026 16:24:23 GMT
+content-type: text/plain
+content-length: 19
+x-envoy-upstream-service-time: 1
+content-security-policy: connect-src 'self' https://auth.ops.staging.finmid.io; default-src 'none'; frame-ancestors 'none'; img-src 'self' data:; script-src 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains
+
+
+=== webhooks.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 404 
+date: Wed, 14 Oct 2026 16:24:23 GMT
+
+
+=== maintenance.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 817
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:25 GMT
+last-modified: Fri, 29 Aug 2025 06:30:28 GMT
+etag: "91e8af20d74a3abbccf66f022fcae4f1"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: HqCroyFa1LENYGjJTt0WXndCNmvFKV66
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 eb8674b99d3dfcc6867fb20af353442a.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD12-P4
+x-amz-cf-id: hfzl2JO5Jxz0Vp5j9RNw5r7memhxb4Znf2Vl2fIJPimmHoJMOWiZ4Q==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self'; img-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com
+x-content-type-options: nosniff
+
+=== ready2order.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:26 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 51216641aa2cfdaadb386a6a151c2424.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P1
+x-amz-cf-id: 2ghQkk4oa0cUNPswkgTgMGy_HO_FrOT4c4pXTf_64-OrZtKex1YenQ==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://* https://account.ready2order.com; frame-src https://pay.gocardless.com
+x-content-type-options: nosniff
+
+=== foodora-partner.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:26 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 cbd54a3b44bc9e01c474bf6778503afa.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P4
+x-amz-cf-id: NMpcDsD7HgjOU6m75Hzy1t0KtYmh_l7QoSr4R_Mg6BjY8TjL-9oXlw==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://* https://partner.foodora.com https://partner-app.e-food.gr https://partner-app.foody.com.cy; frame-src https://pay.gocardless.com
+x-content-type-options: nosniff
+
+=== api.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 403 
+date: Wed, 14 Oct 2026 16:24:25 GMT
+content-type: text/plain
+content-length: 19
+x-envoy-upstream-service-time: 1
+content-security-policy: connect-src 'self' https://auth.ops.live.finmid.io; default-src 'none'; frame-ancestors 'none'; img-src 'self' data:; script-src 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains
+
+
+=== vpn.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 404 
+content-type: text/plain
+content-length: 18
+date: Wed, 14 Oct 2026 16:24:26 GMT
+
+
+=== mypos.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:28 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 90ac509e6263ee9fa7bb3f1ed1f46118.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD55-P3
+x-amz-cf-id: SzInz6ltI_OgBZgH48CN5h5eRlc8agCv-BJMYnP7eMrWn9CeuOnB4g==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://* *; frame-src https://pay.gocardless.com
+x-content-type-options: nosniff
+
+=== freenow.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:08 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Hit from cloudfront
+via: 1.1 9c8544e991dd5d4ceb7b80db32a66436.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P15
+x-amz-cf-id: qGHqYfSHHaeavZDFRXky-rwqhb6Rl7QvI91qtOcxzM8zphV4suN5Zw==
+age: 20
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://*; frame-src https://pay.gocardless.com
+
+=== gateway.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 404 
+date: Wed, 14 Oct 2026 16:24:27 GMT
+
+
+=== link.finmid.com ===
+curl: (60) SSL: no alternative certificate subject name matches target host name 'link.finmid.com'
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
+HTTP/1.1 200 Connection Established
+
+
+=== sliq.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:29 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 dc090bc58b80198d911430288153af8e.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD61-P11
+x-amz-cf-id: -s8O8MfSuCUCyOimkhlCPKMa5HXsBnyrR84RrLXETmTRPIJUFXyIvA==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://* https://business.sliq.eu; frame-src https://pay.gocardless.com
+x-content-type-options: nosniff
+
+=== efood.finmid.com ===
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+content-type: text/html
+content-length: 947
+server: AmazonS3
+date: Wed, 14 Oct 2026 16:24:29 GMT
+last-modified: Wed, 14 Oct 2026 15:52:20 GMT
+etag: "00723200d9c63d54c5745d0514eeed48"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: PgeluA1kcddp8lX9ExHHxcDHHCx.Cij_
+accept-ranges: bytes
+x-cache: Miss from cloudfront
+via: 1.1 512f238cbc4caf579dfdfec080d485e0.cloudfront.net (CloudFront)
+x-amz-cf-pop: IAD12-P4
+x-amz-cf-id: W6PrFImkvqzy0DDL1AQ8aTFtiEyecIkuPmkFl514Re9-VZQkoHRaZw==
+x-frame-options: DENY
+referrer-policy: no-referrer
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://*.posthog.com/ https://*.finapi.io/ https://pay.gocardless.com; img-src 'self' data: https://webapp-resources.finmid.com/ https://ssl.gstatic.com https://www.gstatic.com https://www.gravatar.com/ https://onboarding-resources.finmid.com/ https://cdnjs.cloudflare.com/ https://*.finapi.io/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.posthog.com/ https://*.finapi.io/; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://gateway.finmid.com/ https://o1053131.ingest.sentry.io/ https://*.posthog.com/ https://*.finapi.io/ https://*.s3.eu-central-1.amazonaws.com/ https://api.gocardless.com; frame-ancestors https://merchant.wolt.com/ https://business.vivid.money/ vivid://* https://partner.foodora.com https://partner-app.e-food.gr https://partner-app.foody.com.cy; frame-src https://pay.gocardless.com
+x-content-type-options: nosniff
+

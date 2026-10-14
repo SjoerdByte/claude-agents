@@ -1,0 +1,399 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/capitalService.ts =====
+
+import { CountryIso3Code } from '@finmid/countries';
+import { PagedResponse } from '@finmid/distributor-types';
+import { Currency, Timestamp } from '@finmid/types';
+
+import { gatewayService } from './gatewayService';
+
+export type BusinessOfferStatus =
+  | 'CREATED'
+  | 'OPENED'
+  | 'ACCEPTED'
+  | 'REPAYMENT_STARTED'
+  | 'REPAID'
+  | 'PAID_OUT'
+  | 'EXPIRED'
+  | 'REFINANCED'
+  | 'REJECTED'
+  | 'CANCELLED';
+
+export type RepaymentType = 'FLEXIBLE' | 'FIXED';
+export type RepaymentFrequency = 'WEEKLY' | 'MONTHLY';
+
+export type CollectionMethod =
+  | 'DIRECT_DEBIT'
+  | 'PLATFORM_TRANSFER'
+  | 'PAY_BY_INVOICE'
+  | 'STANDING_ORDER';
+
+export interface BusinessOfferGroup {
+  id: string;
+  internalBusinessId: string;
+  creditId: string | null;
+  createdAt: Timestamp;
+  acceptedAt: Timestamp | null;
+  businessId: string;
+  legalName: string | null;
+  creditLimit: number | null;
+  payoutAmount: number | null;
+  maxAmount: number;
+  platformFee: number | null;
+  repaymentPeriodMonthsEstimation: number | null;
+  status: BusinessOfferStatus;
+  totalFee: number | null;
+
+  totalExpectedRepayment: number | null;
+  reconciledRepaidAmount: number | null;
+
+  currency: Currency;
+
+  country: string;
+
+  /**
+   * Whether the merchant has the phone/IBAN ending required to authenticate
+   * via the turnkey deep link. When false, the deep link is unusable and the
+   * copy-link button must be hidden (PAY-6345).
+   */
+  isDeepLinkAvailable: boolean;
+}
+
+interface GetMerchantsSummaryResponse {
+  createdCount: number;
+  acceptedCount: number;
+  repaidCount: number;
+  expiredCount: number;
+  averageRepaymentTime: number;
+  averageCreditLimit: number;
+  currency: Currency;
+}
+
+export interface MonthlyTimeSeriesItem {
+  date: Timestamp;
+  value: number;
+  cumulative: number;
+}
+
+export interface OriginationsByMonthItem {
+  date: Timestamp;
+  firstTimeCount: number;
+  renewalCount: number;
+  firstTimeAmount: number;
+  renewalAmount: number;
+}
+
+interface GetDashboardSummaryResponse {
+  sumCreditLimit: number;
+  avgCreditLimit: number;
+  platformFee: number;
+  creditsCount: number;
+
+  /** @deprecated Use paidOutByMonth instead */
+  paidOutAmount: Record<Timestamp, number>;
+  /** @deprecated Use paidOutByMonth instead */
+  paidOutAmountCumulative: Record<Timestamp, number>;
+  /** @deprecated Use expectedRepaymentsByMonth instead */
+  expectedRepayments: Record<Timestamp, number>;
+  /** @deprecated Use expectedRepaymentsByMonth instead */
+  expectedRepaymentsCumulative: Record<Timestamp, number>;
+
+  paidOutByMonth?: MonthlyTimeSeriesItem[];
+  expectedRepaymentsByMonth?: MonthlyTimeSeriesItem[];
+  originationsByMonth?: OriginationsByMonthItem[];
+}
+
+interface GetNpsSummaryResponse {
+  nps: number;
+  avgCapitalSatisfaction: number;
+  avgOverall: number;
+
+  npsCumulative: Record<Timestamp, number>;
+}
+
+export interface MerchantNpsFeedback {
+  id: string;
+  date: Timestamp;
+  businessId: string;
+  creditLimit: number;
+  nps: number;
+  currency: Currency;
+  capitalSatisfaction?: number;
+  overall?: number;
+  useOfFunds?: string;
+}
+
+interface GetMerchantNpsOverviewResponse {
+  feedbacks: MerchantNpsFeedback[];
+}
+
+export interface BusinessOffer {
+  offerId: string;
+  repaymentPeriodMonthsEstimation: number;
+  totalOutstandingAmount: number;
+  creditLimit: number;
+  totalFee: number;
+  platformFee: number;
+  isAccepted: boolean;
+}
+
+export interface FixedBusinessOffer extends BusinessOffer {
+  repaymentFrequency: RepaymentFrequency;
+  repaymentAmount: number;
+}
+
+export interface FlexibleBusinessOffer extends BusinessOffer {
+  repaymentPercent: number;
+}
+
+export type GetOffersByOfferGroupIdResponse =
+  | {
+      flexibleOffers: FlexibleBusinessOffer[];
+    }
+  | {
+      fixedOffers: FixedBusinessOffer[];
+    };
+
+export interface CapitalPlatformConfiguration {
+  hasOfferBatches: boolean;
+}
+
+export interface CapitalPlatformAuthSettings {
+  defaultEnabledTwoFactorAuthMethods: string[];
+  marketConfigurations: { [key: string]: string[] };
+  turnkeyTokenTtlDays: number;
+  isTwoFactorAuthEnabled: boolean;
+}
+
+export interface ConversionsTimeSeriesItem {
+  date: Timestamp;
+  totalConversionRate: number | null;
+  cumulativeConversionRate: number | null;
+  totalCreatedOffersCount: number;
+  totalAcceptedOffersCount: number;
+}
+
+interface GetConversionsTimeSeriesResponse {
+  data: ConversionsTimeSeriesItem[];
+  marks: { date: Timestamp; type: 'go-live' }[] | null;
+}
+
+export type GetConversionsStatsResponse = {
+  country: CountryIso3Code | null;
+  openRate: number | null;
+  acceptanceRate: number | null;
+  totalConversion: number | null;
+}[];
+
+const extendedGatewayService = gatewayService.injectEndpoints({
+  endpoints: (builder) => ({
+    getPlatformConfig: builder.query<CapitalPlatformConfiguration, void>({
+      query: () => ({
+        url: `api/capital/distributor`,
+        method: 'GET',
+      }),
+    }),
+
+    getPlatformAuthSettings: builder.query<CapitalPlatformAuthSettings, void>({
+      query: () => ({
+        url: `api/capital/distributors/auth-settings`,
+      }),
+    }),
+
+    getCountries: builder.query<CountryIso3Code[], void>({
+      query: () => ({
+        url: 'api/capital/countries',
+      }),
+    }),
+
+    getMerchantsCsv: builder.query<
+      string,
+      { country: string; batchId: string | null }
+    >({
+      query: (params) => ({
+        url: 'api/capital/merchants/csv',
+        params: {
+          country: params.country,
+          batchId: params.batchId == null ? undefined : params.batchId,
+        },
+      }),
+    }),
+
+    getMerchantOffers: builder.query<
+      PagedResponse<BusinessOfferGroup, { totalCount: number }>,
+      {
+        limit?: number;
+        country?: string;
+        status?: string;
+        batchId?: string;
+        searchValue?: string;
+        cursor?: string;
+      }
+    >({
+      query: (params) => ({
+        url: 'api/capital/merchants/offers',
+        params,
+      }),
+      providesTags: ['Capital.MerchantsOverview'],
+    }),
+
+    getBusinessOfferLink: builder.query<
+      { link: string },
+      { internalBusinessId: string }
+    >({
+      query: ({ internalBusinessId }) => ({
+        url: `api/capital/merchants/${internalBusinessId}/get-link`,
+      }),
+    }),
+    getBusinessBatchLinks: builder.query<
+      { internalBusinessId: string; link: string }[],
+      { internalBusinessIds: string[] }
+    >({
+      query: ({ internalBusinessIds }) => ({
+        url: `api/capital/merchants/get-links`,
+        method: 'POST',
+        body: {
+          internalBusinessIds,
+        },
+      }),
+    }),
+    getMerchantsSummary: builder.query<
+      GetMerchantsSummaryResponse,
+      { country: string | null }
+    >({
+      query: ({ country }) => ({
+        url: `api/capital/merchants/summary`,
+        params: {
+          country: country == null ? undefined : country,
+        },
+      }),
+    }),
+    getDashboardSummary: builder.query<
+      GetDashboardSummaryResponse,
+      { country: string | null }
+    >({
+      query: ({ country }) => ({
+        url: `api/capital/dashboard/summary`,
+        params: {
+          country: country ?? undefined,
+        },
+      }),
+    }),
+    getNpsSummary: builder.query<
+      GetNpsSummaryResponse,
+      { country: string | null }
+    >({
+      query: ({ country }) => ({
+        url: `api/capital/merchants/nps-summary`,
+        params: {
+          country: country ?? undefined,
+        },
+      }),
+    }),
+    getMerchantNpsOverview: builder.query<
+      GetMerchantNpsOverviewResponse,
+      { country: string | null }
+    >({
+      query: ({ country }) => ({
+        url: `api/capital/merchants/merchant-nps-overview`,
+        params: {
+          country: country ?? undefined,
+        },
+      }),
+    }),
+    generateOfferForMerchant: builder.mutation<
+      void,
+      {
+        country: string;
+        financingSetup: 'CSP' | 'MCA';
+        repaymentTypes?: RepaymentType[];
+        fixedRepaymentFrequencies?: RepaymentFrequency[];
+        collectionMethod?: CollectionMethod;
+      }
+    >({
+      query: ({
+        country,
+        financingSetup,
+        repaymentTypes,
+        fixedRepaymentFrequencies,
+        collectionMethod,
+      }) => ({
+        url: `api/capital/merchants/generate-offer`,
+        method: 'POST',
+        body: {
+          country,
+          financingSetup,
+          repaymentTypes,
+          fixedRepaymentFrequencies,
+          collectionMethod,
+        },
+      }),
+      invalidatesTags: ['Capital.MerchantsOverview'],
+    }),
+    getOffersByOfferGroup: builder.query<
+      GetOffersByOfferGroupIdResponse,
+      { offerGroupId: string }
+    >({
+      query: ({ offerGroupId }) => ({
+        url: `api/capital/offer-groups/${offerGroupId}/offers`,
+        method: 'GET',
+      }),
+      transformResponse: (response: GetOffersByOfferGroupIdResponse) => {
+        if (
+          'flexibleOffers' in response &&
+          response.flexibleOffers.length > 0
+        ) {
+          return {
+            flexibleOffers: response.flexibleOffers,
+          };
+        } else if (
+          'fixedOffers' in response &&
+          response.fixedOffers.length > 0
+        ) {
+          return {
+            fixedOffers: response.fixedOffers,
+          };
+        }
+        return {
+          flexibleOffers: [],
+        };
+      },
+    }),
+
+    getConversionsTimeSeries: builder.query<
+      GetConversionsTimeSeriesResponse,
+      { country: CountryIso3Code | null }
+    >({
+      query: ({ country }) => ({
+        url: 'api/capital/conversion/time-series',
+        params: { country: country ?? undefined },
+      }),
+    }),
+
+    getConversionsStats: builder.query<GetConversionsStatsResponse, void>({
+      query: () => 'api/capital/conversion/stats',
+    }),
+  }),
+});
+
+export const {
+  useGetCountriesQuery,
+  useGetMerchantOffersQuery,
+  useLazyGetMerchantOffersQuery,
+  useLazyGetBusinessOfferLinkQuery,
+  useGetDashboardSummaryQuery,
+  useGetNpsSummaryQuery,
+  useGetMerchantNpsOverviewQuery,
+  useLazyGetBusinessBatchLinksQuery,
+  useGenerateOfferForMerchantMutation,
+  useGetOffersByOfferGroupQuery,
+  useLazyGetOffersByOfferGroupQuery,
+  useGetMerchantsSummaryQuery,
+  useLazyGetMerchantsCsvQuery,
+  useGetPlatformConfigQuery,
+  useGetConversionsTimeSeriesQuery,
+  useGetConversionsStatsQuery,
+  useGetPlatformAuthSettingsQuery,
+} = extendedGatewayService;
+

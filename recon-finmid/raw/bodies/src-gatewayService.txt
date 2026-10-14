@@ -1,0 +1,46 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/gatewayService.ts =====
+
+import { createApi } from '@reduxjs/toolkit/query/react';
+
+import { baseQuery } from './helpers';
+
+// when adding new provided tagTypes, we need to also add them to the action
+// dispatched inside `src/components/Header/Header.tsx` so that they are
+// properly invalidated when switching environments.
+export const cacheTags = [
+  'Analytics',
+  'ApiKeys',
+  'Buyers',
+  'BuyersStats',
+  'BuyersTasks',
+  'BuyersLimits',
+  'Capital.MerchantsOverview',
+  'Currencies',
+  'Documents',
+  'FinancingConditions',
+  'FinancingConfigurations',
+  'PaymentConfigs',
+  'PaymentRequests',
+  'BuyersPaymentRequests',
+  'SellersPaymentRequests',
+  'PaymentRequestStats',
+  'PaymentRequestLogs',
+  'PaymentRequestStatusLogs',
+  'PaymentRequestsTasks',
+  'Payouts',
+  'Sellers',
+  'SellersStats',
+  'Tasks',
+  'Webhooks',
+  'Members',
+] as const;
+
+export const gatewayService = createApi({
+  reducerPath: 'gatewayService',
+  baseQuery,
+  tagTypes: cacheTags,
+  endpoints: () => ({}),
+});
+

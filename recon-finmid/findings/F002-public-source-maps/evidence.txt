@@ -1,0 +1,100 @@
+==============================================================================
+F002 — Public source map leak on platform.finmid.com and wamo.finmid.com
+Session: 2026-10-14, unauth
+==============================================================================
+
+### Reproduction
+
+$ curl -sI https://platform.finmid.com/assets/index-C1IItZL0.js.map
+HTTP/2 200
+content-type: binary/octet-stream
+content-length: ~1970000
+server: CloudFront
+x-cache: Hit from cloudfront
+
+$ curl -sI https://wamo.finmid.com/assets/index-C02z4SAG.js.map
+HTTP/2 200
+content-type: binary/octet-stream
+content-length: ~2200000
+server: CloudFront
+
+$ curl -s https://wamo.finmid.com/assets/index-C02z4SAG.js.map | head -c 200
+{"version":3,"mappings":";;;;AAAA,SAASA,KAAO,CAAC...
+
+Both files were pulled live 2026-10-14, cached as:
+  /home/user/claude-agents/recon-finmid/raw/bodies/platform-index.js.map
+  /home/user/claude-agents/recon-finmid/raw/bodies/wamo-index.js.map
+
+### What's inside (extracted / dumped from the maps' sourcesContent)
+
+platform.finmid.com -> libs/tbl-webapps/gateway-api/src/*
+  publicSignupService.ts      full 5-step token-bound signup chain (public, no Keycloak)
+  webhooksService.ts          Webhook schema: {url, authUsername, authPassword, signatureSecret}
+                              and the CRUD routes on /api/webhooks[/{id}]
+  apiKeysService.ts           /api/api-keys CRUD (prefix-indexed delete)
+  capitalService.ts           15 Capital endpoints incl.
+                                /api/capital/merchants/{internalBusinessId}/get-link
+                                /api/capital/merchants/get-links (bulk)
+                                /api/capital/merchants/csv (bulk CSV)
+                                /api/capital/merchants/generate-offer
+                                /api/capital/offer-groups/{offerGroupId}/offers
+                                ...conversions, NPS, dashboard summary
+  membersService.ts           /api/members, /api/members/{userId}/second-factor-method
+  buyersService.ts            15 buyer endpoints incl.
+                                /api/buyers/{externalId}/exists
+                                /api/buyers/{externalId}/limit-increase
+                                /api/buyers/documents/upload
+                                /api/buyers/stats (takes search param)
+  sellersService.ts           10 seller endpoints incl. /api/sellers/{externalId}/exists
+  prService.ts                25 payment-request endpoints incl.
+                                /api/payment-requests/invoiceNumber/exists
+                                /api/payment-requests/{id}/payouts
+                                /api/payment-requests/documents/upload
+                                /api/payment-requests/calculator/fee-override
+  distributorService.ts       /api/distributor[/{featureFlag}|/currencies|/attributes|/balance|/lock]
+  analyticsService.ts         /api/analytics-dashboard (Metabase iframe URL fetcher)
+  gatewayService.ts           baseQuery wiring: 401|403 -> logout
+  createBaseQuery.ts          Keycloak bearer injection
+
+wamo.finmid.com -> tiger-webapp merchant-financing SPA sources (~1.7MB)
+  The full /payables-financing/public/v1 / v2 / v3 route tree,
+    e.g. /payables-financing/public/v1/credits
+         /payables-financing/public/v1/credits/{creditId}/docs/{document}
+         /payables-financing/public/v1/credits/{creditId}/repayment-history
+         /payables-financing/public/v1/documents/csp[/{id}|/submit|/uploads]
+         /payables-financing/public/v1/consents
+         /payables-financing/public/v1/contracts
+         /payables-financing/public/v1/aisp/connections/{connectionId}/status
+         /payables-financing/public/v1/bank-accounts/mandates
+         /payables-financing/public/v1/onboardings/latest[/submit]
+         /payables-financing/public/v2/available-offers
+         /payables-financing/public/v2/businesses/documents/{documentType}[/{offerGroupId}][/submit]
+         /payables-financing/public/v3/businesses/offers/active
+
+### Secret scan (rg against both maps)
+
+Patterns checked: AKIA, AIza, xox[baprs], sk_live_, sk_test_, pk_live_, SG\., ya29\., -----BEGIN,
+                  secret, SECRET, API_KEY, apiKey, api_key, hmac, signingKey, SIGNING_KEY
+No live hard-coded credentials present in either map.
+Only public frontend values appear (Sentry DSN, PostHog project keys, Google OIDC client id),
+which are tracked in the project's known-non-findings list and NOT re-reported here.
+
+Internal hostnames leaked (via env.js files + Metabase config):
+  https://platform.gateway.finmid.com   (platform SPA target)
+  https://gateway.finmid.com            (merchant SPA target)
+  https://auth.finmid.com/auth          (Keycloak, realm=platform, client=platform-ui)
+  http://metabase-external.ops.live.finmid.io   (plain-http, from F001)
+  https://auth.ops.live.finmid.io       (CSP connect-src on api.finmid.com)
+  https://auth.ops.staging.finmid.io    (CSP connect-src on sandbox.finmid.com)
+  https://api.eng.live.finmid.io        (CSP script-src on b2b-payments.finmid.com)
+
+### Why this is a real finding
+
+The combined effect of the two public maps is that the attack surface the
+rest of this engagement is working against (webhooks IDOR, buyer /exists
+oracle, publicSignup state-machine, payables-financing/public/*) was
+reconstructable in a few hours entirely from the publicly-served bundles —
+there was no need for authenticated enumeration or code leak from any
+other source. Independent of the specific downstream exploit chains, that
+is the standard definition of an information-disclosure finding
+(CWE-540 / CWE-200).

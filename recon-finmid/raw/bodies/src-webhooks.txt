@@ -1,0 +1,112 @@
+
+
+===== ../../../../libs/tbl-webapps/gateway-api/src/webhooksService.ts =====
+
+import { Webhook, WebhookStatus } from '@finmid/distributor-types';
+
+import { gatewayService } from './gatewayService';
+
+export type CreateWebhook = {
+  url: string;
+  authUsername: string;
+  authPassword: string;
+  signatureSecret: string;
+};
+
+export type UpdateWebhook = {
+  status: WebhookStatus;
+  id: string;
+};
+
+const extendedGatewayService = gatewayService.injectEndpoints({
+  endpoints: (builder) => ({
+    getWebhooks: builder.query<Webhook[], void>({
+      query: () => ({ url: 'api/webhooks' }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Webhooks' as const, id })),
+              'Webhooks',
+            ]
+          : ['Webhooks'],
+    }),
+
+    createWebhook: builder.mutation<Webhook, CreateWebhook>({
+      query: (body) => ({
+        url: 'api/webhooks',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Webhooks'],
+    }),
+
+    // we don't have the requirements to update any other webhook field, so for
+    // now only status is allowed. same thing in gateway, only status is updated
+    updateWebhook: builder.mutation<Webhook, UpdateWebhook>({
+      query: ({ id, status }) => ({
+        url: `api/webhooks/${id}`,
+        method: 'PATCH',
+        body: { status },
+      }),
+
+      /**
+       * This is a cool logic to update the cached data, so we don't have to
+       * refresh or refetch anything. This endpoint already returns the
+       * full webhook data, so that makes it easy for us.
+       */
+      async onQueryStarted({ id, ...patch }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          extendedGatewayService.util.updateQueryData(
+            'getWebhooks',
+            undefined,
+            (draft) => {
+              const updatedWebhook = draft.find((webhook) => webhook.id === id);
+              if (updatedWebhook != null) {
+                Object.assign(updatedWebhook, patch);
+              }
+            },
+          ),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+    }),
+
+    deleteWebhook: builder.mutation<void, string>({
+      query: (webhookId) => ({
+        url: `api/webhooks/${webhookId}`,
+        method: 'DELETE',
+      }),
+      async onQueryStarted(webhookId, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(
+            extendedGatewayService.util.updateQueryData(
+              'getWebhooks',
+              undefined,
+              (draft) => {
+                const index = draft.findIndex(
+                  (webhook) => webhook.id === webhookId,
+                );
+                if (index !== -1) draft.splice(index, 1);
+              },
+            ),
+          );
+        } catch {
+          //
+        }
+      },
+    }),
+  }),
+});
+
+export const {
+  useCreateWebhookMutation,
+  useGetWebhooksQuery,
+  useDeleteWebhookMutation,
+  useUpdateWebhookMutation,
+} = extendedGatewayService;
+
