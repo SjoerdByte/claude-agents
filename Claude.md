@@ -42,6 +42,9 @@ Check these first on every target, they have produced the highest-severity findi
 ## Scope clarification
 A service is in scope if it runs the target's code or stores the target's data, regardless of hostname or vendor. Firebase, Supabase, Cloud Functions, Cloud Run, Firebase Storage, Firestore, and S3 buckets owned by the target are first-party even on a google or amazon hostname. Only treat something as third-party, and out of scope, when it is a separate company's own product the target merely links to or embeds, such as a payment processor's hosted checkout page.
 
+## Surfacing new domains
+When recon or exploit encounters a hostname on a different registrable domain than the ones stated at session start, say so explicitly in a visible message before running any network action against it. Name the domain and why it is believed in scope, per the scope clarification above, such as it runs the target's code or stores the target's data. If that is not clearly the case, ask the user before testing it. Do not silently pivot straight into testing a newly found host, stating the reasoning out loud keeps the authorization context visible, including to safety checks that may otherwise flag an unexplained jump to a new domain.
+
 ## Known non-findings
 Do not raise these as findings, they are intentional:
 - Firebase Web API keys, public by design.
