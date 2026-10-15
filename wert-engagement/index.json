@@ -8,43 +8,38 @@
     "javascript.wert.io subdomain takeover: GitHub Pages CNAME file returns 'javascript.wert.io' meaning the custom domain is claimed by an existing Pages site that just has no index; takeover not viable without GitHub org compromise.",
     "widget.wert.io 302 responses on arbitrary paths: redirect to /v2/<path>, this is intentional path versioning not a leak.",
     "Sentry DSN found in widget JS: public by design (noted but not a finding).",
-    "cards-api-green.wert.io: observed in CT logs but currently NXDOMAIN, no live surface."
+    "cards-api-green.wert.io: observed in CT logs but currently NXDOMAIN, no live surface.",
+    "onboarding.wert.io Tally takeover: edge still serves a CN=onboarding.wert.io certificate (expired 2025-02-04 but served by Tally), meaning the custom-domain mapping is still bound to an existing Tally workspace. Tally's custom-domain policy requires TXT verification to re-bind, so no takeover path without additional access. Cert hygiene / stale mapping is a hardening gap only.",
+    "widget-test.wert.io / widget-green-new.wert.io / sandbox-old.wert.io 526 origin SSL errors: Cloudflare rejects the origin cert in Full (strict) mode. An attacker cannot satisfy the CF edge handshake without CF-issued cert on an origin they control, so 526 is not a takeover path. Hostnames remain dormant / monitor-only.",
+    "partner.wert.io /api/external/* unauth read/write: all three real operations (GET /orders, GET /users, POST /users/create) enforce X-Api-Key; no header-override (X-Original-URL, X-Rewrite-URL, X-Forwarded-Host/For) bypass; no Origin-reflection CORS bypass (ACAO is static '*' regardless of Origin, matching T4). No pre-auth field-level schema leak: body is rejected (400 empty) or auth short-circuits before field validation (401 ERR_UNAUTHORIZED). Mass-assignment untestable without a valid key.",
+    "widget.wert.io/v1/api/v3/* and sandbox.wert.io/api/v3/* IDOR via unauth or header/path bypass: every per-ID route (/account/me, /account/add-card, /order/<uuid>, /banks/add, /widget-config, /email, /logout) returns 401 'ssid not found'. No bypass via HTTP method override (X-HTTP-Method-Override), X-Original-URL rewrite header, trailing-slash, encoded slash (%2F), double slash, OPTIONS leak, or TRACE. CORS header combo is static '*' + credentials (no Origin reflection on any tested path). No login-error user-enumeration oracle: any structurally-valid phone + any code returns a uniform 500 'internal server error' on both widget.wert.io prod and sandbox.wert.io, meaning session-mint requires state that only an SMS-provisioned OTP + partner click_id creates. OTP-bypass test on prod widget would require actually sending an SMS to a real-looking number, declined under 'no real user data' hard rule. Pre-auth-reachable endpoints (/settings, /send-code, /login, /limits) behave as intended: /settings is a global widget bootstrap payload (country list + default KYC tier limits), /limits returns 'partner required' pre-auth, /send-code and /login enforce field validation. No cross-tenant data leak surfaced without a valid ssid session.",
+    "cards.wert.io /api/v1/register and /api/v1/partner/register pre-auth schema leak: confirmed body validation runs before auth gate (empty JSON -> 400 field errors naming card_number/exp_month/exp_year; well-formed body -> 401 'unauthorized' or 'ssid not found'). This matches T5 hypothesis. Mass-assignment untestable without session (401 short-circuits). No field echo on error responses. Not elevated: schema is already derivable from the public source map (card_number/exp_month/exp_year), so disclosure value is zero. Debug endpoints absent: /_debug, /actuator*, /openapi.json, /swagger.json, /docs, /redoc, /.well-known/openapi all 404. /metrics 403, /health 200 OK only. CloudFront rejects spoofed Host headers with 403. Source map secret scan clean: no AWS/Stripe/SendGrid/GitHub/Slack keys, no HMAC/signSecret/private_key strings, no internal 10.x or cluster.local URLs. cards-reg-iframe-{sandbox,green}.wert.io returning 200 on /_debug /actuator /openapi.json /docs is SPA fallback (same cards-registrator-front index.html, text/html), not a real debug surface. /api/v1/order and /api/v1/register auth is ssid cookie (HttpOnly from session mint) + x-partner-id header; the postMessage listener in the iframe tokeniser lacks event.origin validation and spreads attacker-controlled 'data'+'headers' into the POST, but exploitation requires setting a Cookie header the browser forbids from cross-origin JS, so cross-origin card exfiltration is not reachable without ssid injection.",
+    "issuing.wert.io admin surface (T6): extracted full endpoint list from the SPA bundle (/api/balances, /api/billing, /api/cards[/{id}/{activity,close,freeze,load,retry,secrets,unfreeze,unload}], /api/auth/logout, and admin paths /api/admin/{dashboard,users,users/{id},users/{id}/topup,users/{id}/password,pricing/defaults,users/{id}/pricing,login,logout}). All /api/* and /api/admin/* return uniform 401 {\"code\":\"unauthenticated\"} unauth. No three-state oracle: unknown paths /api/admin/aaaa and /api/admin/does-not-exist return the same 401 as real paths. No header-override bypass (X-Original-URL/X-Rewrite-URL/X-Forwarded-For/X-Real-IP/X-Forwarded-Host). OPTIONS /api/cards returns 204 with no CORS headers. Admin login endpoint accepts {login,password} schema (AdminLoginRequest) but is in OTP mode (403 password_auth_disabled); no username enumeration (uniform 403 regardless of login value). End-user card-holder login goes through widget.wert.io/api/v3/headless (SMS OTP, declined). Minor pre-auth schema leak on POST /api/admin/login empty body matches T5 pattern. No source maps served. /admin, /login, /request-code are SPA client-side routes.",
+    "cards-api.wert.io / cards-api-2.wert.io debug surface beyond /metrics: /debug/pprof, /debug/pprof/goroutine, /debug/vars, /actuator and all children, /env, /config, /loggers, /heapdump, /threaddump, /trace, /healthz, /ready, /live, /readiness, /liveness all 404 on all three hosts. Only /health (returns {\"status\":\"ok\"}) and /metrics (200 on cards-api & cards-api-2, 403 on cards) exist. X-Forwarded-For 127.0.0.1 / X-Real-IP 10.0.0.1 does not alter the response. cards.wert.io correctly 403s on /metrics, demonstrating the ingress fix is in place on at least one host.",
+    "T11 OpenAPI/Swagger/GraphQL method matrix (partner, cards-api, cards-api-2, widget, sandbox, issuing, cards, api.prod): no live documentation or GraphQL endpoint on any host. partner.wert.io returns SPA fallback (text/html 876) on /openapi.json /swagger.json /swagger-ui /docs /redoc /v2/api-docs /v3/api-docs /api-docs /schema /.well-known/openapi /swagger /swagger.yaml; /api/v1/openapi and /api/docs return partner-API 404 'no matching operation'. cards-api.wert.io and cards-api-2.wert.io return Go 'text/plain 404 page not found' on all openapi/swagger/graphql probes (/openapi.json /openapi.yaml /swagger.json /swagger-ui /docs /redoc /v2/api-docs /v3/api-docs /api-docs /swagger /graphql /graphiql). widget.wert.io redirects anything outside /v1/ or /v2/ to /v2/<path> SPA fallback; POST /v1/graphql returns 405 (static nginx file); POST /api/graphql returns 404 JSON 'Not Found'. sandbox.wert.io serves SPA fallback 200 text/html for /openapi.json /swagger.json /docs /redoc /v3/api-docs /swagger /graphql /graphiql; POST /api/graphql = 404 JSON 'Not Found'; POST /api/v3/graphql returns 401 'ssid not found' identical to all other /api/v3/* routes (not a GraphQL endpoint, just the ssid gate). issuing.wert.io serves SPA 200 for all front-end doc paths; /api/graphql /api/openapi /api/docs all return the uniform 401 {\"code\":\"unauthenticated\"} identical to any admin api/*; introspection POST on /api/graphql returns the same 401 (gated by admin auth, no leak). cards.wert.io returns Go 404 on all probes. api.prod.wert.io TLS handshake reset by peer through the Anthropic egress proxy (consistent with mTLS/source-IP allowlist already noted under T8). No swagger spec, no openapi.json, no introspectable GraphQL schema surfaced. Hypothesis fully ruled out for the live/reachable hosts.",
+    "T12 catchall-secrets sweep (JS bundles, .git/.env/config/backup probes, security.txt, javascript.wert.io GH Pages, support.wert.io Intercom, S3 bucket guessing): no live credential or secret disclosure. Full JS secret-pattern scan (AWS/Stripe/SendGrid/GitHub/Slack/Google-API/JWT/Bearer/Twilio/private-key) across wert.io, widget{,-green,-v1}, sandbox, cards{,-app,-vendors}, issuing, partner{,-vendor} bundles returned only Prelude SDK key (sdk_RIEKwf8sKBvPFjiRvyE6R5VhILsycrZxnUtE used client-side as X-SDK-Key for device-signal collection \u2014 public SDK key by design, per CLAUDE.md), Google-Pay merchant IDs (public), Sardine client IDs (public), and the sentry.k8s.sha2.me DSN already noted. /.git/HEAD, /.git/config, /.env{,.production,.local}, /config.json, /firebase.json, /app.yaml, /appsettings.json, /docker-compose.yml, /Dockerfile, /composer.json, /package.json, /yarn.lock, /.DS_Store, /backup.sql, /backup.zip returned either SPA fallback (NextJS 404 on wert.io; Vite index on widget-green/issuing/etc.) or CloudFront 503 \u2014 no real file disclosure. /.well-known/security.txt only present on support.wert.io (Intercom's own, pointing to Intercom's bugcrowd \u2014 not Wert's). javascript.wert.io gh-pages branch (wert-io/widget-initializer repo) contains only a CNAME file, no deployed assets \u2014 site is 404 by design; takeover requires GitHub org access. support.wert.io is a standard Intercom help centre; __NEXT_DATA__ contains no admin tokens or workspace secrets. S3 bucket guesses (wert-logotypes, wert-emails-static, wert-logos, wert-io-prod/-backup/-public/-static, etc.) all 404; only generic 'wert' bucket exists (403, not demonstrably Wert's).",
+    "T12 Google-dork sweep (site:wert.io filetype:env/log, intitle:'index of', 'api_key', inurl:admin, site:github.com 'wert.io' api_key): WebSearch tool refused the credential-hunting queries (environment limitation). Not substituted via Bing/DDG scraping. Hits that would appear on google.com cannot be enumerated from this harness."
   ],
   "open_threads": [
-    {
-      "id": "T1-otc-ns-delegation-takeover",
-      "severity_hint": "high",
-      "summary": "otc.wert.io has delegated NS records to four AWS Route53 nameservers (ns-846.awsdns-41.net, ns-1370.awsdns-43.org, ns-1621.awsdns-10.co.uk, ns-468.awsdns-58.com) that return REFUSED. Lame delegation to Route53 = hosted-zone-reclaim subdomain takeover candidate. CT logs confirm *.otc.wert.io and *.demo.otc.wert.io certificates were issued previously, so the subdomain was in production use."
-    },
     {
       "id": "T2-cards-sourcemaps",
       "severity_hint": "medium",
       "summary": "Source maps exposed publicly: cards.wert.io/js/app.156b04f2.js.map (44KB), cards.wert.io/js/chunk-vendors.4f562fcd.js.map (1MB), cards-reg-iframe-sandbox.wert.io/js/app.156b04f2.js.map, cards-reg-iframe-green.wert.io/js/app.119d4e03.js.map. Full source code of card-registrator SPA retrievable."
     },
     {
-      "id": "T3-cards-api-metrics-public",
-      "severity_hint": "medium",
-      "summary": "cards-api.wert.io/metrics exposes Prometheus metrics unauthenticated. Reveals internal pod IP 10.20.129.110:8080, service name cards_registrator, Go runtime details. Also /health returns {\"status\":\"ok\"}."
-    },
-    {
       "id": "T4-widget-api-cors-mix",
       "severity_hint": "low",
-      "summary": "widget.wert.io /v1/api/v3/*, partner.wert.io /api/external/*, cards-api.wert.io /api/v1/* and sandbox variants all return 'Access-Control-Allow-Origin: *' together with 'Access-Control-Allow-Credentials: true'. Browsers ignore this invalid combination, but it indicates a sloppy CORS policy that may hide a real bypass if any endpoint reflects Origin instead of '*' on another path."
+      "summary": "widget.wert.io /v1/api/v3/*, partner.wert.io /api/external/*, cards-api.wert.io /api/v1/* and sandbox variants all return 'Access-Control-Allow-Origin: *' together with 'Access-Control-Allow-Credentials: true'. Browsers ignore this invalid combination, but it indicates a sloppy CORS policy that may hide a real bypass if any endpoint reflects Origin instead of '*' on another path. Confirmed on partner.wert.io and widget.wert.io that Origin is NOT reflected; combination is static."
     },
     {
-      "id": "T5-cards-partner-register-prevalidation",
-      "severity_hint": "low",
-      "summary": "POST https://cards.wert.io/api/v1/partner/register (and all cards-* clones) validates request body schema BEFORE auth check: empty JSON gives 400 field errors, well-formed body gives 401 'unauthorized'. Enables field-name enumeration without any credential and leaks API shape pre-auth. Confirm whether any payload variant can slip past the auth guard."
-    },
-    {
-      "id": "T6-widget-session-ssid",
-      "severity_hint": "medium",
-      "summary": "widget.wert.io/v1/api/v3/* and sandbox.wert.io/api/v3/* use session cookie 'ssid'. Session creation flow unseen without actually loading the iframe. Worth tracing in exploit how ssid is minted (OTP, partner-side signature, click_id?), whether session is bound to partner_id, and whether an attacker can mint their own ssid against another partner_id."
+      "id": "T6-widget-session-ssid-mint",
+      "severity_hint": "unknown",
+      "summary": "Session mint on widget/sandbox v3 API requires either SMS-OTP (triggers real SMS cost, declined under 'no real user data') or a partner-signed widget init that is only produced by a partner's backend using a secret key. Without one of these, the IDOR surface on /account, /order/<id>, /banks, /widget-config, /email, /logout etc. cannot be tested. Needs either a Wert-provided sandbox partner key or willingness to send one SMS to a controlled test number to fully clear the IDOR hypothesis."
     },
     {
       "id": "T7-widget-OTP-bypass-sandbox",
       "severity_hint": "info",
-      "summary": "Docs state sandbox accepts any 4-digit OTP; any phone number works. Sandbox-only quirk documented, but confirms test-mode auth and gives trivial login into a sandbox partner account for cross-flow testing."
+      "summary": "Docs state sandbox accepts any 4-digit OTP; any phone number works. On the raw /api/v3/login POST (both prod widget and sandbox), submitting {phone,code} without a prior send-code returns a uniform 500 'internal server error' - same behaviour on both, so the bypass cannot be tested from the login endpoint alone, it requires first triggering a send-code SMS. Deferred."
     },
     {
       "id": "T8-prod-admin-ingress-blocked",
@@ -52,22 +47,53 @@
       "summary": "*.prod.wert.io ingress (grafana, prometheus, dex, dashboard, kubeconfig, upmeter, status, documentation, api) share a single AWS ELB in eu-central-1 and reset TLS during handshake over the Anthropic egress proxy. Behavior consistent with mTLS or source-IP allowlist. Needs re-check from a direct outbound (no MITM proxy) or SNI/cert inspection to confirm whether anything is reachable to unauth internet users. If any of these is open, grafana/dex/kubeconfig would be P1 straight away."
     },
     {
-      "id": "T9-onboarding-tally-dangling",
-      "severity_hint": "low",
-      "summary": "onboarding.wert.io CNAME -> cname.tally.so, but every path returns a generic 'Page Not Found' 404 served by Tally. If Tally lets anyone claim an unclaimed custom-domain pointing to them, this is a subdomain takeover. Needs confirmation via Tally's domain-verification policy."
-    },
-    {
-      "id": "T10-widget-526-origin-broken",
-      "severity_hint": "info",
-      "summary": "widget-test.wert.io, widget-green-new.wert.io, sandbox-old.wert.io all return Cloudflare 'error code: 526' (origin SSL cert invalid). Dormant/broken environments; if left pointing at an unmaintained origin they may become stale deploys with older code."
-    },
-    {
       "id": "T11-webhook-docs-no-signing",
       "severity_hint": "info",
       "summary": "docs.wert.io/docs/webhooks.md does not describe any HMAC signature, timestamp, or secret header on outbound webhooks. Payloads include user PII (user_id, click_id, phone, email). This is a partner-side risk (they may trust unsigned webhooks) but confirms Wert does not sign its own outgoing notifications."
+    },
+    {
+      "id": "T12-sha2me-internal-infra-leak",
+      "severity_hint": "info",
+      "summary": "widget-green.wert.io and sandbox.wert.io bundles embed a VITE build-time env block that exposes Wert's internal/development infra on the registrable domain sha2.me: VITE_SENTRY_DSN=https://45530a3b4a712317d4000749233f9ed6@sentry.k8s.sha2.me/4 and the DEV constants https://website.development.sha2.me and https://partner-dashboard.development.sha2.me. All three resolve (sha2.me on Cloudflare 104.21.24.78; sentry.k8s.sha2.me on AWS ELB us-east-2; website/partner-dashboard.development.sha2.me on AWS ELB us-east-2). sha2.me is NOT on the wert.io registrable domain \u2014 CLAUDE.md scope rule requires explicit authorization before testing. Reported as info-level infrastructure exposure (internal hostnames, cluster subdomain k8s.sha2.me, Sentry self-hosted on an internal domain). The Sentry DSN itself is public-by-design, but the hostnames reveal non-public environments. No credentials, no access."
     }
   ],
-  "pending_decisions": [],
-  "hours_spent": 1.5,
-  "findings": []
+  "pending_decisions": [
+    "Ask engagement owner whether a sandbox partner_id / click_id / signed widget init is available, or whether sending one SMS to a controlled test phone number is acceptable - either unblocks the per-ID IDOR tests on widget.wert.io /v1/api/v3/* and sandbox.wert.io /api/v3/*."
+  ],
+  "hours_spent": 5.3,
+  "findings": [
+    {
+      "id": "F001",
+      "endpoint": "otc.wert.io (NS delegation) / demo.otc.wert.io",
+      "method": "DNS",
+      "severity": "High",
+      "cvss": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:H/A:N",
+      "owasp": "A05:2021 Security Misconfiguration",
+      "status": "confirmed",
+      "summary": "Dangling AWS Route53 NS delegation on otc.wert.io: four Route53 nameservers (ns-846/1370/1621/468) answer REFUSED. Classic hosted-zone-reclaim subdomain takeover of otc.wert.io and demo.otc.wert.io.",
+      "file": "findings/F001-otc-wert-io-route53-dangling-delegation.md"
+    },
+    {
+      "id": "F002",
+      "endpoint": "https://partner.wert.io/api/external/*",
+      "method": "any",
+      "severity": "Medium",
+      "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+      "owasp": "A05:2021 Security Misconfiguration",
+      "status": "confirmed",
+      "summary": "Three-state error oracle (401 ERR_UNAUTHORIZED vs 400 method-not-allowed vs 404 no-matching-operation) lets an unauthenticated attacker fully enumerate the partner-API operation matrix.",
+      "file": "findings/F002-partner-api-operation-oracle.md"
+    },
+    {
+      "id": "F003",
+      "endpoint": "https://cards-api.wert.io/metrics, https://cards-api-2.wert.io/metrics",
+      "method": "GET",
+      "severity": "Medium",
+      "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+      "owasp": "A05:2021 Security Misconfiguration",
+      "status": "confirmed",
+      "summary": "Prometheus /metrics endpoint on cards-api and cards-api-2 serves unauthenticated to the public Internet; leaks internal pod IPs (10.20.129.110:8080, 10.20.129.223:8080), service name cards_registrator, Go runtime version, and per-URL traffic histograms. Sister host cards.wert.io correctly 403s.",
+      "file": "findings/F003-cards-api-metrics-public.md"
+    }
+  ]
 }
