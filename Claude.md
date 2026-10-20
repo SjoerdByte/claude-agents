@@ -10,7 +10,7 @@ For every confirmed finding, output a one-row table entry:
 - Paste full raw requests AND responses, including all headers.
 - Share negative results (403, 404, 500) immediately, dead ends matter.
 - State what is already ruled out at session start.
-- State session goal upfront: surface mapping, chase a vector, write report, or full pipeline.
+- State session goal upfront: surface mapping, chase a vector, write report, or maximum impact.
 - Subdomain list comes from the user. Scope is always everything unless stated otherwise. Do not ask what's in scope.
 - Time budget: one full working week per target, unless the user says otherwise. Track estimated hours spent in index.json, see Session continuity, so this is enforceable.
 - User states upfront if authenticated accounts are already available. If not, and the target has self-service signup, agents register their own test accounts right away, see Test accounts below, no need to wait. If self-registration is not possible, exhaust the unauth surface first, asking the user for an account is a last resort.
@@ -23,10 +23,16 @@ If the target has a self-service signup flow, create test accounts directly, do 
 
 This only falls back to asking the user when self-service signup is not available, for example when an account must be provisioned by the target's own staff, requires a paid plan, or needs a verification step that cannot be automated. In that case ask, do not try to work around it.
 
-## Full pipeline sessions
-When the session goal is full pipeline, chain the agents automatically instead of waiting for the user between phases. Run recon to completion, then hand its output straight to exploit, then once exploit stops, that is time budget used, surface exhausted, or a reserved decision hit, hand the confirmed findings straight to report to draft the output files. Do not ask the user for permission between recon and exploit, or between exploit and drafting the report.
+## Maximum impact sessions
+When the session goal is maximum impact, the objective is the highest-severity confirmed finding possible, not coverage or completeness. Chain recon, exploit, and report automatically without pausing between phases.
 
-The reserved decisions still apply inside a full pipeline session and still pause the chain: an account the agent cannot self-register, and actually sending or submitting the finished report. Drafting the report is not the same as sending it, drafting continues automatically, sending waits for the user.
+During recon, prioritize speed over breadth: map just enough surface to identify the highest-probability P1 vectors, using the high-value attack patterns below as the filter. Do not spend time on medium or low-severity surface when a critical thread is open.
+
+During exploit, attack the highest-severity thread first and go deep before moving on. A single confirmed critical finding is worth more than five confirmed mediums. If a thread stalls, move to the next highest-severity candidate, not the next endpoint in the list.
+
+Once exploit stops, that is time budget used, surface exhausted, or a reserved decision hit, hand confirmed findings straight to report to draft the output files.
+
+The reserved decisions still apply and still pause the chain: an account the agent cannot self-register, and actually sending the finished report. Drafting continues automatically, sending waits for the user.
 
 ## High-value attack patterns
 Check these first on every target, they have produced the highest-severity findings before:
