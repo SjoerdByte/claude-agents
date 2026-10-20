@@ -79,6 +79,8 @@ Everything curl can do, do with curl. Only ask the user to use Burp for:
 - The safety classifier can latch into a cautious auto-mode after a flagged message, causing repeated unnecessary pauses. If a session suddenly stops proceeding without a clear reason, say so and suggest a fresh session rather than fighting it.
 - The outbound network proxy sometimes returns a 502 for a host that would otherwise be NXDOMAIN. Treat a 502 on the first request to a brand-new host as inconclusive, retry once before ruling it dangling or dead.
 
+When the classifier blocks a network action or agent spawn, do not stop and list abstract options. Immediately output the exact curl commands the user needs to run manually to unblock the next step, in copy-paste ready form with a one-line explanation per command of what it does and what to do with the output. If a step cannot be expressed as a curl, for example a browser-based signup flow, say so explicitly, name the exact URL, and describe the exact action to take. The goal is that the user can run or click it themselves and paste the result back to continue. Make that as frictionless as possible.
+
 ## Technical environment
 Do not assume the OS. Run `uname -a` at the start of a session. On a Linux cloud container, standard Unix and Python tooling is available. On Windows Git Bash (MINGW64), avoid Python heredocs and stick to bash-native tools such as grep, sed, awk, since quoting breaks there. Working directory per target, for example ~/target-name. httpx is often unavailable, curl-based loops are a safe fallback either way. Batch probes into groups of 6 to 8 sub-commands at a time.
 
