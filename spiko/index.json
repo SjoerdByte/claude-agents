@@ -1,16 +1,50 @@
 {
   "target": "spiko.xyz / spiko.io",
   "authorization": "Written permission from Paul-Adrien Hyppolite, CEO of Spiko",
-  "scope_note": "Everything in scope. All listed subdomains plus any additional subdomains discovered. Spiko-owned first-party services are in scope regardless of hostname/vendor.",
-  "stack_known": ["Astro", "React", "AWS"],
-  "ruled_out": [],
+  "scope_note": "Everything in scope. All listed subdomains plus any additional subdomains discovered. Spiko-owned first-party services are in scope regardless of hostname/vendor. New registrable domain spiko.finance surfaced from CT (certspotter) as a first-party mirror sharing the staging wildcard cert with *.staging.spiko.io; treated in scope. cdn.spiko.finance is a Spiko-owned CloudFront/S3 bucket. Vendor-hosted but first-party-storing surfaces (Zendesk support, Statuspage status, Postmark pm-bounces) treated per CLAUDE.md: in scope if they hold Spiko data, otherwise noted and skipped.",
+  "stack_known": [
+    "Astro (marketing/blog/docs)",
+    "React + Vite + rolldown (investor/distributor SPA)",
+    "AWS CloudFront + S3 (SPA + cdn.spiko.finance)",
+    "Cloudflare in front of everything on *.spiko.io, *.spiko.finance",
+    "Cloudflare Access ZT for admin/metabase/rabbitmq/pg-admin/tolgee/e2e-reports",
+    "Ory Network (Hydra OAuth2 + Kratos self-service) at *-auth.spiko.io/.finance (region euw)",
+    "Envoy / API Gateway at *-api.spiko.io (admin/distributor/investor)",
+    "Go backend at public-api.* and webhooks.*",
+    "Netlify (spiko-landing.netlify.app) for www.spiko.io",
+    "Webflow (cdn.webflow.com) for www.spiko.xyz",
+    "GitHub Pages (spiko-tech.github.io) for docs/tech/data",
+    "AWS ELB via Qovery (criom.sh) for ebics.preprod.spiko.io in eu-west-3",
+    "Datadog RUM (datadoghq.eu) on app shells",
+    "Hotjar, Cloudflare Turnstile, reCAPTCHA v3 for anti-automation"
+  ],
+  "ruled_out": [
+    "tech-blog.spiko.io - NXDOMAIN, superseded by tech.spiko.io",
+    "sendwj325419.spiko.io - NXDOMAIN, Postmark DKIM stub pattern",
+    "spiko.finance apex - NXDOMAIN (only subdomains live)",
+    "preprod.spiko.io, staging.spiko.io, preprod.spiko.finance, staging.spiko.finance apex - NXDOMAIN, used only as wildcard parents",
+    "pm-bounces.spiko.io - vendor Postmark MTA endpoint, outbound SMTP only, HTTPS times out",
+    "status.spiko.io - Atlassian Statuspage hosted; /api/v2/summary.json public, nothing to attack on vendor side",
+    "support.spiko.io - Zendesk hosted; vendor-managed",
+    "www.spiko.xyz - Webflow-hosted; vendor-managed",
+    "crt.sh - 502 Bad Gateway during this session, replaced with api.certspotter.com"
+  ],
   "open_threads": [
-    "Initial recon in progress",
-    "Subdomain discovery for additional hosts",
-    "Enumerate tech stack per subdomain"
+    "Ory self-service signup confirmed open at app.spiko.io/signup via investor-auth /self-service/registration/browser - test whether session issued pre email-verify",
+    "Walk investor-api/distributor-api/admin-api for IDOR after obtaining a self-registered session",
+    "Confirm whether spiko.finance and spiko.io API hosts share backend / session cookies",
+    "Validate the leaked Tolgee staging API key (full value stored in scratchpad only) against tolgee.spiko.io REST backend",
+    "Enumerate real paths on public-api beyond /share-classes - likely /funds, /nav, /yield, /portfolios",
+    "Find origin IP for CF-Access-protected hosts (pg-admin, rabbitmq, metabase, admin, tolgee, e2e-reports) via passive DNS",
+    "Probe ebics.preprod.spiko.io EBICS endpoint directly - no WAF, direct AWS ELB",
+    "Walk PR-preview wildcards p<NNNN>.public-api.staging.spiko.io / .webhooks.staging.spiko.io for a live PR",
+    "Enumerate guessable paths on cdn.spiko.finance S3 bucket (country+ISIN+doc-type combos)",
+    "No CSP / HSTS on app SPA - record and leverage if XSS or injection found"
   ],
   "pending_decisions": [],
-  "hours_spent": 0,
-  "session_goal": "Maximum impact",
+  "hours_spent": 1.5,
+  "session_goal": "Full pipeline",
+  "recon_map": "/tmp/claude-0/-home-user-claude-agents/379d6fb7-300b-500d-b454-9e138667f26b/scratchpad/recon/RECON_MAP.md",
+  "raw_scan_dir": "/tmp/claude-0/-home-user-claude-agents/379d6fb7-300b-500d-b454-9e138667f26b/scratchpad/recon/",
   "findings": []
 }
