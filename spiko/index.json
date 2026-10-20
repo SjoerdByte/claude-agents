@@ -1,0 +1,16 @@
+{
+  "target": "spiko.xyz / spiko.io",
+  "authorization": "Written permission from Paul-Adrien Hyppolite, CEO of Spiko",
+  "scope_note": "Everything in scope. All listed subdomains plus any additional subdomains discovered. Spiko-owned first-party services are in scope regardless of hostname/vendor.",
+  "stack_known": ["Astro", "React", "AWS"],
+  "ruled_out": [],
+  "open_threads": [
+    "Initial recon in progress",
+    "Subdomain discovery for additional hosts",
+    "Enumerate tech stack per subdomain"
+  ],
+  "pending_decisions": [],
+  "hours_spent": 0,
+  "session_goal": "Maximum impact",
+  "findings": []
+}
