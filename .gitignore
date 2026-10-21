@@ -1,0 +1,37 @@
+# Chift engagement raw evidence - kept locally only, not committed.
+# The write-ups under chift-recon/{SUMMARY.md,index.json,findings/} and
+# chift-exploit/{index.json,findings/,wave2/SUMMARY.md,wave3/SUMMARY.md}
+# are committed. The raw request/response captures, pulled JS bundles,
+# OpenAPI dumps, passive-recon source dumps, and the session.env file
+# are not.
+chift-recon/hosts/
+chift-recon/js/
+chift-recon/openapi/
+chift-recon/passive/
+chift-recon/fingerprints/
+chift-exploit/evidence/
+chift-exploit/wave2/api2/
+chift-exploit/wave2/backend_enum/
+chift-exploit/wave2/cors/
+chift-exploit/wave2/dangling/
+chift-exploit/wave2/debugprobes/
+chift-exploit/wave2/docs/
+chift-exploit/wave2/evidence/
+chift-exploit/wave2/hostheader/
+chift-exploit/wave2/mcp/
+chift-exploit/wave2/mcp2/
+chift-exploit/wave2/nextimage/
+chift-exploit/wave2/oauth/
+chift-exploit/wave2/oauth2verify/
+chift-exploit/wave2/openredirects/
+chift-exploit/wave2/publicenum/
+chift-exploit/wave2/s3/
+chift-exploit/wave2/s3probe/
+chift-exploit/wave2/seriesa/
+chift-exploit/wave2/st_dashboard/
+chift-exploit/wave2/stdashboard/
+chift-exploit/wave2/subdomains/
+chift-exploit/wave2/supertokens/
+chift-exploit/wave2/trust_trail/
+chift-exploit/wave3/evidence/
+chift-exploit/wave3/session.env
