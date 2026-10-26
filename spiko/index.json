@@ -18,9 +18,9 @@
     "Datadog RUM (datadoghq.eu) on app shells",
     "Hotjar, Cloudflare Turnstile, reCAPTCHA v3 for anti-automation"
   ],
-  "hours_spent": 2.5,
+  "hours_spent": 4,
   "session_goal": "Full pipeline",
-  "status": "Report phase - XSS path exhausted, all active testing complete",
+  "status": "Report phase - deep testing complete, 14 findings including 1 High",
   "findings": [
     {
       "id": "F01",
@@ -121,6 +121,46 @@
       "description": "The Tolgee API key metadata endpoint reveals the organizational email tech@spiko.tech, which is not publicly listed elsewhere. This provides a valid email target for social engineering.",
       "impact": "Minimal direct technical impact. Useful for targeted phishing or social engineering against the engineering team.",
       "remediation": "Restrict the /v2/api-keys/current metadata endpoint or redact user information from the response."
+    },
+    {
+      "id": "F11",
+      "title": "Ory Kratos/Hydra admin API internet-reachable on all authentication realms",
+      "severity": "High",
+      "category": "Access Control",
+      "affected": "investor-auth.spiko.io, distributor-auth.spiko.io, admin-auth.spiko.io",
+      "description": "The Ory Kratos and Hydra admin API surfaces are reachable from the public internet on all three authentication realms. Admin endpoints for identity management (/admin/identities, /admin/sessions, /admin/recovery/link, /admin/recovery/code, /admin/courier/messages) and OAuth2 management (/admin/clients, /admin/oauth2/auth/requests/login, /admin/oauth2/auth/requests/consent, /admin/oauth2/tokens, /admin/oauth2/introspect) return HTTP 401 rather than 404, confirming they are routed and listening. Protected by API key authentication only.",
+      "impact": "If any admin API key leaks from configuration, logs, or error messages, an attacker gains full control over all user identities (CRUD), active sessions (list/revoke), OAuth2 clients, consent/login flows, token introspection, and account recovery link generation. No further barriers exist between the internet and full identity takeover.",
+      "remediation": "Block internet access to /admin/ paths via API gateway rules, Cloudflare Access zero-trust, or network-level security groups. The Ory admin API should never be internet-reachable."
+    },
+    {
+      "id": "F12",
+      "title": "Identity schemas publicly readable revealing full trait structures",
+      "severity": "Low",
+      "category": "Information Disclosure",
+      "affected": "investor-auth.spiko.io, distributor-auth.spiko.io, admin-auth.spiko.io",
+      "description": "The /schemas endpoint on all three auth realms returns complete identity schema definitions without authentication. Reveals all trait fields per realm: investor (first_name, last_name, email, phoneNumber, locale, investorAppMode, newsletter, referralCode, partnershipCode), distributor (first_name, last_name, email, phoneNumber, company, locale), admin (email).",
+      "impact": "Low direct impact. Provides reconnaissance value for understanding the data model and crafting targeted attacks.",
+      "remediation": "Restrict the /schemas endpoint to authenticated requests, or accept as known disclosure."
+    },
+    {
+      "id": "F13",
+      "title": "Staging environments publicly accessible, sharing production cookie scope",
+      "severity": "Medium",
+      "category": "Access Control",
+      "affected": "*.staging.spiko.io, *.preprod.spiko.io, *.staging.spiko.finance",
+      "description": "At least 10 staging/preprod subdomains are publicly accessible without access controls: app.staging, distributor.staging, investor-api.staging, distributor-api.staging, public-api.staging, webhooks.staging, investor-auth.staging (all .spiko.io), plus app.preprod, investor-api.preprod, investor-auth.preprod, public-api.preprod (.spiko.io), and app.staging.spiko.finance. These run full auth stacks, API gateways, and SPA code. Fund UUIDs are shared with production.",
+      "impact": "Staging hosts receive production cookies due to parent-domain scope (F03, F14). A vulnerability on any staging host could steal production sessions. Staging also exposes the same admin API surface (F11), doubling the attack surface. Staging code may contain newer, less-tested features.",
+      "remediation": "Place staging/preprod behind Cloudflare Access, matching protection on staging admin panels."
+    },
+    {
+      "id": "F14",
+      "title": "Production CSRF cookie scoped to parent domain sent to all staging hosts",
+      "severity": "Medium",
+      "category": "Session Management",
+      "affected": "investor-auth.spiko.io cookie scope",
+      "description": "Production Ory Kratos CSRF token cookie is set with Domain=spiko.io, causing it to be sent to all staging subdomains. Staging also sets __Host-prefixed cookies with a Domain attribute, violating the cookie specification (RFC 6265bis).",
+      "impact": "Production authentication cookies transmitted to staging environments. Combined with F03 and F13, a network attacker or XSS on any staging host could intercept production cookies.",
+      "remediation": "Scope production cookies to specific subdomains. Fix staging __Host- cookie to drop the Domain attribute."
     }
   ],
   "tested_and_clean": [
@@ -129,6 +169,12 @@
     "Tolgee translation read access - returns 403, cannot retrieve or modify translations",
     "XSS via SPA bundles - DOMPurify sanitization in place, no unprotected dangerouslySetInnerHTML in application code",
     "XSS via Tolgee translation injection - key cannot write translations, read endpoints also blocked",
-    "Impersonation token brute force - /v0/impersonation/redeem requires UUID, computationally infeasible"
+    "Impersonation token brute force - /v0/impersonation/redeem requires UUID, computationally infeasible",
+    "JWKS token confusion - all three auth realms use separate key pairs, cross-realm reuse not possible",
+    "OAuth2 open redirect - return_to parameter validation rejects external URLs on all realms",
+    "OAuth2 CORS reflection - no header reflection, proper origin restrictions",
+    "S3 bucket listing on cdn.spiko.finance - directory listing disabled, documents accessible only via known paths",
+    "Staging admin panels - admin.staging, rabbitmq.staging, pg-admin.staging behind Cloudflare Access",
+    "Source map exposure - .map URLs serve SPA HTML fallback, not actual source maps"
   ]
 }
