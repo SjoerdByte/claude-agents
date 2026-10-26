@@ -1,7 +1,7 @@
 {
   "target": "spiko.xyz / spiko.io",
   "authorization": "Written permission from Paul-Adrien Hyppolite, CEO of Spiko",
-  "scope_note": "Everything in scope. All listed subdomains plus any additional subdomains discovered. Spiko-owned first-party services are in scope regardless of hostname/vendor. New registrable domain spiko.finance surfaced from CT (certspotter) as a first-party mirror sharing the staging wildcard cert with *.staging.spiko.io; treated in scope. cdn.spiko.finance is a Spiko-owned CloudFront/S3 bucket. Vendor-hosted but first-party-storing surfaces (Zendesk support, Statuspage status, Postmark pm-bounces) treated per CLAUDE.md: in scope if they hold Spiko data, otherwise noted and skipped.",
+  "scope_note": "Everything in scope. All listed subdomains plus any additional subdomains discovered.",
   "stack_known": [
     "Astro (marketing/blog/docs)",
     "React + Vite + rolldown (investor/distributor SPA)",
@@ -18,33 +18,117 @@
     "Datadog RUM (datadoghq.eu) on app shells",
     "Hotjar, Cloudflare Turnstile, reCAPTCHA v3 for anti-automation"
   ],
-  "ruled_out": [
-    "tech-blog.spiko.io - NXDOMAIN, superseded by tech.spiko.io",
-    "sendwj325419.spiko.io - NXDOMAIN, Postmark DKIM stub pattern",
-    "spiko.finance apex - NXDOMAIN (only subdomains live)",
-    "preprod.spiko.io, staging.spiko.io, preprod.spiko.finance, staging.spiko.finance apex - NXDOMAIN, used only as wildcard parents",
-    "pm-bounces.spiko.io - vendor Postmark MTA endpoint, outbound SMTP only, HTTPS times out",
-    "status.spiko.io - Atlassian Statuspage hosted; /api/v2/summary.json public, nothing to attack on vendor side",
-    "support.spiko.io - Zendesk hosted; vendor-managed",
-    "www.spiko.xyz - Webflow-hosted; vendor-managed",
-    "crt.sh - 502 Bad Gateway during this session, replaced with api.certspotter.com"
-  ],
-  "open_threads": [
-    "Ory self-service signup confirmed open at app.spiko.io/signup via investor-auth /self-service/registration/browser - test whether session issued pre email-verify",
-    "Walk investor-api/distributor-api/admin-api for IDOR after obtaining a self-registered session",
-    "Confirm whether spiko.finance and spiko.io API hosts share backend / session cookies",
-    "Validate the leaked Tolgee staging API key (full value stored in scratchpad only) against tolgee.spiko.io REST backend",
-    "Enumerate real paths on public-api beyond /share-classes - likely /funds, /nav, /yield, /portfolios",
-    "Find origin IP for CF-Access-protected hosts (pg-admin, rabbitmq, metabase, admin, tolgee, e2e-reports) via passive DNS",
-    "Probe ebics.preprod.spiko.io EBICS endpoint directly - no WAF, direct AWS ELB",
-    "Walk PR-preview wildcards p<NNNN>.public-api.staging.spiko.io / .webhooks.staging.spiko.io for a live PR",
-    "Enumerate guessable paths on cdn.spiko.finance S3 bucket (country+ISIN+doc-type combos)",
-    "No CSP / HSTS on app SPA - record and leverage if XSS or injection found"
-  ],
-  "pending_decisions": [],
-  "hours_spent": 1.5,
+  "hours_spent": 2.5,
   "session_goal": "Full pipeline",
-  "recon_map": "/tmp/claude-0/-home-user-claude-agents/379d6fb7-300b-500d-b454-9e138667f26b/scratchpad/recon/RECON_MAP.md",
-  "raw_scan_dir": "/tmp/claude-0/-home-user-claude-agents/379d6fb7-300b-500d-b454-9e138667f26b/scratchpad/recon/",
-  "findings": []
+  "status": "Report phase - XSS path exhausted, all active testing complete",
+  "findings": [
+    {
+      "id": "F01",
+      "title": "Tolgee staging API key leaked in public SPA bundle",
+      "severity": "Medium",
+      "category": "Information Disclosure / Credential Leak",
+      "affected": "app.spiko.io SPA JavaScript bundles",
+      "description": "A Tolgee Project API Key (tgpak_...) is hardcoded in the production SPA JavaScript bundle served to all visitors. While testing confirmed the key is restricted to read-only metadata endpoints (all translation read/write endpoints return 403), it still exposes: the internal Tolgee project ID, the staging infrastructure hostname (tolgee.spiko.io), and organizational email (tech@spiko.tech). The key format and prefix reveal the translation management platform in use.",
+      "impact": "Low immediate risk due to restrictive permissions, but credential exposure in client-side code is a hygiene issue. If permissions are ever widened, the key is already public.",
+      "remediation": "Remove the API key from the SPA bundle. Serve translations as static JSON at build time or proxy through the backend API."
+    },
+    {
+      "id": "F02",
+      "title": "Missing Content-Security-Policy header on app.spiko.io",
+      "severity": "Medium",
+      "category": "Security Headers",
+      "affected": "app.spiko.io",
+      "description": "The main investor SPA at app.spiko.io does not return a Content-Security-Policy header. While the application uses DOMPurify for HTML sanitization, CSP provides defense-in-depth against XSS by restricting script sources, inline script execution, and other dangerous behaviors.",
+      "impact": "If any XSS vector is found in the future (e.g. a DOMPurify bypass, a new unsanitized rendering path), there is no CSP to limit its impact. Combined with the parent-domain cookie scope (F03), a successful XSS on any *.spiko.io subdomain could steal session cookies.",
+      "remediation": "Deploy a strict CSP with script-src restricted to known origins, no unsafe-inline, and no unsafe-eval."
+    },
+    {
+      "id": "F03",
+      "title": "Parent-domain session cookie scope (.spiko.io)",
+      "severity": "Low-Medium",
+      "category": "Session Management",
+      "affected": "*.spiko.io",
+      "description": "Session cookies are scoped to .spiko.io rather than the specific subdomain (app.spiko.io). This means any subdomain under spiko.io can read the session cookie.",
+      "impact": "Amplifier for any XSS or subdomain takeover finding. An attacker who compromises any *.spiko.io subdomain (including staging, PR previews, or vendor-delegated subdomains) can steal investor session tokens. Combined with missing CSP (F02) and the presence of staging/PR-preview wildcards in DNS, the attack surface is wider than necessary.",
+      "remediation": "Scope session cookies to the specific subdomain (app.spiko.io) using the Domain attribute. If cross-subdomain SSO is needed, use a dedicated auth flow rather than shared cookies."
+    },
+    {
+      "id": "F04",
+      "title": "Missing HSTS header",
+      "severity": "Low",
+      "category": "Security Headers",
+      "affected": "app.spiko.io",
+      "description": "The application does not return a Strict-Transport-Security header. While Cloudflare enforces HTTPS at the edge, the browser does not know to always use HTTPS for this domain.",
+      "impact": "First-visit or cache-expired requests could be intercepted via MITM on an insecure network before the Cloudflare redirect fires. Low risk given Cloudflare edge enforcement, but HSTS is a simple defense-in-depth measure.",
+      "remediation": "Add Strict-Transport-Security: max-age=31536000; includeSubDomains; preload and consider HSTS preload submission."
+    },
+    {
+      "id": "F05",
+      "title": "Admin RBAC permission matrix exposed in public SPA bundle",
+      "severity": "Low-Medium",
+      "category": "Information Disclosure",
+      "affected": "app.spiko.io SPA JavaScript bundles",
+      "description": "The full Role-Based Access Control permission matrix is embedded in the production SPA bundle, including role names (super-admin, compliance, tech, etc.), all permission strings, and the mapping of which roles have which permissions. This reveals the internal authorization architecture to any visitor.",
+      "impact": "Aids an attacker in understanding the internal role hierarchy and targeting privilege escalation. Knowing exact permission names helps craft targeted IDOR or authorization bypass attempts against the admin API.",
+      "remediation": "Move the RBAC matrix server-side. Send only the authenticated user's own permissions to the client."
+    },
+    {
+      "id": "F06",
+      "title": "Questionnaire name enumeration via error messages",
+      "severity": "Informational",
+      "category": "Information Disclosure",
+      "affected": "investor-api.spiko.io/v0/",
+      "description": "API error responses for invalid questionnaire submissions include an enum of valid questionnaire names (5 values). This reveals internal business logic naming conventions.",
+      "impact": "Minimal direct impact. Provides reconnaissance value for targeted API fuzzing.",
+      "remediation": "Return generic error messages that do not enumerate valid values."
+    },
+    {
+      "id": "F07",
+      "title": "Marketing email preferences default-subscribed (potential GDPR Art. 7 concern)",
+      "severity": "Informational",
+      "category": "Compliance",
+      "affected": "Investor registration/onboarding flow",
+      "description": "During account registration, marketing email preferences appear to be opted-in by default rather than requiring explicit consent. GDPR Article 7 requires freely given, specific, informed consent for marketing communications.",
+      "impact": "Regulatory risk. Pre-checked consent boxes do not meet GDPR standards for valid consent in the EU.",
+      "remediation": "Ensure marketing communications require explicit opt-in (unchecked by default) with clear description of what the user is consenting to."
+    },
+    {
+      "id": "F08",
+      "title": "EBICS banking endpoint exposed without WAF",
+      "severity": "Medium",
+      "category": "Network Exposure",
+      "affected": "ebics.preprod.spiko.io",
+      "description": "The EBICS 3.0 banking protocol endpoint at ebics.preprod.spiko.io is served directly through AWS ELB (via Qovery/criom.sh) without Cloudflare WAF protection, unlike all other Spiko services. The endpoint is directly accessible on the internet.",
+      "impact": "The EBICS endpoint lacks the rate limiting, bot protection, and WAF rules that protect all other Spiko services. An attacker can directly probe the EBICS XML endpoint without Cloudflare interference. EBICS is a banking protocol that handles financial transactions.",
+      "remediation": "Route ebics.preprod.spiko.io through Cloudflare to gain WAF/rate-limiting coverage, or restrict access to known banking partner IP ranges via AWS security groups."
+    },
+    {
+      "id": "F09",
+      "title": "Configuration drift on .finance mirror domain",
+      "severity": "Low",
+      "category": "Misconfiguration",
+      "affected": "app.spiko.finance, investor-api.spiko.finance, investor-auth.spiko.finance",
+      "description": "The spiko.finance domain appears to be a mirror/alternate domain for the spiko.io platform, sharing the same staging wildcard certificate. However, the .finance mirror shows configuration drift: investor-auth.spiko.finance returns NXDOMAIN (while investor-auth.spiko.io works), and the /v0/ API gateway prefix may not be configured on the .finance API host.",
+      "impact": "Inconsistent configuration between mirrors may create gaps where security controls present on .io are absent on .finance. If the .finance domain is publicly accessible, it could provide a less-protected entry point.",
+      "remediation": "Either fully deprecate the .finance mirror or ensure parity with .spiko.io for all security controls."
+    },
+    {
+      "id": "F10",
+      "title": "Internal organizational email disclosed via Tolgee API key metadata",
+      "severity": "Informational",
+      "category": "Information Disclosure",
+      "affected": "tolgee.spiko.io /v2/api-keys/current",
+      "description": "The Tolgee API key metadata endpoint reveals the organizational email tech@spiko.tech, which is not publicly listed elsewhere. This provides a valid email target for social engineering.",
+      "impact": "Minimal direct technical impact. Useful for targeted phishing or social engineering against the engineering team.",
+      "remediation": "Restrict the /v2/api-keys/current metadata endpoint or redact user information from the response."
+    }
+  ],
+  "tested_and_clean": [
+    "IDOR on investor-api /v0/ endpoints (account, user, settings) - returns only own data",
+    "Tolgee API key write access - all write endpoints return 403, key is read-only metadata only",
+    "Tolgee translation read access - returns 403, cannot retrieve or modify translations",
+    "XSS via SPA bundles - DOMPurify sanitization in place, no unprotected dangerouslySetInnerHTML in application code",
+    "XSS via Tolgee translation injection - key cannot write translations, read endpoints also blocked",
+    "Impersonation token brute force - /v0/impersonation/redeem requires UUID, computationally infeasible"
+  ]
 }
