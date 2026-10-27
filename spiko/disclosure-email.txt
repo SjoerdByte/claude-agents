@@ -1,0 +1,165 @@
+Subject: Responsible Disclosure: High-severity vulnerabilities on spiko.io
+
+
+Dear Spiko Security Team,
+
+I identified 14 security vulnerabilities across the spiko.io and spiko.finance platforms, including one high-severity issue affecting your authentication infrastructure. Testing was conducted using only a self-created investor test account. No real customer data was accessed, modified, or stored beyond what was necessary to confirm each finding.
+
+I am detailing the five most impactful findings below.
+
+
+Ory Kratos and Hydra admin API internet-reachable on all authentication realms (High, CVSS 8.1)
+
+Endpoints:
+https://investor-auth.spiko.io/admin/identities
+https://distributor-auth.spiko.io/admin/identities
+https://admin-auth.spiko.io/admin/identities
+(and /admin/sessions, /admin/clients, /admin/oauth2/tokens, /admin/oauth2/introspect, /admin/recovery/link, /admin/recovery/code, /admin/courier/messages, /admin/oauth2/auth/requests/login, /admin/oauth2/auth/requests/consent on all three realms)
+
+The Ory Kratos and Hydra admin API surfaces are reachable from the public internet on all three of your authentication realms: investor-auth, distributor-auth, and admin-auth. Each admin endpoint returns HTTP 401 (Unauthorized) rather than 404 (Not Found), confirming the routes are live and listening. The only protection is API key authentication.
+
+These admin endpoints provide full control over user identities (create, read, update, delete), active sessions (list, revoke), OAuth2 clients (create, modify, delete), consent and login flows (accept, reject), token introspection, and account recovery link generation. The attack path is straightforward: a leaked admin API key from configuration files, environment variables, error messages, logs, or any internal service, combined with the internet-reachable admin API, equals full identity takeover for every user on the platform.
+
+Reproduction:
+
+curl -s -o /dev/null -w "%{http_code}" https://investor-auth.spiko.io/admin/identities
+
+Response: 401
+
+curl -s -o /dev/null -w "%{http_code}" https://investor-auth.spiko.io/admin/sessions
+
+Response: 401
+
+curl -s -o /dev/null -w "%{http_code}" https://distributor-auth.spiko.io/admin/clients
+
+Response: 401
+
+curl -s -o /dev/null -w "%{http_code}" https://admin-auth.spiko.io/admin/oauth2/introspect
+
+Response: 401
+
+For comparison, a non-existent path returns 404:
+
+curl -s -o /dev/null -w "%{http_code}" https://investor-auth.spiko.io/admin/nonexistent
+
+Response: 404
+
+This confirms the admin routes are explicitly configured and listening, not a catch-all.
+
+Impact: Given that Spiko is a regulated investment platform handling tokenized money market funds across 9 blockchains, compromise of the identity layer would give an attacker the ability to take over any investor account, revoke sessions, generate recovery links for arbitrary users, and manipulate OAuth2 consent flows. This has direct financial and regulatory implications under MiFID II and GDPR.
+
+Recommended fix: Block internet access to all /admin/ paths. Options include configuring your Envoy API gateway to reject external requests to /admin/ routes, placing admin API endpoints behind Cloudflare Access zero-trust (as you already do for admin.spiko.io), or restricting access at the network level via security groups or VPC rules. The Ory admin API should never be internet-reachable.
+
+
+EBICS H005 banking endpoint exposed without WAF, actively processing protocol messages (Medium-High, CVSS 6.5)
+
+Endpoint: https://ebics.preprod.spiko.io/ebics/HostID
+
+The EBICS H005 banking protocol endpoint is served directly through AWS ELB (via Qovery in eu-west-3) without Cloudflare WAF protection. Unlike every other Spiko service, this endpoint bypasses the Cloudflare perimeter entirely. It uses a Let's Encrypt certificate rather than a Cloudflare-issued one, and runs behind Envoy proxy, confirming direct internet exposure.
+
+The endpoint is live and actively parsing EBICS H005 XML. Submitting a valid EBICS XML envelope returns structured protocol error codes.
+
+Reproduction:
+
+curl -s -X POST https://ebics.preprod.spiko.io/ebics/HostID \
+  -H "Content-Type: text/xml" \
+  -d '<?xml version="1.0" encoding="UTF-8"?>
+<ebicsHEVRequest xmlns="urn:org:ebics:H000">
+  <HostID>SPIKO</HostID>
+</ebicsHEVRequest>'
+
+Response (trimmed):
+<?xml version="1.0" encoding="UTF-8"?>
+<ebicsHEVResponse xmlns="urn:org:ebics:H000">
+  <SystemReturnCode>
+    <ReturnCode>000000</ReturnCode>
+    <ReportText>[EBICS_OK] No errors</ReportText>
+  </SystemReturnCode>
+</ebicsHEVResponse>
+
+Submitting malformed XML returns:
+
+<ReturnCode>091010</ReturnCode>
+<ReportText>[EBICS_INVALID_XML]</ReportText>
+
+This confirms the endpoint parses XML from any internet source without rate limiting, bot protection, or WAF rules.
+
+Recommended fix: Restrict access to known banking partner IP ranges via AWS security groups as the primary control. Additionally route through Cloudflare for WAF coverage against XML-based attacks.
+
+
+Staging and pre-production environments publicly accessible, sharing production cookie scope (Medium, CVSS 5.3)
+
+Endpoints:
+https://app.staging.spiko.io
+https://investor-api.staging.spiko.io
+https://investor-auth.staging.spiko.io
+https://app.preprod.spiko.io
+https://investor-api.preprod.spiko.io
+(and distributor.staging, distributor-api.staging, public-api.staging, webhooks.staging, public-api.preprod, all on .spiko.io)
+
+At least 10 staging and pre-production subdomains are publicly accessible without any access controls. These run a full Ory authentication stack with registration enabled (email/password, Google SSO, Apple SSO), full API gateways, and serve the same SPA code as production. Fund UUIDs are identical between staging and production.
+
+The staging admin panels (admin.staging.spiko.io, rabbitmq.staging.spiko.io, pg-admin.staging.spiko.io) are correctly behind Cloudflare Access, but the application and API surfaces are not.
+
+The staging auth stack exposes the same internet-reachable admin API as production (finding 1), which doubles the attack surface for an admin API key leak. Because production cookies are scoped to the parent domain .spiko.io (see finding 4 below), they are also sent to all staging subdomains, meaning a vulnerability on any staging host could be used to steal production sessions.
+
+Reproduction:
+
+curl -s -o /dev/null -w "%{http_code}" https://app.staging.spiko.io
+
+Response: 200 (full investor SPA)
+
+curl -s -o /dev/null -w "%{http_code}" https://investor-auth.staging.spiko.io/.well-known/openid-configuration
+
+Response: 200 (full OIDC discovery document)
+
+curl -s -o /dev/null -w "%{http_code}" https://investor-api.staging.spiko.io/v0/share-classes
+
+Response: 200 (returns 17 share classes, compared to 14 in production)
+
+Recommended fix: Place all staging and pre-production subdomains behind Cloudflare Access, matching the protection already applied to staging admin panels. Ensure staging and production do not share cookie scope.
+
+
+Production CSRF and session cookies scoped to parent domain .spiko.io (Medium, CVSS 4.6)
+
+Endpoint: https://investor-auth.spiko.io
+
+Production Ory Kratos cookies are set with Domain=spiko.io rather than a specific subdomain. This means every subdomain under spiko.io, including all staging and pre-production hosts, receives production authentication cookies.
+
+Reproduction:
+
+curl -sI https://investor-auth.spiko.io/self-service/login/browser | grep -i set-cookie
+
+Response (trimmed):
+set-cookie: csrf_token_...=<value>; Path=/; Domain=spiko.io; Max-Age=31536000; HttpOnly; Secure; SameSite=Lax
+
+The cookie Domain=spiko.io means this CSRF token is sent to app.staging.spiko.io, investor-api.staging.spiko.io, and every other subdomain. Combined with finding 3 (open staging environments), a network-level attacker on a staging host or an XSS on any staging subdomain could intercept production cookies.
+
+Additionally, the staging environment sets cookies with a __Host- prefix combined with a Domain attribute (Domain=staging.spiko.io), which violates RFC 6265bis. Browsers should reject __Host- cookies that set a Domain attribute.
+
+Recommended fix: Scope production cookies to their specific subdomains (investor-auth.spiko.io or app.spiko.io). Fix the staging __Host- cookie to either drop the Domain attribute or drop the __Host- prefix.
+
+
+Tolgee API key leaked in public SPA bundle (Medium, CVSS 4.3)
+
+Endpoint: https://app.spiko.io (JavaScript bundles)
+
+A Tolgee Project API Key (tgpak_...) is hardcoded in the production SPA JavaScript bundle served to every visitor. While testing confirmed the key is restricted to read-only metadata access (all translation read/write endpoints return 403), querying the metadata endpoint at tolgee.spiko.io/v2/api-keys/current reveals the internal Tolgee project ID, the staging infrastructure hostname, and an internal organizational email address (tech@spiko.tech) not listed publicly elsewhere.
+
+The same key is reused in the staging SPA bundle. If permissions on this key are ever widened, it is already public and cached by search engines and archival services.
+
+Recommended fix: Remove the API key from the SPA bundle. Serve translations as static JSON at build time or proxy translation requests through the backend API.
+
+
+Additional findings
+
+Beyond these five, the assessment identified additional issues including a missing Content-Security-Policy header on the main investor SPA, the full admin RBAC permission matrix (role names, permission strings, and role-to-permission mappings) embedded in the public JavaScript bundle, a potential GDPR Article 7 concern with marketing email preferences defaulted to opted-in, configuration drift between the .io and .finance mirror domains, and identity schema structures readable without authentication on all three auth realms. I am happy to share the complete report with all 14 findings if there is interest.
+
+
+Does Spiko have a bug bounty policy or program in place? If not, I would welcome a discussion about a reward. Given the severity and scope of these findings, particularly the internet-reachable admin API on a regulated financial platform, I believe the findings warrant consideration at the higher end of what the platform can offer. I am happy to coordinate disclosure timelines and help verify fixes once applied.
+
+Let me know if you'd like any additional details or clarification from my side, I'm open to any and all questions.
+
+Kind regards,
+
+Sjoerd
