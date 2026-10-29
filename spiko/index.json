@@ -18,9 +18,9 @@
     "Datadog RUM (datadoghq.eu) on app shells",
     "Hotjar, Cloudflare Turnstile, reCAPTCHA v3 for anti-automation"
   ],
-  "hours_spent": 4,
+  "hours_spent": 5,
   "session_goal": "Full pipeline",
-  "status": "Report phase - deep testing complete, 14 findings including 1 High",
+  "status": "Report phase - deep testing complete, 15 findings including 1 High",
   "findings": [
     {
       "id": "F01",
@@ -94,12 +94,12 @@
     },
     {
       "id": "F08",
-      "title": "EBICS banking endpoint exposed without WAF",
+      "title": "EBICS banking endpoint exposed without WAF or rate limiting",
       "severity": "Medium",
       "category": "Network Exposure",
       "affected": "ebics.preprod.spiko.io",
-      "description": "The EBICS 3.0 banking protocol endpoint at ebics.preprod.spiko.io is served directly through AWS ELB (via Qovery/criom.sh) without Cloudflare WAF protection, unlike all other Spiko services. The endpoint is directly accessible on the internet.",
-      "impact": "The EBICS endpoint lacks the rate limiting, bot protection, and WAF rules that protect all other Spiko services. An attacker can directly probe the EBICS XML endpoint without Cloudflare interference. EBICS is a banking protocol that handles financial transactions.",
+      "description": "The EBICS 3.0 banking protocol endpoint at ebics.preprod.spiko.io is served directly through AWS ELB (via Qovery/criom.sh) without Cloudflare WAF protection, unlike all other Spiko services. No rate limiting is enforced: 10 concurrent requests all processed without 429 responses. Health check endpoint /healthz is publicly accessible.",
+      "impact": "The EBICS endpoint lacks the rate limiting, bot protection, and WAF rules that protect all other Spiko services. An attacker can directly probe the EBICS XML endpoint without Cloudflare interference, brute-force HostIDs (see F15), and enumerate banking protocol details. EBICS is a banking protocol that handles financial transactions.",
       "remediation": "Route ebics.preprod.spiko.io through Cloudflare to gain WAF/rate-limiting coverage, or restrict access to known banking partner IP ranges via AWS security groups."
     },
     {
@@ -161,6 +161,20 @@
       "description": "Production Ory Kratos CSRF token cookie is set with Domain=spiko.io, causing it to be sent to all staging subdomains. Staging also sets __Host-prefixed cookies with a Domain attribute, violating the cookie specification (RFC 6265bis).",
       "impact": "Production authentication cookies transmitted to staging environments. Combined with F03 and F13, a network attacker or XSS on any staging host could intercept production cookies.",
       "remediation": "Scope production cookies to specific subdomains. Fix staging __Host- cookie to drop the Domain attribute."
+    },
+    {
+      "id": "F15",
+      "title": "EBICS HostID enumeration oracle with bank authentication key exposure",
+      "severity": "Medium",
+      "cvss": "AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N (5.3)",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "category": "Information Disclosure / Banking Protocol",
+      "affected": "ebics.preprod.spiko.io POST /ebics",
+      "status": "confirmed",
+      "file": "findings/F015-ebics-hostid-enumeration.md",
+      "description": "The EBICS H005 endpoint returns different error codes for valid vs invalid HostIDs (091010 vs 091011), with different response types (signed ebicsResponse vs unsigned ebicsKeyManagementResponse). Valid HostID SPIKOPREPROD confirmed. Server signs error responses with its RSA authentication private key.",
+      "impact": "Allows unauthenticated enumeration of EBICS bank HostIDs. Combined with no rate limiting (F08), brute-force is trivial. Signed error responses exercise the bank's authentication key on every invalid request.",
+      "remediation": "Return generic errors regardless of HostID validity. Do not sign error responses for unauthenticated requests. Add rate limiting."
     }
   ],
   "tested_and_clean": [
@@ -175,6 +189,17 @@
     "OAuth2 CORS reflection - no header reflection, proper origin restrictions",
     "S3 bucket listing on cdn.spiko.finance - directory listing disabled, documents accessible only via known paths",
     "Staging admin panels - admin.staging, rabbitmq.staging, pg-admin.staging behind Cloudflare Access",
-    "Source map exposure - .map URLs serve SPA HTML fallback, not actual source maps"
-  ]
+    "Source map exposure - .map URLs serve SPA HTML fallback, not actual source maps",
+    "EBICS XXE - DOCTYPE declarations properly rejected with HTTP 400, XInclude not processed",
+    "EBICS entity expansion (XML bomb) - DOCTYPE rejected, parser blocks DTD processing entirely",
+    "EBICS TLS configuration - TLS 1.3 only, no legacy protocol support, strong cipher suite",
+    "EBICS Envoy admin endpoints - not exposed, all admin paths return 404",
+    "EBICS PartnerID/UserID enumeration - schema validation prevents reaching these checks",
+    "EBICS HPB bank public key download - schema validation blocks before EBICS business logic"
+  ],
+  "open_threads": [
+    "EBICS endpoint could benefit from IP allowlisting - currently accepts requests from any IP",
+    "PartnerID/UserID enumeration may be possible with a fully schema-valid request - blocked by schema validation in current tests"
+  ],
+  "pending_decisions": []
 }
