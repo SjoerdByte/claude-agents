@@ -1,0 +1,28 @@
+{
+  "target": "lucis.life",
+  "authorization": "Private engagement, written auth from CEO Maxime Berthelot. Recon-only task phase.",
+  "scope_note": "Everything under lucis.life. Vendor infra in scope when it runs Lucis code or stores Lucis data: Clerk FAPI (clerk/accounts.lucis.life), Strapi CMS on Koyeb (cms.lucis.life), PostHog proxy (pthg/ph), Vercel-hosted Next.js (www/app/apex). Out of scope: customer.io (cio/sms) marketing, Notion (career), Intercom (assets-inter), getprobo (compliance) are separate vendor products Lucis merely links/embeds.",
+  "ruled_out": [
+    "Stripe publishable key pk_live_51Nndd... (public by design)",
+    "Clerk publishable key pk_live_Y2xlcmsubHVjaXMubGlmZSQ (public by design)",
+    "Strapi CMS admin takeover: /admin/init returns hasAdmin=true, bootstrap closed",
+    "Strapi content API locked: /api/articles,/api/users -> 403",
+    "admin.lucis.life: 302 to admin-prd.lucis.ts.net (Tailscale tailnet, not publicly reachable)",
+    "www /oauth/token + /v1/biomarkers/public: intentional read-only public catalog, no member/health data (per openapi description)",
+    "strava-connect/garmin/whoop.lucis.life: persistent 502 after retry, backend down/unconfigured"
+  ],
+  "open_threads": [
+    "api.lucis.life Express backend (Helmet, CORS ACAO:*): only /health,/healthz discovered unauth; real routes need valid Clerk app session. Primary IDOR/object-by-ID target once authed.",
+    "app.lucis.life authenticated dashboard (Clerk, Stripe payments, microphone/geolocation perms): /dashboard gated, self-service signup via Clerk (email+password, test_mode=false) enables test account to reach authed surface.",
+    "cms.lucis.life Strapi on Koyeb: CORS access-control-allow-credentials:true with reflected/empty Origin - verify credentialed-CORS reflection; enumerate public content-types.",
+    "Clerk signup flow: email_code + email_link first factors, verify whether a usable session is reachable without email verification (turns any authed IDOR into anyone-reachable)."
+  ],
+  "pending_decisions": [],
+  "hours_spent": 1.0,
+  "findings": [],
+  "raw_evidence": {
+    "scan_headers": "/home/user/claude-agents/recon-lucis/raw-scan.txt",
+    "openapi_spec": "/home/user/claude-agents/recon-lucis/openapi.yaml",
+    "app_signin_html": "/home/user/claude-agents/recon-lucis/app_signin_followed.html"
+  }
+}

@@ -1,0 +1,258 @@
+###### https://lucis.life ######
+HTTP/1.1 200 Connection Established
+
+HTTP/2 307 
+date: Thu, 29 Oct 2026 17:16:20 GMT
+content-type: text/plain
+location: https://www.lucis.life/
+cache-control: public, max-age=0, must-revalidate
+server: cloudflare
+strict-transport-security: max-age=63072000
+x-vercel-id: iad1::zvvh9-1793294180410-40de8fb88459
+cf-cache-status: DYNAMIC
+speculation-rules: "/cdn-cgi/speculation"
+cf-ray: a523d3d328220434-IAD
+alt-svc: h3=":443"; ma=86400
+
+
+###### https://www.lucis.life ######
+HTTP/1.1 200 Connection Established
+
+HTTP/2 200 
+date: Thu, 29 Oct 2026 17:16:21 GMT
+content-type: text/html; charset=utf-8
+age: 0
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+speculation-rules: "/cdn-cgi/speculation"
+link: <https://www.lucis.life/>; rel="alternate"; hreflang="en", <https://www.lucis.life/fr>; rel="alternate"; hreflang="fr", <https://www.lucis.life/>; rel="alternate"; hreflang="x-default", </llms.txt>; rel="describedby", </index.md>; rel="alternate"; type="text/markdown"
+link: </_next/static/immutable/media/gt_alpina_light-s.p.0hjaupkmrtkkl.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </_next/static/immutable/media/rational_text.p.19wtc1jin4lu-.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </_next/static/immutable/chunks/3un00bi2twwhw.css>; rel=preload; as="style", </_next/static/immutable/chunks/1s_uh1k4nw_xx.css>; rel=preload; as="style"
+referrer-policy: strict-origin-when-cross-origin
+server: cloudflare
+set-cookie: NEXT_LOCALE=en; Path=/; SameSite=lax
+strict-transport-security: max-age=63072000
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+vary: accept-encoding
+x-content-type-options: nosniff
+x-dns-prefetch-control: on
+x-frame-options: SAMEORIGIN
+x-matched-path: /[lang]
+x-powered-by: Next.js
+x-vercel-cache: MISS
+x-vercel-id: iad1::cdg1::56jpk-1793294180946-05c0b24874df
+cf-cache-status: DYNAMIC
+cf-ray: a523d3d6b9ce5c80-IAD
+alt-svc: h3=":443"; ma=86400
+
+
+###### https://app.lucis.life ######
+HTTP/1.1 200 Connection Established
+
+HTTP/2 307 
+date: Thu, 29 Oct 2026 17:16:22 GMT
+content-type: text/html; charset=utf-8
+content-security-policy: frame-ancestors 'self' https://www.lucis.life; media-src 'self' https://assets.lucis.life
+access-control-allow-origin: https://www.lucis.life
+x-robots-tag: noindex, nofollow
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+permissions-policy: camera=(), microphone=(self), geolocation=(self), payment=(self "https://js.stripe.com" "https://*.js.stripe.com")
+x-clerk-auth-reason: session-token-and-uat-missing
+x-clerk-auth-status: signed-out
+x-middleware-rewrite: /
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+location: /dashboard/
+link: </_next/static/media/abc_diatype-s.p.0hbmrltrt17c3.otf?dpl=09115d7130d665ad5af11357dfa91e5099d749f1-mvtoji93>; rel=preload; as="font"; crossorigin=""; type="font/otf", </_next/static/media/gt_alpina-s.p.0pidguq8958z6.otf?dpl=09115d7130d665ad5af11357dfa91e5099d749f1-mvtoji93>; rel=preload; as="font"; crossorigin=""; type="font/otf", </_next/static/media/gt_alpina_light-s.p.2w_2b-0gz4t1b.otf?dpl=09115d7130d665ad5af11357dfa91e5099d749f1-mvtoji93>; rel=preload; as="font"; crossorigin=""; type="font/otf", </_next/static/media/rational_text-s.p.13g8l1i1y38i0.otf?dpl=09115d7130d665ad5af11357dfa91e5099d749f1-mvtoji93>; rel=preload; as="font"; crossorigin=""; type="font/otf", </_next/static/chunks/3261no5lcyvab.css?dpl=09115d7130d665ad5af11357dfa91e5099d749f1-mvtoji93>; rel=preload; as="style", </_next/static/chunks/2ooneuxsxsp1q.css?dpl=09115d7130d665ad5af11357dfa91e5099d749f1-mvtoji93>; rel=preload; as="style"
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+x-envoy-upstream-service-time: 25
+speculation-rules: "/cdn-cgi/speculation"
+cf-cache-status: DYNAMIC
+server: cloudflare
+cf-ray: a523d3dc1fb605f8-IAD
+alt-svc: h3=":443"; ma=86400
+
+
+###### https://api.lucis.life ######
+HTTP/1.1 200 Connection Established
+
+HTTP/2 404 
+date: Thu, 29 Oct 2026 17:16:22 GMT
+content-type: application/json; charset=utf-8
+content-security-policy: default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+origin-agent-cluster: ?1
+referrer-policy: no-referrer
+strict-transport-security: max-age=31536000; includeSubDomains
+x-content-type-options: nosniff
+x-dns-prefetch-control: off
+x-download-options: noopen
+x-frame-options: SAMEORIGIN
+x-permitted-cross-domain-policies: none
+x-xss-protection: 0
+access-control-allow-origin: *
+access-control-expose-headers: Content-Location
+etag: W/"66-cRKkJzK4vrNWvPXK94UpCem/4Ng"
+x-envoy-upstream-service-time: 7
+vary: Accept-Encoding
+speculation-rules: "/cdn-cgi/speculation"
+cf-cache-status: DYNAMIC
+server: cloudflare
+cf-ray: a523d3df5b3a058c-IAD
+alt-svc: h3=":443"; ma=86400
+
+
+###### https://admin.lucis.life ######
+HTTP/1.1 200 Connection Established
+
+HTTP/2 302 
+date: Thu, 29 Oct 2026 17:16:23 GMT
+content-type: text/html; charset=UTF-8
+location: https://admin-prd.lucis.ts.net/
+speculation-rules: "/cdn-cgi/speculation"
+server: cloudflare
+cf-ray: a523d3e3ef2b0800-IAD
+alt-svc: h3=":443"; ma=86400
+
+
+###### https://cms.lucis.life ######
+HTTP/1.1 200 Connection Established
+
+HTTP/2 302 
+date: Thu, 29 Oct 2026 17:16:23 GMT
+content-type: text/html; charset=utf-8
+content-length: 44
+location: https://cms.lucis.life/admin
+content-security-policy: frame-src https://lucis.life https://www.lucis.life;connect-src 'self' https:;img-src 'self' data: blob: https://miraculous-fireworks-748b2a2a2a.media.strapiapp.com *.strapi.io;media-src 'self' data: blob: https://miraculous-fireworks-748b2a2a2a.media.strapiapp.com *.strapi.io;default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline'
+referrer-policy: no-referrer
+strict-transport-security: max-age=31536000; includeSubDomains
+x-content-type-options: nosniff
+x-dns-prefetch-control: off
+x-download-options: noopen
+x-frame-options: SAMEORIGIN
+x-permitted-cross-domain-policies: none
+vary: Origin
+access-control-allow-origin: 
+access-control-allow-credentials: true
+x-powered-by: Strapi <strapi.io>
+x-koyeb-backend: fra
+server: cloudflare
+x-koyeb-brand: strapi
+x-koyeb-glb: was
+cf-cache-status: DYNAMIC
+cf-ray: a523d3e56ae3d633-IAD
+alt-svc: h3=":443"; ma=86400
+
+
+###### https://shop.lucis.life ######
+HTTP/1.1 200 Connection Established
+
+HTTP/2 301 
+date: Thu, 29 Oct 2026 17:16:24 GMT
+content-type: text/html; charset=UTF-8
+location: https://www.lucis.life/shop/evoo100
+speculation-rules: "/cdn-cgi/speculation"
+server: cloudflare
+cf-ray: a523d3eacd13b268-IAD
+alt-svc: h3=":443"; ma=86400
+
+
+###### https://faq.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 302 
+content-type: text/html; charset=utf-8
+location: https://faq.lucis.life/fr/
+x-content-type-options: nosniff
+server: cloudflare
+
+###### https://careers.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 421 
+content-type: text/plain; charset=utf-8
+server: cloudflare
+
+###### https://career.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 403 
+content-type: text/plain; charset=UTF-8
+server: cloudflare
+
+###### https://assets.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 403 
+content-type: application/xml
+server: cloudflare
+
+###### https://assets-inter.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 302 
+content-type: text/html; charset=utf-8
+location: https://lucis.intercom-mail.com/admins/sign_in
+server: cloudflare
+x-content-type-options: nosniff
+
+###### https://pthg.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/plain
+server: cloudflare
+
+###### https://strava-connect.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 502 
+content-type: text/html; charset=UTF-8
+
+###### https://garmin.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 502 
+content-type: text/html; charset=UTF-8
+
+###### https://whoop.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 502 
+content-type: text/html; charset=UTF-8
+
+###### https://sms.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+access-control-allow-origin: *
+
+###### https://cio.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+access-control-allow-origin: *
+
+###### https://ph.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/plain
+server: envoy
+
+###### https://compliance.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 200 
+content-type: text/html; charset=utf-8
+permissions-policy: microphone=(), camera=(), geolocation=()
+x-content-type-options: nosniff
+
+###### https://accounts.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 403 
+content-type: text/html; charset=UTF-8
+server: cloudflare
+permissions-policy: accelerometer=(),camera=(),clipboard-read=(),clipboard-write=(),geolocation=(),gyroscope=(),hid=(),magnetometer=(),microphone=(),payment=(),publickey-credentials-get=(),screen-wake-lock=(),serial=(),sync-xhr=(),usb=(),xr-spatial-tracking=*
+server-timing: chlray;desc="a523d479bbc5d640"
+x-content-type-options: nosniff
+set-cookie: __cf_bm=2JeZi0AvSnVvTKkrsMwJB0G7qbXLp3lB_suq3S1iZFI-1793294206.9941287-1.0.1.1-ME63K.QoXLdcGMTUC3KC5MSJ7y0CrooCv1_6VpViLkdD.LrYcpJXJA35WwxqH8EHXWYZr5CAy6du8q6oRVQ8iV60EAWrQDklsZTOoFssHgGWoV.n7cUDPQpqhsVV6kNm; HttpOnly; SameSite=None; Secure; Path=/; Domain=accounts.lucis.life; Expires=Thu, 29 Oct 2026 17:46:47 GMT
+
+###### https://clerk.lucis.life ######
+HTTP/1.1 200 Connection Established
+HTTP/2 200 
+content-type: application/json
+set-cookie: __cf_bm=hlmEyQsKyfhOOI7BnJo2nOOyC7j9pZamvqji9QNbRuA-1793294207.1823642-1.0.1.1-36qaT37kFowWZA2JGLAz7NxGcUB.9TQNz_HjxOWuWwDteGdUBg8Vm7cdKAzxOIxbQdxVYY2lVg1O.KnCUIrtEc4a4wzV6PBk8cUAQ2.ala.YxQonQm2nEGzmoDg_ABk4; HttpOnly; SameSite=None; Secure; Path=/; Domain=clerk.lucis.life; Expires=Thu, 29 Oct 2026 17:46:47 GMT
+set-cookie: _cfuvid=bG5gFkFldp.CSUKX7w7OICW3u9MCDGRqHNzlvyjUoh8-1793294207.1823642-1.0.1.1-je2oJPgZvKNQuzbj1KoK9okjRL8mjq4V1uB5fXlZgG8; HttpOnly; SameSite=None; Secure; Path=/; Domain=clerk.lucis.life
+x-clerk-trace-id: 5717c9eb1f23ec021652c45055286152
+permissions-policy: camera=(), microphone=(), geolocation=(), usb=()
+x-content-type-options: nosniff
+server: cloudflare
+
