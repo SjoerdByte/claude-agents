@@ -15,18 +15,22 @@
     "Clerk blocks disposable email providers (mail.tm/maxxspace.com) -> form_email_address_blocked, cannot auto-read verification code."
   ],
   "open_threads": [
-    "PRIMARY/BLOCKED: api.lucis.life IDOR/BOLA. Surface mapped (see api_surface). All object routes require a real Clerk member JWT. BLOCKED on email verification code for peter.bjorn75+lucis1@gmail.com and +lucis2@gmail.com (codes sent, client cookie jars /tmp/cj_g1.txt /tmp/cj_g2.txt, signup ids in /tmp/suid_g1.txt /tmp/suid_g2.txt). Need operator to supply the 6-digit codes, then attempt_verification completes session and cross-tenant IDOR testing begins.",
-    "api.lucis.life NestJS backend (success/error envelope, 'Forbidden resource' guard msg). Discovered real routes: /v1/biomarkers(403 role/scope-gated), /v1/orders(401), /v1/products(401), /v1/protocols(401), /v1/files(401), /v1/labs(400 'boolean string expected' - validation runs pre-auth, needs unknown required boolean param; minor lead). /health 200, /v1/biomarkers/public 200.",
-    "cms.lucis.life Strapi: credentialed-CORS reflection CONFIRMED (F001) but low impact - admin auth is header JWT not cookies. Content API /api/* locked 403. Residual lead: enumerate any content-type left public via role misconfig once/if a path is found."
+    "PRIMARY/BLOCKED-on-provisioning: api.lucis.life cross-tenant IDOR. Both Clerk accounts VERIFIED (G1 user_3LNcktJ4gabgyjnkBun9GvK91g3 / sess_3LNckre2lwD8YVl3oKjVDt2xTql; G2 user_3LNckvZxOwEukhzCqnv3bFKZg4e / sess_3LNckxKHFEVJK5egKmbQvGzyFdW). Session JWTs mint fine via POST clerk.lucis.life/v1/client/sessions/{sid}/tokens (60s TTL). BUT api.lucis.life rejects ALL member routes with 401 appCode E_401_Identities_00000 'No user found for auth user': a verified Clerk signup does NOT create a Lucis backend member/identity. No webhook auto-provisioning (waited >6min, retried current-user/orders/users-me/onboarding-submit-verified/sync-clerk - all identity 401). Membership requires the paid /v1/public join+checkout(Stripe) flow, which is out of RoE. Cross-tenant/mass-assignment/privesc testing cannot proceed until two real member accounts exist.",
+    "api.lucis.life full route map recovered from app.lucis.life JS bundles (~150 /v1 routes): object routes /v1/orders,products,protocols,files,carts,visits,addresses,biomarker-results,data-hub/*,hub/*,coach/threads,wearable/*,referral/*,seat-invitations/*,users/* all member-gated (E_401_Identities). Role-gated(403 Forbidden resource): /v1/biomarkers, /v1/users/me. /v1/dev/seed-members + /v1/dev/seed-members/sign-in-token are 404 in prod (disabled - good). Public(no auth) object-by-id routes under /v1/public/* (payments,carts,checkout-sessions,gift-cards,purchases,visits,seat-invitations,referral-links,gift-campaigns) all 404 on unknown UUID (no unauth leak; IDs are non-enumerable UUIDs).",
+    "cms.lucis.life Strapi: credentialed-CORS reflection CONFIRMED (F001) low impact. Content API /api/* locked 403. Residual lead only."
   ],
   "pending_decisions": [
-    "Operator action required (REFRESHED 2026-10-29 ~18:20 UTC): the previously supplied codes 706510/476356 had EXPIRED. Re-prepared email_code verification for both sign_ups; fresh OTPs sent to peter.bjorn75+lucis1@gmail.com and +lucis2@gmail.com, valid until epoch 1793298600 (~18:30 UTC, ~10 min window). Supply the two NEW 6-digit codes to complete attempt_verification. suids: g1=sua_3LNYH7aAmKLFRLlIpcjKPWlsa9w, g2=sua_3LNYHMSfM8oehBaRxcrSK7NUbRr. Will re-prepare again on demand if these also lapse."
+    "OPERATOR ACTION REQUIRED (2026-10-29 ~18:28 UTC): Both test Clerk accounts are now verified and produce working session JWTs, but api.lucis.life has NO backend member record for them (E_401_Identities 'No user found'). Signup alone does not provision membership; it needs the paid join/checkout flow (out of RoE: no real payments). To unblock the primary cross-tenant IDOR/BOLA/mass-assignment/privesc testing, operator must either (a) complete a comp/test paid onboarding for BOTH Clerk users to create member records, or (b) issue two pre-provisioned member/test accounts, or (c) confirm a non-payment provisioning path (invite/seed). Clerk user_ids to provision: G1=user_3LNcktJ4gabgyjnkBun9GvK91g3, G2=user_3LNcktvZ...(G2=user_3LNckvZxOwEukhzCqnv3bFKZg4e)."
   ],
   "api_surface": {
     "base": "https://api.lucis.life",
     "public": [
       "GET /health 200",
-      "GET /v1/biomarkers/public 200"
+      "GET /v1/biomarkers/public 200",
+      "GET /v1/labs?onlyActive=true 200 (RESOLVED: required bool param is onlyActive; returns same Eurofins partner-lab catalog as /v1/public/labs - business contacts+public booking URLs, non-sensitive, NOT a finding)",
+      "GET /v1/public/labs?onlyActive=true 200",
+      "GET /v1/public/countries 200",
+      "/v1/public/* object-by-id routes: 404 on unknown UUID (no unauth leak)"
     ],
     "gated_401": [
       "/v1/orders",
@@ -38,10 +42,21 @@
       "/v1/biomarkers"
     ],
     "validation_preauth": [
-      "/v1/labs -> 400 boolean string expected"
+      "/v1/labs -> needs ?onlyActive=true (bool). RESOLVED."
+    ],
+    "identity_gated_401_E_401_Identities": [
+      "/v1/orders",
+      "/v1/products",
+      "/v1/protocols",
+      "/v1/files",
+      "/v1/dashboard/auth/current-user",
+      "/v1/users/onboarding/submit-verified",
+      "/v1/users/sync-clerk-contact-info",
+      "/v1/seat-invitations/my-invitations",
+      "(all member routes)"
     ]
   },
-  "hours_spent": 2.0,
+  "hours_spent": 2.8,
   "findings": [
     {
       "id": "F001",
