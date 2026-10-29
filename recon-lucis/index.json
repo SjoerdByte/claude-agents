@@ -25,7 +25,7 @@
     "No GraphQL endpoint, no Swagger/OpenAPI docs exposed, no actuator/debug/metrics/env endpoints, no .env file accessible.",
     "Injection testing: SQL injection on /v1/public/services?country= -> 400. Path traversal normalized by Cloudflare (307 redirect, then 404). SSTI on gift card code -> normal 404. CRLF injection -> normal response. NoSQL injection on referral-links -> returns default empty data (not injection).",
     "Open redirect: not found on www.lucis.life or app.lucis.life. No redirect/login endpoints with url parameters.",
-    "Source maps: not exposed on app.lucis.life (_next/static/*.js.map -> 404).",
+    "Source maps: not exposed on app.lucis.life or www.lucis.life (_next/static/*.js.map -> 404 on all tested chunks).",
     "HTTP method override: X-HTTP-Method-Override header ignored by NestJS.",
     "API versioning: no /v2/ or /api/ prefix exists.",
     "Member enumeration: /v1/users and /v1/members both 404 (no list endpoint).",
@@ -34,12 +34,24 @@
     "OIDC SSRF via metadata URIs: registration accepts internal URIs (169.254.169.254, localhost) but strips them from response. No out-of-band callback to confirm server-side fetch. Unconfirmed - flagged as manual Burp Collaborator step.",
     "OIDC redirect_uri validation: authorization endpoint redirects to sign-in before validating redirect_uri. Redirect URIs restricted to loopback only for registered clients. Client_credentials grant downgraded. Scope downgraded to openid only.",
     "Public checkout session status: /v1/public/checkout-sessions/{id} returns limited data (isValid, isPaid, status, paymentStatus). No PII. IDs are long random Stripe strings, not enumerable. By design for checkout completion flow.",
-    "Security headers: CSP, HSTS with includeSubDomains, X-Content-Type-Options, X-Frame-Options, Referrer-Policy all properly set. Server: cloudflare. No X-Powered-By leak."
+    "Security headers: CSP, HSTS with includeSubDomains, X-Content-Type-Options, X-Frame-Options, Referrer-Policy all properly set. Server: cloudflare. No X-Powered-By leak.",
+    "Google Maps API key AIzaSyByk4W5ykRW424aYsUZTFtKvmWmunoAzcc: properly restricted with HTTP referrer restrictions. Server-side APIs denied. Non-Maps Google Cloud APIs (Translation, Vision) blocked.",
+    "Datadog RUM client key pub0d73b310f3342c696a417475c0b66720: public by design (pub prefix), write-only for browser telemetry.",
+    "PostHog project token phc_FvOX9P9rbVlvW7ADhoK5wyJ3sRwS0x8c8KBdrGhBtHG: /decide endpoint returns feature flags (by design for client-side eval). Server-side API (/api/event, /api/projects) properly rejects it. Event capture (/batch, /e) is write-only.",
+    "Intercom app ID zmhdhzv0: public identifier, no data queryable without auth.",
+    "GTM-52SDP34K: Google Tag Manager container ID (public by design).",
+    "Clerk environment config: test_mode=false, captcha disabled, social OAuth empty, SAML disabled, organizations disabled. No misconfigurations found.",
+    "mcp.lucis.life: Live NestJS service. /health returns database:up. /v1/mcp returns 401 requiring Clerk OAuth Bearer with scopes health:read,care:read,orders:read. Properly authenticated. CORS is wildcard but requires Bearer tokens so no credential-based CORS abuse.",
+    "www.lucis.life developer endpoints (/llms.txt, /index.md, /auth.md, /webhooks.md, /docs/mcp.md, /openapi.json): intentional public documentation. No sensitive data. No member API exposed.",
+    "Cookies: www.lucis.life sets NEXT_LOCALE (no sensitive flags needed). clerk.lucis.life sets __cf_bm and _cfuvid (HttpOnly, Secure, SameSite=None, Domain=clerk-specific). api.lucis.life sets no cookies. No cross-subdomain session cookies found.",
+    "PostHog SERVER_* feature flags exposed via /decide: names like SERVER_JOBS_IMPORT_BIOMARKER_RESULT_MODE:dry_run, SERVER_REPORT_DISPATCHER:live, KIT_FULFILLMENT_PROVIDER:bigblue. These are backend config names with values exposed to client-side. PostHog /decide is designed for this use case; recommend marking SERVER_* flags as server-only in PostHog to avoid exposing operational details.",
+    "Newly discovered public endpoints from bundle analysis: /v1/public/default-country (200, returns US), /v1/public/addons (400 needs params), /v1/public/service-subscriptions (400 needs params), /v1/public/labs/nearest (400 needs params). All properly validate input. /v1/users/by-email and /v1/users/by-referral-code both return 403 (auth required). /v1/logs returns 404. /v1/protected/campaigns returns 401."
   ],
   "open_threads": [
     "OIDC SSRF via metadata URIs: needs out-of-band callback (Burp Collaborator or similar) to confirm whether server fetches logo_uri/client_uri/sector_identifier_uri. Manual step.",
     "Auth token lifecycle: Clerk JWTs have 60s TTL (auto-expire). Revoking a session to test token invalidation would lock out the test account. Low priority given the short TTL.",
-    "Subscription-gated endpoints (/v1/biomarkers, /v1/users/me, /v1/products, /v1/protocols, /v1/files, /v1/visits, /v1/wearable/*, /v1/coach/threads, /v1/seat-invitations/my-invitations): require active subscription to test for data-level IDOR. Both test accounts are REGISTERED (not subscribed). Would need paid/comp accounts to test data access controls within these endpoints."
+    "Subscription-gated endpoints (/v1/biomarkers, /v1/users/me, /v1/products, /v1/protocols, /v1/files, /v1/visits, /v1/wearable/*, /v1/coach/threads, /v1/seat-invitations/my-invitations): require active subscription to test for data-level IDOR. Both test accounts are REGISTERED (not subscribed). Would need paid/comp accounts to test data access controls within these endpoints.",
+    "All test account Clerk sessions expired: g1 (sess_3LNckre2lwD8YVl3oKjVDt2xTql), g2 (sess_3LNckxKHFEVJK5egKmbQvGzyFdW), account1 (sess_3LNg3Q21j7lIdalpsgNsSsXAYBq) all return signed_out. Need fresh sessions for authenticated endpoint testing of newly discovered routes."
   ],
   "pending_decisions": [],
   "test_accounts": {
@@ -50,14 +62,16 @@
       "member_uuid": "2ea73a11-c750-4f99-a78f-f484f71eeee7",
       "stripe_customer_id": "cus_VX2r0rrAfSNmFn",
       "address_id": "06c2ddf1-6b85-48af-ac42-5f50d5a65abf",
-      "status": "REGISTERED"
+      "status": "REGISTERED",
+      "session_status": "EXPIRED"
     },
     "g2": {
       "email": "peter.bjorn75+lucis2@gmail.com",
       "clerk_user_id": "user_3LNckvZxOwEukhzCqnv3bFKZg4e",
       "clerk_session_id": "sess_3LNckxKHFEVJK5egKmbQvGzyFdW",
       "member_uuid": "904904f3-6d36-4735-ab43-0cbeed4494af",
-      "status": "REGISTERED"
+      "status": "REGISTERED",
+      "session_status": "EXPIRED"
     },
     "account1": {
       "email": "peter.bjorn75@gmail.com",
@@ -84,6 +98,10 @@
       "GET /v1/public/gift-cards/{code} 404 (validation message)",
       "GET /v1/public/gift-campaigns/{slug} 200 (data:null for unknown)",
       "GET /v1/public/checkout-sessions/{id} 200 (limited status data)",
+      "GET /v1/public/default-country 200",
+      "GET /v1/public/addons?countryIso=XX 400 (needs valid country)",
+      "GET /v1/public/service-subscriptions?countryIso=XX 400 (needs valid country)",
+      "GET /v1/public/labs/nearest?lat=&lng=&countryIso= 400 (needs params)",
       "POST /oidc/register 201 (F002)",
       "GET /.well-known/openid-configuration 200",
       "GET /.well-known/jwks.json 200"
@@ -96,7 +114,12 @@
       "GET /v1/dashboard/auth/current-user 200 (own only)",
       "POST /v1/join 200 (creates/updates own member)",
       "POST /v1/users/update-basic-account-info 201 (updates own only)",
-      "POST /v1/basket/checkout 201 (creates Stripe checkout)"
+      "POST /v1/basket/checkout 201 (creates Stripe checkout)",
+      "GET /v1/users/by-email 403 (auth required)",
+      "GET /v1/users/by-referral-code 403 (auth required)",
+      "GET /v1/places/autocomplete 401 (auth required)",
+      "GET /v1/slack/links 401 (auth required)",
+      "GET /v1/protected/campaigns 401 (auth required)"
     ],
     "subscription_gated_403": [
       "/v1/biomarkers", "/v1/users/me", "/v1/products", "/v1/protocols",
@@ -107,9 +130,78 @@
     "webhook_endpoints": [
       "POST /v1/webhooks/stripe (signature verified)",
       "POST /v1/webhooks/clerk (signature verified)"
-    ]
+    ],
+    "full_route_map_from_bundles": [
+      "/v1/addresses", "/v1/addresses/billing", "/v1/articles", "/v1/basics", "/v1/basics/setup", "/v1/basics/tone",
+      "/v1/basket", "/v1/basket/checkout", "/v1/basket/public/gift-cards", "/v1/basket/validate-code",
+      "/v1/billing-details", "/v1/billing/addresses", "/v1/billing/balance", "/v1/billing/customer-portal-link",
+      "/v1/billing/membership/cancel", "/v1/billing/membership/current", "/v1/billing/membership/renewal-discount",
+      "/v1/billing/membership/resume", "/v1/billing/membership/view", "/v1/biomarker-results/grouped",
+      "/v1/campaigns", "/v1/carts", "/v1/coach/threads", "/v1/coach/threads/search", "/v1/consent", "/v1/countries",
+      "/v1/dashboard/auth/current-user", "/v1/dashboard/reports/hub/export",
+      "/v1/data-hub/biological-age", "/v1/data-hub/biological-age/details", "/v1/data-hub/biological-ages",
+      "/v1/data-hub/biomarker-results", "/v1/data-hub/journey", "/v1/data-hub/systems-scoring",
+      "/v1/dev/seed-members", "/v1/dev/seed-members/sign-in-token",
+      "/v1/discovery-cards", "/v1/event",
+      "/v1/files", "/v1/files/complete-upload", "/v1/files/generate-presigned-url",
+      "/v1/gift-cards", "/v1/gift-cards/campaigns",
+      "/v1/health-profiles/completeness-meta",
+      "/v1/hub/items/search", "/v1/hub/reports", "/v1/hub/scores/bio-age", "/v1/hub/scores/lucis",
+      "/v1/hub/summary", "/v1/hub/systems",
+      "/v1/join", "/v1/journeys", "/v1/lab-journey/v2", "/v1/labs/bookable", "/v1/labs/waitlist", "/v1/logs",
+      "/v1/members/me/acquisition-source", "/v1/members/me/objectives", "/v1/my-biological-age",
+      "/v1/oauth-grants", "/v1/oauth-grants/access-requests", "/v1/oauth-grants/availability",
+      "/v1/oauth-grants/consent-views",
+      "/v1/onboarding/journey", "/v1/onboarding/membership-bundles", "/v1/onboarding/year",
+      "/v1/orders", "/v1/orders/bookable-visit", "/v1/orders/list", "/v1/orders/services/extensions",
+      "/v1/orders/services/with-availability",
+      "/v1/partner-codes", "/v1/payments", "/v1/places/autocomplete",
+      "/v1/protected/campaigns",
+      "/v1/public/addons", "/v1/public/carts", "/v1/public/checkout", "/v1/public/checkout-sessions",
+      "/v1/public/checkout/calculate", "/v1/public/codes", "/v1/public/codes/validate",
+      "/v1/public/countries", "/v1/public/default-country", "/v1/public/join/prefill",
+      "/v1/public/labs", "/v1/public/labs/nearest", "/v1/public/labs/waitlist",
+      "/v1/public/payments", "/v1/public/service-subscriptions", "/v1/public/tax-ids",
+      "/v1/public/tax-ids/validate",
+      "/v1/recommendation-feedbacks",
+      "/v1/referral/attempts", "/v1/referral/config", "/v1/referral/links", "/v1/referral/offers",
+      "/v1/referral/redeemable", "/v1/referral/redemptions", "/v1/referral/referred-by",
+      "/v1/reports/current-plan", "/v1/requisitions/generate", "/v1/routines/current",
+      "/v1/seat-invitations/my-invitations", "/v1/seat-invitations/preview", "/v1/seat-invitations/redeem",
+      "/v1/service-recommendations", "/v1/service-subscriptions",
+      "/v1/slack/link-requests/preview", "/v1/slack/links", "/v1/slack/links/confirm",
+      "/v1/smart-nudges", "/v1/smart-nudges/dismiss",
+      "/v1/user-recommendations",
+      "/v1/users/by-email", "/v1/users/by-referral-code", "/v1/users/create-clerk-phone",
+      "/v1/users/destroy-clerk-contact-info", "/v1/users/form-responses",
+      "/v1/users/me/acquisition-answers", "/v1/users/me/acquisition-persona",
+      "/v1/users/me/website-quiz-outcome", "/v1/users/my-referral-offer",
+      "/v1/users/onboarding/submit-verified", "/v1/users/referred-users",
+      "/v1/users/reproductive-answers/confirm", "/v1/users/sync-clerk-contact-info",
+      "/v1/users/update-basic-account-info",
+      "/v1/visits", "/v1/visits/booking-context",
+      "/v1/wearable/auth-url", "/v1/wearable/connections", "/v1/wearable/providers"
+    ],
+    "mcp_surface": {
+      "base": "https://mcp.lucis.life",
+      "health": "GET /health 200 (database:up)",
+      "mcp_door": "GET|POST /v1/mcp 401 (Bearer required, scopes: health:read care:read orders:read)",
+      "protected_resource": "GET /.well-known/oauth-protected-resource 200",
+      "auth_server": "https://clerk.lucis.life"
+    }
   },
-  "hours_spent": 4.0,
+  "client_side_keys": {
+    "stripe_publishable": "pk_live_51NnddQJf5pErllsphKLPtcHU9c60x77XbQChVTxcoY829WNJzmTuFCzHhdJ1kNsD1gB1M7phm6Of25SE5XviAx1M00Ymjh4s9B",
+    "clerk_publishable": "pk_live_Y2xlcmsubHVjaXMubGlmZSQ",
+    "posthog_project": "phc_FvOX9P9rbVlvW7ADhoK5wyJ3sRwS0x8c8KBdrGhBtHG",
+    "google_maps_api": "AIzaSyByk4W5ykRW424aYsUZTFtKvmWmunoAzcc (referrer restricted)",
+    "datadog_client": "pub0d73b310f3342c696a417475c0b66720",
+    "datadog_app_id": "fae696c0-3d02-43b6-8fb7-8633a5e72c8c",
+    "intercom_app_id": "zmhdhzv0",
+    "gtm_container": "GTM-52SDP34K",
+    "note": "All public/client-side by design. No secret keys found in runtime values."
+  },
+  "hours_spent": 5.5,
   "findings": [
     {
       "id": "F001",
@@ -132,6 +224,17 @@
       "status": "confirmed",
       "summary": "Open OIDC dynamic client registration allows unlimited unauthenticated client creation with no deletion capability.",
       "file": "/home/user/claude-agents/recon-lucis/findings/F002-oidc-open-dynamic-client-registration.md"
+    },
+    {
+      "id": "F003",
+      "endpoint": "https://app.lucis.life/_next/static/chunks/140mw7wp42s04.js",
+      "method": "GET",
+      "severity": "Low",
+      "cvss": "3.7 AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+      "owasp": "A05:2021 Security Misconfiguration",
+      "status": "confirmed",
+      "summary": "Server-side environment configuration schema (129 entries with names, descriptions, and defaults) leaked in client-side JavaScript bundle. Reveals complete infrastructure map, third-party integrations, internal emails, staging URLs, and service key architecture. No actual secret values exposed.",
+      "file": "/home/user/claude-agents/recon-lucis/findings/F003-server-config-schema-leak-in-client-bundle.md"
     }
   ],
   "raw_evidence": {

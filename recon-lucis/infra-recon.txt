@@ -1,0 +1,162 @@
+# Infrastructure Reconnaissance - lucis.life
+# Date: 2026-10-29
+# Scope: All subdomains and infrastructure
+
+## DNS Resolution Summary
+
+### Cloudflare-proxied (172.66.153.103, 104.20.17.16):
+  lucis.life, www, app, api, admin, cms, shop, faq, careers, assets, assets-inter, pthg
+
+### Direct IP (NOT Cloudflare-proxied):
+  strava-connect.lucis.life -> 8.232.30.149 (PTR: *.bc.googleusercontent.com / Google Cloud)
+  garmin.lucis.life -> 8.232.136.164 (PTR: *.bc.googleusercontent.com / Google Cloud)
+  whoop.lucis.life -> 8.232.136.164 (same Google Cloud IP as garmin)
+  Response: via: 1.1 google, 502/503, no Cloudflare headers
+
+### CNAME records (external services):
+  career.lucis.life -> lucislife.notion.site (Notion, 208.103.161.32/33)
+  sms.lucis.life -> trk-eu.customer.io (Customer.io, 34.36.71.179)
+  cio.lucis.life -> trk-eu.customer.io (Customer.io, 34.36.71.179)
+  ph.lucis.life -> e4431ef6f235922c3824.proxy-eu.posthog.com (PostHog, AWS eu-central-1)
+  compliance.lucis.life -> cname.eu.console.getprobo.com -> probocdn.com (AWS eu-west-1)
+  accounts.lucis.life -> accounts.clerk.services -> worker.clerkprod-cloudflare.net
+  clerk.lucis.life -> frontend-api.clerk.services -> worker.clerkprod-cloudflare.net
+
+### NS: rocco.ns.cloudflare.com, shaz.ns.cloudflare.com
+### No wildcard DNS (random subdomains return NXDOMAIN)
+### No zone transfer possible (Cloudflare blocks AXFR)
+### No CAA records set
+
+## Certificate Transparency (crt.sh)
+16 unique subdomains found (matches known list exactly):
+accounts, admin, api, app, assets, cio, clerk, cms, compliance,
+garmin, lucis.life, ph, shop, strava-connect, whoop, www
+No hidden/unknown subdomains discovered.
+
+## Subdomain Enumeration
+Tested 100+ common subdomain names via DNS over HTTPS.
+No new subdomains found beyond the known 22 (including CNAMEs).
+
+## Email Infrastructure
+SPF: v=spf1 include:_spf.google.com ~all (softfail)
+DMARC: v=DMARC1; p=reject; adkim=r; aspf=r; rua=mailto:dmarc_rua@onsecureserver.net
+DKIM: google._domainkey.lucis.life (RSA 2048-bit)
+MX: Google Workspace (aspmx.l.google.com + alt1-4)
+Assessment: Properly configured. DMARC p=reject compensates for SPF softfail.
+No customer.io DKIM selector found - they likely use their own sender domain.
+
+## TXT Records (Domain Verifications)
+- google-site-verification (x2)
+- anthropic-domain-verification
+- apple-domain-verification
+- dust-domain-verification
+- perplexity-ai-domain-verification
+- MS=ms38040646 (Microsoft)
+- 9f76cb1cd5dc50c5b961b5985c4f01b7 (unknown SaaS verification, MD5 format)
+
+## Security Headers Audit
+
+### www.lucis.life:
+  CSP: MISSING
+  HSTS: max-age=63072000 (no includeSubDomains)
+  X-Frame: SAMEORIGIN
+  X-CTO: nosniff
+  Referrer: strict-origin-when-cross-origin
+  Permissions-Policy: MISSING
+  X-Powered-By: Next.js (leaked)
+
+### app.lucis.life:
+  CSP: frame-ancestors 'self' https://www.lucis.life; media-src 'self' https://assets.lucis.life
+       (No default-src, script-src, connect-src - minimal protection)
+  HSTS: max-age=63072000; includeSubDomains; preload (strong)
+  X-Frame: MISSING (handled by CSP frame-ancestors)
+  X-CTO: nosniff
+  Referrer: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(self), geolocation=(self), payment=(self ...)
+
+### app.lucis.life /signin:
+  CSP: MISSING (authentication page has no CSP)
+
+### api.lucis.life:
+  CSP: Full (default-src 'self', all directives)
+  HSTS: max-age=31536000; includeSubDomains
+  All headers properly set
+
+### cms.lucis.life:
+  CSP: Full (but connect-src 'self' https: allows any HTTPS)
+  HSTS: max-age=31536000; includeSubDomains
+  X-Powered-By: Strapi <strapi.io> (leaked)
+
+### assets.lucis.life:
+  ALL SECURITY HEADERS MISSING (CSP, HSTS, X-Frame, X-CTO, Referrer, Permissions)
+  Only server: cloudflare
+
+### admin.lucis.life:
+  ALL SECURITY HEADERS MISSING (just a 302 redirect to Tailscale)
+
+### pthg.lucis.life:
+  Only HSTS: max-age=31536000; includeSubDomains
+
+## CORS Analysis
+
+### api.lucis.life: access-control-allow-origin: * (NO credentials) - SAFE
+### cms.lucis.life: Reflects arbitrary origin WITH credentials - FINDING F001
+### app.lucis.life: Fixed to https://www.lucis.life only - SAFE
+### Others: No CORS headers - SAFE
+
+## Cloud Storage Buckets
+
+### assets.lucis.life:
+  - AWS S3, eu-west-3 region
+  - Behind CloudFront + Cloudflare
+  - All access denied (403 on root, paths, listing, PUT, POST)
+  - PROPERLY LOCKED DOWN
+
+### miraculous-fireworks-748b2a2a2a.media.strapiapp.com (Strapi media):
+  - DigitalOcean Spaces, ams3c datacenter
+  - Individual files accessible by direct URL (hash-based filenames)
+  - Bucket listing denied (403)
+  - PROPERLY LOCKED DOWN (individual file access is by design)
+
+### probo-eu-west-1-files-897729133226.s3.eu-west-1.amazonaws.com:
+  - AWS S3, eu-west-1
+  - All access denied (403)
+  - PROPERLY LOCKED DOWN
+
+## Integration Endpoints (Wearable Connect)
+
+strava-connect.lucis.life: ALL paths return 502 (/, /callback, /connect, /auth, /webhook, /api, /health, /status, /.env, /login)
+garmin.lucis.life: ALL paths return 502 (same paths tested)
+whoop.lucis.life: ALL paths return 502 (same paths tested)
+POST requests also return 502.
+Services are completely non-functional.
+
+## Tailscale / Admin
+
+admin.lucis.life: Wildcard 302 redirect to admin-prd.lucis.ts.net/[path]
+admin-prd.lucis.ts.net: Not publicly accessible (Tailscale tailnet)
+All paths (/api, /health, /.well-known/) redirected - no path filtering
+Host header injection blocked by Cloudflare (403)
+
+## CMS Information Disclosure
+
+/admin/init: uuid=6ea706e7-328a-418c-a8ba-cc66b5b2d659, hasAdmin=true, logo URLs
+/admin/project-type: isEE=false (Community Edition), AI disabled
+/admin/information: 401 (requires auth)
+/admin/plugins: 401 (requires auth)
+/api/content-type-builder/content-types: 403
+/api/upload/files: 403
+
+## www.lucis.life Content Discovery
+
+/llms.txt: Agent instructions file (public, by design)
+/index.md: Markdown version of homepage (content negotiation)
+/robots.txt: Standard with LLM bot rules
+/sitemap.xml: All indexable URLs listed
+/developers: Developer resources page
+/openapi.json: Public API spec (catalog only)
+/auth.md: Auth documentation
+/webhooks.md: No webhooks published
+/docs/mcp.md: No MCP server published
+/.well-known/oauth-authorization-server: RFC 8414 metadata
+/.well-known/oauth-protected-resource: RFC 9728 metadata
