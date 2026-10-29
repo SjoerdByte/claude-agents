@@ -1,0 +1,13 @@
+{
+  "email": "peter.bjorn75+2@gmail.com",
+  "clerk_user_id": "user_3LNiaXoogi3q6RFFM37zeGqP4Yr",
+  "member_uuid": "29c405c3-ff49-4c67-8ae0-17fed526e4c6",
+  "member_status": "REGISTERED",
+  "stripe_customer_id": "cus_VX2ny0C8DumadA",
+  "referral_code": "PETBJOZQS4",
+  "country": "FR",
+  "cart_id": "a109857a-2491-40f0-9060-060daef811b3",
+  "payment_id": "138670ae-4ce4-4c61-b0be-f46018fb52ae",
+  "payment_status": "PENDING",
+  "note": "Second test account. Signup complete, member record exists. Payment NOT completed (stopped at Stripe checkout). Need Clerk session ID to mint JWTs - operator may need to provide the __client cookie or session ID."
+}
