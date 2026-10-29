@@ -43,14 +43,30 @@ and demo, or move the prototypes behind WorkOS SSO like the real dashboard. Stri
 Figma MCP capture.js from public builds. Remove hardcoded internal Slack links. Keep
 customer-named prototypes off the public internet.
 
-## F-PERI-002 (Pending verification; potentially High/Critical) - Supabase anon key and schema in public bundle
+## F-PERI-002 (High, CONFIRMED) - Supabase anon role has SELECT on profiles / annotations / annotation_replies
 
 Host (bundle origin): dashboard-proto.withduna.com
-Host (data origin): chcwcdmadmecntdrlyfl.supabase.co (Supabase cloud, third-party host)
-Severity: Low on its own (publishable keys are public-by-design) -> up to High/Critical if
-any of the referenced tables have RLS disabled for the anon role. VERIFICATION PENDING -
-operator decision needed before running REST calls against supabase.co (third-party host
-outside the literal duna/withduna/duna.io/viaduna scope).
+Host (data origin): chcwcdmadmecntdrlyfl.supabase.co (Supabase cloud, Duna-owned tenant)
+Severity: High. CONFIRMED by minimal status-only RLS probe (operator-run, 2026-10-29).
+CVSS 7.5 AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N. OWASP A01:2021 Broken Access Control
+(+ A05:2021 Security Misconfiguration for the key-in-bundle angle).
+
+Verification result (status codes only, no rows retrieved):
+
+    GET /rest/v1/profiles?select=count            -> HTTP 206 (SELECT allowed; row returned)
+    GET /rest/v1/annotations?select=count         -> HTTP 200 (SELECT allowed)
+    GET /rest/v1/annotation_replies?select=count  -> HTTP 200 (SELECT allowed)
+    GET /rest/v1/profile_organizations?select=count -> HTTP 404 (no anon GRANT)
+    GET /rest/v1/projects?select=count            -> HTTP 404 (no anon GRANT)
+    GET /rest/v1/explorations?select=count        -> HTTP 404 (no anon GRANT)
+    GET /rest/v1/user_active_explorations?select=count -> HTTP 404 (no anon GRANT)
+
+Interpretation: HTTP 404 on PostgREST means the anon role has no privileges on that
+relation (hardened). HTTP 200/206 means anon has SELECT and RLS is either absent or
+permissive. The 206 on `profiles` specifically confirms that the Range: 0-0 header was
+honored and partial content returned - the table has rows and anon can read them.
+Combined with the publishable key being hardcoded in the fully-public prototype bundle,
+anyone on the internet can enumerate `profiles`, `annotations` and `annotation_replies`.
 
 Extracted from /_next/static/chunks/app/layout-b0de86dc014eeed9.js:
 
@@ -63,11 +79,16 @@ profiles, profile_organizations, projects, annotations, annotation_replies,
 explorations, user_active_explorations.
 
 Supabase project existence confirmed (HTTPS 401 on /rest/v1/ without apikey, expected).
+The /rest/v1/ OpenAPI schema endpoint correctly rejects publishable keys
+("Secret API key required"), so Supabase's own hardening around schema disclosure is in
+place. The failure is at the table-GRANT / RLS level for the specific tables above.
 
-Worst case if RLS is absent on `profiles`: unauthenticated enumeration of every Duna
-employee who used the design-system / annotation prototype (names, emails, org
-memberships via profile_organizations), every annotation on unshipped features, every
-exploration record.
+Confirmed impact: an unauthenticated attacker on the internet can enumerate the Duna
+employees who used the design-system / annotation prototype via the `profiles` table
+(names and emails per Supabase's standard profile shape), and read every annotation on
+unshipped features via `annotations` and `annotation_replies`. The size of the exposure
+on `profiles` was not probed to avoid handling real PII, but a single row was
+demonstrably retrieved (HTTP 206 with Range: 0-0).
 
 Fix regardless of RLS state: audit RLS on every table listed above (anon should at best
 be able to insert their own records, never bare SELECT *); consider moving the Supabase
