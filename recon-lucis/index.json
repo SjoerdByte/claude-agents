@@ -20,14 +20,26 @@
     "cms.lucis.life Strapi: credentialed-CORS reflection CONFIRMED (F001) but low impact - admin auth is header JWT not cookies. Content API /api/* locked 403. Residual lead: enumerate any content-type left public via role misconfig once/if a path is found."
   ],
   "pending_decisions": [
-    "Operator action required: read verification codes emailed to peter.bjorn75+lucis1@gmail.com and peter.bjorn75+lucis2@gmail.com (Clerk 'Lucis platform' sign-up codes) and supply them, OR provide a valid app.lucis.life Clerk session JWT. Email verification cannot be automated (disposable mail blocked). Codes expire ~10 min; re-prepare on demand."
+    "Operator action required (REFRESHED 2026-10-29 ~18:20 UTC): the previously supplied codes 706510/476356 had EXPIRED. Re-prepared email_code verification for both sign_ups; fresh OTPs sent to peter.bjorn75+lucis1@gmail.com and +lucis2@gmail.com, valid until epoch 1793298600 (~18:30 UTC, ~10 min window). Supply the two NEW 6-digit codes to complete attempt_verification. suids: g1=sua_3LNYH7aAmKLFRLlIpcjKPWlsa9w, g2=sua_3LNYHMSfM8oehBaRxcrSK7NUbRr. Will re-prepare again on demand if these also lapse."
   ],
   "api_surface": {
     "base": "https://api.lucis.life",
-    "public": ["GET /health 200", "GET /v1/biomarkers/public 200"],
-    "gated_401": ["/v1/orders", "/v1/products", "/v1/protocols", "/v1/files"],
-    "gated_403_forbidden_resource": ["/v1/biomarkers"],
-    "validation_preauth": ["/v1/labs -> 400 boolean string expected"]
+    "public": [
+      "GET /health 200",
+      "GET /v1/biomarkers/public 200"
+    ],
+    "gated_401": [
+      "/v1/orders",
+      "/v1/products",
+      "/v1/protocols",
+      "/v1/files"
+    ],
+    "gated_403_forbidden_resource": [
+      "/v1/biomarkers"
+    ],
+    "validation_preauth": [
+      "/v1/labs -> 400 boolean string expected"
+    ]
   },
   "hours_spent": 2.0,
   "findings": [
