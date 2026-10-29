@@ -8,55 +8,108 @@
     "Strapi CMS admin takeover: /admin/init returns hasAdmin=true, bootstrap closed",
     "Strapi content API locked: /api/articles,/api/users -> 403",
     "admin.lucis.life: 302 to admin-prd.lucis.ts.net (Tailscale tailnet, not publicly reachable)",
-    "www /oauth/token + /v1/biomarkers/public: intentional read-only public catalog, no member/health data (per openapi description)",
+    "www /oauth/token + /v1/biomarkers/public: intentional read-only public catalog, no member/health data",
     "strava-connect/garmin/whoop.lucis.life: persistent 502 after retry, backend down/unconfigured",
-    "Scope/audience confusion: www /oauth/token lucis_ bearer (scope catalog.read) is NOT accepted by api.lucis.life guards - /v1/biomarkers still 403, /v1/orders still 401 with the token. Token is service-isolated.",
-    "Clerk pre-verification session: email+password signup yields status=missing_requirements, unverified_fields=[email_address], created_session_id=null. No API-accepted session reachable without email verification. verify_at_sign_up=true, captcha disabled, signup mode=public. Secure (negative result).",
-    "Clerk blocks disposable email providers (mail.tm/maxxspace.com) -> form_email_address_blocked, cannot auto-read verification code."
+    "Scope/audience confusion: www /oauth/token lucis_ bearer (scope catalog.read) NOT accepted by api.lucis.life guards. Token is service-isolated.",
+    "Clerk pre-verification session: verify_at_sign_up=true, captcha disabled, signup mode=public. No session without email verification. Secure.",
+    "Clerk blocks disposable email providers -> form_email_address_blocked",
+    "Cross-tenant IDOR: G1->G2 and G2->G1 object access tested on /v1/orders, /v1/addresses (GET,PATCH,DELETE), /v1/users/{uuid}, /v1/users/me, /v1/dashboard/auth/current-user, /v1/users/update-basic-account-info (UUID injection). All properly scoped: 404 for cross-account, UUID in body silently ignored. No BOLA found.",
+    "Mass assignment: /v1/join rejects unexpected fields (uuid, role, status, isAdmin, isVip). /v1/users/update-basic-account-info silently ignores uuid. Strict allowlist validation on both endpoints.",
+    "Vertical privesc: /v1/admin/*, /v1/dev/seed-members, /v1/dev/seed-members/sign-in-token all 404 in prod. X-User-Role/X-User-Status header injection ignored.",
+    "/v1/public/* object-by-id routes: 404 on known UUIDs (payments, carts from Account1/Account2). No unauth data leak.",
+    "Basket/checkout 500 on empty items: unhandled exception ('Cannot read properties of undefined reading currency'), bug but not security-exploitable.",
+    "Subscription gate bypass: X-Subscription-Status, X-Forwarded-For:127.0.0.1, query params all ignored. 403 is server-side from member status.",
+    "Price manipulation in checkout: /v1/basket/checkout ignores client-side price/unitAmount fields. Total always calculated server-side from serviceId. Negative quantity properly rejected.",
+    "Coupon injection: couponCode field accepted but unknown codes cause 500 PROMO_CONVERSION_FAILED (not exploitable). Self-referral (referralCode=own code) accepted but discount NOT applied.",
+    "Webhook endpoints: /v1/webhooks/stripe validates Stripe signatures (401). /v1/webhooks/clerk validates Clerk signatures (401). Both properly secured.",
+    "No GraphQL endpoint, no Swagger/OpenAPI docs exposed, no actuator/debug/metrics/env endpoints, no .env file accessible.",
+    "Injection testing: SQL injection on /v1/public/services?country= -> 400. Path traversal normalized by Cloudflare (307 redirect, then 404). SSTI on gift card code -> normal 404. CRLF injection -> normal response. NoSQL injection on referral-links -> returns default empty data (not injection).",
+    "Open redirect: not found on www.lucis.life or app.lucis.life. No redirect/login endpoints with url parameters.",
+    "Source maps: not exposed on app.lucis.life (_next/static/*.js.map -> 404).",
+    "HTTP method override: X-HTTP-Method-Override header ignored by NestJS.",
+    "API versioning: no /v2/ or /api/ prefix exists.",
+    "Member enumeration: /v1/users and /v1/members both 404 (no list endpoint).",
+    "Account deletion: DELETE /v1/users/me returns 404 (no delete endpoint).",
+    "Rate limiting present: x-ratelimit-limit:60, x-ratelimit-remaining:59, x-ratelimit-reset:60 on public endpoints.",
+    "OIDC SSRF via metadata URIs: registration accepts internal URIs (169.254.169.254, localhost) but strips them from response. No out-of-band callback to confirm server-side fetch. Unconfirmed - flagged as manual Burp Collaborator step.",
+    "OIDC redirect_uri validation: authorization endpoint redirects to sign-in before validating redirect_uri. Redirect URIs restricted to loopback only for registered clients. Client_credentials grant downgraded. Scope downgraded to openid only.",
+    "Public checkout session status: /v1/public/checkout-sessions/{id} returns limited data (isValid, isPaid, status, paymentStatus). No PII. IDs are long random Stripe strings, not enumerable. By design for checkout completion flow.",
+    "Security headers: CSP, HSTS with includeSubDomains, X-Content-Type-Options, X-Frame-Options, Referrer-Policy all properly set. Server: cloudflare. No X-Powered-By leak."
   ],
   "open_threads": [
-    "PRIMARY/BLOCKED-on-provisioning: api.lucis.life cross-tenant IDOR. Both Clerk accounts VERIFIED (G1 user_3LNcktJ4gabgyjnkBun9GvK91g3 / sess_3LNckre2lwD8YVl3oKjVDt2xTql; G2 user_3LNckvZxOwEukhzCqnv3bFKZg4e / sess_3LNckxKHFEVJK5egKmbQvGzyFdW). Session JWTs mint fine via POST clerk.lucis.life/v1/client/sessions/{sid}/tokens (60s TTL). BUT api.lucis.life rejects ALL member routes with 401 appCode E_401_Identities_00000 'No user found for auth user': a verified Clerk signup does NOT create a Lucis backend member/identity. No webhook auto-provisioning (waited >6min, retried current-user/orders/users-me/onboarding-submit-verified/sync-clerk - all identity 401). Membership requires the paid /v1/public join+checkout(Stripe) flow, which is out of RoE. Cross-tenant/mass-assignment/privesc testing cannot proceed until two real member accounts exist.",
-    "api.lucis.life full route map recovered from app.lucis.life JS bundles (~150 /v1 routes): object routes /v1/orders,products,protocols,files,carts,visits,addresses,biomarker-results,data-hub/*,hub/*,coach/threads,wearable/*,referral/*,seat-invitations/*,users/* all member-gated (E_401_Identities). Role-gated(403 Forbidden resource): /v1/biomarkers, /v1/users/me. /v1/dev/seed-members + /v1/dev/seed-members/sign-in-token are 404 in prod (disabled - good). Public(no auth) object-by-id routes under /v1/public/* (payments,carts,checkout-sessions,gift-cards,purchases,visits,seat-invitations,referral-links,gift-campaigns) all 404 on unknown UUID (no unauth leak; IDs are non-enumerable UUIDs).",
-    "cms.lucis.life Strapi: credentialed-CORS reflection CONFIRMED (F001) low impact. Content API /api/* locked 403. Residual lead only."
+    "OIDC SSRF via metadata URIs: needs out-of-band callback (Burp Collaborator or similar) to confirm whether server fetches logo_uri/client_uri/sector_identifier_uri. Manual step.",
+    "Auth token lifecycle: Clerk JWTs have 60s TTL (auto-expire). Revoking a session to test token invalidation would lock out the test account. Low priority given the short TTL.",
+    "Subscription-gated endpoints (/v1/biomarkers, /v1/users/me, /v1/products, /v1/protocols, /v1/files, /v1/visits, /v1/wearable/*, /v1/coach/threads, /v1/seat-invitations/my-invitations): require active subscription to test for data-level IDOR. Both test accounts are REGISTERED (not subscribed). Would need paid/comp accounts to test data access controls within these endpoints."
   ],
-  "pending_decisions": [
-    "OPERATOR ACTION REQUIRED (2026-10-29 ~18:28 UTC): Both test Clerk accounts are now verified and produce working session JWTs, but api.lucis.life has NO backend member record for them (E_401_Identities 'No user found'). Signup alone does not provision membership; it needs the paid join/checkout flow (out of RoE: no real payments). To unblock the primary cross-tenant IDOR/BOLA/mass-assignment/privesc testing, operator must either (a) complete a comp/test paid onboarding for BOTH Clerk users to create member records, or (b) issue two pre-provisioned member/test accounts, or (c) confirm a non-payment provisioning path (invite/seed). Clerk user_ids to provision: G1=user_3LNcktJ4gabgyjnkBun9GvK91g3, G2=user_3LNcktvZ...(G2=user_3LNckvZxOwEukhzCqnv3bFKZg4e)."
-  ],
+  "pending_decisions": [],
+  "test_accounts": {
+    "g1": {
+      "email": "peter.bjorn75+lucis1@gmail.com",
+      "clerk_user_id": "user_3LNcktJ4gabgyjnkBun9GvK91g3",
+      "clerk_session_id": "sess_3LNckre2lwD8YVl3oKjVDt2xTql",
+      "member_uuid": "2ea73a11-c750-4f99-a78f-f484f71eeee7",
+      "stripe_customer_id": "cus_VX2r0rrAfSNmFn",
+      "address_id": "06c2ddf1-6b85-48af-ac42-5f50d5a65abf",
+      "status": "REGISTERED"
+    },
+    "g2": {
+      "email": "peter.bjorn75+lucis2@gmail.com",
+      "clerk_user_id": "user_3LNckvZxOwEukhzCqnv3bFKZg4e",
+      "clerk_session_id": "sess_3LNckxKHFEVJK5egKmbQvGzyFdW",
+      "member_uuid": "904904f3-6d36-4735-ab43-0cbeed4494af",
+      "status": "REGISTERED"
+    },
+    "account1": {
+      "email": "peter.bjorn75@gmail.com",
+      "member_uuid": "9cfa900b-74f7-4356-b62e-5c384a1831bd",
+      "note": "No working Clerk session"
+    },
+    "account2": {
+      "email": "peter.bjorn75+2@gmail.com",
+      "member_uuid": "29c405c3-ff49-4c67-8ae0-17fed526e4c6",
+      "stripe_customer_id": "cus_VX2ny0C8DumadA",
+      "note": "No working Clerk session"
+    }
+  },
   "api_surface": {
     "base": "https://api.lucis.life",
-    "public": [
+    "public_no_auth": [
       "GET /health 200",
       "GET /v1/biomarkers/public 200",
-      "GET /v1/labs?onlyActive=true 200 (RESOLVED: required bool param is onlyActive; returns same Eurofins partner-lab catalog as /v1/public/labs - business contacts+public booking URLs, non-sensitive, NOT a finding)",
+      "GET /v1/labs?onlyActive=true 200",
       "GET /v1/public/labs?onlyActive=true 200",
       "GET /v1/public/countries 200",
-      "/v1/public/* object-by-id routes: 404 on unknown UUID (no unauth leak)"
+      "GET /v1/public/services?country=XX&locale=XX 200",
+      "GET /v1/public/referral-links/{code} 200 (returns referrerFirstName)",
+      "GET /v1/public/gift-cards/{code} 404 (validation message)",
+      "GET /v1/public/gift-campaigns/{slug} 200 (data:null for unknown)",
+      "GET /v1/public/checkout-sessions/{id} 200 (limited status data)",
+      "POST /oidc/register 201 (F002)",
+      "GET /.well-known/openid-configuration 200",
+      "GET /.well-known/jwks.json 200"
     ],
-    "gated_401": [
-      "/v1/orders",
-      "/v1/products",
-      "/v1/protocols",
-      "/v1/files"
+    "member_gated_authenticated": [
+      "GET /v1/orders 200 (scoped to own)",
+      "GET /v1/addresses 200 (scoped to own)",
+      "GET /v1/gift-cards 200 (scoped to own)",
+      "GET /v1/billing-details 200 (own only)",
+      "GET /v1/dashboard/auth/current-user 200 (own only)",
+      "POST /v1/join 200 (creates/updates own member)",
+      "POST /v1/users/update-basic-account-info 201 (updates own only)",
+      "POST /v1/basket/checkout 201 (creates Stripe checkout)"
     ],
-    "gated_403_forbidden_resource": [
-      "/v1/biomarkers"
+    "subscription_gated_403": [
+      "/v1/biomarkers", "/v1/users/me", "/v1/products", "/v1/protocols",
+      "/v1/files", "/v1/visits", "/v1/wearable/connections",
+      "/v1/coach/threads", "/v1/seat-invitations/my-invitations",
+      "/v1/users/sync-clerk-contact-info"
     ],
-    "validation_preauth": [
-      "/v1/labs -> needs ?onlyActive=true (bool). RESOLVED."
-    ],
-    "identity_gated_401_E_401_Identities": [
-      "/v1/orders",
-      "/v1/products",
-      "/v1/protocols",
-      "/v1/files",
-      "/v1/dashboard/auth/current-user",
-      "/v1/users/onboarding/submit-verified",
-      "/v1/users/sync-clerk-contact-info",
-      "/v1/seat-invitations/my-invitations",
-      "(all member routes)"
+    "webhook_endpoints": [
+      "POST /v1/webhooks/stripe (signature verified)",
+      "POST /v1/webhooks/clerk (signature verified)"
     ]
   },
-  "hours_spent": 2.8,
+  "hours_spent": 4.0,
   "findings": [
     {
       "id": "F001",
@@ -66,13 +119,22 @@
       "cvss": "3.7 AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:N/A:N",
       "owasp": "A05:2021 Security Misconfiguration",
       "status": "confirmed",
-      "summary": "Strapi reflects arbitrary/null Origin with Access-Control-Allow-Credentials:true. Misconfig confirmed; impact limited because admin auth is header JWT (no cookies to steal).",
+      "summary": "Strapi reflects arbitrary/null Origin with Access-Control-Allow-Credentials:true.",
       "file": "/home/user/claude-agents/recon-lucis/findings/F001-cms-credentialed-cors-reflection.md"
+    },
+    {
+      "id": "F002",
+      "endpoint": "https://api.lucis.life/oidc/register",
+      "method": "POST",
+      "severity": "Medium",
+      "cvss": "5.3 AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:L",
+      "owasp": "A07:2021 Identification and Authentication Failures",
+      "status": "confirmed",
+      "summary": "Open OIDC dynamic client registration allows unlimited unauthenticated client creation with no deletion capability.",
+      "file": "/home/user/claude-agents/recon-lucis/findings/F002-oidc-open-dynamic-client-registration.md"
     }
   ],
   "raw_evidence": {
-    "scan_headers": "/home/user/claude-agents/recon-lucis/raw-scan.txt",
-    "openapi_spec": "/home/user/claude-agents/recon-lucis/openapi.yaml",
-    "app_signin_html": "/home/user/claude-agents/recon-lucis/app_signin_followed.html"
+    "openapi_spec": "/home/user/claude-agents/recon-lucis/openapi.yaml"
   }
 }
