@@ -1,6 +1,6 @@
 {
   "target": "lucis.life",
-  "authorization": "Private engagement, written auth from CEO Maxime Berthelot. Recon-only task phase.",
+  "authorization": "Private engagement, written auth from CEO Maxime Berthelot. Active-testing phase: authorized against production, test accounts + authenticated requests allowed.",
   "scope_note": "Everything under lucis.life. Vendor infra in scope when it runs Lucis code or stores Lucis data: Clerk FAPI (clerk/accounts.lucis.life), Strapi CMS on Koyeb (cms.lucis.life), PostHog proxy (pthg/ph), Vercel-hosted Next.js (www/app/apex). Out of scope: customer.io (cio/sms) marketing, Notion (career), Intercom (assets-inter), getprobo (compliance) are separate vendor products Lucis merely links/embeds.",
   "ruled_out": [
     "Stripe publishable key pk_live_51Nndd... (public by design)",
@@ -9,17 +9,40 @@
     "Strapi content API locked: /api/articles,/api/users -> 403",
     "admin.lucis.life: 302 to admin-prd.lucis.ts.net (Tailscale tailnet, not publicly reachable)",
     "www /oauth/token + /v1/biomarkers/public: intentional read-only public catalog, no member/health data (per openapi description)",
-    "strava-connect/garmin/whoop.lucis.life: persistent 502 after retry, backend down/unconfigured"
+    "strava-connect/garmin/whoop.lucis.life: persistent 502 after retry, backend down/unconfigured",
+    "Scope/audience confusion: www /oauth/token lucis_ bearer (scope catalog.read) is NOT accepted by api.lucis.life guards - /v1/biomarkers still 403, /v1/orders still 401 with the token. Token is service-isolated.",
+    "Clerk pre-verification session: email+password signup yields status=missing_requirements, unverified_fields=[email_address], created_session_id=null. No API-accepted session reachable without email verification. verify_at_sign_up=true, captcha disabled, signup mode=public. Secure (negative result).",
+    "Clerk blocks disposable email providers (mail.tm/maxxspace.com) -> form_email_address_blocked, cannot auto-read verification code."
   ],
   "open_threads": [
-    "api.lucis.life Express backend (Helmet, CORS ACAO:*): only /health,/healthz discovered unauth; real routes need valid Clerk app session. Primary IDOR/object-by-ID target once authed.",
-    "app.lucis.life authenticated dashboard (Clerk, Stripe payments, microphone/geolocation perms): /dashboard gated, self-service signup via Clerk (email+password, test_mode=false) enables test account to reach authed surface.",
-    "cms.lucis.life Strapi on Koyeb: CORS access-control-allow-credentials:true with reflected/empty Origin - verify credentialed-CORS reflection; enumerate public content-types.",
-    "Clerk signup flow: email_code + email_link first factors, verify whether a usable session is reachable without email verification (turns any authed IDOR into anyone-reachable)."
+    "PRIMARY/BLOCKED: api.lucis.life IDOR/BOLA. Surface mapped (see api_surface). All object routes require a real Clerk member JWT. BLOCKED on email verification code for peter.bjorn75+lucis1@gmail.com and +lucis2@gmail.com (codes sent, client cookie jars /tmp/cj_g1.txt /tmp/cj_g2.txt, signup ids in /tmp/suid_g1.txt /tmp/suid_g2.txt). Need operator to supply the 6-digit codes, then attempt_verification completes session and cross-tenant IDOR testing begins.",
+    "api.lucis.life NestJS backend (success/error envelope, 'Forbidden resource' guard msg). Discovered real routes: /v1/biomarkers(403 role/scope-gated), /v1/orders(401), /v1/products(401), /v1/protocols(401), /v1/files(401), /v1/labs(400 'boolean string expected' - validation runs pre-auth, needs unknown required boolean param; minor lead). /health 200, /v1/biomarkers/public 200.",
+    "cms.lucis.life Strapi: credentialed-CORS reflection CONFIRMED (F001) but low impact - admin auth is header JWT not cookies. Content API /api/* locked 403. Residual lead: enumerate any content-type left public via role misconfig once/if a path is found."
   ],
-  "pending_decisions": [],
-  "hours_spent": 1.0,
-  "findings": [],
+  "pending_decisions": [
+    "Operator action required: read verification codes emailed to peter.bjorn75+lucis1@gmail.com and peter.bjorn75+lucis2@gmail.com (Clerk 'Lucis platform' sign-up codes) and supply them, OR provide a valid app.lucis.life Clerk session JWT. Email verification cannot be automated (disposable mail blocked). Codes expire ~10 min; re-prepare on demand."
+  ],
+  "api_surface": {
+    "base": "https://api.lucis.life",
+    "public": ["GET /health 200", "GET /v1/biomarkers/public 200"],
+    "gated_401": ["/v1/orders", "/v1/products", "/v1/protocols", "/v1/files"],
+    "gated_403_forbidden_resource": ["/v1/biomarkers"],
+    "validation_preauth": ["/v1/labs -> 400 boolean string expected"]
+  },
+  "hours_spent": 2.0,
+  "findings": [
+    {
+      "id": "F001",
+      "endpoint": "https://cms.lucis.life/* (Strapi)",
+      "method": "any",
+      "severity": "Low",
+      "cvss": "3.7 AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:N/A:N",
+      "owasp": "A05:2021 Security Misconfiguration",
+      "status": "confirmed",
+      "summary": "Strapi reflects arbitrary/null Origin with Access-Control-Allow-Credentials:true. Misconfig confirmed; impact limited because admin auth is header JWT (no cookies to steal).",
+      "file": "/home/user/claude-agents/recon-lucis/findings/F001-cms-credentialed-cors-reflection.md"
+    }
+  ],
   "raw_evidence": {
     "scan_headers": "/home/user/claude-agents/recon-lucis/raw-scan.txt",
     "openapi_spec": "/home/user/claude-agents/recon-lucis/openapi.yaml",
