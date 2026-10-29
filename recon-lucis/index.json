@@ -57,7 +57,18 @@
     "Tailscale admin endpoint: admin.lucis.life is a wildcard 302 redirect to admin-prd.lucis.ts.net/[path]. Domain is hardcoded (not an open redirect). Tailscale endpoint not publicly accessible.",
     "HTTP->HTTPS redirects: all Cloudflare-proxied hosts properly redirect HTTP to HTTPS (301/302). Wearable hosts return 503 on HTTP (services down).",
     "Port scanning on wearable IPs: only ports 80 and 443 respond (503 from Google Cloud proxy). All other tested ports (8080, 8443, 3000, 4000, 5000, 9090) timeout.",
-    "No CAA records set on lucis.life. No SRV records. No autoconfig/autodiscover records."
+    "No CAA records set on lucis.life. No SRV records. No autoconfig/autodiscover records.",
+    "shop.lucis.life: Shopify store (68877e.myshopify.com). /admin redirects to Shopify admin. /meta.json, /cart.json, /robots.txt all standard Shopify. Out of scope (vendor platform).",
+    "/v1/version returns {\"success\":true,\"data\":\"0.5.0\"} without authentication. Minor API version disclosure. Not security-impactful.",
+    "Next.js image optimizer SSRF: app.lucis.life/_next/image/?url= properly restricts to assets.lucis.life domain only. Internal IPs (127.0.0.1, 169.254.169.254), external domains, file:// protocol, localhost all return 400.",
+    "app.lucis.life/api/health/ returns {\"status\":\"ok\"} (Next.js API route, GET-only, 405 on POST). Not security-relevant.",
+    "/v1/webhooks/bigblue and /v1/webhooks/biomes return 401 (properly authenticate webhook signatures). Other integration webhooks (terra, actual-group, eurofins, dexascan, langgraph) return 404.",
+    "Service API key header injection: X-Support-Inbox-Api-Key, X-Brain-Api-Key, X-Lumi-Api-Key, X-Ops-Api-Key, X-Server-Action-Key all rejected (401) on /v1/protected/campaigns. DEV_AUTH_BYPASS_TOKEN header (X-Dev-Auth-Bypass-Token) rejected in production.",
+    "Parameter discovery on /v1/orders, /v1/dashboard/auth/current-user: debug=true, verbose=true, include=all, fields=*, expand=true, admin=true, internal=true, raw=true, deleted=true, includeDeleted=true all ignored. Response unchanged.",
+    "api.stg.lucis.tech (staging API): returns 502 Bad Gateway. Not publicly accessible.",
+    "app.lucis.life RSC (React Server Components): /profile/ and /onboarding/ return 500 \"Internal Server Error\" (SSR bug for unauthenticated access). No stack trace or debug info leaked.",
+    "/v1/users/* is a catch-all wildcard route (/v1/users/:id). /v1/users/totally-fake-garbage returns 403 (subscription gate). Not individual endpoints for search/list/export.",
+    "Markdown API on www.lucis.life: /api/markdown/[[...slug]] catch-all serves auth, webhooks, docs/mcp pages. Path traversal (../.env, ../../etc/passwd) returns 403/404. No sensitive content accessible."
   ],
   "open_threads": [
     "OIDC SSRF via metadata URIs: needs out-of-band callback (Burp Collaborator or similar) to confirm whether server fetches logo_uri/client_uri/sector_identifier_uri. Manual step.",
@@ -116,7 +127,8 @@
       "GET /v1/public/labs/nearest?lat=&lng=&countryIso= 400 (needs params)",
       "POST /oidc/register 201 (F002)",
       "GET /.well-known/openid-configuration 200",
-      "GET /.well-known/jwks.json 200"
+      "GET /.well-known/jwks.json 200",
+      "GET /v1/version 200 (returns API semver, no auth)"
     ],
     "member_gated_authenticated": [
       "GET /v1/orders 200 (scoped to own)",
@@ -318,7 +330,7 @@
     "gtm_container": "GTM-52SDP34K",
     "note": "All public/client-side by design. No secret keys found in runtime values."
   },
-  "hours_spent": 6.5,
+  "hours_spent": 8.0,
   "findings": [
     {
       "id": "F001",
@@ -399,7 +411,8 @@
         "ph": "e4431ef6f235922c3824.proxy-eu.posthog.com",
         "compliance": "cname.eu.console.getprobo.com",
         "accounts": "accounts.clerk.services",
-        "clerk": "frontend-api.clerk.services"
+        "clerk": "frontend-api.clerk.services",
+        "shop": "68877e.myshopify.com (Shopify store)"
       },
       "wildcard_dns": false,
       "zone_transfer": "blocked",
