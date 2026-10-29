@@ -1,0 +1,15 @@
+{
+  "email": "peter.bjorn75@gmail.com",
+  "clerk_user_id": "user_3LNg3Tqd9DBYCmmmJ07gxS4Brnl",
+  "clerk_session_id": "sess_3LNg3Q21j7lIdalpsgNsSsXAYBq",
+  "clerk_client_id": "client_3LNfrme632kq6bPVLXRHUr2slMu",
+  "member_uuid": "9cfa900b-74f7-4356-b62e-5c384a1831bd",
+  "member_status": "REGISTERED",
+  "referral_code": "PETBJO7NDV",
+  "country": "FR",
+  "stripe_customer_id": null,
+  "cart_id": "cd23f911-8381-405f-a8c5-3e53dc7723b8",
+  "payment_id": "15aea4bd-b46a-4597-9988-ebffca5c3b0a",
+  "payment_status": "PENDING",
+  "note": "Signup complete, /v1/join returned member record. Payment initiated but NOT completed (stopped at Stripe checkout). Member status is REGISTERED, not paid/active."
+}
