@@ -16,7 +16,7 @@ The platform demonstrates a solid security posture in several areas. Cloudflare 
 
 However, deeper testing revealed that the Ory Kratos and Hydra admin API surfaces are internet-reachable across all three authentication realms, protected only by API key authentication. This is the highest-severity finding: if any admin API key leaks from configuration, logs, or error messages, an attacker gains full control over user identities, sessions, and OAuth2 clients.
 
-Fourteen findings were identified across the platform, with the most critical being the internet-reachable Ory admin APIs (F11), the exposed EBICS banking endpoint actively processing H005 protocol messages (F08), and publicly accessible staging environments that share cookie scope with production (F13).
+Seventeen findings were identified across the platform, with the most critical being the internet-reachable Ory admin APIs (F11), the exposed EBICS banking endpoint with HostID enumeration oracle (F08/F15), sandbox/test endpoints routed on the production distributor API (F16), and publicly accessible staging environments that share cookie scope with production (F13).
 
 ---
 
@@ -38,6 +38,9 @@ Fourteen findings were identified across the platform, with the most critical be
 | F12 | Identity schemas publicly readable revealing full trait structures | Low | Information Disclosure |
 | F13 | Staging environments publicly accessible, sharing production cookie scope | Medium | Access Control |
 | F14 | Production CSRF cookie scoped to parent domain sent to all staging hosts | Medium | Session Management |
+| F15 | EBICS HostID enumeration oracle with bank authentication key exposure | Medium | Banking Protocol |
+| F16 | Sandbox/test endpoints routed on production distributor API | Medium | Security Misconfiguration |
+| F17 | Unreleased V1 API specification leaked in production SPA bundle | Informational | Information Disclosure |
 
 ---
 
@@ -253,6 +256,62 @@ Additionally, the staging environment sets cookies with a __Host- prefix combine
 
 ---
 
+### F15: EBICS HostID enumeration oracle with bank authentication key exposure
+**Severity:** Medium
+**Affected:** ebics.preprod.spiko.io POST /ebics
+**Category:** Banking Protocol / Information Disclosure
+
+The EBICS H005 endpoint returns structurally different responses for valid versus invalid HostIDs, creating an enumeration oracle. Invalid HostIDs (e.g., "FAKE") return an unsigned `ebicsKeyManagementResponse` with error code 091011 (EBICS_INVALID_HOST_ID). The valid HostID "SPIKOPREPROD" returns a signed `ebicsResponse` with error code 091010 (EBICS_INVALID_XML) and a full RSA-SHA256 AuthSignature from the bank's authentication key.
+
+This differential behavior allows trivial, unauthenticated enumeration of all configured bank HostIDs. The server exercises its RSA authentication private key to sign every error response for valid HostIDs, even when the request itself is invalid. Combined with F08 (no rate limiting, no WAF), brute-force enumeration is completely unimpeded.
+
+**Impact:** An attacker can discover all configured EBICS bank HostIDs without authentication. The confirmed HostID "SPIKOPREPROD" is the first element of the EBICS authentication chain. The server signing error responses with its authentication key on every request is unnecessary cryptographic key wear and could facilitate chosen-message attacks against the RSA signature.
+
+**Remediation:** Return a generic error code regardless of whether the HostID is valid or invalid. Do not sign error responses for unauthenticated requests. Implement rate limiting.
+
+---
+
+### F16: Sandbox/test endpoints routed on production distributor API
+**Severity:** Medium
+**Affected:** distributor-api.spiko.io/v0/sandbox/*
+**Category:** Security Misconfiguration
+
+Seven sandbox endpoints for simulating financial operations are routed on the production API gateway. All return HTTP 401 (requiring authentication) rather than 404, confirming they are registered production routes:
+
+- /v0/sandbox/bulk-deposits (GET/POST) -- submit and manage bulk deposit operations
+- /v0/sandbox/bulk-deposits/:paymentEntryId/cancel (POST) -- cancel bulk deposit entries
+- /v0/sandbox/deposit-orders/:depositOrderId/fund (POST) -- fund deposit orders
+- /v0/sandbox/execution-runs (GET/POST) -- view and trigger execution runs (settlement)
+- /v0/sandbox/execution-runs/full (POST) -- full execution run
+- /v0/sandbox/incoming-wires (POST) -- simulate incoming wire transfers
+
+These endpoints were discovered through SPA bundle analysis of distributor.spiko.io and confirmed routed on production.
+
+**Impact:** Any distributor user with valid authentication credentials may have access to sandbox operations on the production environment. Sandbox functionality for simulating wire transfers, triggering settlement processing, and bulk deposit operations should never be available in production, regardless of authorization controls, because it creates risk of accidental or intentional misuse against real financial data.
+
+**Remediation:** Remove sandbox route registration from the production API gateway configuration. Use environment-specific route configuration to ensure sandbox endpoints are only available in staging/development.
+
+---
+
+### F17: Unreleased V1 API specification leaked in production SPA bundle
+**Severity:** Informational
+**Affected:** app.spiko.io SPA JavaScript bundles
+**Category:** Information Disclosure
+
+The production SPA bundle at app.spiko.io embeds full OpenAPI annotations for an unreleased /v1/ API, including:
+
+- All endpoint group names and planned structure (Investors, Accounts, Deposit Orders, Withdrawal Orders, Transfer Orders, Account Transactions, Portfolio, Bank accounts, Accounting positions, Yields)
+- Authentication method: HTTP Basic Auth with client_id as username and client_secret as password
+- Server URLs: production (investor-api.spiko.io/v1) and pre-production (investor-api.preprod.spiko.io/v1)
+
+The API is not yet deployed: all /v1/ paths return 404 on both production and preprod. However, the specification reveals the planned API evolution and authentication method.
+
+**Impact:** Reveals upcoming API surface and authentication design. Allows attackers to prepare tooling and attack strategies before the API is deployed.
+
+**Remediation:** Strip unreleased API specifications from production bundles during the build process. Include only the specifications for currently deployed APIs.
+
+---
+
 ## Testing Methodology
 
 The assessment was conducted without destructive testing. Methods included:
@@ -265,7 +324,13 @@ The assessment was conducted without destructive testing. Methods included:
 - Ory Kratos and Hydra admin API endpoint enumeration across all three auth realms
 - Identity schema analysis across investor, distributor, and admin realms
 - Tolgee API key validation across all documented REST API endpoints
-- EBICS H005 protocol testing with crafted XML envelopes
+- EBICS H005 protocol testing with crafted XML envelopes, HostID enumeration, XXE testing, entity expansion testing
+- SPA bundle analysis for complete API route extraction (100+ investor endpoints, 95+ distributor endpoints)
+- HTTP request smuggling testing (CL.TE, TE.CL, H2.CL) across Cloudflare-Envoy chain
+- Cache poisoning testing on CloudFront SPAs (X-Forwarded-Host, path normalization, cache key manipulation)
+- CRLF injection and response splitting testing
+- Origin IP discovery and direct-IP bypass testing
+- Webhook endpoint enumeration on webhooks.spiko.io
 - Staging and pre-production environment enumeration and access control verification
 - Cross-environment cookie scope analysis (production cookies reaching staging)
 - S3/CloudFront document enumeration on cdn.spiko.finance
@@ -287,6 +352,18 @@ The assessment was conducted without destructive testing. Methods included:
 - **S3 bucket listing:** cdn.spiko.finance serves legal documents (KIDs, prospectuses) via CloudFront but directory listing is disabled; documents accessible only via known paths
 - **Staging admin panels:** admin.staging.spiko.io, rabbitmq.staging.spiko.io, pg-admin.staging.spiko.io correctly behind Cloudflare Access
 - **Source map exposure:** JavaScript .map URLs return 200 but serve the SPA HTML fallback (text/html), not actual source maps
+- **HTTP request smuggling:** Cloudflare rejects conflicting CL/TE headers with 400 at the edge; no desync through Cloudflare-Envoy chain
+- **Cache poisoning:** SPA HTML has no-store/no-cache directives; static assets are content-hashed and immutable; X-Forwarded-Host not reflected
+- **CORS reflection:** No dynamic origin reflection on any API host; properly restrictive across all endpoints
+- **CRLF injection:** All path-based, double-encoded, and Unicode CRLF variants produce standard responses with no header injection
+- **Host header injection:** Cloudflare blocks external Host headers with 403; X-Forwarded-For/X-Real-IP spoofing has no effect
+- **Envoy admin interface:** Not exposed on any API host; all admin paths return 404
+- **GraphQL:** No GraphQL endpoints on any host
+- **Cross-API routing:** Distributor paths on investor-api return 404 and vice versa; proper isolation
+- **Cloudflare origin IP bypass:** EBICS ELB only routes EBICS traffic; returns 404 for all other Host headers
+- **EBICS XXE:** DOCTYPE declarations properly rejected with HTTP 400; XInclude parsed but not processed; entity expansion blocked
+- **EBICS TLS:** TLS 1.3 only; no legacy protocol support; TLS_AES_256_GCM_SHA384 cipher
+- **Webhook endpoints:** Only Onfido (400) and Coinbase (401 with signature validation) active; all other webhook providers return 404
 
 ---
 
@@ -295,8 +372,10 @@ The assessment was conducted without destructive testing. Methods included:
 1. **Immediate:** Block internet access to Ory admin API endpoints (F11) -- highest severity finding; if an admin API key leaks, full identity takeover is possible with no further barriers
 2. **Immediate:** Restrict EBICS endpoint network access (F08) -- live banking protocol endpoint processing H005 messages from any internet source
 3. **Immediate:** Place staging/preprod environments behind Cloudflare Access (F13) -- staging hosts receive production cookies and double the admin API attack surface
-4. **Short-term:** Add CSP header to app.spiko.io (F02) -- high defense-in-depth value, low implementation effort
+4. **Immediate:** Remove sandbox endpoints from production distributor API (F16) -- test/simulation operations should never be available in production
+5. **Short-term:** Add CSP header to app.spiko.io (F02) -- high defense-in-depth value, low implementation effort
 5. **Short-term:** Scope session and CSRF cookies to specific subdomains (F03, F14) -- prevents production cookies from reaching staging
 6. **Short-term:** Remove Tolgee API key from SPA bundle (F01) -- credential hygiene
 7. **Short-term:** Move RBAC matrix server-side (F05) -- reduces reconnaissance value of public bundle
-8. **Routine:** Add HSTS header (F04), fix error message enumeration (F06), audit GDPR consent flow (F07), resolve .finance drift (F09), restrict schema endpoints (F12)
+8. **Short-term:** Fix EBICS HostID enumeration oracle (F15) -- return generic errors regardless of HostID validity
+9. **Routine:** Add HSTS header (F04), fix error message enumeration (F06), audit GDPR consent flow (F07), resolve .finance drift (F09), restrict schema endpoints (F12), strip unreleased API specs from bundles (F17)

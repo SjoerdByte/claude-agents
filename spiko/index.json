@@ -18,9 +18,9 @@
     "Datadog RUM (datadoghq.eu) on app shells",
     "Hotjar, Cloudflare Turnstile, reCAPTCHA v3 for anti-automation"
   ],
-  "hours_spent": 5,
+  "hours_spent": 6,
   "session_goal": "Full pipeline",
-  "status": "Report phase - deep testing complete, 15 findings including 1 High",
+  "status": "Report phase - 17 findings including 1 High, server-level testing complete",
   "findings": [
     {
       "id": "F01",
@@ -175,6 +175,30 @@
       "description": "The EBICS H005 endpoint returns different error codes for valid vs invalid HostIDs (091010 vs 091011), with different response types (signed ebicsResponse vs unsigned ebicsKeyManagementResponse). Valid HostID SPIKOPREPROD confirmed. Server signs error responses with its RSA authentication private key.",
       "impact": "Allows unauthenticated enumeration of EBICS bank HostIDs. Combined with no rate limiting (F08), brute-force is trivial. Signed error responses exercise the bank's authentication key on every invalid request.",
       "remediation": "Return generic errors regardless of HostID validity. Do not sign error responses for unauthenticated requests. Add rate limiting."
+    },
+    {
+      "id": "F16",
+      "title": "Sandbox/test endpoints routed on production distributor API",
+      "severity": "Medium",
+      "cvss": "AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:L (5.4)",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "category": "Security Misconfiguration",
+      "affected": "distributor-api.spiko.io/v0/sandbox/*",
+      "status": "confirmed",
+      "file": "findings/F016-sandbox-on-production.md",
+      "description": "The production distributor API gateway routes 7 sandbox endpoints for simulating financial operations (bulk deposits, execution runs, incoming wires). All return 401 (auth required, not 404), confirming they are routed. Sandbox functionality should never be available in production.",
+      "impact": "Any authenticated distributor user may access sandbox operations on production data, including simulating wire transfers and triggering settlement processing.",
+      "remediation": "Remove sandbox route registration from production API gateway. Use environment-specific route configuration."
+    },
+    {
+      "id": "F17",
+      "title": "Unreleased V1 API specification leaked in production SPA bundle",
+      "severity": "Informational",
+      "category": "Information Disclosure",
+      "affected": "app.spiko.io SPA JavaScript bundles",
+      "description": "The production SPA bundle embeds full OpenAPI annotations for an unreleased /v1/ API including all endpoint groups, auth method (HTTP Basic with client_id/client_secret), and production/preprod server URLs. The API is not yet deployed (all /v1/ paths return 404).",
+      "impact": "Reveals planned API evolution and authentication method. Helps attackers prepare for new API surface before deployment.",
+      "remediation": "Strip unreleased API specifications from production bundles during the build process."
     }
   ],
   "tested_and_clean": [
@@ -195,7 +219,19 @@
     "EBICS TLS configuration - TLS 1.3 only, no legacy protocol support, strong cipher suite",
     "EBICS Envoy admin endpoints - not exposed, all admin paths return 404",
     "EBICS PartnerID/UserID enumeration - schema validation prevents reaching these checks",
-    "EBICS HPB bank public key download - schema validation blocks before EBICS business logic"
+    "EBICS HPB bank public key download - schema validation blocks before EBICS business logic",
+    "HTTP request smuggling (CL.TE, TE.CL) - Cloudflare returns 400 for conflicting headers, blocks at edge",
+    "Cache poisoning on CloudFront SPAs - SPA HTML uses no-store/no-cache, static assets content-hashed",
+    "CORS reflection - no origin reflection on any API host, properly restrictive",
+    "CRLF injection / response splitting - all variants produce standard responses, no injection",
+    "Host header injection - Cloudflare blocks external Host headers with 403",
+    "Envoy admin interface - not exposed on any API host, all admin paths return 404",
+    "GraphQL endpoints - no GraphQL on any API host",
+    "API version paths (/v1/, /v2/, /api/) - all return 404 on all API hosts",
+    "Path traversal on API gateways - ..;, ../, null bytes all properly rejected",
+    "Cross-API routing confusion - distributor paths on investor-api return 404 and vice versa",
+    "Webhook endpoints (stripe, mangopay, fireblocks, chainalysis, jumio, sumsub) - all return 404",
+    "Cloudflare origin IP bypass - EBICS ELB only routes EBICS traffic, rejects other Host headers"
   ],
   "open_threads": [
     "EBICS endpoint could benefit from IP allowlisting - currently accepts requests from any IP",
