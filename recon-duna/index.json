@@ -1,7 +1,7 @@
 {
   "target": "duna.com",
   "authorization": "Written permission from Duna CEO Duco van Lanschot and David Schreiber",
-  "scope_note": "*.duna.com - everything in scope, including vendor-hosted infra running Duna code or storing Duna data. Duna is AI-native KYB/KYC compliance infrastructure (business onboarding, periodic reviews). App tier (api/dashboard/connect/contribute/webhooks/events/admin) is self-hosted on AWS eu-central-1 (3.76.148.43, 18.194.122.18). Auth is WorkOS AuthKit (auth/auth-api/auth-admin via Cloudflare, client_id client_01JNR708GP08A6X4D265YCSEPD). Marketing on Framer, CDN on S3+CloudFront, docs on ReadMe (password-gated), help on Mintlify, status on incident.io/Vercel, KB on HubSpot, forms on Tally. KYC vendors Onfido + idNow embedded in connect/contribute (in-scope where they store Duna data). settings.duna.com referenced in app CSP but NXDOMAIN publicly = internal/origin-exposure candidate.",
+  "scope_note": "*.duna.com - everything in scope, including vendor-hosted infra running Duna code or storing Duna data. Duna is AI-native KYB/KYC compliance infrastructure (business onboarding, periodic reviews). App tier (api/dashboard/connect/contribute/webhooks/events/admin) is self-hosted on AWS eu-central-1 (3.76.148.43, 18.194.122.18). Auth is WorkOS AuthKit (auth/auth-api/auth-admin via Cloudflare, client_id client_01JNR708GP08A6X4D265YCSEPD). Marketing on Framer, CDN on S3+CloudFront, docs on ReadMe (password-gated), help on Mintlify, status on incident.io/Vercel, KB on HubSpot, forms on Tally. KYC vendors Onfido + idNow embedded in connect/contribute (in-scope where they store Duna data). settings.duna.com referenced in app CSP but NXDOMAIN publicly = internal/origin-exposure candidate. PHASE2: production duna.com namespace exhausted - 66-name curated DNS sweep (staging/dev/internal/admin-api/grafana/etc) all NXDOMAIN; no forgotten prod host beyond the 27 known. All non-prod naming lives under the Duna-owned alias domains. withduna.com = Duna STAGING/DEV env on a SEPARATE AWS eu-central-1 LB (3.125.250.148/3.126.170.142) running the same app set (admin/api/connect/contribute/dashboard/events/webhooks/github-app + dashboard-proto/demo on Vercel). duna.io = production alias (api/dashboard/connect.duna.io point at the PROD LB 3.76.148.43/18.194.122.18; cdn.duna.io CloudFront; know.duna.io same HubSpot). viaduna.com = CDN alias. All Duna-owned (Key-Systems GmbH registrar, AWS Route53 NS; withduna+viaduna batch-registered same second 2023-07-10; serve/route Duna code+data) => in scope per CLAUDE.md scope clarification. Recommend bringing withduna.com into active scope - highest-value new surface.",
   "ruled_out": [
     "cPanel service subdomains cpanel/cpcalendars/whm/webdisk/webmail/mail.duna.com are all NXDOMAIN - no cPanel hosting in use, dead.",
     "config.duna.com, demo.duna.com, dashboard-proto.duna.com are NXDOMAIN.",
@@ -17,7 +17,10 @@
     "Security headers strong on dashboard (HSTS includeSubDomains, strict CSP nonce+strict-dynamic, XFO, COOP/CORP, locked permissions-policy) and auth (HSTS preload). CF __cf_bm/_cfuvid cookies correctly HttpOnly+Secure+SameSite=None.",
     "webhooks.duna.com exposes only GET /health; no inbound webhook route reachable by path enumeration (opaque per-provider secret paths). Signature/replay/SSRF tests blocked without a real webhook URL (manual step).",
     "events.duna.com is an authenticated Segment-style analytics collector requiring a valid write_key/api_key; bogus keys rejected, no public key in bundles, CORS * without credentials. Not unauthenticated event injection. No stored XSS reachable (error reflection is application/json).",
-    "SELF-SERVICE SIGNUP = NOT AVAILABLE from this environment (gate task completed). A usable dashboard session CANNOT be obtained self-service with curl. See open_threads gate entry + pending_decisions for exact blockers and what is needed."
+    "SELF-SERVICE SIGNUP = NOT AVAILABLE from this environment (gate task completed). A usable dashboard session CANNOT be obtained self-service with curl. See open_threads gate entry + pending_decisions for exact blockers and what is needed.",
+    "Curated 66-name DNS sweep on *.duna.com (staging,stage,dev,test,qa,uat,sandbox,preview,app,portal,backoffice,admin-api,internal,int,api-staging,api-dev,dashboard-staging,dashboard-dev,beta,next,legacy,v1,v2,gateway,grafana,kibana,prometheus,jenkins,ci,gitlab,vault,argocd,vpn,bastion,jump,monitoring,metrics,logs,db,storage,files,assets,media,blog,careers,help,kb,partners,developers,sdk,mobile,m,old,new,auth-staging,api-internal,internal-api,sentry,runner,settings,config,demo,dashboard-proto,graphql,n8n,github-app) = ALL NXDOMAIN. No forgotten/staging/internal host on the duna.com apex beyond the 27 known.",
+    "vhost probing on prod app LB via Host-header override (CONNECT api.duna.com, override Host): only dashboard(->/login), connect(->/onboard), api route. settings/staging/internal/admin-api/api-internal/graphql/dashboard-proto/grafana/admin/auth-admin/config/preview .duna.com all return bare empty 404 with NO Server header = no vhost on public LB. Admin/settings unreachable from edge - confirmed dead end.",
+    "certspotter + crt.sh CT sweep for duna.com net-new = only cdn.duna.io (alias-domain cross-SAN), nothing new under duna.com itself."
   ],
   "open_threads": [
     "api.duna.com - core REST API (Express/Helmet, CORS *). Auth-gated data routes behind WorkOS bearer. HIGHEST VALUE: object-by-ID IDOR / cross-tenant read once a session is obtained. Error format endpoint_does_not_exist confirms known-route router. Needs authenticated WorkOS session. STILL BLOCKED on obtaining a session - see gate entry.",
@@ -26,12 +29,16 @@
     "cdn.duna.com - S3 (AmazonS3 origin) behind CloudFront. Test bucket listing/writeability and scan all SPA bundles for baked config, API base paths, and secrets.",
     "docs.duna.com - ReadMe API docs, whole site password-gated (302 /password). If reachable, it is the full authenticated api.duna.com route map/OpenAPI. Try public ReadMe project slug / shared password.",
     "SELF-REGISTRATION GATE RESOLVED = BLOCKED. No self-service path to a dashboard session from this environment. (1) No Duna-side signup: marketing duna.com only CTA 'Get started' -> https://duna.com/forms/get-in-touch (lead form); dashboard.duna.com/login 302 -> WorkOS AuthKit authorize only; /auth/callback?code=bogus -> 302 /auth/failure. (2) WorkOS AuthKit /sign-up route EXISTS (api.workos.com/user_management/authorize + screen_hint=sign-up -> auth-api -> auth.duna.com/sign-up) but is gated by a Cloudflare INTERACTIVE JS challenge (HTTP 403 'Just a moment...', cdn-cgi/challenge-platform chl_page) that a curl/non-browser client cannot solve. The login screen (auth.duna.com/) loads 200, but /sign-up is CF-challenged specifically. (3) AuthKit sign-up requires email OTP verification to a real mailbox - none reachable/controllable from this environment; guardrails forbid operator real email (250480@buas.nl) and any real PII. (4) Dashboard access very likely requires org membership/invite: Duna hosted signup path is /internal/sign-up/{configurationId}/{hostedSignUpId} with invite-link random TypeIDs, and the AuthKit message catalog carries 'Application access denied. Please contact your administrator.', 'Registration denied', invitation-required and waitlist strings. NEXT: needs user/Duna action - see pending_decisions.",
-    "settings.duna.com still NXDOMAIN publicly and not host-routed on the public LB; only origin-IP/internal exposure path remains (needs internal vantage or passive-DNS pivot). Lower priority."
+    "settings.duna.com still NXDOMAIN publicly and not host-routed on the public LB; only origin-IP/internal exposure path remains (needs internal vantage or passive-DNS pivot). Lower priority.",
+    "withduna.com = Duna STAGING/DEV environment on SEPARATE AWS eu-central-1 LB 3.125.250.148/3.126.170.142. Live: admin/api/connect/contribute/dashboard/events/webhooks/github-app.withduna.com; dashboard-proto+demo.withduna.com on Vercel; cdn.withduna.com CloudFront. dashboard.withduna.com -> 302 /login (same app as prod). HIGHEST-VALUE NEW SURFACE: staging envs typically ship weaker hardening, debug flags, seed/demo data, looser CORS/auth, and the prototype apps (dashboard-proto, demo) + github-app host are not on prod. PASSIVE-ONLY so far per RoE (DNS+RDAP+2 root GETs). NEEDS user confirmation to actively test. CT-history internal names currently NXDOMAIN: n8n, config, admin.internal, *.preview .withduna.com (origin/passive-DNS pivot candidates).",
+    "github-app.withduna.com (staging LB) - GitHub App integration host, not present on prod. Potential app manifest / OAuth callback / webhook-receiver exposure. Test once withduna.com in scope.",
+    "duna.io - production alias: api/dashboard/connect.duna.io resolve to the SAME prod LB as duna.com. Same app, so same auth gate; note as alternate hostname for Host-header/cert work. know.duna.io -> same HubSpot as know.duna.com.",
+    "dashboard-proto.withduna.com + demo.withduna.com on Vercel - prototype/demo app instances; check for relaxed auth, seeded demo tenants, Vercel preview-deployment protection gaps."
   ],
   "pending_decisions": [
     "AUTH ACCESS BLOCKER - need ONE of the following from the user/Duna to unblock the two highest-value threads (api.duna.com IDOR + onboarding cross-tenant), ideally provisioning TWO tenants/users for the cross-account IDOR test: (a) a provisioned test tenant with 2 users, OR (b) one valid hosted sign-up invite link https://dashboard.duna.com/internal/sign-up/{configurationId}/{hostedSignUpId} PLUS a usable test mailbox the operator controls for the OTP, OR (c) explicit confirmation that WorkOS self-signup + NEW-org creation is enabled, together with a browser able to solve the Cloudflare /sign-up challenge and a reachable test mailbox. Self-service via curl is not possible (CF interactive challenge on /sign-up + email OTP + probable org/invite requirement)."
   ],
-  "hours_spent": 5.1,
+  "hours_spent": 6.3,
   "known_stack": [
     "Framer (duna.com + www marketing)",
     "React SPA (dashboard, connect 'Duna Connect', contribute 'Duna Contribute') built with Rolldown/Vite, react-intl, served from cdn.duna.com",
@@ -44,7 +51,10 @@
     "No GraphQL, no public OpenAPI, no OIDC discovery on api.duna.com"
   ],
   "discovered_subdomains": [
-    "settings.duna.com (CSP connect-src on app hosts; NXDOMAIN publicly, internal/origin-exposure candidate)"
+    "settings.duna.com (CSP connect-src on app hosts; NXDOMAIN publicly, internal/origin-exposure candidate)",
+    "withduna.com (+ admin/api/connect/contribute/dashboard/events/webhooks/github-app/dashboard-proto/demo/cdn) = Duna STAGING env, separate LB 3.125.250.148/3.126.170.142, Duna-owned, recommend in-scope",
+    "duna.io (+ api/dashboard/connect/cdn/know/www) = Duna production alias, app hosts on prod LB, Duna-owned",
+    "viaduna.com (cdn.viaduna.com) = Duna CDN alias, Duna-owned"
   ],
   "raw_dir": "/home/user/claude-agents/recon-duna/raw/",
   "recon_map_file": "/tmp/claude-0/-home-user-claude-agents/28bfdbd4-f579-5c95-92e3-79d6b7019898/scratchpad/recon.md",
@@ -60,5 +70,6 @@
       "summary": "Express connect.sid session cookie set with HttpOnly but missing Secure and SameSite flags (HSTS on host mitigates).",
       "file": "narrative returned in agent text output (findings/*.md write blocked by harness)"
     }
-  ]
+  ],
+  "recon_deep_file": "/tmp/claude-0/-home-user-claude-agents/28bfdbd4-f579-5c95-92e3-79d6b7019898/scratchpad/recon-deep.md"
 }

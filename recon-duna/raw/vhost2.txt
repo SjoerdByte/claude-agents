@@ -1,0 +1,15 @@
+Host=api.duna.com -> code=404 size=97 ct=application/json; charset=utf-8 redir= [] body: {"errors":[{"code":"endpoint_does_not_exist","message":"Cannot GET /, endpoint does not exist"}]}
+Host=dashboard.duna.com -> code=302 size=28 ct=text/plain; charset=utf-8 redir=https://api.duna.com/login [location: /login|] body: Found. Redirecting to /login
+Host=settings.duna.com -> code=404 size=0 ct= redir= [] body: 
+Host=staging.duna.com -> code=404 size=0 ct= redir= [] body: 
+Host=internal.duna.com -> code=404 size=0 ct= redir= [] body: 
+Host=admin-api.duna.com -> code=404 size=0 ct= redir= [] body: 
+Host=api-internal.duna.com -> code=404 size=0 ct= redir= [] body: 
+Host=graphql.duna.com -> code=404 size=0 ct= redir= [] body: 
+Host=dashboard-proto.duna.com -> code=404 size=0 ct= redir= [] body: 
+Host=grafana.duna.com -> code=404 size=0 ct= redir= [] body: 
+Host=admin.duna.com -> code=404 size=0 ct= redir= [] body: 
+Host=auth-admin.duna.com -> code=404 size=0 ct= redir= [] body: 
+Host=connect.duna.com -> code=302 size=30 ct=text/plain; charset=utf-8 redir=https://api.duna.com/onboard [location: /onboard|] body: Found. Redirecting to /onboard
+Host=config.duna.com -> code=404 size=0 ct= redir= [] body: 
+Host=preview.duna.com -> code=404 size=0 ct= redir= [] body: 
