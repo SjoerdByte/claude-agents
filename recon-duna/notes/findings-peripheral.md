@@ -43,23 +43,26 @@ and demo, or move the prototypes behind WorkOS SSO like the real dashboard. Stri
 Figma MCP capture.js from public builds. Remove hardcoded internal Slack links. Keep
 customer-named prototypes off the public internet.
 
-## F-PERI-002 (High, CONFIRMED) - Supabase anon role has SELECT on profiles / annotations / annotation_replies
+## F-PERI-002 (Medium, CONFIRMED) - Supabase anon role has SELECT on profiles / annotations / annotation_replies
 
 Host (bundle origin): dashboard-proto.withduna.com
 Host (data origin): chcwcdmadmecntdrlyfl.supabase.co (Supabase cloud, Duna-owned tenant)
-Severity: High. CONFIRMED by minimal status-only RLS probe (operator-run, 2026-10-29).
-CVSS 7.5 AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N. OWASP A01:2021 Broken Access Control
-(+ A05:2021 Security Misconfiguration for the key-in-bundle angle).
+Severity: Medium. CONFIRMED by minimal status-only RLS probe (operator-run, 2026-10-29).
+CVSS 5.3 AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N. OWASP A01:2021 Broken Access Control
+(+ A05:2021 Security Misconfiguration for the key-in-bundle angle). Note: the control
+weakness (broken access control on PII) is a serious design flaw; current exposure
+volume (35 internal profiles) sizes the finding at Medium today, but the same flaw
+would be High-impact as soon as the tables grow or sensitive customer data lands there.
 
-Verification result (status codes only, no rows retrieved):
+Verification result (status codes + Content-Range only, no rows retrieved):
 
-    GET /rest/v1/profiles?select=count            -> HTTP 206 (SELECT allowed; row returned)
-    GET /rest/v1/annotations?select=count         -> HTTP 200 (SELECT allowed)
-    GET /rest/v1/annotation_replies?select=count  -> HTTP 200 (SELECT allowed)
-    GET /rest/v1/profile_organizations?select=count -> HTTP 404 (no anon GRANT)
-    GET /rest/v1/projects?select=count            -> HTTP 404 (no anon GRANT)
-    GET /rest/v1/explorations?select=count        -> HTTP 404 (no anon GRANT)
-    GET /rest/v1/user_active_explorations?select=count -> HTTP 404 (no anon GRANT)
+    GET /rest/v1/profiles           -> HTTP 206 Content-Range: 0-0/35 (SELECT allowed, 35 rows)
+    GET /rest/v1/annotations        -> HTTP 200 Content-Range: */0   (SELECT allowed, empty)
+    GET /rest/v1/annotation_replies -> HTTP 200 Content-Range: */0   (SELECT allowed, empty)
+    GET /rest/v1/profile_organizations -> HTTP 404 (no anon GRANT, hardened)
+    GET /rest/v1/projects              -> HTTP 404 (no anon GRANT, hardened)
+    GET /rest/v1/explorations          -> HTTP 404 (no anon GRANT, hardened)
+    GET /rest/v1/user_active_explorations -> HTTP 404 (no anon GRANT, hardened)
 
 Interpretation: HTTP 404 on PostgREST means the anon role has no privileges on that
 relation (hardened). HTTP 200/206 means anon has SELECT and RLS is either absent or
@@ -83,12 +86,20 @@ The /rest/v1/ OpenAPI schema endpoint correctly rejects publishable keys
 ("Secret API key required"), so Supabase's own hardening around schema disclosure is in
 place. The failure is at the table-GRANT / RLS level for the specific tables above.
 
-Confirmed impact: an unauthenticated attacker on the internet can enumerate the Duna
-employees who used the design-system / annotation prototype via the `profiles` table
-(names and emails per Supabase's standard profile shape), and read every annotation on
-unshipped features via `annotations` and `annotation_replies`. The size of the exposure
-on `profiles` was not probed to avoid handling real PII, but a single row was
-demonstrably retrieved (HTTP 206 with Range: 0-0).
+Confirmed impact (current data volume):
+- 35 rows in `profiles` readable unauthenticated. These correspond to the Duna
+  employees who used the design-system / annotation prototype (standard Supabase
+  profile shape: typically id, email, full_name, avatar_url). Sampling rows was not
+  performed to avoid handling real PII; the row count was obtained via Content-Range
+  on an empty-body request.
+- `annotations` and `annotation_replies` currently hold 0 rows, but anon has a
+  live SELECT grant on them. The moment anyone annotates an unreleased feature the
+  content is readable by anyone on the internet.
+
+Latent impact: identical primitive on any future table added to the Supabase project
+without explicit RLS review. The hard-coded publishable key continues to be shipped in
+every browser that loads dashboard-proto, so revoking it also helps F-PERI-001's
+exposure of the prototype app.
 
 Fix regardless of RLS state: audit RLS on every table listed above (anon should at best
 be able to insert their own records, never bare SELECT *); consider moving the Supabase
