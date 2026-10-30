@@ -83,7 +83,16 @@
     "F002 escalation: PKCE -- code_challenge_methods_supported: S256. Authorize accepts with and without code_challenge. Token returns same error with/without code_verifier for invalid codes. Cannot confirm enforcement without valid auth code.",
     "F002 escalation: redirect_uri binding -- redirect_uri REQUIRED at token exchange (error when omitted). Code is bound to URI.",
     "F002 escalation: OIDC SSRF re-test -- Re-registered client with logo_uri/client_uri/policy_uri/tos_uri/sector_identifier_uri/initiate_login_uri all to 169.254.169.254. Client created but URIs stripped from response. Still unconfirmed outbound fetch. Manual Burp Collaborator step.",
-    "Clerk OAuth scopes: clerk.lucis.life OIDC config lists openid/profile/email/public_metadata/private_metadata/offline_access/care:read/care:write/health:read/health:write/orders:read. These are Clerk-managed MCP OAuth scopes. Cannot test without registered Clerk OAuth client (dynamic registration disabled)."
+    "Clerk OAuth scopes: clerk.lucis.life OIDC config lists openid/profile/email/public_metadata/private_metadata/offline_access/care:read/care:write/health:read/health:write/orders:read. These are Clerk-managed MCP OAuth scopes. Cannot test without registered Clerk OAuth client (dynamic registration disabled).",
+    "S3 bucket lucis-terra-payloads-prod: comprehensive testing -- listing denied (GET /, GET /?prefix=*, GET /?list-type=2), individual object access denied (HEAD on test.txt/index.html/.env/config.json), write denied (PUT test, POST ?uploads), ACL/policy/CORS/website/versioning queries all 403, 10 common prefixes tested (uploads/ files/ documents/ reports/ test/ tmp/ public/ private/ users/ members/). Static website endpoint not enabled. Properly locked down.",
+    "S3 bucket unauthenticated write: lucis-terra-payloads-prod PUT returns 403 Access Denied. POST multipart upload returns 403 Anonymous users cannot initiate multipart uploads. No public write access.",
+    "S3 bucket enumeration: 60+ bucket names tested based on config schema patterns (STORAGE_BUCKET_USER_HEALTH_DOCUMENT, STORAGE_BUCKET_PUBLIC_DOCUMENT, STORAGE_BUCKET_LAB_IMPORT_INPUT). All variations (lucis-*-prod, lucis-prod-*, getlucis-*, lucis-life-*) return 404 (bucket does not exist). Only lucis-terra-payloads-prod confirmed to exist in eu-west-3.",
+    "assets.lucis.life S3 direct access: behind CloudFront (d50dfba7cdc75e038fa691e4f574341a.cloudfront.net) + Cloudflare. All paths return 403 (images/ documents/ files/ reports/ uploads/ health-documents/ lab-results/ requisitions/ apple-wallet/ qr-codes/). No CloudFront bypass possible. x-amz-bucket-region: eu-west-3 confirmed.",
+    "probo-eu-west-1-files-897729133226 S3 bucket: listing denied (403), ACL query denied (403), write denied (403). Properly locked down.",
+    "API file endpoints without auth: POST /v1/files/generate-presigned-url (401), POST /v1/files/complete-upload (401), POST /v1/files/{id}/generate-download-url (401), DELETE /v1/files/{id} (401), GET /v1/files (401). Auth bypass attempts (empty Bearer, null, undefined, X-Api-Key header) all return 401. No unauthenticated access.",
+    "Public file download endpoints: /v1/public/files, /v1/public/documents, /v1/public/qr, /v1/public/wallet, /v1/public/requisitions, /v1/public/apple-wallet, /v1/files/public, /v1/documents, /v1/reports all return 404. No public file access routes exist.",
+    "Strapi media (DO Spaces): individual files accessible by exact hash URL (by design for blog media). Filenames use pattern {name}_{10char_hex}.{ext} with size variants. Hash suffix not enumerable (incrementing returns 403). Only blog images found, no PII/health data. CORS: access-control-allow-origin:* GET-only. Standard Strapi Cloud behavior.",
+    "CMS media API: /api/upload/files returns 403 (properly gated). /uploads returns 404. /api/articles returns 403."
   ],
   "open_threads": [
     "OIDC SSRF via metadata URIs: needs out-of-band callback (Burp Collaborator or similar) to confirm whether server fetches logo_uri/client_uri/sector_identifier_uri. Manual step.",
@@ -105,7 +114,11 @@
       "address_id": "06c2ddf1-6b85-48af-ac42-5f50d5a65abf",
       "status": "REGISTERED",
       "session_status": "EXPIRED",
-      "auth_methods": ["password", "email_code", "email_link"]
+      "auth_methods": [
+        "password",
+        "email_code",
+        "email_link"
+      ]
     },
     "g2": {
       "email": "peter.bjorn75+lucis2@gmail.com",
@@ -354,10 +367,26 @@
       "revoke": "https://clerk.lucis.life/oauth/token/revoke",
       "device_authorization": "https://clerk.lucis.life/oauth/device_authorization",
       "jwks": "https://clerk.lucis.life/.well-known/jwks.json (kid=ins_2rxFlXG6QXTpPPrJHC3ZxSOXdiS, RS256)",
-      "scopes_supported": ["openid", "profile", "email", "public_metadata", "private_metadata", "offline_access", "care:read", "care:write", "health:read", "health:write", "orders:read"],
+      "scopes_supported": [
+        "openid",
+        "profile",
+        "email",
+        "public_metadata",
+        "private_metadata",
+        "offline_access",
+        "care:read",
+        "care:write",
+        "health:read",
+        "health:write",
+        "orders:read"
+      ],
       "dynamic_registration": "disabled",
       "client_id_metadata_document": "supported but no outbound fetch observed",
-      "grant_types": ["authorization_code", "refresh_token", "urn:ietf:params:oauth:grant-type:device_code"]
+      "grant_types": [
+        "authorization_code",
+        "refresh_token",
+        "urn:ietf:params:oauth:grant-type:device_code"
+      ]
     },
     "www_public_surface": [
       "GET /llms.txt 200 (agent instructions)",
@@ -373,7 +402,15 @@
       "GET /.well-known/oauth-authorization-server 200 (RFC 8414)",
       "GET /.well-known/oauth-protected-resource 200 (RFC 9728)",
       "POST /oauth/token (client_credentials, scope catalog.read)"
-    ]
+    ],
+    "file_endpoints": {
+      "POST /v1/files/generate-presigned-url": "401 without auth. Generates S3 upload presigned URL.",
+      "POST /v1/files/complete-upload": "401 without auth. Marks upload complete.",
+      "POST /v1/files/{id}/generate-download-url": "401 without auth. Generates S3 download presigned URL.",
+      "DELETE /v1/files/{id}": "401 without auth. Deletes a file.",
+      "GET /v1/files": "401 without auth (subscription-gated). Lists user files.",
+      "note": "All file endpoints require Clerk auth + active subscription. Cannot test presigned URL generation, file type validation, path traversal, content-type handling, or IDOR without authenticated session."
+    }
   },
   "client_side_keys": {
     "stripe_publishable": "pk_live_51NnddQJf5pErllsphKLPtcHU9c60x77XbQChVTxcoY829WNJzmTuFCzHhdJ1kNsD1gB1M7phm6Of25SE5XviAx1M00Ymjh4s9B",
@@ -386,7 +423,7 @@
     "gtm_container": "GTM-52SDP34K",
     "note": "All public/client-side by design. No secret keys found in runtime values."
   },
-  "hours_spent": 9.5,
+  "hours_spent": 10.25,
   "findings": [
     {
       "id": "F001",
@@ -432,6 +469,18 @@
       "status": "confirmed",
       "summary": "Test coupon code 'test' active in production provides 490 EUR fixed discount (exact subscription price), allowing free subscriptions via unauthenticated public endpoints.",
       "file": "/home/user/claude-agents/recon-lucis/findings/F004-test-coupon-code-in-production.md"
+    },
+    {
+      "id": "F005",
+      "endpoint": "https://clerk.lucis.life/v1/client/sign_ins/{id}/attempt_first_factor",
+      "method": "POST",
+      "severity": "Medium",
+      "cvss": "5.9 AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N",
+      "owasp": "A07:2021 Identification and Authentication Failures",
+      "cwe": "CWE-307 Improper Restriction of Excessive Authentication Attempts",
+      "status": "confirmed",
+      "summary": "No account lockout on password authentication. 100+ failed password attempts do not trigger lockout, suspension, or CAPTCHA. Rate limiting exists (HTTP 429, Retry-After: 60s) but allows ~54% of rapid requests through and resets with new sign-in attempts. Email code verification properly locks after 3 attempts, but password verification has no limit.",
+      "file": "/home/user/claude-agents/recon-lucis/findings/F005-no-account-lockout-brute-force.md"
     }
   ],
   "raw_evidence": {
@@ -496,9 +545,11 @@
       "assessment": "Properly configured. No spoofing possible."
     },
     "storage_buckets": {
-      "assets.lucis.life": "AWS S3 eu-west-3 (behind CloudFront + Cloudflare), listing denied",
-      "strapi_media": "miraculous-fireworks-748b2a2a2a.media.strapiapp.com (DO Spaces ams3c), listing denied",
-      "probo_s3": "probo-eu-west-1-files-897729133226.s3.eu-west-1.amazonaws.com, access denied"
+      "lucis-terra-payloads-prod": "AWS S3 eu-west-3. Terra webhook payload storage. Listing/read/write all denied. No public access.",
+      "assets.lucis.life": "AWS S3 eu-west-3 behind CloudFront + Cloudflare. All paths 403. Actual bucket name unknown.",
+      "strapi_media": "miraculous-fireworks-748b2a2a2a.media.strapiapp.com (DO Spaces ams3c). Listing denied. Individual blog images accessible by hash URL (by design).",
+      "probo_s3": "probo-eu-west-1-files-897729133226.s3.eu-west-1.amazonaws.com (AWS S3 eu-west-1). All access denied.",
+      "config_schema_buckets": "STORAGE_BUCKET_USER_HEALTH_DOCUMENT, STORAGE_BUCKET_PUBLIC_DOCUMENT, STORAGE_BUCKET_LAB_IMPORT_INPUT referenced in config schema. Actual bucket names unknown (60+ patterns tested, all 404)."
     },
     "txt_records": [
       "google-site-verification (x2)",
