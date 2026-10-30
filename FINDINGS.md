@@ -1067,6 +1067,30 @@ Return consistent error responses regardless of tenant/jurisdiction validity.
 
 ---
 
+## JS BUNDLE CODE REVIEW FINDINGS (Require Browser Verification)
+
+The following issues were identified through static analysis of the wildz.com and beazt.com JavaScript bundles obtained via the Cloudflare WAF bypass. These require browser-based testing to confirm exploitability.
+
+**1. postMessage Origin Validation Bypass (Potential HIGH)**
+The SPA uses `endsWith("pragmaticplay.net")` and `endsWith("greentube.com")` for postMessage origin checks without a leading dot boundary. A domain like `evilpragmaticplay.net` would pass validation, allowing injection of game events that trigger wallet actions (deposits/withdrawals).
+
+**2. Auth Token in localStorage (MEDIUM)**
+Authentication tokens are stored in both sessionStorage and localStorage. localStorage persists across browser sessions and is accessible to any XSS on the domain. Combined with the CORS subdomain wildcard on sso.rootz.com, this significantly increases the blast radius of any XSS.
+
+**3. WebSocket Token in Query String (MEDIUM)**
+The WebSocket connection uses `wss://wsapi.rootz.com/ws?token=<token>`, exposing the auth token in server logs, proxy logs, and Referer headers.
+
+**4. Apple Pay Merchant Validation JSON Injection (MEDIUM)**
+The Apple Pay validation URL is constructed via string concatenation (`'{"validationUrl": "' + url + '"}'`) without JSON escaping. A malicious validation URL could inject arbitrary JSON fields.
+
+**5. Registration Enumeration via Error Messages (MEDIUM)**
+Registration distinguishes "phone already registered" errors. Password reset returns error code "10015" for wrong mobile number. These differential responses enable user enumeration.
+
+**6. Mass Assignment Risk in Registration (MEDIUM)**
+Monthly spending limits are built client-side with client-only validation. The `countryID` and `crossSellID` parameters are derived from client data. Server-side enforcement needs verification.
+
+---
+
 ## NEWLY DISCOVERED INFRASTRUCTURE (Phase 2)
 
 | Service | URL | Status |
