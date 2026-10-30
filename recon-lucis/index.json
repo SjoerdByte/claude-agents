@@ -68,13 +68,31 @@
     "api.stg.lucis.tech (staging API): returns 502 Bad Gateway. Not publicly accessible.",
     "app.lucis.life RSC (React Server Components): /profile/ and /onboarding/ return 500 \"Internal Server Error\" (SSR bug for unauthenticated access). No stack trace or debug info leaked.",
     "/v1/users/* is a catch-all wildcard route (/v1/users/:id). /v1/users/totally-fake-garbage returns 403 (subscription gate). Not individual endpoints for search/list/export.",
-    "Markdown API on www.lucis.life: /api/markdown/[[...slug]] catch-all serves auth, webhooks, docs/mcp pages. Path traversal (../.env, ../../etc/passwd) returns 403/404. No sensitive content accessible."
+    "Markdown API on www.lucis.life: /api/markdown/[[...slug]] catch-all serves auth, webhooks, docs/mcp pages. Path traversal (../.env, ../../etc/passwd) returns 403/404. No sensitive content accessible.",
+    "F002 escalation: redirect_uri bypass at registration -- 20+ techniques tested: external domains (evil.com https/http), custom schemes (lucis://), data: URIs, javascript: URIs, userinfo tricks (localhost@evil.com, localhost:80@evil.com), null bytes (localhost%00@evil.com), fragment confusion (localhost#@evil.com), subdomain tricks (localhost.evil.com, localhostevil.com, 127.0.0.1.evil.com), credentials syntax (evil:evil@localhost), IPv6-mapped external (::ffff:8.8.8.8), 0.0.0.0, path traversal backslash. ALL non-loopback rejected. Alternative loopback representations accepted (decimal 2130706433, octal 0177.0.0.1, hex 0x7f000001, URL-encoded, IPv6 long [0:0:0:0:0:0:0:1]) but all resolve to loopback. Non-loopback in alternative forms (decimal 134744072=8.8.8.8, hex 0x08080808, octal 010.0.0.1) correctly rejected. Validation is robust.",
+    "F002 escalation: scope/grant downgrade at registration -- Registration ALWAYS forces: scope=openid (drops profile/email/address/health:read/care:read/orders:read/health:write/care:write), grant_types=[authorization_code] (drops client_credentials), token_endpoint_auth_method=none (ignores client_secret_post/basic). No client_secret ever issued. Multiple redirect_uris with one external rejected.",
+    "F002 escalation: client_credentials at OIDC token endpoint -- Token endpoint internally supports client_credentials (error: Expected authorization_code | client_credentials). All registered clients have method=none and no secret. Empty secret: 'Too small: expected string to have >=1 characters'. Fabricated secret: 'Client authentication failed'. Cannot bypass.",
+    "F002 escalation: OIDC client management -- No GET/PUT/PATCH/DELETE on /oidc/register/{client_id} (all 404). Only POST+OPTIONS. Clients cannot be read, updated, or deleted.",
+    "F002 escalation: token introspection/revocation -- /oidc/token/introspect and /oidc/token/revoke both 404. No endpoints exist.",
+    "F002 escalation: token confusion -- OIDC (api.lucis.life kid=sig-2026-01) vs Clerk (clerk.lucis.life kid=ins_2rxFlXG6QXTpPPrJHC3ZxSOXdiS): different RSA keys, no cross-verification. Catalog token (lucis_ opaque, www.lucis.life) rejected by OIDC userinfo and MCP and api member endpoints. All services properly isolated.",
+    "F002 escalation: MCP endpoints -- Only /health (200), GET|POST /v1/mcp (401), /.well-known/oauth-protected-resource (200). /v1/tools, /v1/resources, /v1/prompts, /v1/sse, /v1/messages, /docs, /swagger, /openapi.json, /.well-known/mcp.json all 404. Properly requires Clerk OAuth Bearer.",
+    "F002 escalation: Clerk dynamic registration -- Disabled (feature_requires_dynamic_oauth_client_registration). Device auth flow needs client_id. client_id_metadata_document_supported=true but URL-based client_ids return 'could not be resolved'. Timing analysis: ~0.21s for both resolving and non-resolving domains = no outbound fetch, no SSRF.",
+    "F002 escalation: Clerk authorize without client_id -- Accepts initial /oauth/authorize and redirects to /oauth/authorize/continue, but continue step returns 401 'The requested OAuth 2.0 Client does not exist'. Deferred but functional validation.",
+    "F002 escalation: OIDC authorize deferred validation -- app.lucis.life/oidc/authorize 307 to sign-in before validating redirect_uri/scope. api.lucis.life/oidc/authorize 401 (requires auth first). Cannot test mismatch without active session.",
+    "F002 escalation: client enumeration -- authorization_code grant: 'invalid_grant' for existing clients vs 'invalid_client' for non-existing. Differential but UUIDs not enumerable. client_credentials uniform. Non-UUID: 'Invalid UUID'.",
+    "F002 escalation: PKCE -- code_challenge_methods_supported: S256. Authorize accepts with and without code_challenge. Token returns same error with/without code_verifier for invalid codes. Cannot confirm enforcement without valid auth code.",
+    "F002 escalation: redirect_uri binding -- redirect_uri REQUIRED at token exchange (error when omitted). Code is bound to URI.",
+    "F002 escalation: OIDC SSRF re-test -- Re-registered client with logo_uri/client_uri/policy_uri/tos_uri/sector_identifier_uri/initiate_login_uri all to 169.254.169.254. Client created but URIs stripped from response. Still unconfirmed outbound fetch. Manual Burp Collaborator step.",
+    "Clerk OAuth scopes: clerk.lucis.life OIDC config lists openid/profile/email/public_metadata/private_metadata/offline_access/care:read/care:write/health:read/health:write/orders:read. These are Clerk-managed MCP OAuth scopes. Cannot test without registered Clerk OAuth client (dynamic registration disabled)."
   ],
   "open_threads": [
     "OIDC SSRF via metadata URIs: needs out-of-band callback (Burp Collaborator or similar) to confirm whether server fetches logo_uri/client_uri/sector_identifier_uri. Manual step.",
     "Auth token lifecycle: Clerk JWTs have 60s TTL (auto-expire). Revoking a session to test token invalidation would lock out the test account. Low priority given the short TTL.",
     "Subscription-gated endpoints (/v1/biomarkers, /v1/users/me, /v1/products, /v1/protocols, /v1/files, /v1/visits, /v1/wearable/*, /v1/coach/threads, /v1/seat-invitations/my-invitations): require active subscription to test for data-level IDOR. Both test accounts are REGISTERED (not subscribed). Would need paid/comp accounts to test data access controls within these endpoints.",
-    "All test account Clerk sessions expired: g1 (sess_3LNckre2lwD8YVl3oKjVDt2xTql), g2 (sess_3LNckxKHFEVJK5egKmbQvGzyFdW), account1 (sess_3LNg3Q21j7lIdalpsgNsSsXAYBq) all return signed_out. Need fresh sessions for authenticated endpoint testing of newly discovered routes."
+    "All test account Clerk sessions expired. Password-based sign-in available but password unknown. Email-based verification requires inbox access. Need operator assistance to either: (a) provide test account passwords, (b) provide fresh __client cookies with active sessions, or (c) grant email inbox access for OTP verification.",
+    "OIDC PKCE enforcement: Cannot confirm whether PKCE (S256) is required or optional without completing an authorization flow with a valid code. Needs active session. If PKCE is not enforced, authorization codes on loopback can be intercepted by other local processes.",
+    "OIDC scope escalation post-auth: Authorize endpoint passes unvalidated scopes through to sign-in redirect. Need active session to test whether broader scopes (health:read, etc.) are accepted at code issuance time despite registration limiting to openid only.",
+    "OIDC redirect_uri mismatch post-auth: Need active session to test whether a different redirect_uri (different port/path) is accepted at code issuance despite being registered with a specific redirect_uri."
   ],
   "pending_decisions": [],
   "test_accounts": {
@@ -86,7 +104,8 @@
       "stripe_customer_id": "cus_VX2r0rrAfSNmFn",
       "address_id": "06c2ddf1-6b85-48af-ac42-5f50d5a65abf",
       "status": "REGISTERED",
-      "session_status": "EXPIRED"
+      "session_status": "EXPIRED",
+      "auth_methods": ["password", "email_code", "email_link"]
     },
     "g2": {
       "email": "peter.bjorn75+lucis2@gmail.com",
@@ -108,6 +127,12 @@
       "note": "No working Clerk session"
     }
   },
+  "oidc_test_clients": {
+    "note": "Clients registered during F002 escalation testing. All forced to scope=openid, grant_types=[authorization_code], method=none.",
+    "MismatchTest": "177a36ed-04b6-4b8b-9ff2-dd1dd17cbeb0",
+    "ScopeTest-health": "b6694669-567f-411a-9879-ac2736acbec9",
+    "ScopeTest-cc": "2cf32e84-1b6d-4c5a-a0a3-18edd20db531"
+  },
   "api_surface": {
     "base": "https://api.lucis.life",
     "public_no_auth": [
@@ -128,8 +153,21 @@
       "POST /oidc/register 201 (F002)",
       "GET /.well-known/openid-configuration 200",
       "GET /.well-known/jwks.json 200",
-      "GET /v1/version 200 (returns API semver, no auth)"
+      "GET /v1/version 200 (returns API semver, no auth)",
+      "POST /oidc/token (authorization_code + client_credentials grants)",
+      "GET /oidc/userinfo 401 (needs Bearer)"
     ],
+    "oidc_endpoints": {
+      "discovery": "GET /.well-known/openid-configuration",
+      "jwks": "GET /.well-known/jwks.json (kid=sig-2026-01, RS256)",
+      "registration": "POST /oidc/register (open, no auth)",
+      "authorize": "GET app.lucis.life/oidc/authorize (redirects to sign-in)",
+      "token": "POST /oidc/token (authorization_code + client_credentials)",
+      "userinfo": "GET /oidc/userinfo (Bearer required)",
+      "introspect": "404 (not implemented)",
+      "revoke": "404 (not implemented)",
+      "client_management": "404 (no GET/PUT/PATCH/DELETE on /oidc/register/{id})"
+    },
     "member_gated_authenticated": [
       "GET /v1/orders 200 (scoped to own)",
       "GET /v1/addresses 200 (scoped to own)",
@@ -143,7 +181,9 @@
       "GET /v1/users/by-referral-code 403 (auth required)",
       "GET /v1/places/autocomplete 401 (auth required)",
       "GET /v1/slack/links 401 (auth required)",
-      "GET /v1/protected/campaigns 401 (auth required)"
+      "GET /v1/protected/campaigns 401 (auth required)",
+      "GET /v1/oauth-grants 401 (auth required)",
+      "GET /v1/oauth-grants/availability 401 (auth required)"
     ],
     "subscription_gated_403": [
       "/v1/biomarkers",
@@ -301,7 +341,23 @@
       "health": "GET /health 200 (database:up)",
       "mcp_door": "GET|POST /v1/mcp 401 (Bearer required, scopes: health:read care:read orders:read)",
       "protected_resource": "GET /.well-known/oauth-protected-resource 200",
-      "auth_server": "https://clerk.lucis.life"
+      "auth_server": "https://clerk.lucis.life",
+      "www_authenticate": "Bearer resource_metadata=\"https://mcp.lucis.life/.well-known/oauth-protected-resource/v1/mcp\", scope=\"health:read care:read orders:read\"",
+      "cors": "access-control-allow-origin: *, access-control-allow-methods: GET,HEAD,PUT,PATCH,POST,DELETE"
+    },
+    "clerk_oauth": {
+      "authorization_server": "https://clerk.lucis.life/.well-known/oauth-authorization-server",
+      "authorize": "https://clerk.lucis.life/oauth/authorize",
+      "token": "https://clerk.lucis.life/oauth/token",
+      "userinfo": "https://clerk.lucis.life/oauth/userinfo",
+      "introspect": "https://clerk.lucis.life/oauth/token_info",
+      "revoke": "https://clerk.lucis.life/oauth/token/revoke",
+      "device_authorization": "https://clerk.lucis.life/oauth/device_authorization",
+      "jwks": "https://clerk.lucis.life/.well-known/jwks.json (kid=ins_2rxFlXG6QXTpPPrJHC3ZxSOXdiS, RS256)",
+      "scopes_supported": ["openid", "profile", "email", "public_metadata", "private_metadata", "offline_access", "care:read", "care:write", "health:read", "health:write", "orders:read"],
+      "dynamic_registration": "disabled",
+      "client_id_metadata_document": "supported but no outbound fetch observed",
+      "grant_types": ["authorization_code", "refresh_token", "urn:ietf:params:oauth:grant-type:device_code"]
     },
     "www_public_surface": [
       "GET /llms.txt 200 (agent instructions)",
@@ -330,7 +386,7 @@
     "gtm_container": "GTM-52SDP34K",
     "note": "All public/client-side by design. No secret keys found in runtime values."
   },
-  "hours_spent": 8.0,
+  "hours_spent": 9.5,
   "findings": [
     {
       "id": "F001",
@@ -352,6 +408,7 @@
       "owasp": "A07:2021 Identification and Authentication Failures",
       "status": "confirmed",
       "summary": "Open OIDC dynamic client registration allows unlimited unauthenticated client creation with no deletion capability.",
+      "escalation_tested": "2026-10-29: Extensive escalation testing. redirect_uri bypass (20+ techniques): all rejected, validation is robust. Scope escalation: registration properly strips all non-openid scopes. client_credentials: token endpoint supports it internally but registered clients cannot authenticate. Token confusion: different signing keys across services. MCP: properly requires Clerk OAuth. No escalation path found without active session. Severity remains Medium.",
       "file": "/home/user/claude-agents/recon-lucis/findings/F002-oidc-open-dynamic-client-registration.md"
     },
     {
@@ -364,6 +421,17 @@
       "status": "confirmed",
       "summary": "Server-side environment configuration schema (129 entries with names, descriptions, and defaults) leaked in client-side JavaScript bundle. Reveals complete infrastructure map, third-party integrations, internal emails, staging URLs, and service key architecture. No actual secret values exposed.",
       "file": "/home/user/claude-agents/recon-lucis/findings/F003-server-config-schema-leak-in-client-bundle.md"
+    },
+    {
+      "id": "F004",
+      "endpoint": "https://api.lucis.life/v1/public/codes/validate + /v1/public/checkout/calculate",
+      "method": "POST",
+      "severity": "High",
+      "cvss": "7.5 AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+      "owasp": "A04:2021 Insecure Design",
+      "status": "confirmed",
+      "summary": "Test coupon code 'test' active in production provides 490 EUR fixed discount (exact subscription price), allowing free subscriptions via unauthenticated public endpoints.",
+      "file": "/home/user/claude-agents/recon-lucis/findings/F004-test-coupon-code-in-production.md"
     }
   ],
   "raw_evidence": {
