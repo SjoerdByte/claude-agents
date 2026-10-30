@@ -46,7 +46,11 @@
     "raw_stg_batch1.txt",
     "raw_stg_batch2.txt",
     "raw_infra_batch1.txt",
-    "exploit_frontendapi.md"
+    "exploit_frontendapi.md",
+    "exploit_brand_domains.md",
+    "exploit_email_security.md",
+    "email_security_results.json",
+    "doh_email_check.py"
   ],
   "ruled_out": [
     "wheelz.com is not WordPress (wp-login.php returns same CF challenge as everything else)",
@@ -92,7 +96,13 @@
     "frontendapi.rootz.com API route discovery - 100+ paths tested (GET/POST/PUT/DELETE, /api/v1/*, /api/v2/*, /v1/*, root-level, Prometheus-derived paths, framework paths, docs endpoints), all return 404 with valid tenant. API routes are not discoverable without frontend JS (blocked by Cloudflare challenge).",
     "frontendapi.rootz.com tenant via path/query/Host - tenant is ONLY read from X-Tenant header, not from URL path, query params, or Host header",
     "frontendapi.rootz.com CORS credential theft - ACAO:* combined with ACAC:true is blocked by browsers for credentialed requests (browser mitigation), not directly exploitable for cookie/session theft",
-    "content.rootz.com and s-content.rootz.com with X-Tenant header - still returns 500 {} regardless of tenant"
+    "content.rootz.com and s-content.rootz.com with X-Tenant header - still returns 500 {} regardless of tenant",
+    "lemonz.com - Not Rootz-managed (EuroDNS nameservers, parkingcrew DMARC CNAME, parked domain)",
+    "megagewinn.de - Not Rootz-managed (no NS records, Hetzner IP 188.40.92.90)",
+    "Open redirect on berriez.casino - /redirect, /login?next, /goto all return 200, no redirect; CRLF returns 404",
+    "security.txt on all brand domains - blocked by Cloudflare challenge, not accessible",
+    "Cookie security on Cloudflare-managed brand domains - all properly set (HttpOnly, Secure, SameSite=None, per-domain scope)",
+    "TLS certificates on all brand domains - valid, matching domain names, no wildcard leaks"
   ],
   "open_threads": [
     {
@@ -171,7 +181,11 @@
       "status": "tested",
       "title": "frontendapi.rootz.com - tenant enumeration and CORS info leak confirmed, API routes not discoverable",
       "detail": "TESTED: X-Tenant header identified as tenant mechanism via CORS preflight leak and differential error responses. Valid tenants (wheelz, wildz, caxino, spinz, chipz, flamez, berriez, speedz, beazt, tuplaus) return 404; invalid ones (rootz, blingi, megagewinn, lemonz) return 401 'Invalid tenant'. CORS misconfiguration confirmed: ACAO:* + ACAC:true + expose-headers:* on all responses. Preflight leaks allowed headers (Authorization, X-Authorization, X-Tenant, X-SiteJurisdiction, X-Domain). /healthz returns 200 OK without auth. Extensive path enumeration (100+ paths, 5 HTTP methods, 3 API versions) found NO discoverable routes. s-frontendapi.rootz.com is identical. Further testing requires frontend JS access (blocked by Cloudflare challenge).",
-      "findings_confirmed": ["tenant-enumeration-via-x-tenant", "cors-wildcard-with-credentials", "cors-header-information-disclosure"],
+      "findings_confirmed": [
+        "tenant-enumeration-via-x-tenant",
+        "cors-wildcard-with-credentials",
+        "cors-header-information-disclosure"
+      ],
       "endpoints": [
         "https://frontendapi.rootz.com/api/v1",
         "https://frontendapi.rootz.com/healthz",
@@ -234,6 +248,21 @@
       "endpoints": [
         "https://status.rootz.com/"
       ]
+    },
+    {
+      "id": "T14",
+      "priority": 14,
+      "status": "completed",
+      "title": "Brand domain email security assessment - 19 domains tested",
+      "detail": "Systematic DNS, SPF, DMARC, DKIM, TLS, cookie security, and header analysis across all 19 Rootz brand domains. 3 HIGH severity email spoofing findings confirmed (beazt.com, blingi.com, wheelzgames.de). Systemic SPF ~all and missing SPF issues documented. berriez.casino missing security headers. lemonz.com and megagewinn.de excluded (not Rootz-managed). All CF-challenged domains have proper HSTS, CSP, cookie security. No open redirects found on testable domains.",
+      "findings_confirmed": [
+        "F001",
+        "F002",
+        "F003",
+        "F004",
+        "F005",
+        "F006"
+      ]
     }
   ],
   "technology_stack": {
@@ -256,8 +285,24 @@
     "internal_networking": "Kubernetes (rootz-platform namespace, port 7777). Staging uses Dex OIDC + dex-k8s-authenticator for cluster auth",
     "auth": "Token-based (WebSocket API), tenant-based (frontend API), Dex OIDC with Google connector (staging k8s)",
     "architecture": "Multi-tenant, microservices (per-game-provider servers), AWS eu-west-1",
-    "brands_active": ["Wheelz", "Wildz", "Caxino", "Chipz", "Spinz", "Flamez", "Beazt", "Berriez", "Speedz", "Tuplaus"],
-    "brands_inactive": ["Rootz", "Blingi", "Megagewinn", "Lemonz"]
+    "brands_active": [
+      "Wheelz",
+      "Wildz",
+      "Caxino",
+      "Chipz",
+      "Spinz",
+      "Flamez",
+      "Beazt",
+      "Berriez",
+      "Speedz",
+      "Tuplaus"
+    ],
+    "brands_inactive": [
+      "Rootz",
+      "Blingi",
+      "Megagewinn",
+      "Lemonz"
+    ]
   },
   "service_versions": {
     "pragmatic-server": "1.4.10",
@@ -280,7 +325,9 @@
     "cms_lab1": "STRONG - All behind Cloudflare Access, only .well-known metadata accessible",
     "cms_s3_content": "MODERATE - Root listing denied but some buckets have accessible index.html files",
     "staging_oidc": "MODERATE - Dex validates redirect_uri at connector stage, but device code flow is open without client_secret. Missing security headers on login.stg.",
-    "staging_k8s_auth": "WEAK - dex-k8s-authenticator publicly accessible, directory listing enabled, OAuth client_id exposed"
+    "staging_k8s_auth": "WEAK - dex-k8s-authenticator publicly accessible, directory listing enabled, OAuth client_id exposed",
+    "brand_email_auth": "WEAK on 3 domains (beazt.com, blingi.com, wheelzgames.de: DMARC p=none, fully spoofable). MODERATE on 5 domains (missing SPF but DMARC p=reject). STRONG on 8 domains (SPF + DMARC p=reject + DKIM).",
+    "berriez_casino": "MODERATE - HSTS present (no preload), X-Content-Type-Options set, but missing CSP and X-Frame-Options"
   },
   "infrastructure_notes": {
     "cloud_provider": "AWS (eu-west-1 region based on IP ranges)",
@@ -291,5 +338,49 @@
     "infra_elb_ips": "34.255.93.220, 54.194.47.34, 34.251.255.90 (cf-proxied.infra)",
     "internal_ips_leaked": "backendapi.stg.rootz.com resolves to private 10.191.109.92, 10.191.148.120, 10.191.232.148",
     "e2e_s3_ips": "Multiple S3 IPs (3.5.x, 52.92.x, 52.218.x) confirming S3 website hosting"
-  }
+  },
+  "findings": [
+    {
+      "id": "F001",
+      "status": "confirmed",
+      "severity": "HIGH",
+      "title": "Email spoofing on beazt.com - No SPF + DMARC p=none",
+      "file": "findings/F001-beazt-email-spoofing.md"
+    },
+    {
+      "id": "F002",
+      "status": "confirmed",
+      "severity": "HIGH",
+      "title": "Email spoofing on blingi.com - No SPF + DMARC p=none",
+      "file": "findings/F002-blingi-email-spoofing.md"
+    },
+    {
+      "id": "F003",
+      "status": "confirmed",
+      "severity": "HIGH",
+      "title": "Email spoofing on wheelzgames.de - SPF ~all + DMARC p=none",
+      "file": "findings/F003-wheelzgames-email-spoofing.md"
+    },
+    {
+      "id": "F004",
+      "status": "confirmed",
+      "severity": "MEDIUM",
+      "title": "Systemic SPF softfail (~all) on 8 Rootz casino domains",
+      "file": "findings/F004-systemic-spf-softfail.md"
+    },
+    {
+      "id": "F005",
+      "status": "confirmed",
+      "severity": "MEDIUM",
+      "title": "Missing SPF records on 7 active casino domains with MX",
+      "file": "findings/F005-missing-spf-active-domains.md"
+    },
+    {
+      "id": "F006",
+      "status": "confirmed",
+      "severity": "MEDIUM",
+      "title": "flamez.casino and berriez.casino missing all email authentication + security headers",
+      "file": "findings/F006-flamez-casino-no-email-auth.md"
+    }
+  ]
 }

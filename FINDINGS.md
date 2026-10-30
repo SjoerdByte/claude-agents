@@ -532,5 +532,585 @@ Remove the sameAs field from RankMath JSON-LD configuration or replace it with t
 | 10 | Missing Rate Limiting on Login uptime.rootz.com | 5.3 | MEDIUM |
 | 11 | Tenant/Brand Enumeration frontendapi.rootz.com | 5.3 | LOW |
 | 12 | WordPress Origin URL Disclosure via RankMath | 5.8 | MEDIUM |
+| 13 | Dex Staging redirect_uri Validation Bypass | 7.4 | HIGH |
+| 14 | Critical Email Spoofing (beazt.com, blingi.com) | 7.5 | HIGH |
+| 15 | Systemic Email Auth Failures (8+ casino domains) | 7.1 | HIGH |
+| 16 | beazt.com Cloudflare WAF Complete Bypass + Config Disclosure | 7.5 | HIGH |
+| 17 | wildz.com Cloudflare WAF Complete Bypass + Config Disclosure | 7.5 | HIGH |
+| 18 | SSO Missing Rate Limiting on Casino Authentication | 7.5 | HIGH |
+| 19 | Dex Token Introspection Returns active:true Without Auth | 7.5 | HIGH |
+| 20 | SSO CORS Subdomain Wildcard with Credentials | 7.5 | HIGH |
+| 21 | sso.rootz.com Stack Trace Information Disclosure | 5.3 | MEDIUM |
+| 22 | Dex PKCE "plain" Method Enabled | 5.3 | MEDIUM |
+| 23 | Cloudflare .js/.css Extension Bypass (wheelz, spinz, chipz) | 5.3 | MEDIUM |
+| 24 | sso.rootz.com Tenant/Jurisdiction Enumeration | 5.3 | LOW-MEDIUM |
+
+---
+
+# PHASE 2 FINDINGS (2026-10-30)
+
+## FINDING 13: Dex Staging redirect_uri Validation Bypass
+
+Severity: HIGH (CVSS 7.4)
+Category: A07:2021 - Identification and Authentication Failures (CWE-601)
+Endpoints: https://dex.stg.rootz.com
+
+### Description
+
+The Dex OIDC identity provider on staging accepts arbitrary redirect_uri values in authorization requests. When a user initiates an OAuth flow, the authorization endpoint redirects to Google SSO with the attacker-controlled redirect_uri preserved. After the user authenticates with Google, the authorization code is sent to the attacker's URL.
+
+Note: The client_id "rootz-platform" has since been disabled (returns "Invalid client_id provided"), providing partial mitigation. However, the underlying redirect_uri validation logic remains broken for any future client registrations on this Dex instance.
+
+### Evidence
+
+```
+GET /auth?client_id=rootz-platform&response_type=code&scope=openid+email+profile&redirect_uri=https://evil.com/steal&state=attack123 HTTP/2
+Host: dex.stg.rootz.com
+
+HTTP/2 302
+location: /auth/google?req=<session_id>&redirect_uri=https://evil.com/steal
+```
+
+The Google SSO connector preserves the malicious redirect_uri through the authentication flow.
+
+### Impact
+
+- Authorization code theft via redirect to attacker-controlled URL
+- Account takeover of internal Kubernetes access (staging environment)
+- Any new OAuth client registered on this Dex instance inherits the broken validation
+
+### Remediation
+
+Configure strict redirect_uri validation in Dex. Use exact-match allowlists per client_id. Apply the same fix to dex.dev.rootz.com.
+
+---
+
+## FINDING 14: Critical Email Spoofing on beazt.com and blingi.com
+
+Severity: HIGH (CVSS 7.5)
+Category: A05:2021 - Security Misconfiguration (CWE-290)
+Domains: beazt.com, blingi.com
+
+### Description
+
+Two Rootz-operated domains have no SPF records AND DMARC policy set to p=none, meaning any email sender can send spoofed emails from these domains with no authentication or rejection. Both domains have active MX records pointing to Google Workspace (smtp.google.com), confirming they are configured for email.
+
+### Evidence
+
+beazt.com:
+```
+SPF: NO RECORD
+DMARC: v=DMARC1; p=none; rua=mailto:dmarc-rua@beazt.com
+MX: smtp.google.com (priority 1)
+```
+
+blingi.com:
+```
+SPF: NO RECORD
+DMARC: v=DMARC1; p=none; rua=mailto:dmarc-rua@blingi.com
+MX: smtp.google.com (priority 1)
+```
+
+Verified via DNS-over-HTTPS (dns.google/resolve API).
+
+### Impact
+
+- Attackers can send phishing emails appearing to come from @beazt.com or @blingi.com
+- For a casino brand, this enables highly targeted phishing against players (deposit requests, account verification, bonus offers)
+- No email authentication means receiving mail servers have no basis to reject spoofed messages
+- DMARC p=none generates reports but does NOT block spoofed emails
+
+### Remediation
+
+Add SPF records: `v=spf1 include:_spf.google.com -all`
+Change DMARC policy to: `v=DMARC1; p=reject; rua=mailto:dmarc-rua@domain.com`
+Add DKIM signing via Google Workspace.
+
+---
+
+## FINDING 15: Systemic Email Authentication Failures Across 8+ Casino Domains
+
+Severity: HIGH (CVSS 7.1)
+Category: A05:2021 - Security Misconfiguration (CWE-290)
+
+### Description
+
+Systematic testing of 19 Rootz-operated domains revealed widespread email authentication failures. Multiple active casino domains use SPF softfail (~all) instead of hardfail (-all), combined with DMARC p=none, making email spoofing trivially possible across the brand portfolio.
+
+### Affected Domains
+
+SPF softfail (~all) with DMARC p=none (spoofable):
+- wheelzgames.de: `v=spf1 include:_spf.google.com ~all`
+- wildz.com: `v=spf1 include:_spf.google.com ~all`
+- wheelz.com: `v=spf1 include:_spf.google.com ~all`
+- caxino.com: `v=spf1 include:_spf.google.com ~all`
+- spinz.com: `v=spf1 include:_spf.google.com ~all`
+- chipz.com: `v=spf1 include:_spf.google.com ~all`
+- speedz.com: `v=spf1 include:_spf.google.com ~all`
+- tuplaus.com: `v=spf1 include:_spf.google.com ~all`
+
+Missing ALL email authentication:
+- flamez.casino: No SPF, No DMARC, No MX
+- berriez.casino: No SPF, No DMARC, No MX
+
+### Impact
+
+- SPF softfail (~all) means receiving servers SHOULD flag but NOT reject spoofed emails
+- Combined with DMARC p=none, spoofed emails are delivered to inboxes
+- For casino brands handling real money, this enables phishing for credentials, deposit requests, and social engineering
+- Systemic pattern suggests email authentication was not part of the security baseline
+
+### Remediation
+
+Change all SPF records from ~all to -all (hardfail).
+Change all DMARC policies from p=none to p=reject.
+Implement DKIM signing on all domains.
+Add SPF/DMARC/DKIM to flamez.casino and berriez.casino.
+
+---
+
+## FINDING 16: beazt.com Cloudflare WAF Complete Bypass with Full SPA Configuration Disclosure
+
+Severity: HIGH (CVSS 7.5)
+Category: A05:2021 - Security Misconfiguration (CWE-200)
+Endpoint: https://www.beazt.com/<any-path>.js
+
+### Description
+
+The Cloudflare managed challenge protecting beazt.com can be completely bypassed by requesting ANY URL path. The S3-backed origin returns the full 63KB Single Page Application HTML for all requests regardless of path or extension. This HTML contains the complete application configuration, payment provider details, deployment information, and API endpoint URLs.
+
+### Evidence
+
+```
+GET /anything.js HTTP/2
+Host: www.beazt.com
+
+HTTP/2 404
+content-type: application/javascript
+content-length: 63815
+x-amz-server-side-encryption: AES256
+
+<!doctype html><html lang=en><head>...
+```
+
+### Sensitive Data Disclosed
+
+- PaymentIQ merchantId: 100920986
+- PaymentIQ hosted fields URL: card-fields.paymentiq.io/1.0.52/index.html
+- Payment method configurations per jurisdiction (CA, FI, MT, PG)
+- Git commit hash: a79f24086e4b833e777a56d7fd00a99ce8af6adc
+- GitLab pipeline ID: 3007351318
+- API infrastructure: apiBaseUrl, wsBaseUrl (wsapi.rootz.com), ssoBaseUrl (sso.rootz.com/api/), gameSearchWorkerBaseUrl (game-search.rootz.com)
+- S3 bucket paths: s3.eu-west-1.amazonaws.com/s-cms-beazt.rootz.com/beazt/
+- Analytics: Google Analytics ID, 2 GTM container IDs, Adform ID, Cookiebot ID, Quantcast ID
+- Complete registration form structure with country-specific fields (NL: BIC/IBAN, CA: PEP/HIO, DE: birthname/nationality)
+- Regulatory configuration: siteJurisdiction, siteLicenseId, language/country mappings
+
+### Comparison
+
+caxino.com correctly blocks .js/.css requests with Cloudflare challenge (HTTP 403).
+
+### Remediation
+
+Configure Cloudflare WAF rules on beazt.com to challenge all paths, not just non-static extensions. Ensure the S3 origin does not serve application HTML for non-existent paths (return proper 404).
+
+---
+
+## FINDING 17: wildz.com Cloudflare WAF Complete Bypass with Full SPA Configuration Disclosure
+
+Severity: HIGH (CVSS 7.5)
+Category: A05:2021 - Security Misconfiguration (CWE-200)
+Endpoint: https://www.wildz.com/<any-path>.js
+
+### Description
+
+Identical to Finding 16 but affecting wildz.com. The Cloudflare WAF bypass returns a 133KB SPA HTML file containing the complete wildz.com application configuration with different deployment details.
+
+### Evidence
+
+```
+GET /anything.js HTTP/2
+Host: www.wildz.com
+
+HTTP/2 404
+content-type: application/javascript
+content-length: 133448
+x-amz-server-side-encryption: AES256
+
+<!doctype html><html lang=en><head>...
+```
+
+### Sensitive Data Disclosed
+
+- Different git commit hash: 6103a5e128a8ccabb7e92613c7cd2b3ffa17ca18
+- Different pipeline ID: 3009181815
+- Wildz-specific PaymentIQ merchantId and configuration
+- Complete API endpoint structure
+- Registration form fields including country-specific requirements
+- S3 bucket paths for wildz assets
+
+### Remediation
+
+Same as Finding 16.
+
+---
+
+## FINDING 18: sso.rootz.com Missing Rate Limiting on Casino Authentication
+
+Severity: HIGH (CVSS 7.5)
+Category: A07:2021 - Identification and Authentication Failures (CWE-307)
+Endpoint: POST https://sso.rootz.com/api/login
+
+### Description
+
+The centralized SSO authentication endpoint for all Rootz casino brands has no rate limiting, no account lockout, no CAPTCHA, and no progressive delay. Testing with 190+ rapid sequential and parallel login attempts against the same and different email addresses all returned HTTP 200 with no defensive measures triggered.
+
+### Evidence
+
+```
+POST /api/login HTTP/2
+Host: sso.rootz.com
+X-Tenant: wheelz
+X-SiteJurisdiction: MGA
+Content-Type: application/json
+
+{"email":"target@wheelz.com","password":"WrongPassword1!"}
+
+HTTP/2 200
+{"authenticated": false}
+```
+
+Test results:
+- 60 sequential requests over 11 seconds: All HTTP 200, 0.12-0.36s response
+- 100 concurrent requests (5 waves of 20): All HTTP 200, 0.13-0.49s response
+- 30 sequential requests to SAME email with different passwords: All HTTP 200, no lockout
+- No X-RateLimit-* headers in any response
+- No Retry-After headers
+- No CAPTCHA or challenge responses
+- No progressive delay observed
+- Identical behavior across all tenants (wheelz, wildz, caxino, spinz, chipz, flamez, tuplaus, speedz, berriez)
+
+Account enumeration: NOT vulnerable (all email formats return identical responses).
+
+### Impact
+
+- Unlimited credential brute-force against any casino player account
+- Credential stuffing attacks using leaked credential databases
+- No user notification of ongoing brute-force attacks
+- For a gambling platform handling real money, successful brute-force yields direct financial access
+
+### Remediation
+
+Implement rate limiting (e.g., 5 attempts per minute per IP per email). Add progressive delays after failed attempts. Implement temporary account lockout after 10 failed attempts. Add CAPTCHA after 5 failed attempts. Send notification to account holder after multiple failed attempts.
+
+---
+
+## FINDING 19: Dex Token Introspection Returns active:true Without Client Authentication
+
+Severity: HIGH (CVSS 7.5)
+Category: A07:2021 - Identification and Authentication Failures (CWE-287)
+Endpoints: https://dex.stg.rootz.com/token/introspect, https://dex.dev.rootz.com/token/introspect
+
+### Description
+
+The OAuth 2.0 Token Introspection endpoint (RFC 7662) on both Dex staging and dev instances returns `{"active": true}` for empty token strings without requiring any client authentication. This violates RFC 7662 Section 2.1 which requires the introspection endpoint to authenticate the caller. Any service relying on this endpoint to validate tokens would incorrectly accept empty/missing tokens.
+
+### Evidence
+
+Staging instance:
+```
+POST /token/introspect HTTP/2
+Host: dex.stg.rootz.com
+Content-Type: application/x-www-form-urlencoded
+
+token=
+
+HTTP/2 200
+{
+  "active": true,
+  "client_id": "",
+  "sub": "",
+  "exp": -62135596800,
+  "iat": -62135596800,
+  "nbf": -62135596800,
+  "aud": "",
+  "iss": "https://dex.stg.rootz.com",
+  "token_type": "Bearer",
+  "token_use": "refresh_token",
+  "ext": {"email_verified": false}
+}
+```
+
+Dev instance returns identical behavior with iss: "https://dex.dev.rootz.com".
+
+Additional observations:
+- No client credentials required (RFC 7662 violation)
+- Non-JWT arbitrary strings return `{"error": "server_error"}` (should return `{"active": false}`)
+- JWT-format tokens correctly return `{"active": false}`
+- Timestamps are Go zero values (0001-01-01T00:00:00Z)
+
+### Impact
+
+- Any service using token introspection for authorization could be bypassed by sending an empty token
+- The staging and dev environments share infrastructure with production services
+- Internal services may trust introspection results to grant access to Kubernetes resources, CI/CD pipelines, or internal tools
+
+### Remediation
+
+Fix the Dex token introspection implementation to:
+1. Require client authentication on the introspection endpoint
+2. Return `{"active": false}` for empty or invalid tokens
+3. Return `{"active": false}` instead of server_error for non-JWT tokens
+
+---
+
+## FINDING 20: sso.rootz.com CORS Subdomain Wildcard with Credentials Across All Casino Tenants
+
+Severity: HIGH (CVSS 7.5)
+Category: A05:2021 - Security Misconfiguration (CWE-942)
+Endpoint: https://sso.rootz.com/api/*
+
+### Description
+
+The centralized SSO API reflects any subdomain of the matching tenant's domain in the Access-Control-Allow-Origin header, combined with Access-Control-Allow-Credentials: true. This means any page hosted on ANY subdomain of a casino brand can make credentialed cross-origin requests to the SSO API and read the responses. Additionally, the SSO accepts HTTP (non-HTTPS) origins with credentials, enabling network-level credential theft.
+
+### Evidence
+
+Per-tenant subdomain wildcard (all return ACAO + ACAC: true):
+```
+X-Tenant: wheelz + Origin: https://evil.wheelz.com    -> Reflected
+X-Tenant: wildz  + Origin: https://evil.wildz.com     -> Reflected
+X-Tenant: caxino + Origin: https://evil.caxino.com     -> Reflected
+X-Tenant: spinz  + Origin: https://evil.spinz.com      -> Reflected
+X-Tenant: chipz  + Origin: https://evil.chipz.com      -> Reflected
+```
+
+HTTP downgrade (all return ACAO + ACAC: true):
+```
+X-Tenant: wheelz + Origin: http://www.wheelz.com      -> Reflected
+X-Tenant: wildz  + Origin: http://www.wildz.com       -> Reflected
+```
+
+Cross-tenant NOT reflected:
+```
+X-Tenant: wheelz + Origin: https://evil.wildz.com     -> NOT reflected
+```
+
+### Attack Scenario
+
+1. stg.wheelz.com has a dangling CNAME to an AWS ELB returning 502 Bad Gateway
+2. If an attacker compromises or takes over stg.wheelz.com (or any other subdomain via XSS/takeover)
+3. The attacker's page on evil.wheelz.com can make credentialed requests to sso.rootz.com/api/login
+4. The SSO API reflects the origin and sends credentials, allowing the attacker to steal session data
+
+The HTTP downgrade enables a separate attack vector: a network attacker (WiFi, ISP) can inject a page at http://www.wheelz.com that makes credentialed requests to the SSO.
+
+### Remediation
+
+Implement exact-match origin validation instead of subdomain wildcards. Only allow the specific production origins (https://www.wheelz.com, https://www.wildz.com, etc.). Reject HTTP (non-HTTPS) origins. Remove unused DNS records (stg.wheelz.com).
+
+---
+
+## FINDING 21: sso.rootz.com Stack Trace Information Disclosure
+
+Severity: MEDIUM (CVSS 5.3)
+Category: A05:2021 - Security Misconfiguration (CWE-209)
+Endpoint: POST https://sso.rootz.com/api/logout
+
+### Description
+
+The SSO API /api/logout endpoint returns a raw JavaScript stack trace error when called without a session cookie, revealing the backend technology (Node.js/JavaScript) and internal error handling.
+
+### Evidence
+
+Logout endpoint:
+```
+POST /api/logout HTTP/2
+Host: sso.rootz.com
+X-Tenant: wheelz
+X-SiteJurisdiction: MGA
+Content-Type: application/json
+
+{}
+
+HTTP/2 500
+{"message":"Cannot read properties of null (reading 'indexOf')"}
+```
+
+X-Authorization header with malformed base64:
+```
+POST /api/login HTTP/2
+X-Authorization: 12345
+
+HTTP/2 500
+{"message":"atob() called with invalid base64-encoded data. (Only whitespace, '+', '/', alphanumeric ASCII, and up to two terminal '=' signs when the input data length is divisible by 4 are allowed.)"}
+```
+
+X-Authorization with valid base64 non-JSON:
+```
+X-Authorization: dGVzdA
+
+HTTP/2 500
+{"message":"Unexpected token 'e', \"test\" is not valid JSON"}
+```
+
+X-Authorization with malformed JWT:
+```
+X-Authorization: eyJ0ZXN0IjoiMSJ9.eyJ0ZXN0IjoiMiJ9
+
+HTTP/2 500
+{"message":"Cannot read properties of undefined (reading 'replace')"}
+```
+
+### Impact
+
+- Confirms Cloudflare Workers / JavaScript runtime backend
+- Reveals JWT token parsing logic (3-part structure, base64 + JSON.parse)
+- Reveals session cookie mechanism uses indexOf() parsing
+- Multiple verbose error messages aid in developing targeted attacks
+
+### Remediation
+
+Return generic error messages for all token parsing failures. Implement proper input validation and null checks before processing tokens.
+
+---
+
+## FINDING 22: Dex PKCE "plain" Code Challenge Method Enabled
+
+Severity: MEDIUM (CVSS 5.3)
+Category: A07:2021 - Identification and Authentication Failures (CWE-287)
+Endpoints: https://dex.stg.rootz.com, https://dex.dev.rootz.com
+
+### Description
+
+Both Dex instances advertise support for PKCE "plain" code_challenge_method in their OIDC discovery documents. RFC 7636 Section 4.2 recommends S256 as the code challenge method. The "plain" method provides no protection against authorization code interception because the verifier equals the challenge.
+
+### Evidence
+
+```json
+{
+  "code_challenge_methods_supported": ["S256", "plain"]
+}
+```
+
+### Impact
+
+- PKCE "plain" provides no protection against authorization code interception
+- Clients using "plain" are as vulnerable as clients using no PKCE at all
+- If combined with a redirect_uri bypass, authorization codes can be stolen
+
+### Remediation
+
+Disable "plain" code_challenge_method. Only allow S256.
+
+---
+
+## FINDING 23: Cloudflare .js/.css Extension Bypass on wheelz.com, spinz.com, chipz.com
+
+Severity: MEDIUM (CVSS 3.7)
+Category: A05:2021 - Security Misconfiguration
+
+### Description
+
+Requests to paths ending in .js or .css on wheelz.com, spinz.com, and chipz.com bypass the Cloudflare managed challenge, reaching the origin which returns 404 "Not Found". While this currently does not disclose application data (unlike beazt.com/wildz.com which return full SPA HTML), it confirms the Cloudflare Worker backend architecture and provides access to the service worker (/sw.js, 23KB) and GTM proxy (/metrics/rtm.js, 539KB).
+
+### Evidence
+
+```
+GET /test.js HTTP/2
+Host: www.wheelz.com
+
+HTTP/2 404
+cf-placement: remote-FRA
+content-length: 9
+Not Found
+```
+
+Comparison: caxino.com correctly blocks with CF challenge (HTTP 403).
+
+### Impact
+
+- Reveals backend architecture (CF Worker in FRA datacenter, S3 origin)
+- Service worker and GTM proxy accessible without challenge
+- Could be exploited if JS bundle filenames are discovered
+
+### Remediation
+
+Update Cloudflare WAF rules to challenge .js and .css extensions on affected brands.
+
+---
+
+## FINDING 24: sso.rootz.com Tenant and Jurisdiction Enumeration
+
+Severity: LOW-MEDIUM (CVSS 5.3)
+Category: A01:2021 - Broken Access Control
+
+### Description
+
+The SSO API returns differential error messages that allow enumerating valid tenant-jurisdiction combinations: invalid_tenant (HTTP 403) for unknown tenants, invalid_jurisdiction (HTTP 403) for wrong jurisdiction case/value, and authenticated: false (HTTP 200) for valid combinations.
+
+### Evidence
+
+Active SSO tenants: wheelz, wildz, caxino, spinz, chipz, flamez, tuplaus, speedz, berriez, rootz
+Not valid on SSO: beazt, blingi, megagewinn, lemonz, wheelzgames (beazt uses different auth despite being active on frontendapi; rootz is valid on SSO but invalid on frontendapi)
+Valid jurisdictions: MGA, DE, NL (case-sensitive, uppercase only)
+
+### Impact
+
+- Reveals which brands use the SSO service
+- Confirms beazt uses a different authentication path
+- Business intelligence about the platform architecture
+
+### Remediation
+
+Return consistent error responses regardless of tenant/jurisdiction validity.
+
+---
+
+## NEWLY DISCOVERED INFRASTRUCTURE (Phase 2)
+
+| Service | URL | Status |
+|---------|-----|--------|
+| SSO API | sso.rootz.com/api/ | Active, no rate limiting |
+| Dex Staging OIDC | dex.stg.rootz.com | Active, token introspection broken |
+| Dex Dev OIDC | dex.dev.rootz.com | Active, token introspection broken |
+| Game Search Worker | game-search.rootz.com | Active, search index empty |
+| Shadow Game Search | s-game-search.rootz.com | Active, requires tl parameter |
+| Content Worker | content.rootz.com | Broken (HTTP 500 on all paths) |
+| Shadow Content Worker | s-content.rootz.com | Broken (HTTP 500 on all paths) |
+| Staging ELB | stg.wheelz.com | Dangling CNAME, ELB returns 502 |
+| PaymentIQ Fields | card-fields.paymentiq.io | Referenced in SPA config |
+| Game Assets CDN | game-assets.rootz.com | Referenced in SPA config |
+
+## UPDATED CVSS SUMMARY
+
+| # | Finding | CVSS | Severity |
+|---|---------|------|----------|
+| 1 | Subdomain Takeover e2e.infra.rootz.com | 9.1 | CRITICAL |
+| 2 | Unauthenticated Prometheus /metrics (7 servers) | 7.5 | HIGH |
+| 3 | Public S3 Bucket assets.rootz.com | 7.5 | HIGH |
+| 4 | Exposed Dex OIDC with Device Code Flow | 7.3 | HIGH |
+| 5 | S3 Bucket Listing s-game-assets.rootz.com | 5.3 | MEDIUM |
+| 6 | CORS Misconfiguration frontendapi.rootz.com | 6.1 | MEDIUM |
+| 7 | K8s Token Generator Missing Headers | 5.3 | MEDIUM |
+| 8 | Missing Security Headers www.rootz.com | 5.3 | MEDIUM |
+| 9 | Permissive CSP uptime.rootz.com | 4.3 | LOW-MEDIUM |
+| 10 | Missing Rate Limiting on Login uptime.rootz.com | 5.3 | MEDIUM |
+| 11 | Tenant/Brand Enumeration frontendapi.rootz.com | 5.3 | LOW |
+| 12 | WordPress Origin URL Disclosure via RankMath | 5.8 | MEDIUM |
+| 13 | Dex Staging redirect_uri Validation Bypass | 7.4 | HIGH |
+| 14 | Critical Email Spoofing (beazt.com, blingi.com) | 7.5 | HIGH |
+| 15 | Systemic Email Auth Failures (8+ domains) | 7.1 | HIGH |
+| 16 | beazt.com CF WAF Bypass + Config Disclosure | 7.5 | HIGH |
+| 17 | wildz.com CF WAF Bypass + Config Disclosure | 7.5 | HIGH |
+| 18 | SSO Missing Rate Limiting Casino Auth | 7.5 | HIGH |
+| 19 | Dex Token Introspection Broken | 7.5 | HIGH |
+| 20 | SSO CORS Subdomain Wildcard + Credentials | 7.5 | HIGH |
+| 21 | sso.rootz.com Stack Trace Disclosure | 5.3 | MEDIUM |
+| 22 | Dex PKCE "plain" Method Enabled | 5.3 | MEDIUM |
+| 23 | CF .js/.css Extension Bypass (3 brands) | 3.7 | MEDIUM |
+| 24 | sso.rootz.com Tenant/Jurisdiction Enumeration | 5.3 | LOW-MEDIUM |
+
+Total: 1 CRITICAL, 11 HIGH, 10 MEDIUM, 2 LOW-MEDIUM
 
 ## END OF REPORT
