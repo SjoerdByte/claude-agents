@@ -1,34 +1,32 @@
 {
   "target": "voorraad.cooby.nl",
   "target_name": "Van Mossel Voorraad (inventory/stock-count app, Van Mossel Automotive Group)",
-  "authorization": "Written permission from CEO Rens Boeren (cooby). Scope: everything. Recon/non-destructive phase only.",
-  "scope_note": "Primary target voorraad.cooby.nl on shared Hostinger VPS 187.77.163.64 (srv1429097.hstgr.cloud, AS47583, Paris FR). No CDN/WAF, direct origin. Parent cooby.nl on TransIP NL (37.97.254.27). Siblings on same IP (appbase, cc, dj, fleet, laadpaal, ovm, salon, telefonie) are distinct apps by the hosting vendor cooby for other clients - NOT Van Mossel code/data, so treated as out of primary scope per scope clarification; noted only as shared-host pivot context. appbase.cooby.nl flagged as a possible shared backend worth a separate look if authorization is confirmed to cover all cooby.nl.",
-  "ruled_out": [
-    "CORS misconfig on /api/* - no ACAO reflected for cross-origin Origin (locked down)",
-    "TRACE/XST - TRACE returns 405",
-    "Route enumeration via /api - blanket 401 on every /api/* path incl nonexistent, no oracle",
-    "Security-header gaps - strong CSP, HSTS, XFO DENY, nosniff, Referrer-Policy, Permissions-Policy all present; CSRF cookie is __Host- HttpOnly Secure SameSite=Lax",
-    "Self-service signup - none exists (activation-link only), so cannot self-register test accounts",
-    "Account enumeration via login error wording - generic 'E-mailadres of wachtwoord is niet correct' for both unknown email and wrong password",
-    "Login CSRF - double-submit __Host- token PLUS Origin/Referer check; POST without matching Origin returns 403 before credential eval"
+  "authorization": "Written permission from CEO Rens Boeren (cooby). Scope: voorraad.cooby.nl only. Operator supplied a white-box control copy (source + test DB) run locally for testing.",
+  "scope_note": "Primary target voorraad.cooby.nl on shared Hostinger VPS 187.77.163.64 (AS47583, Paris FR). Production serves HTTP/2 while the app is Node http.createServer (HTTP/1.1) -> a reverse proxy/TLS terminator sits in front. Sibling cooby.nl apps are OTHER clients - OUT OF SCOPE (confirmed by operator). All dynamic exploit testing performed against a local copy of the exact production code, never against live data.",
+  "stack": "Node.js 24 single-file backend (app/server.mjs, ~8500 lines, only node: builtins - node:sqlite, node:crypto, node:http). SQLite DB. Vite/React SPA frontend. scrypt password hashing (N=32768). Roles: audit (admin), viewer, scanner. Multi-project model; project_members links users to projects; scanner scan_scope can be projects/cluster/locations.",
+  "method": "White-box: operator provided controlekopie-2026-10-30.zip (full source + fictitious test DB, 3 seeded accounts). Rebuilt data/inventory.sqlite from database-test.sql, ran app on Node 24 at 127.0.0.1:3080, tested all three roles dynamically plus full source review of auth, authorization, and every /api handler.",
+  "defenses_verified_strong": [
+    "Activation tokens: randomBytes(32) (256-bit), stored only as sha256 token_hash, single-use via atomic consume (UPDATE ... WHERE consumed_at IS NULL), 24h expiry. Not guessable/predictable. T1 CLOSED.",
+    "Sessions: randomBytes(32) hex stored as sha256, 12h expiry, HttpOnly/SameSite=Lax (Secure+__Host- on https).",
+    "Passwords: scrypt N=32768 r8 p1, verify via timingSafeEqual. 12-char min on activation.",
+    "CSRF: /login,/logout,/activeren require Origin===origin AND double-submit token; /api writes require Origin===origin (safeWrite). No bypass.",
+    "Authorization/IDOR: projectAccess() + scanScope() + access(roles) enforced on EVERY handler. Empirically: viewer 403 on non-member project /api/data and /api/evidence-export; scanner 403 on /api/import; viewer 403 on /api/manage admin action. T2 CLOSED - no IDOR, no privilege escalation.",
+    "No SQLi (fully parameterized prepare/bind; dynamic identifiers hardcoded/whitelisted). No SSRF (fetch targets are server-config OCR URL + fixed RDW endpoint with charset-validated plate). No path traversal (photoPath regex + startsWith(root) guard; static files resolve+startsWith guard).",
+    "Client bundle: no hardcoded secrets/keys, no innerHTML/eval/dangerouslySetInnerHTML in app code, strict CSP. No client XSS/secret leak."
   ],
-  "open_threads": [
-    {"id": "T1", "title": "Activation-link / account-provisioning token flow", "why": "Only way to get an account is a 'persoonlijke activatielink' from Internal Audit. Token route/format unknown (dummy tokens bounce to /login). If token is predictable, guessable, non-expiring, or activation allows setting arbitrary identity/role, this is an unauth account-takeover / foothold. Needs a real activation link from operator to analyze.", "priority": 1},
-    {"id": "T2", "title": "Multi-tenant / branch IDOR on /api/*", "why": "Inventory app for Van Mossel (many dealers/branches). /api probes imply objects by location/dealer/branch/item/count. Blanket auth hides routes unauth; need an authenticated session to walk object-by-ID endpoints and test cross-branch/cross-user scoping. Highest-impact candidate per high-value patterns.", "priority": 2},
-    {"id": "T3", "title": "Login POST behavior (enum / rate-limit / lockout)", "status": "observed", "why": "POST /login tested with operator approval (wrong creds only, nonexistent email). Result: generic error (no enumeration). NO rate-limiting / NO lockout / NO throttle across 13 rapid failed attempts, stable ~0.36s, no 429 / Retry-After / ratelimit headers. CSRF token reusable within the 1h session (not single-use). CONFIRMED finding F1 (missing brute-force protection); threshold not pushed higher on live system.", "priority": 3},
-    {"id": "T4", "title": "Client-side scanning PWA (post-auth)", "why": "CSP allows wasm-unsafe-eval + cdn.jsdelivr.net + tessdata.projectnaptha.com (Tesseract.js OCR) + camera. Authenticated SPA/PWA bundle (JS, source maps, API base URLs, feature flags) only visible after login - review once account provisioned.", "priority": 4},
-    {"id": "T5", "title": "Shared-host pivot context", "why": "8 sibling apps on same VPS with different stacks (Next.js, gunicorn/Django, nginx). appbase.cooby.nl may be a shared backend. Out of primary scope (other clients) but relevant if a host-level issue surfaces.", "priority": 5}
-  ],
-  "pending_decisions": [
-    "RESOLVED: scope is voorraad.cooby.nl ONLY. Sibling cooby.nl apps (T5) are out of scope - no testing beyond the single root GET already done.",
-    "RESOLVED: operator approved login credential submission (T3 done).",
-    "WAITING on operator: a fresh UNUSED activation link (prior link was expired) or a provisioned test account - ideally two accounts in different dealers/branches. T1, T2, T4 are blocked until provided."
-  ],
-  "hours_spent": 1.3,
-  "raw_scan_file": "/tmp/claude-0/-home-user-claude-agents/18465f05-8150-5394-b9a3-559607a8c0e6/scratchpad/recon-voorraad-raw.md",
   "findings": [
-    {"id": "F1", "title": "No brute-force protection on login (missing rate-limit / lockout)", "severity": "medium", "status": "confirmed", "detail": "POST /login applies no rate-limiting, account lockout, or throttling. 13 rapid failed attempts all returned 401 with stable ~0.36s timing, no 429 / Retry-After / ratelimit headers. With no self-service password reset (admin-provisioned passwords), this enables credential stuffing and online password guessing against any known email. Threshold above 13 not tested on live system.", "evidence": "scratchpad burst test, 13x HTTP 401"},
-    {"id": "F2", "title": "HSTS missing includeSubDomains and preload", "severity": "low", "status": "confirmed", "detail": "Strict-Transport-Security max-age=31536000 only; no includeSubDomains/preload."},
-    {"id": "F3", "title": "cooby.nl email auth gaps (no DMARC, SPF ~all)", "severity": "low", "status": "informational", "detail": "Parent domain has SPF v=spf1 ~all and no DMARC/DKIM observed - spoofing-adjacent. Domain-level, not the app."}
-  ]
+    {"id": "F1", "title": "Login brute-force / rate-limit bypass via X-Forwarded-For spoofing", "severity": "medium", "cwe": "CWE-307 / CWE-348", "status": "confirmed-local-poc", "detail": "The only brute-force control is limited(key) keyed on 'login:'+ip+':'+email, threshold 12 per 15 min. The ip is taken from the client-supplied X-Forwarded-For header (last value) and only falls back to socket.remoteAddress when XFF is absent. An attacker who sends a changing X-Forwarded-For value gets a fresh counter every request, fully defeating throttling and account lockout. Local PoC on the exact production code: 14 failed logins from one source WITH a rotating XFF -> all 401, never 429; identical test WITHOUT XFF -> 429 after the threshold. This enables unthrottled credential-stuffing / online guessing against any known employee email (emails are guessable firstname.lastname@). Rises to HIGH if any account uses a weak/breached password. This also explains the earlier live observation of no throttling at 13 attempts. PRODUCTION EXPLOITABILITY depends on the front reverse proxy's XFF handling (safe only if it OVERWRITES or APPENDS the real client IP as the last value; unsafe if it passes the client's XFF through) - recommend verifying the proxy config.", "fix": "Derive client IP only from the trusted proxy (fixed trusted-hop count or a proxy-set header the app controls), never from raw client XFF. Add global and per-account throttling independent of IP, plus progressive delays/CAPTCHA after N failures and breached-password / MFA controls."},
+    {"id": "F2", "title": "Evidence-export PDF hash is client-asserted", "severity": "low", "status": "by-design-note", "detail": "evidence-export 'complete' stores pdf_sha256 exactly as sent by the client; the server cannot recompute it because the PDF is rendered client-side. The real integrity anchor (snapshot_sha256 over the actual DB records) IS computed server-side, so this is a minor evidentiary nuance rather than a data-integrity break.", "fix": "Document that pdf_sha256 is a client attestation, or render/hash the PDF server-side if it must be authoritative."},
+    {"id": "F3", "title": "HSTS missing includeSubDomains and preload", "severity": "low", "status": "confirmed", "detail": "Strict-Transport-Security max-age=31536000 only."},
+    {"id": "F4", "title": "cooby.nl email auth gaps (no DMARC, SPF ~all)", "severity": "low", "status": "informational", "detail": "Domain-level spoofing-adjacent; not the app itself."},
+    {"id": "F5", "title": "First-run bootstrap self-provisions audit", "severity": "info", "status": "not-exploitable-when-configured", "detail": "On an UNINITIALIZED instance (no settings.campaign), the first authenticated caller of /api/manage action=initialize or /api/location-catalog is created as audit. Not reachable on the configured production environment (campaign already set). Noted for completeness."}
+  ],
+  "earlier_finding_retracted": "Prior F1 'no brute-force protection' was a false positive from the live black-box test: rate limiting DOES exist (threshold 12/15min). The live no-throttle observation was an artifact of the egress proxy varying the forwarded IP, which is itself the mechanism behind the real finding (now F1: XFF-based bypass).",
+  "pending_decisions": [
+    "Optional: verify production reverse-proxy XFF handling to confirm F1 exploitability on the live host (vs. the confirmed local PoC).",
+    "Operator still offered a fresh activation link / live test accounts - no longer required for core testing since the white-box copy covers it, but useful to validate findings against the live instance if desired."
+  ],
+  "hours_spent": 2.6,
+  "local_instance": "http://127.0.0.1:3080 (Node 24, isolated container copy; fictitious test data only)",
+  "raw_scan_file": "/tmp/claude-0/-home-user-claude-agents/18465f05-8150-5394-b9a3-559607a8c0e6/scratchpad/recon-voorraad-raw.md"
 }
