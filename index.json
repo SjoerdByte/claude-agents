@@ -1,0 +1,34 @@
+{
+  "target": "voorraad.cooby.nl",
+  "target_name": "Van Mossel Voorraad (inventory/stock-count app, Van Mossel Automotive Group)",
+  "authorization": "Written permission from CEO Rens Boeren (cooby). Scope: everything. Recon/non-destructive phase only.",
+  "scope_note": "Primary target voorraad.cooby.nl on shared Hostinger VPS 187.77.163.64 (srv1429097.hstgr.cloud, AS47583, Paris FR). No CDN/WAF, direct origin. Parent cooby.nl on TransIP NL (37.97.254.27). Siblings on same IP (appbase, cc, dj, fleet, laadpaal, ovm, salon, telefonie) are distinct apps by the hosting vendor cooby for other clients - NOT Van Mossel code/data, so treated as out of primary scope per scope clarification; noted only as shared-host pivot context. appbase.cooby.nl flagged as a possible shared backend worth a separate look if authorization is confirmed to cover all cooby.nl.",
+  "ruled_out": [
+    "CORS misconfig on /api/* - no ACAO reflected for cross-origin Origin (locked down)",
+    "TRACE/XST - TRACE returns 405",
+    "Route enumeration via /api - blanket 401 on every /api/* path incl nonexistent, no oracle",
+    "Security-header gaps - strong CSP, HSTS, XFO DENY, nosniff, Referrer-Policy, Permissions-Policy all present; CSRF cookie is __Host- HttpOnly Secure SameSite=Lax",
+    "Self-service signup - none exists (activation-link only), so cannot self-register test accounts",
+    "Account enumeration via login error wording - generic 'E-mailadres of wachtwoord is niet correct' for both unknown email and wrong password",
+    "Login CSRF - double-submit __Host- token PLUS Origin/Referer check; POST without matching Origin returns 403 before credential eval"
+  ],
+  "open_threads": [
+    {"id": "T1", "title": "Activation-link / account-provisioning token flow", "why": "Only way to get an account is a 'persoonlijke activatielink' from Internal Audit. Token route/format unknown (dummy tokens bounce to /login). If token is predictable, guessable, non-expiring, or activation allows setting arbitrary identity/role, this is an unauth account-takeover / foothold. Needs a real activation link from operator to analyze.", "priority": 1},
+    {"id": "T2", "title": "Multi-tenant / branch IDOR on /api/*", "why": "Inventory app for Van Mossel (many dealers/branches). /api probes imply objects by location/dealer/branch/item/count. Blanket auth hides routes unauth; need an authenticated session to walk object-by-ID endpoints and test cross-branch/cross-user scoping. Highest-impact candidate per high-value patterns.", "priority": 2},
+    {"id": "T3", "title": "Login POST behavior (enum / rate-limit / lockout)", "status": "observed", "why": "POST /login tested with operator approval (wrong creds only, nonexistent email). Result: generic error (no enumeration). NO rate-limiting / NO lockout / NO throttle across 13 rapid failed attempts, stable ~0.36s, no 429 / Retry-After / ratelimit headers. CSRF token reusable within the 1h session (not single-use). CONFIRMED finding F1 (missing brute-force protection); threshold not pushed higher on live system.", "priority": 3},
+    {"id": "T4", "title": "Client-side scanning PWA (post-auth)", "why": "CSP allows wasm-unsafe-eval + cdn.jsdelivr.net + tessdata.projectnaptha.com (Tesseract.js OCR) + camera. Authenticated SPA/PWA bundle (JS, source maps, API base URLs, feature flags) only visible after login - review once account provisioned.", "priority": 4},
+    {"id": "T5", "title": "Shared-host pivot context", "why": "8 sibling apps on same VPS with different stacks (Next.js, gunicorn/Django, nginx). appbase.cooby.nl may be a shared backend. Out of primary scope (other clients) but relevant if a host-level issue surfaces.", "priority": 5}
+  ],
+  "pending_decisions": [
+    "RESOLVED: scope is voorraad.cooby.nl ONLY. Sibling cooby.nl apps (T5) are out of scope - no testing beyond the single root GET already done.",
+    "RESOLVED: operator approved login credential submission (T3 done).",
+    "WAITING on operator: a fresh UNUSED activation link (prior link was expired) or a provisioned test account - ideally two accounts in different dealers/branches. T1, T2, T4 are blocked until provided."
+  ],
+  "hours_spent": 1.3,
+  "raw_scan_file": "/tmp/claude-0/-home-user-claude-agents/18465f05-8150-5394-b9a3-559607a8c0e6/scratchpad/recon-voorraad-raw.md",
+  "findings": [
+    {"id": "F1", "title": "No brute-force protection on login (missing rate-limit / lockout)", "severity": "medium", "status": "confirmed", "detail": "POST /login applies no rate-limiting, account lockout, or throttling. 13 rapid failed attempts all returned 401 with stable ~0.36s timing, no 429 / Retry-After / ratelimit headers. With no self-service password reset (admin-provisioned passwords), this enables credential stuffing and online password guessing against any known email. Threshold above 13 not tested on live system.", "evidence": "scratchpad burst test, 13x HTTP 401"},
+    {"id": "F2", "title": "HSTS missing includeSubDomains and preload", "severity": "low", "status": "confirmed", "detail": "Strict-Transport-Security max-age=31536000 only; no includeSubDomains/preload."},
+    {"id": "F3", "title": "cooby.nl email auth gaps (no DMARC, SPF ~all)", "severity": "low", "status": "informational", "detail": "Parent domain has SPF v=spf1 ~all and no DMARC/DKIM observed - spoofing-adjacent. Domain-level, not the app."}
+  ]
+}
