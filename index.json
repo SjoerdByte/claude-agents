@@ -10,7 +10,8 @@
     "Sessions: randomBytes(32) hex stored as sha256, 12h expiry, HttpOnly/SameSite=Lax (Secure+__Host- on https).",
     "Passwords: scrypt N=32768 r8 p1, verify via timingSafeEqual. 12-char min on activation.",
     "CSRF: /login,/logout,/activeren require Origin===origin AND double-submit token; /api writes require Origin===origin (safeWrite). No bypass.",
-    "Authorization/IDOR: projectAccess() + scanScope() + access(roles) enforced on EVERY handler. Empirically: viewer 403 on non-member project /api/data and /api/evidence-export; scanner 403 on /api/import; viewer 403 on /api/manage admin action. T2 CLOSED - no IDOR, no privilege escalation.",
+    "Authorization/IDOR (PROJECT level): projectAccess() enforced on every data handler. Empirically: viewer 403 on non-member project /api/data and /api/evidence-export; scanner 403 on /api/import; viewer 403 on /api/manage admin action. Cross-PROJECT isolation holds. NOTE: intra-project LOCATION scope is NOT always enforced - see F9 (own-scope projects bypass scanner location restriction); and admin-on-admin actions are unguarded - see F11.",
+    "Location-scope enforcement holds ONLY in catalog-scope projects (verified: location-restricted scanner 403 on other-location photo in year-end-2026). In own-scope projects it is bypassed - F9.",
     "No SQLi (fully parameterized prepare/bind; dynamic identifiers hardcoded/whitelisted). No SSRF (fetch targets are server-config OCR URL + fixed RDW endpoint with charset-validated plate). No path traversal (photoPath regex + startsWith(root) guard; static files resolve+startsWith guard).",
     "Client bundle: no hardcoded secrets/keys, no innerHTML/eval/dangerouslySetInnerHTML in app code, strict CSP. No client XSS/secret leak.",
     "CSV export: formula-injection mitigated - cells starting with = + @ - tab CR are prefixed with a single quote and quote-wrapped. XLSX usage is import-parsing only (no data->sheet export). Not vulnerable.",
@@ -19,14 +20,125 @@
     "Account-linking (access() user_id claim by email): email is UNIQUE in auth_accounts and members; activation binds email server-side; no takeover via email collision."
   ],
   "findings": [
-    {"id": "F1", "title": "Login brute-force / rate-limit bypass via X-Forwarded-For spoofing", "severity": "medium", "cwe": "CWE-307 / CWE-348", "status": "confirmed-end-to-end-poc", "detail": "The only brute-force control is limited(key) keyed on 'login:'+ip+':'+email, threshold 12 per 15 min. The ip is taken from the client-supplied X-Forwarded-For header (last value) and only falls back to socket.remoteAddress when XFF is absent. An attacker who sends a changing X-Forwarded-For value gets a fresh counter every request, fully defeating throttling and account lockout. END-TO-END PoC on the exact production code: 40 consecutive wrong-password guesses against a real account with a rotating XFF -> all 401, zero 429; the 41st attempt with the CORRECT password -> 303 success, lockout never engaged. Control test without XFF -> 429 after the threshold. This enables unthrottled credential-stuffing / online guessing against any known employee email (guessable firstname.lastname@). Rises to HIGH if any account uses a weak/breached password. Also explains the earlier live observation of no throttling. PRODUCTION EXPLOITABILITY depends on the front reverse proxy's XFF handling (safe only if it OVERWRITES/APPENDS the real client IP as the last value; unsafe if it passes the client's XFF through) - recommend verifying the proxy config.", "fix": "Derive client IP only from the trusted proxy (fixed trusted-hop count or a proxy-set header the app controls), never from raw client XFF. Add global and per-account throttling independent of IP, plus progressive delays/CAPTCHA after N failures and breached-password / MFA controls."},
-    {"id": "F6", "title": "Username/email enumeration via login timing side-channel", "severity": "low-medium", "cwe": "CWE-208", "status": "confirmed-measured", "detail": "POST /login only runs the scrypt verification when the account exists: 'const account=SELECT...; if(!account||!member||...||!await verifyPassword(...))' short-circuits before scrypt for unknown emails. Measured on the running app: existing email (wrong pw) -> 401 in ~90-320ms (scrypt runs); nonexistent email -> 401 in ~2-4ms. A 30-100x timing gap trivially reveals which emails are registered Van Mossel accounts, even over the internet (scrypt delta ~90ms >> network jitter). Chains with F1: enumerate valid accounts unthrottled, then credential-stuff them. Fix: always run a scrypt verification against a fixed decoy hash when the account (or member) is missing, so timing is constant.", "evidence": "timing measurement, 6 samples each, server up"},
-    {"id": "F7", "title": "Admin password-reset / credential issuance has no audit event and no re-authentication", "severity": "medium", "cwe": "CWE-778 / CWE-620 / CWE-306", "status": "confirmed-poc", "detail": "The admin password-reset mechanism is activation-link issuance (POST /api/account-invite, access(['audit'])). It requires only the existing audit session - no password re-entry / no step-up. invitesApi, issueInvitation(), and the activation-consume path (POST /account/activeren, which overwrites auth_accounts.password_hash and DELETEs the target's sessions) all log NO event. PoC on the running app: audit issued reset links for the viewer AND for the owner/admin account itself, then consumed the viewer link to set an attacker-chosen password - the victim's old session was killed (401) and login with the new password succeeded (303). events table delta across the ENTIRE issue+reset+takeover lifecycle = 0. Also confirmed: login success/failure and logout are not logged either. In a tool run by Internal Audit whose events table IS the accountability record, credential changes are invisible and unattributable. Amplification: an attacker who cracks one audit account (via the F1+F6 chain) can silently reset every other account (incl. other admins and the owner) for persistent full control with no trace; a rogue insider can take over a colleague's account and plausibly deny it.", "fix": "Write an audit event for reset-link issuance, activation/password-set, and login/logout. Require step-up re-authentication (or an out-of-band confirmation) before an admin issues credentials for another account, especially for audit-role targets."},
-    {"id": "F2", "title": "Evidence-export PDF hash is client-asserted (not server-verified)", "severity": "low", "status": "confirmed", "detail": "evidence-export 'complete' stores pdf_sha256 exactly as sent by the client; the server cannot recompute it because the PDF is rendered client-side. CONFIRMED: the export owner completed an export with a fabricated random pdf_sha256 and the server stored it verbatim (DB value == fabricated hash, status='ready'). For an evidence/audit system the PDF integrity value is therefore a self-attestation. The real integrity anchor (snapshot_sha256 over the actual DB records) IS computed server-side, so data integrity is preserved; only the PDF artifact's integrity claim is unverified. Cross-user completion IS correctly blocked (403).", "fix": "Document that pdf_sha256 is a client attestation, or render/hash the PDF server-side if it must be authoritative."},
-    {"id": "F3", "title": "HSTS missing includeSubDomains and preload", "severity": "low", "status": "confirmed", "detail": "Strict-Transport-Security max-age=31536000 only."},
-    {"id": "F4", "title": "cooby.nl email auth weak (DMARC p=none, SPF ~all)", "severity": "low", "status": "informational", "detail": "Corrected from recon: DMARC record DOES exist for _dmarc.cooby.nl but policy is p=none (monitor only, no enforcement/quarantine/reject), and SPF is v=spf1 ~all (softfail). So spoofed mail is not actually blocked. Domain-level, not the app itself. Verified via nslookup -type=TXT."},
-    {"id": "F8", "title": "Evidence-photo upload validates only client-claimed MIME, not file content", "severity": "low", "cwe": "CWE-345/CWE-434", "status": "confirmed", "detail": "POST /api/scan accepts the photo if the multipart part's declared Content-Type is in {image/jpeg,image/png,image/webp}; it does NOT check magic bytes. PoC: uploaded an HTML/JS file with type=image/jpeg and it was stored as a scan 'evidence photo'. This is NOT an XSS/token-theft vector - /api/photo serves it back with the forced Content-Type image/jpeg + X-Content-Type-Options: nosniff, the filename is the sanitized identifier (not the uploaded name), the session cookie is HttpOnly/SameSite=Lax (+Secure/__Host- on https), and the CSP blocks inline/external script, so the browser renders a broken image and nothing executes; SVG (image/svg+xml) uploads are rejected (400). The residual issue is evidence integrity: the evidence store is not guaranteed to contain real images (arbitrary bytes can be stored). Fix: validate magic bytes / re-encode images server-side.", "evidence": "upload HTML-as-jpeg stored; served as image/jpeg+nosniff; svg rejected 400"},
-    {"id": "F5", "title": "First-run bootstrap self-provisions audit", "severity": "info", "status": "not-exploitable-when-configured", "detail": "On an UNINITIALIZED instance (no settings.campaign), the first authenticated caller of /api/manage action=initialize or /api/location-catalog is created as audit. Not reachable on the configured production environment (campaign already set). Noted for completeness."}
+    {
+      "id": "F1",
+      "title": "Login brute-force / rate-limit bypass via X-Forwarded-For spoofing",
+      "severity": "medium",
+      "cwe": "CWE-307 / CWE-348",
+      "status": "confirmed-end-to-end-poc",
+      "detail": "The only brute-force control is limited(key) keyed on 'login:'+ip+':'+email, threshold 12 per 15 min. The ip is taken from the client-supplied X-Forwarded-For header (last value) and only falls back to socket.remoteAddress when XFF is absent. An attacker who sends a changing X-Forwarded-For value gets a fresh counter every request, fully defeating throttling and account lockout. END-TO-END PoC on the exact production code: 40 consecutive wrong-password guesses against a real account with a rotating XFF -> all 401, zero 429; the 41st attempt with the CORRECT password -> 303 success, lockout never engaged. Control test without XFF -> 429 after the threshold. This enables unthrottled credential-stuffing / online guessing against any known employee email (guessable firstname.lastname@). Rises to HIGH if any account uses a weak/breached password. Also explains the earlier live observation of no throttling. PRODUCTION EXPLOITABILITY depends on the front reverse proxy's XFF handling (safe only if it OVERWRITES/APPENDS the real client IP as the last value; unsafe if it passes the client's XFF through) - recommend verifying the proxy config.",
+      "fix": "Derive client IP only from the trusted proxy (fixed trusted-hop count or a proxy-set header the app controls), never from raw client XFF. Add global and per-account throttling independent of IP, plus progressive delays/CAPTCHA after N failures and breached-password / MFA controls."
+    },
+    {
+      "id": "F6",
+      "title": "Username/email enumeration via login timing side-channel",
+      "severity": "low-medium",
+      "cwe": "CWE-208",
+      "status": "confirmed-measured",
+      "detail": "POST /login only runs the scrypt verification when the account exists: 'const account=SELECT...; if(!account||!member||...||!await verifyPassword(...))' short-circuits before scrypt for unknown emails. Measured on the running app: existing email (wrong pw) -> 401 in ~90-320ms (scrypt runs); nonexistent email -> 401 in ~2-4ms. A 30-100x timing gap trivially reveals which emails are registered Van Mossel accounts, even over the internet (scrypt delta ~90ms >> network jitter). Chains with F1: enumerate valid accounts unthrottled, then credential-stuff them. Fix: always run a scrypt verification against a fixed decoy hash when the account (or member) is missing, so timing is constant.",
+      "evidence": "timing measurement, 6 samples each, server up"
+    },
+    {
+      "id": "F7",
+      "title": "Admin password-reset / credential issuance has no audit event and no re-authentication",
+      "severity": "medium",
+      "cwe": "CWE-778 / CWE-620 / CWE-306",
+      "status": "confirmed-poc",
+      "detail": "The admin password-reset mechanism is activation-link issuance (POST /api/account-invite, access(['audit'])). It requires only the existing audit session - no password re-entry / no step-up. invitesApi, issueInvitation(), and the activation-consume path (POST /account/activeren, which overwrites auth_accounts.password_hash and DELETEs the target's sessions) all log NO event. PoC on the running app: audit issued reset links for the viewer AND for the owner/admin account itself, then consumed the viewer link to set an attacker-chosen password - the victim's old session was killed (401) and login with the new password succeeded (303). events table delta across the ENTIRE issue+reset+takeover lifecycle = 0. Also confirmed: login success/failure and logout are not logged either. In a tool run by Internal Audit whose events table IS the accountability record, credential changes are invisible and unattributable. Amplification: an attacker who cracks one audit account (via the F1+F6 chain) can silently reset every other account (incl. other admins and the owner) for persistent full control with no trace; a rogue insider can take over a colleague's account and plausibly deny it.",
+      "fix": "Write an audit event for reset-link issuance, activation/password-set, and login/logout. Require step-up re-authentication (or an out-of-band confirmation) before an admin issues credentials for another account, especially for audit-role targets."
+    },
+    {
+      "id": "F2",
+      "title": "Evidence-export PDF hash is client-asserted (not server-verified)",
+      "severity": "low",
+      "status": "confirmed",
+      "detail": "evidence-export 'complete' stores pdf_sha256 exactly as sent by the client; the server cannot recompute it because the PDF is rendered client-side. CONFIRMED: the export owner completed an export with a fabricated random pdf_sha256 and the server stored it verbatim (DB value == fabricated hash, status='ready'). For an evidence/audit system the PDF integrity value is therefore a self-attestation. The real integrity anchor (snapshot_sha256 over the actual DB records) IS computed server-side, so data integrity is preserved; only the PDF artifact's integrity claim is unverified. Cross-user completion IS correctly blocked (403).",
+      "fix": "Document that pdf_sha256 is a client attestation, or render/hash the PDF server-side if it must be authoritative."
+    },
+    {
+      "id": "F3",
+      "title": "HSTS missing includeSubDomains and preload",
+      "severity": "low",
+      "status": "confirmed",
+      "detail": "Strict-Transport-Security max-age=31536000 only."
+    },
+    {
+      "id": "F4",
+      "title": "cooby.nl email auth weak (DMARC p=none, SPF ~all)",
+      "severity": "low",
+      "status": "informational",
+      "detail": "Corrected from recon: DMARC record DOES exist for _dmarc.cooby.nl but policy is p=none (monitor only, no enforcement/quarantine/reject), and SPF is v=spf1 ~all (softfail). So spoofed mail is not actually blocked. Domain-level, not the app itself. Verified via nslookup -type=TXT."
+    },
+    {
+      "id": "F8",
+      "title": "Evidence-photo upload validates only client-claimed MIME, not file content",
+      "severity": "low",
+      "cwe": "CWE-345/CWE-434",
+      "status": "confirmed",
+      "detail": "POST /api/scan accepts the photo if the multipart part's declared Content-Type is in {image/jpeg,image/png,image/webp}; it does NOT check magic bytes. PoC: uploaded an HTML/JS file with type=image/jpeg and it was stored as a scan 'evidence photo'. This is NOT an XSS/token-theft vector - /api/photo serves it back with the forced Content-Type image/jpeg + X-Content-Type-Options: nosniff, the filename is the sanitized identifier (not the uploaded name), the session cookie is HttpOnly/SameSite=Lax (+Secure/__Host- on https), and the CSP blocks inline/external script, so the browser renders a broken image and nothing executes; SVG (image/svg+xml) uploads are rejected (400). The residual issue is evidence integrity: the evidence store is not guaranteed to contain real images (arbitrary bytes can be stored). Fix: validate magic bytes / re-encode images server-side.",
+      "evidence": "upload HTML-as-jpeg stored; served as image/jpeg+nosniff; svg rejected 400"
+    },
+    {
+      "id": "F5",
+      "title": "First-run bootstrap self-provisions audit",
+      "severity": "info",
+      "status": "not-exploitable-when-configured",
+      "detail": "On an UNINITIALIZED instance (no settings.campaign), the first authenticated caller of /api/manage action=initialize or /api/location-catalog is created as audit. Not reachable on the configured production environment (campaign already set). Noted for completeness."
+    },
+    {
+      "id": "F9",
+      "title": "Scanner location-scope not enforced in own-scope projects",
+      "severity": "medium",
+      "cwe": "CWE-285",
+      "status": "confirmed-poc",
+      "detail": "projectLocationAllowed() short-circuits: `project.location_scope!=='catalog' || u.role!=='scanner' || scope==='projects' || allowedLocationIds.includes(loc)`. In an OWN-scope project the first clause is always true, so a scanner's scanLocationIds restriction is never checked. PoC: created scanner 'Narrow' (scanScope=locations, scanLocationIds=[test-nl-tilburg]), attached to own-scope test-overname-polen. As Narrow: GET /api/data?projectId=test-overname-polen returned ALL 3 Poland locations and all 335 scans; GET /api/photo of a Warszawa scan -> 200 (read escape); POST /api/scan to test-pl-krakow -> 200 (write escape). Location enforcement works only in catalog-scope projects. Fix: apply the scanLocationIds/cluster check in own-scope projects too.",
+      "evidence": "Narrow saw 3 locs + 335 scans; photo 200; scan 200"
+    },
+    {
+      "id": "F10",
+      "title": "Pre-generated reset/invite token survives role revocation (persistence / revocation bypass)",
+      "severity": "medium",
+      "cwe": "CWE-613",
+      "status": "confirmed-poc",
+      "detail": "POST /account/activeren validates only the token (invitation(): token_hash exists, not consumed, not expired, 24h) - it never re-checks the issuer's current role. PoC: audit3 (while admin) issued a reset token for the OWNER and saved it; owner demoted audit3 to scanner; audit3 live admin actions -> 403 and new invites -> 403 (revocation appears to work), BUT audit3 then consumed the saved owner token -> 303, owner session -> 401, and audit3 logged in as owner with a chosen password. Demotion does not invalidate already-issued tokens, giving a demoted/rogue admin a 24h takeover window over any account incl owner. Fix: invalidate outstanding invites when a member's role is reduced; bind token validity to issuer role/state.",
+      "evidence": "demoted audit3 consumed saved owner token -> 303 takeover"
+    },
+    {
+      "id": "F11",
+      "title": "Any admin can demote any other admin incl owner; no last-admin/owner protection",
+      "severity": "medium",
+      "cwe": "CWE-285",
+      "status": "confirmed-poc",
+      "detail": "/api/manage member-update only blocks SELF role-removal (member.email===u.email). PoC: audit2 demoted the owner (audit1) to viewer -> 200; owner then 403 on admin actions (locked out); audit2 self-demote -> 400 (only guard). A rogue/compromised second admin can strip the owner and all other admins, becoming sole admin, or demote every admin to zero (lockout). Fix: protect the owner account, and refuse a change that would remove the last/only audit.",
+      "evidence": "audit2 demoted owner->viewer 200; owner locked out 403"
+    },
+    {
+      "id": "F12",
+      "title": "Audit-log actor attribution spoofable via member display name",
+      "severity": "low-medium",
+      "cwe": "CWE-778/CWE-345",
+      "status": "confirmed-poc",
+      "detail": "events.actor stores the free-text member name (u.displayName = members.name), not a stable user id. An audit can member-update their own (or another member's) name to anything. PoC: renamed audit to 'Systeem'; the next action (cluster add) logged actor='Systeem'. An admin can set their name to 'RDW-service', 'Backup-proces', or a colleague's exact name, so logged actions are no longer attributable to a person / can be pinned on someone else. Fix: log a stable user_id/email alongside (or instead of) the display name.",
+      "evidence": "event 'Cluster toegevoegd' actor='Systeem' after rename"
+    },
+    {
+      "id": "F13",
+      "title": "No quota or rate-limit on /api/scan uploads (disk-fill DoS)",
+      "severity": "medium",
+      "cwe": "CWE-770/CWE-400",
+      "status": "confirmed-poc",
+      "detail": "POST /api/scan caps each file at 15MB (413 above) but has no per-user quota, no count limit, and no rate limit. PoC: scanner uploaded 9x2MB evidence files back-to-back, all 200, evidence-files dir grew ~18MB, no 413/429/quota. 15MB x unbounded requests = fill the shared Hostinger VPS disk (which also hosts other cooby clients). Fix: per-user/project upload quota + rate limiting.",
+      "evidence": "9x2MB uploads all 200, +18,002,556 bytes, no throttle"
+    },
+    {
+      "id": "F14",
+      "title": "Viewer role can export full project snapshot (financial values + PII)",
+      "severity": "low",
+      "cwe": "CWE-200",
+      "status": "confirmed-possibly-by-design",
+      "detail": "evidence-export allows access(['audit','viewer']). PoC: viewer prepared an export of test-overname-polen and received 460 vehicles with plate/VIN/brand/value/location (total EUR 15,112,500), 335 scans including actor names and userId fields, and 338 events. The read-only 'viewer' role thus obtains commercially sensitive valuations and colleague PII. May be intended (viewer = read+export) - confirm with owner; if not, gate financial/PII fields or exports behind audit.",
+      "evidence": "viewer export: 460 vehicles EUR15.1M, 335 scans w/ userId"
+    }
   ],
   "earlier_finding_retracted": "Prior F1 'no brute-force protection' was a false positive from the live black-box test: rate limiting DOES exist (threshold 12/15min). The live no-throttle observation was an artifact of the egress proxy varying the forwarded IP, which is itself the mechanism behind the real finding (now F1: XFF-based bypass).",
   "dynamic_tests_run": [
@@ -55,5 +167,6 @@
   ],
   "hours_spent": 2.6,
   "local_instance": "http://127.0.0.1:3080 (Node 24, isolated container copy; fictitious test data only)",
-  "raw_scan_file": "/tmp/claude-0/-home-user-claude-agents/18465f05-8150-5394-b9a3-559607a8c0e6/scratchpad/recon-voorraad-raw.md"
+  "raw_scan_file": "/tmp/claude-0/-home-user-claude-agents/18465f05-8150-5394-b9a3-559607a8c0e6/scratchpad/recon-voorraad-raw.md",
+  "user_reanalysis_note": "Operator supplied an 8-item re-analysis (their numbering F1-F8). Mapping: their F1=my F7 (admin reset no-event/no-reauth, CONFIRMED); their F2=F10 (NEW, token survives revocation); their F3=F9 (NEW, scanner scope in own-projects); their F4=F11 (NEW, owner demotion); their F5=F12 (NEW, actor-log spoofing); their F6=F13 (NEW, upload DoS); their F7=F14 (NEW, viewer export exposure); their F8=minor 500-on-bad-JSON (CONFIRMED on /api/manage,/projects,/import,/review,/evidence-export). Their list omits my unauth findings F1 (XFF rate-limit bypass) and F6 (login timing enumeration), which remain valid. All 8 of their items reproduced on the local copy."
 }
