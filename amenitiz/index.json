@@ -2,7 +2,18 @@
   "target": "amenitiz.com / amenitiz.io",
   "authorization": "Written permission from CEO Alexandre Guinefolleau",
   "scope_note": "Everything. A service is in scope if it runs the target's code or stores the target's data regardless of vendor hostname (Heroku apps, AWS ALB origins, etc. are first-party). All *.amenitiz.io and *.amenitiz.com hosts in scope. crt.sh surfaced extra in-scope hosts on amenitiz.io (bookingsuite, get, *.infra, awsinfra-*). No new registrable domains encountered.",
-  "stack_known": ["Ruby on Rails + Devise (app.amenitiz.io PMS)", "Next.js (pos)", "Go (pay gateway)", "Heroku (import-bookings, leadgen)", "Cloudflare + AWS ALB", "New Relic", "Intercom", "reCAPTCHA v3", "VGS (verygoodproxy) on distribution-secure", "Unbounce/PageServe landing pages"],
+  "stack_known": [
+    "Ruby on Rails + Devise (app.amenitiz.io PMS)",
+    "Next.js (pos)",
+    "Go (pay gateway)",
+    "Heroku (import-bookings, leadgen)",
+    "Cloudflare + AWS ALB",
+    "New Relic",
+    "Intercom",
+    "reCAPTCHA v3",
+    "VGS (verygoodproxy) on distribution-secure",
+    "Unbounce/PageServe landing pages"
+  ],
   "session_goal": "Maximum impact: P1 / PII / High+Critical CVSS. Exploit phase.",
   "recon_status": "Surface mapped. EXPLOIT BLOCKER: Cloudflare managed challenge (4546-4547 byte 'Attention Required' pages) stands on all app paths of every CF-fronted host (booking engine, app, import-bookings/leadgen deep paths). The agent proxy IP cannot pass the JS challenge and browser-UA spoofing is policy-denied (Bot Check Circumvention). Only non-CF hosts (pay/pay-s Go gateways, pay-t ALB) and public DNS are curl-reachable.",
   "ruled_out": [
@@ -14,21 +25,34 @@
     "pay.amenitiz.io Go gateway: only /status responds (200 'ok'); all other paths return Go '404 page not found'. No routes discoverable without signed requests.",
     "pay-t.amenitiz.io ALB: fixed 503 (162 bytes) for every Host header tested (app/booking/pay hosts) - dead ALB, no listener rules, NOT a CF-origin-bypass path.",
     "infra sub-subdomains (dev/qa/prod/staging-3.infra, awsinfra-*): TLS handshake failure / timeout - dead/unreachable.",
-    "bookingsuite/get CF 1014 - see takeover candidates in pending_decisions (not completable here)."
+    "bookingsuite/get CF 1014 - see takeover candidates in pending_decisions (not completable here).",
+    "import-bookings CORS (no ACAC)",
+    "leadgen CORS (static localhost)",
+    "pay-t ALB (dead listener)",
+    "infra sub-subdomains (dead)"
   ],
   "open_threads": [
-    {"id": "T1", "title": "Multi-tenant booking-engine IDOR (cross-tenant guest PII)", "detail": "UNTESTED - BLOCKED. distribution-secure/your-hotel/fallback/leadgen-aws are all behind Cloudflare managed challenge; every app path (/en, /api/v1/establishments/{id}, /graphql, /establishments/{id}, *.json) returns the 4546-4547 byte CF 'Attention Required' challenge to the proxy IP. Cannot reach object-ID endpoints via curl. Note: distribution-secure robots.txt 302-redirects to a verygoodproxy.com (VGS payment proxy) sandbox - payment card data path. REQUIRES a real browser from a clean/residential IP (or CF allowlisting of the tester IP) to pass the challenge and test IDOR. This is the highest-value thread and remains open pending that access.", "priority": 1},
-    {"id": "T2", "title": "app.amenitiz.io PMS authenticated surface", "detail": "Self-service signup POST /en/users gated by reCAPTCHA v3; deep app paths also behind CF challenge. Needs a manually-registered account (browser) to reach authenticated PMS API for IDOR + mass-assignment. See pending_decisions.", "priority": 2},
-    {"id": "T3", "title": "Subdomain takeover candidates (get, bookingsuite)", "detail": "get.amenitiz.io -> dangling CNAME 43c436bc164b4a65b829e15b488f3916.unbouncepages.com (Unbounce). bookingsuite.amenitiz.io -> dangling CNAME secure.pageserve.co (PageServe, serves 'Pageserver 404' for unconfigured hosts). Both currently return CF error 1014 (cross-user CNAME banned) = unclaimed dangling state. Cookies _myapp_session/__cf_bm are Domain=amenitiz.io scoped, so a successful takeover would be High (cookie theft/session). NOT confirmed: completing it requires registering an Unbounce/PageServe account and claiming the host; CF-for-SaaS 1014 implies DCV may block it. See pending_decisions.", "priority": 3},
-    {"id": "T4", "title": "mcp.amenitiz.io AI MCP server", "detail": "403 CF edge block on all paths. mcp-cell (its internal cell) confirmed internal-only ELB. Needs edge bypass/valid auth; blocked same as T1.", "priority": 4}
+    "T1-pms-crosstenant-idor-subdomain-pivot: session cookie Domain=amenitiz.io is valid on every {hotel}.amenitiz.io host; test whether /en/api/v1/dashboards/* on another live hotel returns that tenant data",
+    "T2-pms-object-id-endpoints: enumerate /en/api/v1/{reservations,guests,invoices,users,hotels/{id}} for IDOR surfaces",
+    "T3-takeover-doc-only: get.amenitiz.io (Unbounce) and bookingsuite.amenitiz.io (PageServe) documented as risk per user decision",
+    "T4-signup-no-verification: account created without email/phone verification and weak password accepted (email==password). Low on its own; chainable."
   ],
   "pending_decisions": [
-    "T1/T2 BLOCKED by Cloudflare managed challenge on the proxy IP (browser-UA spoofing is policy-denied). To test the booking-engine IDOR and the authenticated PMS, need either: (a) a browser session from a clean/residential IP, or (b) Amenitiz allowlisting the tester IP at the CF edge. Cannot be automated from this environment.",
-    "T2 PMS account: app.amenitiz.io signup gated by reCAPTCHA v3 - needs manual browser-based registration of peter.bjorn75@gmail.com (reserved: verification step that cannot be automated).",
-    "T3 takeover: to CONFIRM, register an Unbounce account and attempt to add get.amenitiz.io (and a PageServe account for bookingsuite.amenitiz.io). If the vendor serves attacker content without domain-ownership (DCV) proof, it is a confirmed High takeover. Active-claim step on a live third-party property - hold for user decision."
+    "User-driven CF-protected requests (user runs cURLs from own IP) \u2014 IN PROGRESS",
+    "Takeover: documented as risk, no live claim per user decision"
   ],
-  "hours_spent": 2,
+  "hours_spent": 3,
   "findings": [
-    {"id": "F001", "endpoint": "mcp-cell.amenitiz.io (public DNS)", "method": "DNS A/CNAME", "severity": "Low", "cvss": "3.1 AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N (5.3, informational in practice)", "owasp": "A05:2021 Security Misconfiguration", "status": "confirmed", "summary": "Public DNS discloses internal AWS ELB hostname + RFC1918 IPs (10.91.10.9/10.91.58.106, eu-west-3) - internal topology leak.", "file": "findings/F001-mcp-cell-internal-ip-disclosure.md"}
+    {
+      "id": "F001",
+      "endpoint": "mcp-cell.amenitiz.io (public DNS)",
+      "method": "DNS A/CNAME",
+      "severity": "Low",
+      "cvss": "3.1 AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N (5.3, informational in practice)",
+      "owasp": "A05:2021 Security Misconfiguration",
+      "status": "confirmed",
+      "summary": "Public DNS discloses internal AWS ELB hostname + RFC1918 IPs (10.91.10.9/10.91.58.106, eu-west-3) - internal topology leak.",
+      "file": "findings/F001-mcp-cell-internal-ip-disclosure.md"
+    }
   ]
 }
