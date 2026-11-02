@@ -1,0 +1,12 @@
+{
+  "target": "amenitiz.com / amenitiz.io",
+  "authorization": "Written permission from CEO Alexandre Guinefolleau",
+  "scope_note": "Everything. Subdomain list provided by user at session start. A service is in scope if it runs the target's code or stores the target's data regardless of vendor hostname.",
+  "stack_known": ["Ruby", "Intercom"],
+  "session_goal": "Maximum impact: P1 / PII / High+Critical CVSS. Full pipeline recon -> exploit -> report, chained automatically.",
+  "ruled_out": [],
+  "open_threads": [],
+  "pending_decisions": [],
+  "hours_spent": 0,
+  "findings": []
+}
