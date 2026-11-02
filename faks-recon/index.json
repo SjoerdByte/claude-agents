@@ -1,0 +1,22 @@
+{
+  "target": "faks.co",
+  "authorization": "Written permission from CEO Corentin Geoffray",
+  "scope_note": "Everything. All faks.co subdomains supplied by user plus any vendor infra running faks code or storing faks data (first-party per CLAUDE.md scope clarification).",
+  "session_goal": "Maximum impact: P1, PII exposure, High/Critical CVSS. Full pipeline recon -> exploit -> report.",
+  "known_stack": ["React", "Sentry"],
+  "subdomains": [
+    "faks.co", "www.faks.co", "app.faks.co", "api.faks.co", "api-staging.faks.co",
+    "api-ci.faks.co", "api-preprod.faks.co", "web.faks.co", "web-staging.faks.co",
+    "web-preprod.faks.co", "web-ci.faks.co", "staging.faks.co", "preprod.faks.co",
+    "ci.faks.co", "demo.faks.co", "start.faks.co", "en.faks.co", "pages.faks.co",
+    "sites.faks.co", "docs.faks.co", "downloads.faks.co", "trail.faks.co",
+    "url405.faks.co", "stock-aggregator.faks.co", "calendar.faks.co", "groups.faks.co",
+    "cdn.faks.co", "vault.faks.co", "mail.faks.co", "sftp.faks.co", "drive.faks.co",
+    "metabase.faks.co"
+  ],
+  "ruled_out": [],
+  "open_threads": [],
+  "pending_decisions": [],
+  "hours_spent": 0,
+  "findings": []
+}
