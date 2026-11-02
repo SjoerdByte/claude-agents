@@ -1,12 +1,25 @@
 {
   "target": "amenitiz.com / amenitiz.io",
   "authorization": "Written permission from CEO Alexandre Guinefolleau",
-  "scope_note": "Everything. Subdomain list provided by user at session start. A service is in scope if it runs the target's code or stores the target's data regardless of vendor hostname.",
-  "stack_known": ["Ruby", "Intercom"],
-  "session_goal": "Maximum impact: P1 / PII / High+Critical CVSS. Full pipeline recon -> exploit -> report, chained automatically.",
-  "ruled_out": [],
-  "open_threads": [],
-  "pending_decisions": [],
-  "hours_spent": 0,
+  "scope_note": "Everything. A service is in scope if it runs the target's code or stores the target's data regardless of vendor hostname (Heroku apps, AWS ALB origins, etc. are first-party). All *.amenitiz.io and *.amenitiz.com hosts in scope. crt.sh surfaced extra in-scope hosts on amenitiz.io (bookingsuite, get, *.infra, awsinfra-*). No new registrable domains encountered.",
+  "stack_known": ["Ruby on Rails + Devise (app.amenitiz.io PMS)", "Next.js (pos)", "Go (pay gateway)", "Heroku (import-bookings, leadgen)", "Cloudflare + AWS ALB", "New Relic", "Intercom", "reCAPTCHA v3"],
+  "session_goal": "Maximum impact: P1 / PII / High+Critical CVSS. Recon handoff for exploit phase.",
+  "recon_status": "Surface mapped. Raw output in raw/endpoints.md + raw/*.txt. Cloudflare bot-management challenges the proxy IP (403) after request volume; use fresh approach/session or browser for CF-proxied hosts.",
+  "ruled_out": [
+    "mcp-cell.amenitiz.io - 502 after retry per CLAUDE.md, treat as dangling/dead until proven otherwise",
+    "reCAPTCHA site key on signup page - public by design, not a finding",
+    "app.amenitiz.io /graphql,/api,/up,/sidekiq,/rails/info/routes - 404, not exposed at root paths"
+  ],
+  "open_threads": [
+    {"id": "T1", "title": "Multi-tenant booking-engine IDOR (cross-tenant guest PII)", "detail": "Rails booking-engine hosts (distribution-secure [wildcard CORS ACAO:*], your-hotel, fallback, leadgen-aws, per-hotel sites like la-maison-folia/fr) render per-establishment. Hunt object-ID endpoints (reservation/guest/establishment IDs) reachable unauth via public booking flow. Highest-probability critical: cross-tenant PII.", "priority": 1},
+    {"id": "T2", "title": "app.amenitiz.io PMS authenticated surface via self-service signup", "detail": "Self-service signup present (POST /en/users, user[email]/password/tos_agreement) but gated by reCAPTCHA v3 (sitekey 6LdbGOEUAAAAAA1wk4s2tZytEq8B8kyPn0Rh0Z4m, action registration). Register peter.bjorn75@gmail.com (solve/bypass v3 token) to reach authenticated PMS API for IDOR + mass-assignment (role/property_id/tenant). No account-type choice at signup; onboarding likely assigns tenant.", "priority": 2},
+    {"id": "T3", "title": "Payment gateway + exposed origins / dangling CF origins", "detail": "pay.amenitiz.io is a Go gateway (/status ok). pay-t.amenitiz.io returns awselb/2.0 directly (no Cloudflare) - origin/ALB exposed, candidate for WAF bypass of pay.*. 530 hosts (partners, cv-channel-manager, web-analyzer, leadgen-staging) = CF-configured but origin unreachable: subdomain-takeover/dangling-origin candidates (retry before ruling dead). Check payment auth-token lifecycle.", "priority": 3},
+    {"id": "T4", "title": "mcp.amenitiz.io AI MCP server", "detail": "403 at CF edge on all paths; novel high-value if reachable (tool/data access). Needs edge bypass or valid auth to assess.", "priority": 4},
+    {"id": "T5", "title": "Unprobed in-scope hosts from crt.sh", "detail": "bookingsuite, get, *.infra (dev/qa/prod), awsinfra-*, assets - not yet probed; infra/staging hosts often have weaker auth.", "priority": 5}
+  ],
+  "pending_decisions": [
+    "Exploit phase needs to register app.amenitiz.io account (peter.bjorn75@gmail.com) - blocked by reCAPTCHA v3; may need browser-based signup or token reuse."
+  ],
+  "hours_spent": 1,
   "findings": []
 }

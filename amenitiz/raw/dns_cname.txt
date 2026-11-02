@@ -1,0 +1,17 @@
+app.amenitiz.io:                         | A: 
+pay.amenitiz.io:                         | A: 
+pay-t.amenitiz.io:                       | A: 
+pay-s.amenitiz.io:                       | A: 
+pos.amenitiz.io:                         | A: 
+mcp.amenitiz.io:                         | A: 
+mcp-cell.amenitiz.io:                    | A: 
+import-bookings.amenitiz.io:             | A: 
+partners.amenitiz.io:                    | A: 
+cv-channel-manager.amenitiz.io:          | A: 
+web-analyzer.amenitiz.io:                | A: 
+leadgen-staging.amenitiz.io:             | A: 
+distribution-secure.amenitiz.io:         | A: 
+staging-3.dev.infra.amenitiz.io:         | A: 
+qa-1-aws.amenitiz.io:                    | A: 
+prod.infra.amenitiz.io:                  | A: 
+fortress.amenitiz.io:                    | A: 

@@ -1,0 +1,56 @@
+===== GET https://pay.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/plain; charset=utf-8
+FINAL_STATUS:404 SIZE:19
+404 page not found
+
+
+===== GET https://pay.amenitiz.io/health =====
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/plain; charset=utf-8
+FINAL_STATUS:404 SIZE:19
+404 page not found
+
+
+===== GET https://pay.amenitiz.io/up =====
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/plain; charset=utf-8
+FINAL_STATUS:404 SIZE:19
+404 page not found
+
+
+===== GET https://pay.amenitiz.io/api =====
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/plain; charset=utf-8
+FINAL_STATUS:404 SIZE:19
+404 page not found
+
+
+===== GET https://pay.amenitiz.io/graphql =====
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/plain; charset=utf-8
+FINAL_STATUS:404 SIZE:19
+404 page not found
+
+
+===== GET https://pay.amenitiz.io/.well-known/apple-developer-merchantid-domain-association =====
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/plain; charset=utf-8
+FINAL_STATUS:404 SIZE:19
+404 page not found
+
+
+===== GET https://pay.amenitiz.io/robots.txt =====
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/plain; charset=utf-8
+FINAL_STATUS:404 SIZE:19
+404 page not found
+
+

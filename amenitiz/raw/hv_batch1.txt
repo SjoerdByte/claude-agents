@@ -1,0 +1,151 @@
+===== https://app.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+
+HTTP/2 302 
+date: Mon, 02 Nov 2026 11:58:30 GMT
+content-type: text/html; charset=utf-8
+location: https://app.amenitiz.io/users/sign_in
+cache-control: no-cache
+x-request-id: ee116d27-2806-4989-8aeb-3fad6c79962d
+x-runtime: 0.009774
+vary: Accept-Encoding, Origin
+org: AMENITIZ
+strict-transport-security: max-age=63072000; includeSubDomains
+cf-cache-status: DYNAMIC
+set-cookie: AWSALB=vIJnilyxLuFejrvPPT5/NM97NLUZjOiOPr/Pb1ZkawyScYYysJqK2RwQB2d4jQMEjkB6yn0dS820vpIFhSUDZlOZxd61M20Z0P1xl6B6gMBthd2tKnrbIJOgMdHt; Expires=Mon, 09 Nov 2026 11:58:30 GMT; Path=/
+set-cookie: AWSALBCORS=vIJnilyxLuFejrvPPT5/NM97NLUZjOiOPr/Pb1ZkawyScYYysJqK2RwQB2d4jQMEjkB6yn0dS820vpIFhSUDZlOZxd61M20Z0P1xl6B6gMBthd2tKnrbIJOgMdHt; Expires=Mon, 09 Nov 2026 11:58:30 GMT; Path=/; SameSite=None; Secure
+set-cookie: _myapp_session=6eUO0sqCFna4nwbowJzKpAGQh8GULPon%2FFVikCo0qF98upMNuaMq59RsAKS2rJPZVD1SueFlI3IgJyhEGfCCY1r5PUAxIdRGNMyiuoern1WqSBVkYrOFicwb3Pa3lMwfv8j03P%2FMabiiLTljqQGgS%2BaPZ6rHD6KNupnLD6JYDBvKgdEFOtIesxWa8QrdkTxHSebjpiZKjQL5BijZxcDtHEkpxy56uph9AiyiUeZlmkpcb4K54iqp3zTnsdpWQoioOoq%2BNPf93Lb9E9dITmokxDLoZnGg931SuLmt1Nmw1UGOfyeqO0E9Eq7q4cOtqqzucBlUX%2BUu0FnT6p6fS8UZUlApXxBl%2BGLtYbyFRK9qvQGtPq%2B4DZp2UIm6O8%2BJ%2FUYU%2BygfKt1svCE4jx2snyN7UzvUy%2FU%3D--EFItXU5fjFHM1HuX--Edj%2BxZRkDdaVg8N0Q%2BXq%2Bw%3D%3D; domain=amenitiz.io; path=/; expires=Mon, 16 Nov 2026 11:58:30 GMT; secure; httponly; samesite=lax
+set-cookie: __cf_bm=hmAoJmY6oxf.KTqAc9U3jTfg41XSCL2CyaUjhTXWrU4-1793620710.3771214-1.0.1.1-evnSyeb2FbaRELWI4px1ZghaHXIwQ.wPAqgKLl.U.WsylhaAwnSDsGCbzu4fAmp5s5GcNLL_Gcguj874hEAnJVxAAzPE56Yyj.grdCl6ULlj1MYOvJtaA3MYf4B83RP9; HttpOnly; SameSite=None; Secure; Path=/; Domain=amenitiz.io; Expires=Mon, 02 Nov 2026 12:28:30 GMT
+server: cloudflare
+cf-ray: a542f7bfdeb4efe7-IAD
+alt-svc: h3=":443"; ma=86400
+
+FINAL_STATUS:302 TIME:0.793037s IP:127.0.0.1 SIZE:0
+
+===== https://app.amenitiz.com/ =====
+HTTP/1.1 200 Connection Established
+
+HTTP/2 403 
+date: Mon, 02 Nov 2026 11:58:31 GMT
+content-type: text/plain; charset=UTF-8
+content-length: 17
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+referrer-policy: same-origin
+x-frame-options: SAMEORIGIN
+server: cloudflare
+cf-ray: a542f7c4cfc14d75-IAD
+
+FINAL_STATUS:403 TIME:0.460463s IP:127.0.0.1 SIZE:17
+
+===== https://pay.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+
+HTTP/2 404 
+date: Mon, 02 Nov 2026 11:58:31 GMT
+content-type: text/plain; charset=utf-8
+content-length: 19
+x-content-type-options: nosniff
+
+FINAL_STATUS:404 TIME:0.638171s IP:127.0.0.1 SIZE:19
+
+===== https://pos.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+
+HTTP/2 307 
+date: Mon, 02 Nov 2026 11:58:32 GMT
+content-type: text/html; charset=utf-8
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-frame-options: DENY
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: accelerometer=(), autoplay=(), camera=(), fullscreen=(self), geolocation=(), gyroscope=(), interest-cohort=(), magnetometer=(), microphone=(), payment=(), usb=()
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://*.fullview.io; style-src 'self' 'unsafe-inline' https://*.fullview.io; img-src 'self' data: blob:; font-src 'self' data: https://*.fullview.io; connect-src 'self' https://*.fullview.io wss://*.fullview.io; media-src 'self' https://*.fullview.io; worker-src 'self' blob:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+x-nextjs-cache: HIT
+x-nextjs-prerender: 1
+x-nextjs-prerender: 1
+location: /login
+x-nextjs-stale-time: 300
+set-cookie: AWSALBTG=efre4UNqDJ7gOK7gQzJjhjxaJzDlhLgnNR7MIlfk9bxDzIMVCUWgZqGVpS/TX7tCsYeVTu/KY6TsHEhHKORPgTLZ+hx1z0d6Zcl9E5HySu9IpDC77b+Tw/IEfGn288FLsl646C9gDTYmmpfo0HwvJXa5hAXZkyl1PCAI4Im7r+rn; Expires=Mon, 09 Nov 2026 11:58:32 GMT; Path=/
+set-cookie: AWSALBTGCORS=efre4UNqDJ7gOK7gQzJjhjxaJzDlhLgnNR7MIlfk9bxDzIMVCUWgZqGVpS/TX7tCsYeVTu/KY6TsHEhHKORPgTLZ+hx1z0d6Zcl9E5HySu9IpDC77b+Tw/IEfGn288FLsl646C9gDTYmmpfo0HwvJXa5hAXZkyl1PCAI4Im7r+rn; Expires=Mon, 09 Nov 2026 11:58:32 GMT; Path=/; SameSite=None; Secure
+set-cookie: AWSALB=ZehneLwRAuN5wD2a1bhPuvpyyGGhPZeAN4Z4tPYe3GoDxAYjoy9wXo2nFikr//l7u1TJweDsbd8nSmEFat4yHwNh3fueYegMzY0SfG4ms4UzrZMjC2zeOK5SFWMj; Expires=Mon, 09 Nov 2026 11:58:32 GMT; Path=/
+set-cookie: AWSALBCORS=ZehneLwRAuN5wD2a1bhPuvpyyGGhPZeAN4Z4tPYe3GoDxAYjoy9wXo2nFikr//l7u1TJweDsbd8nSmEFat4yHwNh3fueYegMzY0SfG4ms4UzrZMjC2zeOK5SFWMj; Expires=Mon, 09 Nov 2026 11:58:32 GMT; Path=/; SameSite=None; Secure
+set-cookie: __cf_bm=um.2wGQLbkgPSZiFvLqO5JCLEev2VtaQuAxTqzdGgAM-1793620712.1010256-1.0.1.1-a_vMt3Cs0alDppx3VLBxl6t993puyqPZDliBxKAfwxvCh1B0lSyQJq4BSWBQcjQgsgVLurMUtRfE7iOGz.miFUPuZxIbD_yKCpAKT0Yu3Zzcxomgi3xsSRsKoPk_yKmb; HttpOnly; SameSite=None; Secure; Path=/; Domain=amenitiz.io; Expires=Mon, 02 Nov 2026 12:28:32 GMT
+cache-control: s-maxage=31536000
+org: AMENITIZ
+cf-cache-status: DYNAMIC
+server: cloudflare
+cf-ray: a542f7ca9eb80800-IAD
+alt-svc: h3=":443"; ma=86400
+
+FINAL_STATUS:307 TIME:0.619134s IP:127.0.0.1 SIZE:8809
+
+===== https://mcp.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+
+HTTP/2 403 
+date: Mon, 02 Nov 2026 11:58:32 GMT
+content-type: text/html; charset=UTF-8
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+referrer-policy: same-origin
+x-frame-options: SAMEORIGIN
+set-cookie: __cf_bm=1Oxyj39Fpp0AEWRmrX.2iuE9trYFJpfLINzLvE4EY8U-1793620712.744408-1.0.1.1-EPFKIsC1PniXXl2kil5BH4AkhlY9Qj1uYRx402uQJYOA60UWmuRKd1.G5FyTvijecVPiwX0IQ3aKCNuZGz3.dSeSXRXxGM4pU7tTUiYVCQUKKI4RsJCnJNxTaofB.bNo; HttpOnly; SameSite=None; Secure; Path=/; Domain=amenitiz.io; Expires=Mon, 02 Nov 2026 12:28:32 GMT
+org: AMENITIZ
+server: cloudflare
+cf-ray: a542f7ceac74b967-IAD
+alt-svc: h3=":443"; ma=86400
+
+FINAL_STATUS:403 TIME:0.299200s IP:127.0.0.1 SIZE:4547
+
+===== https://mcp-cell.amenitiz.io/ =====
+HTTP/1.1 502 Bad Gateway
+Content-Type: text/plain; charset=utf-8
+X-Content-Type-Options: nosniff
+Content-Length: 20
+Connection: close
+
+curl: (56) CONNECT tunnel failed, response 502
+FINAL_STATUS:000 TIME:0.079609s IP:127.0.0.1 SIZE:0
+
+===== https://import-bookings.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+
+HTTP/2 302 
+date: Mon, 02 Nov 2026 11:58:33 GMT
+content-type: text/html; charset=utf-8
+access-control-allow-origin: *
+location: /login
+nel: {"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}
+report-to: {"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=StNI4nPtWPae1K3FVEXTY5B%2FpheUjGcDYRFKVO5PwqE%3D\u0026sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d\u0026ts=1793620713"}],"max_age":3600}
+reporting-endpoints: heroku-nel="https://nel.heroku.com/reports?s=StNI4nPtWPae1K3FVEXTY5B%2FpheUjGcDYRFKVO5PwqE%3D&sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d&ts=1793620713"
+server: cloudflare
+vary: Cookie
+via: 2.0 heroku-router
+cf-cache-status: DYNAMIC
+set-cookie: __cf_bm=EObOEPiSng530qjkwWIi1Hx.VvEfXqxVjY6BcylSe0Y-1793620713.0897272-1.0.1.1-OWQ2OZrlGl9_sdo0IQO03JkJy1BmkO5KEbFYV3p3tNCWqcRU37_3NbTPCGrgtngclXSmH6.X7rjj96sUtOcaO7f1iNlnl.F942kdgRUqxNrUhUbDcCbX3eShVY3vZMoU; HttpOnly; SameSite=None; Secure; Path=/; Domain=amenitiz.io; Expires=Mon, 02 Nov 2026 12:28:33 GMT
+org: AMENITIZ
+cf-ray: a542f7d0c9e39951-IAD
+alt-svc: h3=":443"; ma=86400
+
+FINAL_STATUS:302 TIME:0.261612s IP:127.0.0.1 SIZE:199
+
+===== https://cv-channel-manager.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+
+HTTP/2 530 
+date: Mon, 02 Nov 2026 11:58:33 GMT
+content-type: text/plain; charset=UTF-8
+content-length: 17
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+referrer-policy: same-origin
+x-frame-options: SAMEORIGIN
+org: AMENITIZ
+server: cloudflare
+cf-ray: a542f7d3e95ca5d9-IAD
+alt-svc: h3=":443"; ma=86400
+
+FINAL_STATUS:530 TIME:0.490986s IP:127.0.0.1 SIZE:17
+

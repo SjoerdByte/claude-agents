@@ -1,0 +1,151 @@
+===== https://partners.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 530 
+content-type: text/plain; charset=UTF-8
+org: AMENITIZ
+server: cloudflare
+cf-ray: a542f83b4b7515b7-IAD
+FINAL_STATUS:530 TIME:0.496483s
+
+===== https://your-hotel.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/html; charset=UTF-8
+x-request-id: eeb4e28f-b6f1-4482-be88-d74027eb0840
+x-runtime: 0.013394
+set-cookie: AWSALB=5NNObb42re38CjfpgRFVlwVZgbYk5GFOza0a3SYkyn8Q5g5aAIQQTTxKlE6fWQPn8DdMpsyE6vHkJJBoEBM77u8VKUit+CshWb8aLighFaCoaXNVrKX00XRztsjj; Expires=Mon, 09 Nov 2026 11:58:50 GMT; Path=/
+set-cookie: AWSALBCORS=5NNObb42re38CjfpgRFVlwVZgbYk5GFOza0a3SYkyn8Q5g5aAIQQTTxKlE6fWQPn8DdMpsyE6vHkJJBoEBM77u8VKUit+CshWb8aLighFaCoaXNVrKX00XRztsjj; Expires=Mon, 09 Nov 2026 11:58:50 GMT; Path=/; SameSite=None; Secure
+set-cookie: __cf_bm=q5DHGNKL3pwB2i7Ol3HSAtRBXc8.bo4KQM6UQKVEGX0-1793620730.6012206-1.0.1.1-oNhMSq4ZkCOGMsBuoxXTmR_9KcJkwzh5a_TsraLR2.keqcS30VeUAber0o5F7DIGutNFAgDvOgXJQRu_pw_NHWxpRhEB.IAwHOnAu80NdHYnBuTScleOkqhsIGPCyQr2; HttpOnly; SameSite=None; Secure; Path=/; Domain=amenitiz.io; Expires=Mon, 02 Nov 2026 12:28:50 GMT
+org: AMENITIZ
+server: cloudflare
+cf-ray: a542f83e3b94d850-IAD
+FINAL_STATUS:404 TIME:0.776367s
+
+===== https://hotel.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/1.1 301 Moved Permanently
+Location: http://www.hotel.amenitiz.io/
+FINAL_STATUS:301 TIME:0.740721s
+
+===== https://distribution-secure.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/html; charset=UTF-8
+x-request-id: 4eac3bf1-2e26-987d-9763-8eb546562dd5
+x-runtime: 0.008969
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=O7Ir%2FYlEuSadB%2FAbmLp4hTr44SDbJDFxSLd2ZVZN9kiSFrbHs7q%2F5YBb%2FDukelHAEQB0jF8vmgSNNNSzD%2B0yYjMeASTYLTUfYZ%2B8eBrkOr17dn2gnDJhh6XswlkcOP6RwPxNpgVNHfuONYZPwHQ%3D"}]}
+server: cloudflare
+via: 1.1 proxy
+access-control-allow-origin: *
+set-cookie: AWSALB=VCGM9yyC5Inr1E74n3z8i2Tmy02uiejlT8L7mwXvcB+0is0izfcsR+RjYUFW/bDv0bxnKRZr0QmNmPUaaJHQZHIBFGsub4WlbqpeoJsZhHg8zhT4ODhOCQnpMvxx; Expires=Mon, 09 Nov 2026 11:58:52 GMT; Path=/
+set-cookie: AWSALBCORS=VCGM9yyC5Inr1E74n3z8i2Tmy02uiejlT8L7mwXvcB+0is0izfcsR+RjYUFW/bDv0bxnKRZr0QmNmPUaaJHQZHIBFGsub4WlbqpeoJsZhHg8zhT4ODhOCQnpMvxx; Expires=Mon, 09 Nov 2026 11:58:52 GMT; Path=/; SameSite=None; Secure
+set-cookie: __cf_bm=W4ng2bbQc5WWEfW9jfDUrze.AsJD0oH.GwJgv9Le9lw-1793620731.973201-1.0.1.1-l7W6xP4DhQ8PGU.wyAofKYEdhC1fkZPcww3gzbtsrQx3x3u.AANv77Ebx6OH3c1t5Qh3PC8YofNYocBEc72yoMUPjjFSYjBWxAclY.OxJD2o_Wcxi4yiDOJQkgRyw2Ul; HttpOnly; SameSite=None; Secure; Path=/; Domain=amenitiz.io; Expires=Mon, 02 Nov 2026 12:28:52 GMT
+org: AMENITIZ
+cf-ray: a542f846da122ff2-IAD
+FINAL_STATUS:404 TIME:0.999013s
+
+===== https://fortress.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 301 
+content-type: text/html; charset=UTF-8
+location: https://www.amenitiz.com/
+set-cookie: __cf_bm=KoXgrb1FOHH1j2qy3KGiUBQjbHiDi88dXQ4BXlyRSow-1793620732.8634126-1.0.1.1-TVUHP5nvfZrMMbebS4pRg26CykHx2lSi7snmKc9guXhMgcA9VfJ71Tw1kLW7fD1QAeEKX.iBLVymgCamaDuSdeJdSaUr7.gI.WEoZUl6FiMPQnXAusZoer9nHgVoMN7W; HttpOnly; SameSite=None; Secure; Path=/; Domain=amenitiz.io; Expires=Mon, 02 Nov 2026 12:28:52 GMT
+org: AMENITIZ
+server: cloudflare
+cf-ray: a542f84c6b5fd90d-IAD
+FINAL_STATUS:301 TIME:0.161309s
+
+===== https://fallback.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/html; charset=UTF-8
+x-request-id: 824e8e5c-2bef-46c6-ac7f-1863cfc31d7f
+x-runtime: 0.019354
+set-cookie: AWSALB=yFvWzE7Rb0O5Vull5ytsnzGRCjamRwSCmSgCqBL65SF8Qc3yX12jcUCgii0YPELIzPf5e9ZdmxyohXDLCUH3BcyVcKsL1p5cKUFIu+KKYap7v4lROvlyz01qdr2X; Expires=Mon, 09 Nov 2026 11:58:53 GMT; Path=/
+set-cookie: AWSALBCORS=yFvWzE7Rb0O5Vull5ytsnzGRCjamRwSCmSgCqBL65SF8Qc3yX12jcUCgii0YPELIzPf5e9ZdmxyohXDLCUH3BcyVcKsL1p5cKUFIu+KKYap7v4lROvlyz01qdr2X; Expires=Mon, 09 Nov 2026 11:58:53 GMT; Path=/; SameSite=None; Secure
+set-cookie: __cf_bm=GSuq.QBcDw8C3qT3GU11.2kVgW4N4ddpfewAUZ1gYik-1793620733.0778887-1.0.1.1-d6uDzt22Zqs3xlQaY0MPv9__5f.XRRU2V_OyehWchKg2ytfsQzNmLd_xoEa.zr.hedIMRtbzGGXL.gkRFSz3BQODQr7hu18fkRmkJBfkrcEkRZI3Tp4BRCEOjerfCx3a; HttpOnly; SameSite=None; Secure; Path=/; Domain=amenitiz.io; Expires=Mon, 02 Nov 2026 12:28:53 GMT
+org: AMENITIZ
+server: cloudflare
+cf-ray: a542f84db8e0d63c-IAD
+FINAL_STATUS:404 TIME:0.554938s
+
+===== https://apex-redirector.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 301 
+location: https://www.apex-redirector.amenitiz.io/
+server: Caddy
+FINAL_STATUS:301 TIME:0.429016s
+
+===== https://web-analyzer.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 530 
+content-type: text/plain; charset=UTF-8
+org: AMENITIZ
+server: cloudflare
+cf-ray: a542f8546d07c57b-IAD
+FINAL_STATUS:530 TIME:0.551857s
+
+===== https://leadgen.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 302 
+content-type: text/html; charset=utf-8
+access-control-allow-origin: http://localhost:3000
+location: /login
+report-to: {"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=cHyGxKKo4qzpfFqw0vX2Z6ExifgNr7BOpUSreRK57vI%3D\u0026sid=1b10b0ff-8a76-4548-befa-353fc6c6c045\u0026ts=1793620734"}],"max_age":3600}
+server: cloudflare
+via: 2.0 heroku-router
+set-cookie: __cf_bm=H5hRu6shcYgbCMxFZDy0lyll8Rd9vQZ3pqrSOP9Mefs-1793620734.6295445-1.0.1.1-CUZxfLXYeypoYRMsfd2.JOWBBuhuh7WMDRdt854ehbmJ5vX4sM6i19H_SLMprqjDqAkrRk9oJJDH1SF3TBRaWKhWsUrWMrHaTEmDTjIIljhlJuczFKgH2hDGeXXz7UBz; HttpOnly; SameSite=None; Secure; Path=/; Domain=amenitiz.io; Expires=Mon, 02 Nov 2026 12:28:54 GMT
+org: AMENITIZ
+cf-ray: a542f8576d8f8b1a-IAD
+FINAL_STATUS:302 TIME:0.221638s
+
+===== https://leadgen-aws.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/html; charset=UTF-8
+x-request-id: 1b86b9b9-c32a-4a6e-af63-452ebc1fa77e
+x-runtime: 0.012470
+set-cookie: AWSALB=p2JIjjB4kRxiMpHyZzZ3FG47/3ln0f5nmCuy37KWzjK1feC02BmKWztvgL1O8LeguKZQW4nqvDk9lZos7Lke0GFGWRp+WB8BMvnaAySlVHmjwpgGsUO1FZWTmX7y; Expires=Mon, 09 Nov 2026 11:58:55 GMT; Path=/
+set-cookie: AWSALBCORS=p2JIjjB4kRxiMpHyZzZ3FG47/3ln0f5nmCuy37KWzjK1feC02BmKWztvgL1O8LeguKZQW4nqvDk9lZos7Lke0GFGWRp+WB8BMvnaAySlVHmjwpgGsUO1FZWTmX7y; Expires=Mon, 09 Nov 2026 11:58:55 GMT; Path=/; SameSite=None; Secure
+set-cookie: __cf_bm=sWKpdiicDmckn7ouPceTJOitGZY2p24wQuuK.X7B7SU-1793620734.9005415-1.0.1.1-bFqY6gPDTj2X6eOjPea.tC9TLu1ZVE6kZmBR_RX6LOIMbA5qqNqv3_6vf_Fgn5hvAmq_TwQLlywSfUBIEgPzW2k8arrLOWQ6eFMqLwZFkXtTLNk44W1apBLwgwmluPt5; HttpOnly; SameSite=None; Secure; Path=/; Domain=amenitiz.io; Expires=Mon, 02 Nov 2026 12:28:55 GMT
+org: AMENITIZ
+server: cloudflare
+cf-ray: a542f8591f2fe55f-IAD
+FINAL_STATUS:404 TIME:0.579316s
+
+===== https://leadgen-staging.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 530 
+content-type: text/plain; charset=UTF-8
+org: AMENITIZ
+server: cloudflare
+cf-ray: a542f85d8e808583-IAD
+FINAL_STATUS:530 TIME:0.364389s
+
+===== https://pay-s.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 404 
+content-type: text/plain; charset=utf-8
+FINAL_STATUS:404 TIME:0.680801s
+
+===== https://pay-t.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 503 
+server: awselb/2.0
+content-type: text/html
+FINAL_STATUS:503 TIME:0.624483s
+
+===== https://mcp-cell.amenitiz.io/ =====
+HTTP/1.1 502 Bad Gateway
+Content-Type: text/plain; charset=utf-8
+FINAL_STATUS:000 TIME:0.148288s
+
+===== https://cv-channel-manager.amenitiz.io/ =====
+HTTP/1.1 200 Connection Established
+HTTP/2 530 
+content-type: text/plain; charset=UTF-8
+org: AMENITIZ
+server: cloudflare
+cf-ray: a542f8686e213c2f-IAD
+FINAL_STATUS:530 TIME:0.246173s
+
