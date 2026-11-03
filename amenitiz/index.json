@@ -31,15 +31,17 @@
     "pay-t ALB (dead listener)",
     "infra sub-subdomains (dead)",
     "T1 cross-tenant IDOR via subdomain pivot on /en/api/v1/dashboards/*: backend returns 403 {\"errors\":\"not allowed to access this Hotel\"}. Tested with authenticated session (hotel A) against hotel B subdomain. Proper per-tenant auth check in place.",
-    "T1b HTML shell bootstrap leak: /en/api/v1/{reservations,guests,invoices,me,current_user} on another hotel subdomain returns 200 generic admin SPA shell (91256 bytes) with NO tenant-specific data (no hotel name, email, plan, owner, timezone \u2014 data-tz is just Rails default Europe/Paris)."
+    "T1b HTML shell bootstrap leak: /en/api/v1/{reservations,guests,invoices,me,current_user} on another hotel subdomain returns 200 generic admin SPA shell (91256 bytes) with NO tenant-specific data (no hotel name, email, plan, owner, timezone \u2014 data-tz is just Rails default Europe/Paris).",
+    "T2 pms-object-id-endpoints: bookings 404 not_found, invoices uniform 422 regardless of ID format (numeric, UUID, slug, hashid), payments 404 not_found, guests/reservations 406. No IDOR oracle on any tested endpoint.",
+    "T5 mass-assignment-own-user: /en/api/v1/me, /users/me, /current_user all return 406 on GET and PATCH with JSON Accept. No writable user endpoint at these paths.",
+    "T6 graphql-on-tenant: all five candidate paths (/graphql, /en/graphql, /api/graphql, /en/api/graphql, /en/api/v1/graphql) return 406 on POST. No GraphQL endpoint on tenant subdomain."
   ],
   "open_threads": [
-    "T2-pms-object-id-endpoints: enumerate /en/api/v1/{reservations,guests,invoices,users,hotels/{id}} for IDOR surfaces",
     "T3-takeover-doc-only: get.amenitiz.io (Unbounce) and bookingsuite.amenitiz.io (PageServe) documented as risk per user decision",
     "T4-signup-no-verification: account created without email/phone verification and weak password accepted (email==password). Low on its own; chainable.",
-    "T5-mass-assignment-own-user: user_level_access reports \"housekeeper\" while account_owner is true. Test PATCH on own user/hotel settings to see if role fields are writable.",
-    "T6-graphql-on-tenant: /graphql not exposed on app.amenitiz.io root; retry on {tenant}.amenitiz.io host.",
-    "T7-booking-engine-object-ids: public /booking/room flow on live Amenitiz-engine hotels (amenitiz.io hosts and approved custom domains) may expose sequential reservation/booking IDs unauthenticated."
+    "T7-booking-engine-object-ids: public /booking/room flow on live Amenitiz-engine hotels (amenitiz.io hosts and approved custom domains) may expose sequential reservation/booking IDs unauthenticated.",
+    "T8-pms-frontend-api-discovery: intercept real XHR calls from PMS dashboard to find actual writable API endpoints (the SPA must call something for profile/hotel edits).",
+    "T9-property-settings-data: /en/api/v1/property/settings returned 200 earlier, check what data it exposes and whether it is writable."
   ],
   "pending_decisions": [
     "User-driven CF-protected requests (user runs cURLs from own IP) \u2014 IN PROGRESS",
