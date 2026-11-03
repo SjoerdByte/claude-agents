@@ -29,19 +29,23 @@
     "import-bookings CORS (no ACAC)",
     "leadgen CORS (static localhost)",
     "pay-t ALB (dead listener)",
-    "infra sub-subdomains (dead)"
+    "infra sub-subdomains (dead)",
+    "T1 cross-tenant IDOR via subdomain pivot on /en/api/v1/dashboards/*: backend returns 403 {\"errors\":\"not allowed to access this Hotel\"}. Tested with authenticated session (hotel A) against hotel B subdomain. Proper per-tenant auth check in place.",
+    "T1b HTML shell bootstrap leak: /en/api/v1/{reservations,guests,invoices,me,current_user} on another hotel subdomain returns 200 generic admin SPA shell (91256 bytes) with NO tenant-specific data (no hotel name, email, plan, owner, timezone \u2014 data-tz is just Rails default Europe/Paris)."
   ],
   "open_threads": [
-    "T1-pms-crosstenant-idor-subdomain-pivot: session cookie Domain=amenitiz.io is valid on every {hotel}.amenitiz.io host; test whether /en/api/v1/dashboards/* on another live hotel returns that tenant data",
     "T2-pms-object-id-endpoints: enumerate /en/api/v1/{reservations,guests,invoices,users,hotels/{id}} for IDOR surfaces",
     "T3-takeover-doc-only: get.amenitiz.io (Unbounce) and bookingsuite.amenitiz.io (PageServe) documented as risk per user decision",
-    "T4-signup-no-verification: account created without email/phone verification and weak password accepted (email==password). Low on its own; chainable."
+    "T4-signup-no-verification: account created without email/phone verification and weak password accepted (email==password). Low on its own; chainable.",
+    "T5-mass-assignment-own-user: user_level_access reports \"housekeeper\" while account_owner is true. Test PATCH on own user/hotel settings to see if role fields are writable.",
+    "T6-graphql-on-tenant: /graphql not exposed on app.amenitiz.io root; retry on {tenant}.amenitiz.io host.",
+    "T7-booking-engine-object-ids: public /booking/room flow on live Amenitiz-engine hotels (amenitiz.io hosts and approved custom domains) may expose sequential reservation/booking IDs unauthenticated."
   ],
   "pending_decisions": [
     "User-driven CF-protected requests (user runs cURLs from own IP) \u2014 IN PROGRESS",
     "Takeover: documented as risk, no live claim per user decision"
   ],
-  "hours_spent": 3,
+  "hours_spent": 4,
   "findings": [
     {
       "id": "F001",
