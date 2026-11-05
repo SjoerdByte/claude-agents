@@ -1,0 +1,5 @@
+| Endpoint | Method | Severity | CVSS | OWASP | Impact |
+|----------|--------|----------|------|-------|--------|
+| mcp-cell.amenitiz.io (public DNS) | DNS A/CNAME | Low | 5.3 AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N | A05:2021 Security Misconfiguration | Public DNS discloses internal AWS ELB hostname and RFC1918 IPs (10.91.10.9, 10.91.58.106, eu-west-3), leaking internal network topology. |
+| POST https://app.amenitiz.io/users | POST | Low | 5.3 AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N | A07:2021 Identification and Authentication Failures | Account creation without email verification. Full PMS dashboard access immediately after signup. Weak passwords accepted (email=password). Enables mass account creation and email impersonation. |
+| get.amenitiz.io / bookingsuite.amenitiz.io (DNS CNAME) | DNS CNAME | Medium | 6.1 AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N | A05:2021 Security Misconfiguration | Dangling CNAME records to Unbounce/PageServe. Currently blocked by CF 1014 but risk of subdomain takeover if CF config changes. Could enable phishing and .amenitiz.io cookie injection. |
